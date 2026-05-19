@@ -166,7 +166,7 @@ private fun LanguageCard(
                     modifier = Modifier
                         .size(22.dp)
                         .clip(CircleShape)
-                        .background(color = Color(0xFF1D4ED8))
+                        .background(color = Primary)
                         .padding(4.dp)
                 )
             }
