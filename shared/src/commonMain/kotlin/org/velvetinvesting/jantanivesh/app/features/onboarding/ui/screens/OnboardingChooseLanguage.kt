@@ -41,6 +41,7 @@ import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.PrimaryLanguageText
 import org.velvetinvesting.jantanivesh.app.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.theme.SelectedBoxColor
+import org.velvetinvesting.jantanivesh.app.theme.SelectedTextColor
 import org.velvetinvesting.jantanivesh.app.theme.White
 
 @Composable
@@ -150,12 +151,12 @@ private fun LanguageCard(
                 Text(
                     language,
                     style = MaterialTheme.typography.headlineSmall,
-                    color = if (isSelected) Color(0xFF1E3A8A) else Color.Black
+                    color = if (isSelected) SelectedTextColor else Color.Black
                 )
                 Text(
                     languageSpelling,
                     style = MaterialTheme.typography.headlineSmall,
-                    color = if (isSelected) Color(0xFF2563EB) else GreyText
+                    color = if (isSelected) SelectedTextColor else GreyText
                 )
             }
             if (isSelected) {
@@ -166,7 +167,7 @@ private fun LanguageCard(
                     modifier = Modifier
                         .size(22.dp)
                         .clip(CircleShape)
-                        .background(color = Color(0xFF1D4ED8))
+                        .background(color = Primary)
                         .padding(4.dp)
                 )
             }
