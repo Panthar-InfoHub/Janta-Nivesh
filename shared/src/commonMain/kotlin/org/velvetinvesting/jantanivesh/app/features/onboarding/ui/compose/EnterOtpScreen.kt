@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.screens
+package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -20,10 +20,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,23 +36,59 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpUiState
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpViewModel
 import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
 
-@Preview
+// --- ROUTE ---
 @Composable
-private fun EnterOtpScreen(modifier: Modifier = Modifier) {
-    var otpValue by remember { mutableStateOf("") }
+fun EnterOtpRoute(
+    onNavigateNext: () -> Unit,
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: EnterOtpViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    // Listen to one-time effects from the ViewModel
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                EnterOtpEffect.NavigateToNextScreen -> onNavigateNext()
+                EnterOtpEffect.NavigateBack -> onNavigateBack()
+            }
+        }
+    }
+
+    // Render the stateless screen
+    EnterOtpScreen(
+        state = uiState,
+        onEvent = viewModel::handleEvent,
+        modifier = modifier
+    )
+}
+
+// --- STATELESS SCREEN ---
+@Composable
+fun EnterOtpScreen(
+    state: EnterOtpUiState,
+    onEvent: (EnterOtpEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // FocusRequester is UI-specific state, so it stays in the Composable
     val focusRequester = remember { FocusRequester() }
 
-    // Optional: Request focus automatically when the screen opens
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -69,9 +104,9 @@ private fun EnterOtpScreen(modifier: Modifier = Modifier) {
             // Top Section (Header & Inputs)
             Column(modifier = Modifier.weight(1f)) {
                 TopAppBarWithBackButtonAndStepCount(
-                    stepCount = 2, // Assuming this is step 2
+                    stepCount = 2,
                     totalSteps = 5,
-                    onBack = { /* TODO */ }
+                    onBack = { onEvent(EnterOtpEvent.OnBackClicked) }
                 )
 
                 Text(
@@ -85,33 +120,33 @@ private fun EnterOtpScreen(modifier: Modifier = Modifier) {
                     color = GreyText
                 )
                 Text(
-                    text = "+971 1 123 123 1234", // Assuming this will be passed dynamically later
+                    text = state.phoneNumber,
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(bottom = 24.dp, top = 8.dp)
                 )
 
-                // Reusing your provided OtpInputField
                 OtpInputField(
-                    otpValue = otpValue,
-                    onValueChange = { newValue ->
-                        if (newValue.length <= 5) { // Enforce max length of 5 as per UI
-                            otpValue = newValue
-                        }
-                    },
+                    otpValue = state.otpValue,
+                    onValueChange = { onEvent(EnterOtpEvent.OnOtpChanged(it)) },
                     focusRequester = focusRequester,
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
 
                 Text(
-                    text = "You can resend the code in 24 seconds",
+                    text = "You can resend the code in ${state.resendTimerSeconds} seconds",
                     color = GreyText,
-                    modifier = Modifier.padding(bottom = 32.dp)
+                    modifier = Modifier
+                        .padding(bottom = 32.dp)
+                        .clickable {
+                            if (state.resendTimerSeconds == 0) {
+                                onEvent(EnterOtpEvent.OnResendClicked)
+                            }
+                        }
                 )
 
-                // Reusing your provided ScreenWideButton
                 ScreenWideButton(
                     buttonText = "Next",
-                    onClick = { /* TODO: Verify OTP */ },
+                    onClick = { onEvent(EnterOtpEvent.OnNextClicked) },
                     color = Primary,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -127,13 +162,14 @@ private fun EnterOtpScreen(modifier: Modifier = Modifier) {
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
                     contentDescription = "Janta Nivesh Logo",
-                    modifier = Modifier.height(53.dp)
+                    modifier = Modifier.height(58.dp)
                 )
             }
         }
     }
 }
 
+// --- SUB-COMPOSABLE ---
 @Composable
 internal fun OtpInputField(
     otpValue: String,
@@ -142,8 +178,6 @@ internal fun OtpInputField(
     modifier: Modifier = Modifier,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    // CHANGE 1: Use CircleShape instead of your theme's default textField shape
     val shape = CircleShape
 
     val onBoxClick: () -> Unit = remember {
@@ -152,12 +186,10 @@ internal fun OtpInputField(
             keyboardController?.show()
         }
     }
+
     val otpTextStyle = MaterialTheme.typography.headlineMedium.copy(
         fontWeight = FontWeight.Medium,
     )
-
-    // Ensure cd_otp_input exists in your string resources
-    val otpInputDescription = "Enter Otp through Keyboard"
 
     BasicTextField(
         value = otpValue,
@@ -165,8 +197,8 @@ internal fun OtpInputField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         modifier = Modifier
             .focusRequester(focusRequester)
-            .testTag("otp_basic_text_field") // Update tags as needed
-            .semantics { contentDescription = otpInputDescription },
+            .testTag("otp_basic_text_field")
+            .semantics { contentDescription = "Enter Otp through Keyboard" },
         decorationBox = {},
     )
 
@@ -174,21 +206,21 @@ internal fun OtpInputField(
         modifier = modifier
             .fillMaxWidth()
             .testTag("otp_input_row"),
-        horizontalArrangement = Arrangement.spacedBy(8.dp), // Or Arrangement.spacedBy as in your original
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(5) { index ->
             val char = otpValue.getOrNull(index)
+            // Optional: You can keep this if you still want the cursor box to be highlighted too
             val isFocused = index == otpValue.length
 
             Box(
                 modifier = Modifier
-                    // CHANGE 2: Make it a square for CircleShape to work, e.g., use the default height for both dimensions
                     .size(53.dp)
                     .clip(shape)
                     .border(
                         width = 1.dp,
-                        // CHANGE 3: Use the light blue border color as seen in the image for unfocused state
-                        color = if (isFocused) TextFieldBorder else BoxBorder,
+                        // CHANGE: Color now depends on whether a character is present
+                        color = if (char != null || isFocused) TextFieldBorder else BoxBorder,
                         shape = shape,
                     )
                     .clickable(onClick = onBoxClick),
@@ -204,4 +236,18 @@ internal fun OtpInputField(
             }
         }
     }
+}
+
+// --- PREVIEW ---
+@Preview(showBackground = true)
+@Composable
+fun EnterOtpScreenPreview() {
+    EnterOtpScreen(
+        state = EnterOtpUiState(
+            otpValue = "123",
+            phoneNumber = "+91 9876543210",
+            resendTimerSeconds = 15
+        ),
+        onEvent = {}
+    )
 }

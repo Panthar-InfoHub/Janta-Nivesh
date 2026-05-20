@@ -1,16 +1,15 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.screens
+package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,18 +20,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import jantanivesh.shared.generated.resources.lock_icon
 import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
+import org.velvetinvesting.jantanivesh.app.features.onboarding.data.models.LanguageOption
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageUiState
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.theme.GreyBox
 import org.velvetinvesting.jantanivesh.app.theme.GreyLock
@@ -45,7 +53,40 @@ import org.velvetinvesting.jantanivesh.app.theme.SelectedTextColor
 import org.velvetinvesting.jantanivesh.app.theme.White
 
 @Composable
-fun OnboardingChooseLanguage(modifier: Modifier = Modifier) {
+fun OnBoardingChooseLanguageRoute(
+    onNavigateNext: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: ChooseLanguageViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // 2. Listen for Side Effects (Navigation)
+    // LaunchedEffect runs safely in the background and cleans itself up
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                ChooseLanguageEffect.NavigateToNextScreen -> {
+                    // 3. Trigger the callback
+                    onNavigateNext()
+                }
+            }
+        }
+    }
+
+    // 4. Render the UI
+    OnboardingChooseLanguage(
+        state = uiState,
+        onEvent = viewModel::handleEvent,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun OnboardingChooseLanguage(
+    state: ChooseLanguageUiState,
+    onEvent: (ChooseLanguageEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .padding(16.dp),
@@ -59,7 +100,11 @@ fun OnboardingChooseLanguage(modifier: Modifier = Modifier) {
             color = GreyText
         )
 
-        Text("Primary Language", style = MaterialTheme.typography.labelLarge, color = PrimaryLanguageText)
+        Text(
+            "Primary Language",
+            style = MaterialTheme.typography.labelLarge,
+            color = PrimaryLanguageText
+        )
 
         Box(
             modifier = Modifier
@@ -74,7 +119,11 @@ fun OnboardingChooseLanguage(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth().padding(20.dp)
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("English", style = MaterialTheme.typography.labelLarge, color = Color.Black)
+                    Text(
+                        "English",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color.Black
+                    )
                     Text(
                         "Default System Language",
                         style = MaterialTheme.typography.titleSmall,
@@ -98,12 +147,19 @@ fun OnboardingChooseLanguage(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.weight(1.0f)
         ) {
-            item { LanguageCard("हिन्दी", "Hindi", isSelected = true) }
-            item { LanguageCard("मराठी", "Marathi", isSelected = false) }
-            item { LanguageCard("ગુજરાતી", "Gujarati", isSelected = false) }
-            item { LanguageCard("தமிழ்", "Tamil", isSelected = false) }
-            item { LanguageCard("తెలుగు", "Telugu", isSelected = false) }
-            item { LanguageCard("বাংলা", "Bengali", isSelected = false) }
+            // Loop through your state data instead of hardcoding items!
+            items(state.availableSecondaryLanguages.size) { index ->
+                val language = state.availableSecondaryLanguages[index]
+
+                LanguageCard(
+                    language = language.nativeName,
+                    languageSpelling = language.englishName,
+                    isSelected = state.selectedLanguageId == language.id,
+                    modifier = Modifier.clickable {
+                        onEvent(ChooseLanguageEvent.OnLanguageSelected(language.id))
+                    }
+                )
+            }
         }
 
         ScreenWideButton(
@@ -178,5 +234,23 @@ private fun LanguageCard(
 @Composable
 @Preview(showBackground = true)
 fun OnboardingChooseLanguagePreview() {
-    OnboardingChooseLanguage(Modifier.fillMaxSize())
+    val mockLanguages = listOf(
+        LanguageOption("hi", "हिन्दी", "Hindi"),
+        LanguageOption("mr", "मराठी", "Marathi"),
+        LanguageOption("gu", "ગુજરાતી", "Gujarati"),
+        LanguageOption("ta", "தமிழ்", "Tamil"),
+        LanguageOption("te", "తెలుగు", "Telugu"),
+        LanguageOption("bn", "বাংলা", "Bengali")
+    )
+
+    val dummyState = ChooseLanguageUiState(
+        availableSecondaryLanguages = mockLanguages,
+        selectedLanguageId = "hi" // Pre-select Hindi to test the UI state
+    )
+
+    OnboardingChooseLanguage(
+        state = dummyState,
+        onEvent = {}, // Do nothing in preview
+        modifier = Modifier.fillMaxSize()
+    )
 }

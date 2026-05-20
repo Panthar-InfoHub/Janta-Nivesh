@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.screens
+package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,32 +19,73 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.dob_dropdown_icon
-import jantanivesh.shared.generated.resources.jantanivesh_logo // Ensure this exists
+import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBUiState
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBViewModel
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
 
-@Preview
+// --- ROUTE ---
 @Composable
-private fun EnterYourDOBScreen(modifier: Modifier = Modifier) {
-    var dob by remember { mutableStateOf("") }
-    // Interaction source to handle clicks on the entire TextField area if you want to open a DatePicker later
+fun EnterYourDOBRoute(
+    onNavigateNext: () -> Unit,
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: EnterYourDOBViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    // Listen for navigation effects
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                EnterYourDOBEffect.NavigateToNextScreen -> onNavigateNext()
+                EnterYourDOBEffect.NavigateBack -> onNavigateBack()
+            }
+        }
+    }
+
+    // Render the stateless screen
+    EnterYourDOBScreen(
+        state = uiState,
+        onEvent = viewModel::handleEvent,
+        modifier = modifier
+    )
+}
+
+// --- STATELESS SCREEN ---
+@Composable
+fun EnterYourDOBScreen(
+    state: EnterYourDOBUiState,
+    onEvent: (EnterYourDOBEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Interaction source to handle clicks on the entire TextField area
     val interactionSource = remember { MutableInteractionSource() }
+
+    // If state says to show the date picker, render it here!
+    if (state.showDatePicker) {
+        // TODO: Implement your Material3 DatePickerDialog here.
+        // Call onEvent(EnterYourDOBEvent.OnDobSelected(date)) when they confirm.
+        // Call onEvent(EnterYourDOBEvent.OnDatePickerDismissed) if they dismiss it.
+    }
 
     Scaffold(modifier = modifier) { paddingValues ->
         Column(
@@ -60,7 +101,7 @@ private fun EnterYourDOBScreen(modifier: Modifier = Modifier) {
                 TopAppBarWithBackButtonAndStepCount(
                     stepCount = 4,
                     totalSteps = 5,
-                    onBack = { /* TODO: handle back navigation */ }
+                    onBack = { onEvent(EnterYourDOBEvent.OnBackClicked) }
                 )
 
                 Text(
@@ -85,16 +126,16 @@ private fun EnterYourDOBScreen(modifier: Modifier = Modifier) {
 
                 // Date of Birth Input Field
                 OutlinedTextField(
-                    value = dob,
-                    onValueChange = { /* Usually read-only when using a DatePicker */ },
-                    readOnly = true, // Set to true if you plan to use a DatePickerDialog
+                    value = state.dob,
+                    onValueChange = { /* Read only, handled by DatePicker */ },
+                    readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(
                             interactionSource = interactionSource,
                             indication = null
                         ) {
-                            /* TODO: Open DatePicker */
+                            onEvent(EnterYourDOBEvent.OnDobFieldClicked)
                         },
                     shape = RoundedCornerShape(12.dp),
                     placeholder = {
@@ -122,7 +163,7 @@ private fun EnterYourDOBScreen(modifier: Modifier = Modifier) {
 
                 ScreenWideButton(
                     buttonText = "Verify",
-                    onClick = { /* TODO: Handle verify action */ },
+                    onClick = { onEvent(EnterYourDOBEvent.OnVerifyClicked) },
                     color = Primary,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -138,9 +179,19 @@ private fun EnterYourDOBScreen(modifier: Modifier = Modifier) {
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
                     contentDescription = "Janta Nivesh Logo",
-                    modifier = Modifier.height(53.dp)
+                    modifier = Modifier.height(58.dp)
                 )
             }
         }
     }
+}
+
+// --- PREVIEW ---
+@Preview(showBackground = true)
+@Composable
+fun EnterYourDOBScreenPreview() {
+    EnterYourDOBScreen(
+        state = EnterYourDOBUiState(dob = "15/08/1947"),
+        onEvent = {}
+    )
 }
