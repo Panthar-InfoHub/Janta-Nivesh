@@ -14,8 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import org.velvetinvesting.jantanivesh.app.theme.ButtonShadow
 import org.velvetinvesting.jantanivesh.app.theme.White
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -28,8 +32,16 @@ fun ScreenWideButton(
 ) {
     Box(contentAlignment = Alignment.Center,
         modifier = modifier.clip(RoundedCornerShape(12.dp)).background(color)
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick).dropShadow(
+                shape = RoundedCornerShape(12.dp),
+                shadow = Shadow(
+                    radius = 16.dp,
+                    spread = 12.dp,
+                    offset = DpOffset(x = 0.dp, y = 8.dp),
+                    color = ButtonShadow
+                )
+            )
     ) {
-        Text(buttonText, style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(vertical = 8.dp), color = White)
+        Text(buttonText, style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(vertical = 18.dp), color = White)
     }
 }
