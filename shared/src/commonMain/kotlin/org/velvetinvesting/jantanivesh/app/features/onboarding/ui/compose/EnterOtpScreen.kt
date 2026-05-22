@@ -40,6 +40,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpEffect
@@ -48,7 +51,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Ent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpViewModel
 import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
 
 // --- ROUTE ---
@@ -98,7 +100,7 @@ fun EnterOtpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
             // Top Section (Header & Inputs)
@@ -112,7 +114,7 @@ fun EnterOtpScreen(
                 Text(
                     text = "Enter the Code",
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Text(
@@ -121,8 +123,8 @@ fun EnterOtpScreen(
                 )
                 Text(
                     text = state.phoneNumber,
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(bottom = 24.dp, top = 8.dp)
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.W700),
+                    modifier = Modifier.padding(bottom = 24.dp, top = Spacing.dp8)
                 )
 
                 OtpInputField(
@@ -147,7 +149,7 @@ fun EnterOtpScreen(
                 ScreenWideButton(
                     buttonText = "Next",
                     onClick = { onEvent(EnterOtpEvent.OnNextClicked) },
-                    color = Primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -156,7 +158,7 @@ fun EnterOtpScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = Spacing.dp16),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -206,7 +208,7 @@ internal fun OtpInputField(
         modifier = modifier
             .fillMaxWidth()
             .testTag("otp_input_row"),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
     ) {
         repeat(5) { index ->
             val char = otpValue.getOrNull(index)
@@ -242,12 +244,14 @@ internal fun OtpInputField(
 @Preview(showBackground = true)
 @Composable
 fun EnterOtpScreenPreview() {
-    EnterOtpScreen(
-        state = EnterOtpUiState(
-            otpValue = "123",
-            phoneNumber = "+91 9876543210",
-            resendTimerSeconds = 15
-        ),
-        onEvent = {}
-    )
+    JantaNiveshTheme {
+        EnterOtpScreen(
+            state = EnterOtpUiState(
+                otpValue = "123",
+                phoneNumber = "+91 9876543210",
+                resendTimerSeconds = 15
+            ),
+            onEvent = {}
+        )
+    }
 }

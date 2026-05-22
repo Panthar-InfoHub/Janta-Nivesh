@@ -31,6 +31,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEffect
@@ -40,7 +43,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Add
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
-
 // --- ROUTE ---
 @Composable
 fun AddYourEmailRoute(
@@ -82,11 +84,11 @@ fun AddYourEmailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
             // Top Section (Header, Texts & Inputs)
-            Column(modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)) {
+            Column(modifier = Modifier.padding(top = Spacing.dp16, bottom = 24.dp)) {
                 Box {
                     TopAppBarWithBackButtonAndStepCount(
                         stepCount = 5,
@@ -96,19 +98,19 @@ fun AddYourEmailScreen(
                     Text(
                         "Skip",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Primary,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .offset(x = (-16).dp, y = 17.dp)
                             .clickable { onEvent(AddYourEmailEvent.OnSkipClicked) }
-                            .padding(4.dp)
+                            .padding(Spacing.dp4)
                     )
                 }
 
                 Text(
                     text = "Add your email for updates/\nअपडेट पाने के लिए अपना ईमेल पता जोड़ें",
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Column(modifier = Modifier.padding(bottom = 24.dp)) {
@@ -117,7 +119,7 @@ fun AddYourEmailScreen(
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Spacing.dp16))
                     Text(
                         text = "हम यहां लेनदेन संबंधी अपडेट भेजेंगे",
                         color = GreyText,
@@ -131,7 +133,7 @@ fun AddYourEmailScreen(
                     onValueChange = { onEvent(AddYourEmailEvent.OnEmailChanged(it)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = LocalShapes.current.roundedDp12,
                     placeholder = {
                         Text(
                             text = "@gmail.com",
@@ -141,7 +143,7 @@ fun AddYourEmailScreen(
                     },
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedBorderColor = TextFieldBorder,
-                        focusedBorderColor = Primary
+                        focusedBorderColor = MaterialTheme.colorScheme.primary
                     )
                 )
 
@@ -150,7 +152,7 @@ fun AddYourEmailScreen(
                 ScreenWideButton(
                     buttonText = "Verify",
                     onClick = { onEvent(AddYourEmailEvent.OnVerifyClicked) },
-                    color = Primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -159,7 +161,7 @@ fun AddYourEmailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = Spacing.dp16),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -176,8 +178,10 @@ fun AddYourEmailScreen(
 @Preview(showBackground = true)
 @Composable
 fun AddYourEmailScreenPreview() {
-    AddYourEmailScreen(
-        state = AddYourEmailUiState(email = "test@example.com"),
-        onEvent = {}
-    )
+    JantaNiveshTheme{
+        AddYourEmailScreen(
+            state = AddYourEmailUiState(email = "test@example.com"),
+            onEvent = {}
+        )
+    }
 }

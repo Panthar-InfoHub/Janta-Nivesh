@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,6 +34,9 @@ import jantanivesh.shared.generated.resources.jantanivesh_logo
 import jantanivesh.shared.generated.resources.lock_icon
 import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.models.LanguageOption
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageEffect
@@ -45,7 +47,6 @@ import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.theme.GreyBox
 import org.velvetinvesting.jantanivesh.app.theme.GreyLock
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.PrimaryLanguageText
 import org.velvetinvesting.jantanivesh.app.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.theme.SelectedBoxColor
@@ -89,8 +90,8 @@ fun OnboardingChooseLanguage(
 ) {
     Column(
         modifier = modifier
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(Spacing.dp16),
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
     ) {
 
         Text("Choose Languages", style = MaterialTheme.typography.headlineLarge)
@@ -109,16 +110,16 @@ fun OnboardingChooseLanguage(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
+                .clip(LocalShapes.current.roundedDp16)
                 .background(GreyBox)
-                .border(width = 1.dp, color = BoxBorder, shape = RoundedCornerShape(16.dp))
+                .border(width = 1.dp, color = BoxBorder, shape = LocalShapes.current.roundedDp16)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(20.dp)
+                modifier = Modifier.fillMaxWidth().padding(Spacing.dp20)
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
                         "English",
                         style = MaterialTheme.typography.labelLarge,
@@ -143,8 +144,8 @@ fun OnboardingChooseLanguage(
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
             modifier = Modifier.weight(1.0f)
         ) {
             // Loop through your state data instead of hardcoding items!
@@ -165,7 +166,7 @@ fun OnboardingChooseLanguage(
         ScreenWideButton(
             buttonText = "Continue",
             onClick = {},
-            color = Primary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -192,18 +193,18 @@ private fun LanguageCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(LocalShapes.current.roundedDp16)
             .background(backgroundColor)
-            .border(width = 1.2.dp, color = borderColor, shape = RoundedCornerShape(16.dp))
+            .border(width = 1.2.dp, color = borderColor, shape = LocalShapes.current.roundedDp16)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 20.dp)
+                .padding(horizontal = Spacing.dp16, vertical = Spacing.dp20)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     language,
                     style = MaterialTheme.typography.headlineSmall,
@@ -223,8 +224,8 @@ private fun LanguageCard(
                     modifier = Modifier
                         .size(22.dp)
                         .clip(CircleShape)
-                        .background(color = Primary)
-                        .padding(4.dp)
+                        .background(color = MaterialTheme.colorScheme.primary)
+                        .padding(Spacing.dp4)
                 )
             }
         }
@@ -248,9 +249,11 @@ fun OnboardingChooseLanguagePreview() {
         selectedLanguageId = "hi" // Pre-select Hindi to test the UI state
     )
 
-    OnboardingChooseLanguage(
-        state = dummyState,
-        onEvent = {}, // Do nothing in preview
-        modifier = Modifier.fillMaxSize()
-    )
+    JantaNiveshTheme {
+        OnboardingChooseLanguage(
+            state = dummyState,
+            onEvent = {}, // Do nothing in preview
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }

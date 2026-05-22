@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -30,6 +29,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberEffect
@@ -39,7 +41,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Log
 import org.velvetinvesting.jantanivesh.app.theme.Black
 import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
 
 @Composable
@@ -79,7 +80,7 @@ fun LoginWithPhoneNumberScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
             // Top Section (Header & Inputs)
@@ -93,10 +94,10 @@ fun LoginWithPhoneNumberScreen(
                 Text(
                     text = "Log in with your mobile number/ अपने मोबाइल नंबर से लॉग इन करें",
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(bottom = 24.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8), modifier = Modifier.padding(bottom = 24.dp)) {
                     Text(
                         text = "We'll send a 4 digit OTP to verify your identity",
                         color = GreyText,
@@ -113,7 +114,7 @@ fun LoginWithPhoneNumberScreen(
                     value = state.phoneNumber,
                     onValueChange = { onEvent(LoginWithPhoneNumberEvent.OnPhoneNumberChanged(it)) },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = LocalShapes.current.roundedDp12,
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedBorderColor = BoxBorder,
                         focusedBorderColor = TextFieldBorder
@@ -122,16 +123,17 @@ fun LoginWithPhoneNumberScreen(
                     leadingIcon = {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(start = Spacing.dp16)
                         ) {
                             Text(
                                 text = "+91",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = Black
+                                color = Black,
+                                modifier = Modifier.padding(end = Spacing.dp8)
                             )
                             VerticalDivider(
-                                modifier = Modifier.height(24.dp).padding(horizontal = 4.dp),
-                                color = Primary
+                                modifier = Modifier.height(24.dp).padding(horizontal = Spacing.dp4),
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -140,7 +142,7 @@ fun LoginWithPhoneNumberScreen(
                 ScreenWideButton(
                     buttonText = "Verify",
                     onClick = { onEvent(LoginWithPhoneNumberEvent.OnVerifyClicked) },
-                    color = Primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
                 )
             }
@@ -149,7 +151,7 @@ fun LoginWithPhoneNumberScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = Spacing.dp16),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -165,8 +167,10 @@ fun LoginWithPhoneNumberScreen(
 @Preview(showBackground = true)
 @Composable
 fun LoginWithPhoneNumberPreview() {
-    LoginWithPhoneNumberScreen(
-        state = LoginWithPhoneNumberUiState(phoneNumber = "9876543210"),
-        onEvent = {}
-    )
+    JantaNiveshTheme {
+        LoginWithPhoneNumberScreen(
+            state = LoginWithPhoneNumberUiState(phoneNumber = "9876543210"),
+            onEvent = {}
+        )
+    }
 }

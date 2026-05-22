@@ -28,6 +28,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanEffect
@@ -36,7 +39,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Ent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanViewModel
 import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
 
 // --- ROUTE ---
@@ -79,7 +81,7 @@ fun EnterNameFromPanScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
             // Top Section (Header, Texts & Inputs)
@@ -94,7 +96,7 @@ fun EnterNameFromPanScreen(
                 Text(
                     text = "Your full name as per PAN/\nपैन कार्ड के अनुसार आपका पूरा नाम",
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Column(modifier = Modifier.padding(bottom = 24.dp)) {
@@ -103,7 +105,7 @@ fun EnterNameFromPanScreen(
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(Spacing.dp8))
                     Text(
                         text = "जैसा कि आपके पैन कार्ड पर दिखाई देता है",
                         color = GreyText,
@@ -115,7 +117,7 @@ fun EnterNameFromPanScreen(
                     value = state.fullName,
                     onValueChange = { onEvent(EnterNameFromPanEvent.OnNameChanged(it)) },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = LocalShapes.current.roundedDp12,
                     placeholder = {
                         Text(
                             text = "Full Name",
@@ -137,7 +139,7 @@ fun EnterNameFromPanScreen(
                 ScreenWideButton(
                     buttonText = "Continue",
                     onClick = { onEvent(EnterNameFromPanEvent.OnContinueClicked) },
-                    color = Primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
                 )
             }
@@ -146,7 +148,7 @@ fun EnterNameFromPanScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = Spacing.dp16),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -163,8 +165,10 @@ fun EnterNameFromPanScreen(
 @Preview(showBackground = true)
 @Composable
 fun EnterNameFromPanScreenPreview() {
-    EnterNameFromPanScreen(
-        state = EnterNameFromPanUiState(fullName = "Raju Rastogi"),
-        onEvent = {}
-    )
+    JantaNiveshTheme {
+        EnterNameFromPanScreen(
+            state = EnterNameFromPanUiState(fullName = "Raju Rastogi"),
+            onEvent = {}
+        )
+    }
 }

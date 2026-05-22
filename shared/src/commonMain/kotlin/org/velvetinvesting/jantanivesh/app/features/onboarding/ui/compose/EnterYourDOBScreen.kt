@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -32,6 +31,9 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.dob_dropdown_icon
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBEffect
@@ -39,7 +41,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Ent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBViewModel
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
 
 // --- ROUTE ---
@@ -92,7 +93,7 @@ fun EnterYourDOBScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
             // Top Section (Header, Texts & Inputs)
@@ -107,7 +108,7 @@ fun EnterYourDOBScreen(
                 Text(
                     text = "Enter your date of birth/\nआपका जन्म तारीख प्रवेश करे",
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Column(modifier = Modifier.padding(bottom = 24.dp)) {
@@ -116,7 +117,7 @@ fun EnterYourDOBScreen(
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Spacing.dp16))
                     Text(
                         text = "पहचान सत्यापन के लिए कृपया अपनी जन्मतिथि प्रदान करें",
                         color = GreyText,
@@ -137,7 +138,7 @@ fun EnterYourDOBScreen(
                         ) {
                             onEvent(EnterYourDOBEvent.OnDobFieldClicked)
                         },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = LocalShapes.current.roundedDp12,
                     placeholder = {
                         Text(
                             text = "Select your DOB",
@@ -154,7 +155,7 @@ fun EnterYourDOBScreen(
                     },
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedBorderColor = TextFieldBorder,
-                        focusedBorderColor = Primary
+                        focusedBorderColor = MaterialTheme.colorScheme.primary
                     ),
                     interactionSource = interactionSource
                 )
@@ -164,7 +165,7 @@ fun EnterYourDOBScreen(
                 ScreenWideButton(
                     buttonText = "Verify",
                     onClick = { onEvent(EnterYourDOBEvent.OnVerifyClicked) },
-                    color = Primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -173,7 +174,7 @@ fun EnterYourDOBScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = Spacing.dp16),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -190,8 +191,10 @@ fun EnterYourDOBScreen(
 @Preview(showBackground = true)
 @Composable
 fun EnterYourDOBScreenPreview() {
-    EnterYourDOBScreen(
-        state = EnterYourDOBUiState(dob = "15/08/1947"),
-        onEvent = {}
-    )
+    JantaNiveshTheme {
+        EnterYourDOBScreen(
+            state = EnterYourDOBUiState(dob = "15/08/1947"),
+            onEvent = {}
+        )
+    }
 }
