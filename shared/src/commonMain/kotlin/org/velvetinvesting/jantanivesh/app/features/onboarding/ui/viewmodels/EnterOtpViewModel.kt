@@ -10,15 +10,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// --- STATE ---
 data class EnterOtpUiState(
     val otpValue: String = "",
-    val phoneNumber: String = "+971 1 123 123 1234", // Typically passed via navigation args
+    val phoneNumber: String = "+971 1 123 123 1234",
     val resendTimerSeconds: Int = 24,
     val isLoading: Boolean = false
 )
 
-// --- EVENTS (UI to ViewModel) ---
 sealed interface EnterOtpEvent {
     data class OnOtpChanged(val otp: String) : EnterOtpEvent
     object OnNextClicked : EnterOtpEvent
@@ -26,14 +24,12 @@ sealed interface EnterOtpEvent {
     object OnResendClicked : EnterOtpEvent
 }
 
-// --- EFFECTS (ViewModel to Route/Navigation) ---
 sealed interface EnterOtpEffect {
     object NavigateToNextScreen : EnterOtpEffect
     object NavigateBack : EnterOtpEffect
-    // data class ShowToast(val message: String) : EnterOtpEffect
+     data class ShowToast(val message: String) : EnterOtpEffect
 }
 
-// --- VIEWMODEL ---
 class EnterOtpViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(EnterOtpUiState())
@@ -45,7 +41,6 @@ class EnterOtpViewModel : ViewModel() {
     fun handleEvent(event: EnterOtpEvent) {
         when (event) {
             is EnterOtpEvent.OnOtpChanged -> {
-                // Enforce max length of 5 in the ViewModel logic
                 if (event.otp.length <= 5) {
                     _uiState.update { it.copy(otpValue = event.otp) }
                 }

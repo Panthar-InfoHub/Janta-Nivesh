@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -26,49 +24,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.jantanivesh_logo
+import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
-import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberViewModel
-import org.velvetinvesting.jantanivesh.app.theme.Black
-import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
-import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.Black
+import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 
-@Composable
-fun LoginWithPhoneNumberRoute(
-    onNavigateToOtp: () -> Unit,
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: LoginWithPhoneNumberViewModel = viewModel()
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    // Listen to one-time effects from the ViewModel
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                LoginWithPhoneNumberEffect.NavigateToOtpScreen -> onNavigateToOtp()
-                LoginWithPhoneNumberEffect.NavigateBack -> onNavigateBack()
-            }
-        }
-    }
-
-    // Render the stateless screen
-    LoginWithPhoneNumberScreen(
-        state = uiState,
-        onEvent = viewModel::handleEvent,
-        modifier = modifier
-    )
-}
 @Composable
 fun LoginWithPhoneNumberScreen(
     state: LoginWithPhoneNumberUiState,
@@ -83,7 +55,6 @@ fun LoginWithPhoneNumberScreen(
                 .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
-            // Top Section (Header & Inputs)
             Column(modifier = Modifier.weight(1f)) {
                 TopAppBarWithBackButtonAndStepCount(
                     stepCount = 1,
@@ -92,33 +63,28 @@ fun LoginWithPhoneNumberScreen(
                 )
 
                 Text(
-                    text = "Log in with your mobile number/ अपने मोबाइल नंबर से लॉग इन करें",
+                    text = stringResource(Res.string.login_mobile_number) + stringResource(Res.string.login_mobile_number_translated),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8), modifier = Modifier.padding(bottom = 24.dp)) {
                     Text(
-                        text = "We'll send a 4 digit OTP to verify your identity",
+                        text = stringResource(Res.string.otp_verify_identity),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "हम आपकी पहचान सत्यापित करने के लिए 4 अंकों का OTP भेजेंगे",
+                        text = stringResource(Res.string.otp_verify_identity_translated),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
 
-                OutlinedTextField(
+                AppTextField(
                     value = state.phoneNumber,
                     onValueChange = { onEvent(LoginWithPhoneNumberEvent.OnPhoneNumberChanged(it)) },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = LocalShapes.current.roundedDp12,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = BoxBorder,
-                        focusedBorderColor = TextFieldBorder
-                    ),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     leadingIcon = {
                         Row(
@@ -126,7 +92,7 @@ fun LoginWithPhoneNumberScreen(
                             modifier = Modifier.padding(start = Spacing.dp16)
                         ) {
                             Text(
-                                text = "+91",
+                                text = stringResource(Res.string.india_code),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = Black,
                                 modifier = Modifier.padding(end = Spacing.dp8)
@@ -140,13 +106,12 @@ fun LoginWithPhoneNumberScreen(
                 )
 
                 AppButton(
-                    text = "Verify",
+                    text = stringResource(Res.string.verify),
                     onClick = { onEvent(LoginWithPhoneNumberEvent.OnVerifyClicked) },
                     modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
                 )
             }
 
-            // Bottom Section (Logo)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -155,7 +120,7 @@ fun LoginWithPhoneNumberScreen(
             ) {
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
-                    contentDescription = "Janta Nivesh Logo",
+                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
                     modifier = Modifier.height(58.dp)
                 )
             }

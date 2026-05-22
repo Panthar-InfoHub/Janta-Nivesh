@@ -10,14 +10,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// --- STATE ---
 data class EnterYourDOBUiState(
     val dob: String = "",
     val showDatePicker: Boolean = false,
     val isLoading: Boolean = false
 )
 
-// --- EVENTS (UI to ViewModel) ---
 sealed interface EnterYourDOBEvent {
     object OnDobFieldClicked : EnterYourDOBEvent
     data class OnDobSelected(val selectedDob: String) : EnterYourDOBEvent
@@ -26,13 +24,11 @@ sealed interface EnterYourDOBEvent {
     object OnBackClicked : EnterYourDOBEvent
 }
 
-// --- EFFECTS (ViewModel to Route/Navigation) ---
 sealed interface EnterYourDOBEffect {
     object NavigateToNextScreen : EnterYourDOBEffect
     object NavigateBack : EnterYourDOBEffect
 }
 
-// --- VIEWMODEL ---
 class EnterYourDOBViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(EnterYourDOBUiState())
@@ -50,7 +46,7 @@ class EnterYourDOBViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         dob = event.selectedDob,
-                        showDatePicker = false // Close picker after selection
+                        showDatePicker = false
                     )
                 }
             }

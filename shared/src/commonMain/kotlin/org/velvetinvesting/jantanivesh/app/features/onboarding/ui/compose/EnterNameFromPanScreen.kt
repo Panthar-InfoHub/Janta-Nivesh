@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,51 +22,23 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.jantanivesh_logo
+import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanViewModel
-import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
-import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 
-// --- ROUTE ---
-@Composable
-fun EnterNameFromPanRoute(
-    onNavigateNext: () -> Unit,
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: EnterNameFromPanViewModel = viewModel()
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    // Listen for navigation effects
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                EnterNameFromPanEffect.NavigateToNextScreen -> onNavigateNext()
-                EnterNameFromPanEffect.NavigateBack -> onNavigateBack()
-            }
-        }
-    }
-
-    // Render the stateless screen
-    EnterNameFromPanScreen(
-        state = uiState,
-        onEvent = viewModel::handleEvent,
-        modifier = modifier
-    )
-}
-
-// --- STATELESS SCREEN ---
 @Composable
 fun EnterNameFromPanScreen(
     state: EnterNameFromPanUiState,
@@ -83,7 +53,6 @@ fun EnterNameFromPanScreen(
                 .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
-            // Top Section (Header, Texts & Inputs)
             Column(modifier = Modifier.weight(1f)) {
 
                 TopAppBarWithBackButtonAndStepCount(
@@ -93,41 +62,36 @@ fun EnterNameFromPanScreen(
                 )
 
                 Text(
-                    text = "Your full name as per PAN/\nपैन कार्ड के अनुसार आपका पूरा नाम",
+                    text = stringResource(Res.string.pan_full_name) + stringResource(Res.string.pan_full_name_translated),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Column(modifier = Modifier.padding(bottom = 24.dp)) {
                     Text(
-                        text = "As it appear on your Pan Card",
+                        text = stringResource(Res.string.as_on_pan),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.height(Spacing.dp8))
                     Text(
-                        text = "जैसा कि आपके पैन कार्ड पर दिखाई देता है",
+                        text = stringResource(Res.string.as_on_pan_translated),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
 
-                OutlinedTextField(
+                AppTextField(
                     value = state.fullName,
                     onValueChange = { onEvent(EnterNameFromPanEvent.OnNameChanged(it)) },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = LocalShapes.current.roundedDp12,
                     placeholder = {
                         Text(
-                            text = "Full Name",
+                            text = stringResource(Res.string.full_name_placeholder),
                             style = MaterialTheme.typography.labelMedium,
                             color = GreyText
                         )
                     },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = BoxBorder,
-                        focusedBorderColor = TextFieldBorder
-                    ),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words
                     )
@@ -136,13 +100,12 @@ fun EnterNameFromPanScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 AppButton(
-                    text = "Continue",
+                    text = stringResource(Res.string.continue_text),
                     onClick = { onEvent(EnterNameFromPanEvent.OnContinueClicked) },
                     modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
                 )
             }
 
-            // Bottom Section (Logo)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -151,7 +114,7 @@ fun EnterNameFromPanScreen(
             ) {
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
-                    contentDescription = "Janta Nivesh Logo",
+                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
                     modifier = Modifier.height(58.dp)
                 )
             }
@@ -159,7 +122,6 @@ fun EnterNameFromPanScreen(
     }
 }
 
-// --- PREVIEW ---
 @Preview(showBackground = true)
 @Composable
 fun EnterNameFromPanScreenPreview() {

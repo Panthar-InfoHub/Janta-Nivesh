@@ -10,20 +10,17 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// --- STATE ---
 data class LoginWithPhoneNumberUiState(
     val phoneNumber: String = "",
     val isLoading: Boolean = false
 )
 
-// --- EVENTS (UI to ViewModel) ---
 sealed interface LoginWithPhoneNumberEvent {
     data class OnPhoneNumberChanged(val phoneNumber: String) : LoginWithPhoneNumberEvent
     object OnVerifyClicked : LoginWithPhoneNumberEvent
     object OnBackClicked : LoginWithPhoneNumberEvent
 }
 
-// --- EFFECTS (ViewModel to Route/Navigation) ---
 sealed interface LoginWithPhoneNumberEffect {
     object NavigateToOtpScreen : LoginWithPhoneNumberEffect
     object NavigateBack : LoginWithPhoneNumberEffect
@@ -40,7 +37,6 @@ class LoginWithPhoneNumberViewModel : ViewModel() {
     fun handleEvent(event: LoginWithPhoneNumberEvent) {
         when (event) {
             is LoginWithPhoneNumberEvent.OnPhoneNumberChanged -> {
-                // You can add validation logic here (e.g., max 10 digits, numbers only)
                 _uiState.update { it.copy(phoneNumber = event.phoneNumber) }
             }
 
@@ -53,7 +49,6 @@ class LoginWithPhoneNumberViewModel : ViewModel() {
         val currentNumber = _uiState.value.phoneNumber
 
         // TODO: Add backend API call to request OTP here.
-        // For now, we simulate success and trigger navigation
         sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
     }
 

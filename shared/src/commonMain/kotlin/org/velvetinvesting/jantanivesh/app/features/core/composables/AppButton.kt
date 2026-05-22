@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.core.composables
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -14,14 +15,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.theme.ButtonShadow
-import org.velvetinvesting.jantanivesh.app.theme.Primary
-import org.velvetinvesting.jantanivesh.app.theme.White
+import org.velvetinvesting.jantanivesh.app.core.theme.ButtonShadow
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.White
+
 data class AppButtonStyle(
     val shape: Shape,
     val containerColor: Color,
@@ -53,27 +57,41 @@ fun AppButton(
     text: String,
     onClick: () -> Unit,
     style: AppButtonStyle = AppButtonDefaults.style(),
-    modifier: Modifier= Modifier
+    modifier: Modifier = Modifier
 
-){
+) {
 
     Button(
         onClick = onClick,
         shapes = ButtonDefaults.shapes(shape = style.shape),
-        colors = ButtonDefaults.buttonColors(containerColor = style.containerColor, contentColor = style.contentColor),
-        modifier= modifier
+        colors = ButtonDefaults.buttonColors(
+            containerColor = style.containerColor,
+            contentColor = style.contentColor
+        ),
+        modifier = modifier
             .height(style.height)
             .dropShadow(
-            shape = LocalShapes.current.roundedDp12,
-            shadow = Shadow(
-                radius = Spacing.dp16,
-                spread = Spacing.dp12,
-                offset = DpOffset(x = 0.dp, y = Spacing.dp8),
-                color = ButtonShadow
+                shape = LocalShapes.current.roundedDp12,
+                shadow = Shadow(
+                    radius = Spacing.dp16,
+                    spread = Spacing.dp12,
+                    offset = DpOffset(x = 0.dp, y = Spacing.dp8),
+                    color = ButtonShadow
+                )
             )
-        )
-    ){
+    ) {
         Text(text, style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.W700))
 
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ButtonPreview() {
+    JantaNiveshTheme {
+        AppButton(
+            text = "ButtonPreview",
+            onClick = {}, modifier = Modifier.fillMaxWidth()
+        )
     }
 }

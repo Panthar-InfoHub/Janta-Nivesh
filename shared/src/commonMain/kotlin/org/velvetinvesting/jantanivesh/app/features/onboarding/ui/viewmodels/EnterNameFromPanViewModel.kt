@@ -10,26 +10,22 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// --- STATE ---
 data class EnterNameFromPanUiState(
     val fullName: String = "",
     val isLoading: Boolean = false
 )
 
-// --- EVENTS (UI to ViewModel) ---
 sealed interface EnterNameFromPanEvent {
     data class OnNameChanged(val name: String) : EnterNameFromPanEvent
     object OnContinueClicked : EnterNameFromPanEvent
     object OnBackClicked : EnterNameFromPanEvent
 }
 
-// --- EFFECTS (ViewModel to Route/Navigation) ---
 sealed interface EnterNameFromPanEffect {
     object NavigateToNextScreen : EnterNameFromPanEffect
     object NavigateBack : EnterNameFromPanEffect
 }
 
-// --- VIEWMODEL ---
 class EnterNameFromPanViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(EnterNameFromPanUiState())

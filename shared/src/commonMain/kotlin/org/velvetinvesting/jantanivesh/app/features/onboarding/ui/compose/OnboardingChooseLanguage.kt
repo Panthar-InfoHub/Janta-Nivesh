@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,11 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.jantanivesh_logo
-import jantanivesh.shared.generated.resources.lock_icon
-import jantanivesh.shared.generated.resources.tick_icon
+import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
@@ -43,44 +43,16 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Cho
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageViewModel
-import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
-import org.velvetinvesting.jantanivesh.app.theme.GreyBox
-import org.velvetinvesting.jantanivesh.app.theme.GreyLock
-import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.PrimaryLanguageText
-import org.velvetinvesting.jantanivesh.app.theme.SelectedBoxBorder
-import org.velvetinvesting.jantanivesh.app.theme.SelectedBoxColor
-import org.velvetinvesting.jantanivesh.app.theme.SelectedTextColor
-import org.velvetinvesting.jantanivesh.app.theme.White
+import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyLock
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.PrimaryLanguageText
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedTextColor
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 
-@Composable
-fun OnBoardingChooseLanguageRoute(
-    onNavigateNext: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: ChooseLanguageViewModel = viewModel()
-) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    // 2. Listen for Side Effects (Navigation)
-    // LaunchedEffect runs safely in the background and cleans itself up
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                ChooseLanguageEffect.NavigateToNextScreen -> {
-                    // 3. Trigger the callback
-                    onNavigateNext()
-                }
-            }
-        }
-    }
-
-    // 4. Render the UI
-    OnboardingChooseLanguage(
-        state = uiState,
-        onEvent = viewModel::handleEvent,
-        modifier = modifier
-    )
-}
 
 @Composable
 fun OnboardingChooseLanguage(
@@ -88,94 +60,112 @@ fun OnboardingChooseLanguage(
     onEvent: (ChooseLanguageEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .padding(Spacing.dp16),
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
-    ) {
-
-        Text("Choose Languages", style = MaterialTheme.typography.headlineLarge)
-        Text(
-            "English is your default primary language. Please select a\n" +
-                    "secondary language.",
-            color = GreyText
-        )
-
-        Text(
-            "Primary Language",
-            style = MaterialTheme.typography.labelLarge,
-            color = PrimaryLanguageText
-        )
-
-        Box(
+    Scaffold(modifier = modifier) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .clip(LocalShapes.current.roundedDp16)
-                .background(GreyBox)
-                .border(width = 1.dp, color = BoxBorder, shape = LocalShapes.current.roundedDp16)
+                .fillMaxSize()
+                .padding(it)
+                .padding(horizontal = 24.dp, vertical = Spacing.dp16),
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(Spacing.dp20)
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
-                    Text(
-                        "English",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Color.Black
+
+            Text(
+                stringResource(Res.string.choose_languages),
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Text(
+                stringResource(Res.string.choose_languages_subtitle),
+                color = GreyText
+            )
+
+            Text(
+                stringResource(Res.string.primary_language),
+                style = MaterialTheme.typography.labelLarge,
+                color = PrimaryLanguageText
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(LocalShapes.current.roundedDp16)
+                    .background(GreyBox)
+                    .border(
+                        width = 1.dp,
+                        color = BoxBorder,
+                        shape = LocalShapes.current.roundedDp16
                     )
-                    Text(
-                        "Default System Language",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = GreyText
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth().padding(Spacing.dp20)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
+                        Text(
+                            stringResource(Res.string.english),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = Color.Black
+                        )
+                        Text(
+                            stringResource(Res.string.default_system_language),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = GreyText
+                        )
+                    }
+                    Icon(
+                        painter = painterResource(Res.drawable.lock_icon),
+                        contentDescription = stringResource(Res.string.lock_icon_desc),
+                        tint = GreyLock,
+                        modifier = Modifier.size(21.dp)
                     )
                 }
-                Icon(
-                    painter = painterResource(Res.drawable.lock_icon),
-                    contentDescription = "Lock Icon",
-                    tint = GreyLock,
-                    modifier = Modifier.size(21.dp)
+            }
+
+            Text(
+                stringResource(Res.string.secondary_language),
+                style = MaterialTheme.typography.labelLarge,
+                color = GreyText
+            )
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
+                modifier = Modifier.weight(1.0f)
+            ) {
+                items(state.availableSecondaryLanguages.size) { index ->
+                    val language = state.availableSecondaryLanguages[index]
+
+                    LanguageCard(
+                        language = language.nativeName,
+                        languageSpelling = language.englishName,
+                        isSelected = state.selectedLanguageId == language.id,
+                        onClick = {
+                            onEvent(ChooseLanguageEvent.OnLanguageSelected(language.id))
+                        },
+                    )
+                }
+            }
+
+            AppButton(
+                text = stringResource(Res.string.continue_text),
+                onClick = {},
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = Spacing.dp16),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.jantanivesh_logo),
+                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
+                    modifier = Modifier.height(58.dp)
                 )
             }
         }
-
-        Text("Secondary Language", style = MaterialTheme.typography.labelLarge, color = GreyText)
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
-            modifier = Modifier.weight(1.0f)
-        ) {
-            // Loop through your state data instead of hardcoding items!
-            items(state.availableSecondaryLanguages.size) { index ->
-                val language = state.availableSecondaryLanguages[index]
-
-                LanguageCard(
-                    language = language.nativeName,
-                    languageSpelling = language.englishName,
-                    isSelected = state.selectedLanguageId == language.id,
-                    modifier = Modifier.clickable {
-                        onEvent(ChooseLanguageEvent.OnLanguageSelected(language.id))
-                    }
-                )
-            }
-        }
-
-        AppButton(
-            text = "Continue",
-            onClick = {},
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Image(
-            painter = painterResource(Res.drawable.jantanivesh_logo),
-            contentDescription = "Janta Nivesh Logo",
-            modifier = Modifier
-                .size(height = 58.dp, width = 115.dp)
-                .align(Alignment.CenterHorizontally)
-        )
     }
 }
 
@@ -184,6 +174,7 @@ private fun LanguageCard(
     language: String,
     languageSpelling: String,
     isSelected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = if (isSelected) SelectedBoxColor else White
@@ -195,6 +186,7 @@ private fun LanguageCard(
             .clip(LocalShapes.current.roundedDp16)
             .background(backgroundColor)
             .border(width = 1.2.dp, color = borderColor, shape = LocalShapes.current.roundedDp16)
+            .clickable(onClick = onClick)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -206,19 +198,19 @@ private fun LanguageCard(
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     language,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     color = if (isSelected) SelectedTextColor else Color.Black
                 )
                 Text(
                     languageSpelling,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.bodySmall,
                     color = if (isSelected) SelectedTextColor else GreyText
                 )
             }
             if (isSelected) {
                 Icon(
                     painter = painterResource(Res.drawable.tick_icon),
-                    contentDescription = "tick icon",
+                    contentDescription = stringResource(Res.string.tick_icon_desc),
                     tint = White,
                     modifier = Modifier
                         .size(22.dp)
@@ -245,13 +237,13 @@ fun OnboardingChooseLanguagePreview() {
 
     val dummyState = ChooseLanguageUiState(
         availableSecondaryLanguages = mockLanguages,
-        selectedLanguageId = "hi" // Pre-select Hindi to test the UI state
+        selectedLanguageId = "hi"
     )
 
     JantaNiveshTheme {
         OnboardingChooseLanguage(
             state = dummyState,
-            onEvent = {}, // Do nothing in preview
+            onEvent = {},
             modifier = Modifier.fillMaxSize()
         )
     }

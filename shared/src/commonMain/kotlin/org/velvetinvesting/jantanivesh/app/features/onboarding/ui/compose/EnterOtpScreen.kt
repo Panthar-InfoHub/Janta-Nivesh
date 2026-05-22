@@ -37,9 +37,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.jantanivesh_logo
+import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
@@ -48,46 +48,16 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Ent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpViewModel
-import org.velvetinvesting.jantanivesh.app.theme.BoxBorder
-import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 
-// --- ROUTE ---
-@Composable
-fun EnterOtpRoute(
-    onNavigateNext: () -> Unit,
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: EnterOtpViewModel = viewModel()
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    // Listen to one-time effects from the ViewModel
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                EnterOtpEffect.NavigateToNextScreen -> onNavigateNext()
-                EnterOtpEffect.NavigateBack -> onNavigateBack()
-            }
-        }
-    }
-
-    // Render the stateless screen
-    EnterOtpScreen(
-        state = uiState,
-        onEvent = viewModel::handleEvent,
-        modifier = modifier
-    )
-}
-
-// --- STATELESS SCREEN ---
 @Composable
 fun EnterOtpScreen(
     state: EnterOtpUiState,
     onEvent: (EnterOtpEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // FocusRequester is UI-specific state, so it stays in the Composable
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -102,7 +72,6 @@ fun EnterOtpScreen(
                 .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
-            // Top Section (Header & Inputs)
             Column(modifier = Modifier.weight(1f)) {
                 TopAppBarWithBackButtonAndStepCount(
                     stepCount = 2,
@@ -111,13 +80,13 @@ fun EnterOtpScreen(
                 )
 
                 Text(
-                    text = "Enter the Code",
+                    text = stringResource(Res.string.enter_code),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Text(
-                    text = "A verification code has been sent to",
+                    text = stringResource(Res.string.verification_code_sent),
                     color = GreyText
                 )
                 Text(
@@ -134,7 +103,7 @@ fun EnterOtpScreen(
                 )
 
                 Text(
-                    text = "You can resend the code in ${state.resendTimerSeconds} seconds",
+                    text = stringResource(Res.string.resend_code_timer, state.resendTimerSeconds),
                     color = GreyText,
                     modifier = Modifier
                         .padding(bottom = 32.dp)
@@ -146,13 +115,12 @@ fun EnterOtpScreen(
                 )
 
                 AppButton(
-                    text = "Next",
+                    text = stringResource(Res.string.next),
                     onClick = { onEvent(EnterOtpEvent.OnNextClicked) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Bottom Section (Logo)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -161,7 +129,7 @@ fun EnterOtpScreen(
             ) {
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
-                    contentDescription = "Janta Nivesh Logo",
+                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
                     modifier = Modifier.height(58.dp)
                 )
             }
@@ -169,7 +137,6 @@ fun EnterOtpScreen(
     }
 }
 
-// --- SUB-COMPOSABLE ---
 @Composable
 internal fun OtpInputField(
     otpValue: String,
@@ -191,6 +158,8 @@ internal fun OtpInputField(
         fontWeight = FontWeight.Medium,
     )
 
+    val otpInputDesc = stringResource(Res.string.otp_input_desc)
+
     BasicTextField(
         value = otpValue,
         onValueChange = onValueChange,
@@ -198,7 +167,7 @@ internal fun OtpInputField(
         modifier = Modifier
             .focusRequester(focusRequester)
             .testTag("otp_basic_text_field")
-            .semantics { contentDescription = "Enter Otp through Keyboard" },
+            .semantics { contentDescription = otpInputDesc },
         decorationBox = {},
     )
 
@@ -210,8 +179,6 @@ internal fun OtpInputField(
     ) {
         repeat(5) { index ->
             val char = otpValue.getOrNull(index)
-            // Optional: You can keep this if you still want the cursor box to be highlighted too
-            val isFocused = index == otpValue.length
 
             Box(
                 modifier = Modifier
@@ -219,8 +186,7 @@ internal fun OtpInputField(
                     .clip(shape)
                     .border(
                         width = 1.dp,
-                        // CHANGE: Color now depends on whether a character is present
-                        color = if (char != null || isFocused) TextFieldBorder else BoxBorder,
+                        color = if (char != null) TextFieldBorder else BoxBorder,
                         shape = shape,
                     )
                     .clickable(onClick = onBoxClick),
@@ -238,7 +204,6 @@ internal fun OtpInputField(
     }
 }
 
-// --- PREVIEW ---
 @Preview(showBackground = true)
 @Composable
 fun EnterOtpScreenPreview() {

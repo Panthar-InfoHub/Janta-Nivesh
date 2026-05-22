@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,53 +25,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.email_add_text
-import jantanivesh.shared.generated.resources.email_add_text_transalted
-import jantanivesh.shared.generated.resources.jantanivesh_logo
+import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
-import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailViewModel
-import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
-// --- ROUTE ---
-@Composable
-fun AddYourEmailRoute(
-    onNavigateNext: () -> Unit,
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: AddYourEmailViewModel = koinViewModel()
-) {
-    val uiState by viewModel.uiState.collectAsState()
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 
-    // Listen for navigation effects
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                AddYourEmailEffect.NavigateToNextScreen -> onNavigateNext()
-                AddYourEmailEffect.NavigateBack -> onNavigateBack()
-            }
-        }
-    }
-
-    // Render the stateless screen
-    AddYourEmailScreen(
-        state = uiState,
-        onEvent = viewModel::handleEvent,
-        modifier = modifier
-    )
-}
-
-// --- STATELESS SCREEN ---
 @Composable
 fun AddYourEmailScreen(
     state: AddYourEmailUiState,
@@ -89,7 +57,6 @@ fun AddYourEmailScreen(
                 .padding(horizontal = 24.dp, vertical = Spacing.dp16)
         ) {
 
-            // Top Section (Header, Texts & Inputs)
             Column(modifier = Modifier.padding(top = Spacing.dp16, bottom = 24.dp)) {
                 Box {
                     TopAppBarWithBackButtonAndStepCount(
@@ -98,7 +65,7 @@ fun AddYourEmailScreen(
                         onBack = { onEvent(AddYourEmailEvent.OnBackClicked) }
                     )
                     Text(
-                        "Skip",
+                        stringResource(Res.string.skip),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
@@ -110,55 +77,48 @@ fun AddYourEmailScreen(
                 }
 
                 Text(
-                    text = stringResource(Res.string.email_add_text) + stringResource(Res.string.email_add_text_transalted),
+                    text = stringResource(Res.string.email_add_text) + stringResource(Res.string.email_add_text_translated),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Column(modifier = Modifier.padding(bottom = 24.dp)) {
                     Text(
-                        text = "We’ll send transaction updates here",
+                        text = stringResource(Res.string.transaction_updates),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.height(Spacing.dp16))
                     Text(
-                        text = "हम यहां लेनदेन संबंधी अपडेट भेजेंगे",
+                        text = stringResource(Res.string.transaction_updates_translated),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
 
-                // Email Input Field
-                OutlinedTextField(
+                AppTextField(
                     value = state.email,
                     onValueChange = { onEvent(AddYourEmailEvent.OnEmailChanged(it)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier.fillMaxWidth(),
-                    shape = LocalShapes.current.roundedDp12,
                     placeholder = {
                         Text(
-                            text = "@gmail.com",
+                            text = stringResource(Res.string.email_placeholder),
                             style = MaterialTheme.typography.labelMedium,
                             color = GreyText
                         )
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = TextFieldBorder,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary
-                    )
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 AppButton(
-                    text = "Verify",
+                    text = stringResource(Res.string.verify),
                     onClick = { onEvent(AddYourEmailEvent.OnVerifyClicked) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Bottom Section (Logo)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -167,7 +127,7 @@ fun AddYourEmailScreen(
             ) {
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
-                    contentDescription = "Janta Nivesh Logo",
+                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
                     modifier = Modifier.height(58.dp)
                 )
             }
@@ -175,7 +135,6 @@ fun AddYourEmailScreen(
     }
 }
 
-// --- PREVIEW ---
 @Preview(showBackground = true)
 @Composable
 fun AddYourEmailScreenPreview() {

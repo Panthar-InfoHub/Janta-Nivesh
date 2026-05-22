@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.models.LanguageOption
 
 data class ChooseLanguageUiState(
-    val isLoading: Boolean = false, // Always good practice in MVI
+    val isLoading: Boolean = false,
     val availableSecondaryLanguages: List<LanguageOption> = emptyList(),
-    val selectedLanguageId: String? = null // Holds the ID of the currently selected language
+    val selectedLanguageId: String? = null 
 )
 
 sealed interface ChooseLanguageEvent {
@@ -21,16 +21,13 @@ sealed interface ChooseLanguageEvent {
     object OnContinueClicked : ChooseLanguageEvent
 }
 
-// 1. Define your one-time events
 sealed interface ChooseLanguageEffect {
     object NavigateToNextScreen : ChooseLanguageEffect
 }
 
 class ChooseLanguageViewModel : ViewModel() {
 
-    // The internal, mutable state.
-    // We initialize it with some default data so the screen isn't empty when it first loads.
-    private val _uiState = MutableStateFlow(
+   private val _uiState = MutableStateFlow(
         ChooseLanguageUiState(
             isLoading = false,
             availableSecondaryLanguages = getInitialLanguages(),
@@ -38,14 +35,10 @@ class ChooseLanguageViewModel : ViewModel() {
         )
     )
 
-    // The public, read-only state exposed to the UI
     val uiState: StateFlow<ChooseLanguageUiState> = _uiState.asStateFlow()
     private val _effect = Channel<ChooseLanguageEffect>()
     val effect = _effect.receiveAsFlow()
 
-    /**
-     * This is the single entry point for all UI events from the Choose Language screen.
-     */
     fun handleEvent(event: ChooseLanguageEvent) {
         when (event) {
             is ChooseLanguageEvent.OnLanguageSelected -> {
@@ -57,30 +50,14 @@ class ChooseLanguageViewModel : ViewModel() {
             }
         }
     }
-
-    /**
-     * Handles updating the state when a user clicks a language card.
-     */
     private fun selectLanguage(languageId: String) {
-        // TODO: Implement logic to update the _uiState with the newly selected languageId
+         // TODO: Implement logic to update the _uiState with the newly selected languageId
     }
-
-    /**
-     * Handles the logic when the user clicks the "Continue" button.
-     */
     private fun continueToNextScreen() {
-        // Do your backend logic, save to preferences, etc...
-
-        // 3. Send the navigation effect!
         viewModelScope.launch {
             _effect.send(ChooseLanguageEffect.NavigateToNextScreen)
         }
     }
-
-    /**
-     * Helper function to provide the initial list of languages.
-     * In a real app, this might come from a repository or remote config.
-     */
     private fun getInitialLanguages(): List<LanguageOption> {
         return listOf(
             LanguageOption("hi", "हिन्दी", "Hindi"),

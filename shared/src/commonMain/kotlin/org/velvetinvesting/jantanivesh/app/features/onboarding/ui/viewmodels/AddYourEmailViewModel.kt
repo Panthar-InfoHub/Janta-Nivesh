@@ -10,13 +10,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// --- STATE ---
 data class AddYourEmailUiState(
     val email: String = "",
     val isLoading: Boolean = false
 )
 
-// --- EVENTS (UI to ViewModel) ---
 sealed interface AddYourEmailEvent {
     data class OnEmailChanged(val email: String) : AddYourEmailEvent
     object OnVerifyClicked : AddYourEmailEvent
@@ -24,13 +22,11 @@ sealed interface AddYourEmailEvent {
     object OnBackClicked : AddYourEmailEvent
 }
 
-// --- EFFECTS (ViewModel to Route/Navigation) ---
 sealed interface AddYourEmailEffect {
     object NavigateToNextScreen : AddYourEmailEffect
     object NavigateBack : AddYourEmailEffect
 }
 
-// --- VIEWMODEL ---
 class AddYourEmailViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddYourEmailUiState())
@@ -59,7 +55,6 @@ class AddYourEmailViewModel : ViewModel() {
     }
 
     private fun skipEmail() {
-        // Since it's an optional step, skipping just moves them forward
         sendEffect(AddYourEmailEffect.NavigateToNextScreen)
     }
 
