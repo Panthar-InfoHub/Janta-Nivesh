@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -29,19 +28,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.email_add_text
+import jantanivesh.shared.generated.resources.email_add_text_transalted
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailViewModel
 import org.velvetinvesting.jantanivesh.app.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.theme.Primary
 import org.velvetinvesting.jantanivesh.app.theme.TextFieldBorder
 // --- ROUTE ---
 @Composable
@@ -49,7 +51,7 @@ fun AddYourEmailRoute(
     onNavigateNext: () -> Unit,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AddYourEmailViewModel = viewModel()
+    viewModel: AddYourEmailViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -108,7 +110,7 @@ fun AddYourEmailScreen(
                 }
 
                 Text(
-                    text = "Add your email for updates/\nअपडेट पाने के लिए अपना ईमेल पता जोड़ें",
+                    text = stringResource(Res.string.email_add_text) + stringResource(Res.string.email_add_text_transalted),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
@@ -149,10 +151,9 @@ fun AddYourEmailScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                ScreenWideButton(
-                    buttonText = "Verify",
+                AppButton(
+                    text = "Verify",
                     onClick = { onEvent(AddYourEmailEvent.OnVerifyClicked) },
-                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

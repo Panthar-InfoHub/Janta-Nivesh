@@ -37,7 +37,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.models.LanguageOption
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageEvent
@@ -163,11 +163,10 @@ fun OnboardingChooseLanguage(
             }
         }
 
-        ScreenWideButton(
-            buttonText = "Continue",
+        AppButton(
+            text = "Continue",
             onClick = {},
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Image(

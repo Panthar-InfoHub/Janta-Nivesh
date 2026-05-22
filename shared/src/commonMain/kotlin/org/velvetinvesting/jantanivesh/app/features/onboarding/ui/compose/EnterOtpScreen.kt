@@ -41,9 +41,8 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.jantanivesh_logo
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
-import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpEvent
@@ -146,10 +145,9 @@ fun EnterOtpScreen(
                         }
                 )
 
-                ScreenWideButton(
-                    buttonText = "Next",
+                AppButton(
+                    text = "Next",
                     onClick = { onEvent(EnterOtpEvent.OnNextClicked) },
-                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

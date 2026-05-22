@@ -32,7 +32,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.ScreenWideButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberEvent
@@ -139,10 +139,9 @@ fun LoginWithPhoneNumberScreen(
                     }
                 )
 
-                ScreenWideButton(
-                    buttonText = "Verify",
+                AppButton(
+                    text = "Verify",
                     onClick = { onEvent(LoginWithPhoneNumberEvent.OnVerifyClicked) },
-                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
                 )
             }

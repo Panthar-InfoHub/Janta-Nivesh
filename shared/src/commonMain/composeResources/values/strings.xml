@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Janta Nivesh</string>
+
+    <string name="email_add_text">Add your email for updates</string>
+    <string name="email_add_text_transalted">/अपडेट पाने के लिए अपना ईमेल पता जोड़ें</string>
+
+</resources>
