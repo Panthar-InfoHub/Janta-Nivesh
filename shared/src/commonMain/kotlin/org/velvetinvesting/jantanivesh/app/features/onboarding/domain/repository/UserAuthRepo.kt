@@ -1,8 +1,7 @@
-package org.velvetinvesting.jantanivesh.app.features.login.domain.repository
+package org.velvetinvesting.jantanivesh.app.features.onboarding.domain.repository
 
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
-import org.koin.dsl.module
 
 interface UserAuthRepo {
     suspend fun sendOtp(number:String) : UserOtpDomain
