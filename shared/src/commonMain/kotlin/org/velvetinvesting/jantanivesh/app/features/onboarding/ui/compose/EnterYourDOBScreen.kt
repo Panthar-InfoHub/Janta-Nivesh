@@ -3,9 +3,9 @@ package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
@@ -58,7 +57,7 @@ fun EnterYourDOBScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
+                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
@@ -75,13 +74,12 @@ fun EnterYourDOBScreen(
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
-                Column(modifier = Modifier.padding(bottom = 24.dp)) {
+                Column(modifier = Modifier.padding(bottom = Spacing.dp24), verticalArrangement = Arrangement.spacedBy(Spacing.dp16)) {
                     Text(
                         text = stringResource(Res.string.dob_identity_verification),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Spacer(modifier = Modifier.height(Spacing.dp16))
                     Text(
                         text = stringResource(Res.string.dob_identity_verification_translated),
                         color = GreyText,
@@ -112,18 +110,15 @@ fun EnterYourDOBScreen(
                         Icon(
                             painter = painterResource(Res.drawable.dob_dropdown_icon),
                             contentDescription = stringResource(Res.string.select_date_desc),
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(Spacing.dp24)
                         )
                     },
                     interactionSource = interactionSource
                 )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
                 AppButton(
                     text = stringResource(Res.string.verify),
                     onClick = { onEvent(EnterYourDOBEvent.OnVerifyClicked) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
                 )
             }
 
@@ -136,7 +131,7 @@ fun EnterYourDOBScreen(
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
                     contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(58.dp)
+                    modifier = Modifier.height(Spacing.dp58)
                 )
             }
         }

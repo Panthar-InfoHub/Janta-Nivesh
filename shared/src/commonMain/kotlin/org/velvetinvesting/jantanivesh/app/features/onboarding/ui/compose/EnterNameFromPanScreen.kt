@@ -1,9 +1,9 @@
 package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
@@ -50,7 +49,7 @@ fun EnterNameFromPanScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
+                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
@@ -67,13 +66,12 @@ fun EnterNameFromPanScreen(
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
-                Column(modifier = Modifier.padding(bottom = 24.dp)) {
+                Column(modifier = Modifier.padding(bottom = Spacing.dp24), verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
                         text = stringResource(Res.string.as_on_pan),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Spacer(modifier = Modifier.height(Spacing.dp8))
                     Text(
                         text = stringResource(Res.string.as_on_pan_translated),
                         color = GreyText,
@@ -97,12 +95,10 @@ fun EnterNameFromPanScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
-
                 AppButton(
                     text = stringResource(Res.string.continue_text),
                     onClick = { onEvent(EnterNameFromPanEvent.OnContinueClicked) },
-                    modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
                 )
             }
 
@@ -115,7 +111,7 @@ fun EnterNameFromPanScreen(
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
                     contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(58.dp)
+                    modifier = Modifier.height(Spacing.dp58)
                 )
             }
         }

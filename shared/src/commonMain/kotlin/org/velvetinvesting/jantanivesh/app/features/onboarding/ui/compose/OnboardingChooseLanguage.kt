@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.*
@@ -65,7 +64,7 @@ fun OnboardingChooseLanguage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = 24.dp, vertical = Spacing.dp16),
+                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
         ) {
 
@@ -90,7 +89,7 @@ fun OnboardingChooseLanguage(
                     .clip(LocalShapes.current.roundedDp16)
                     .background(GreyBox)
                     .border(
-                        width = 1.dp,
+                        width = Spacing.dp1,
                         color = BoxBorder,
                         shape = LocalShapes.current.roundedDp16
                     )
@@ -116,7 +115,7 @@ fun OnboardingChooseLanguage(
                         painter = painterResource(Res.drawable.lock_icon),
                         contentDescription = stringResource(Res.string.lock_icon_desc),
                         tint = GreyLock,
-                        modifier = Modifier.size(21.dp)
+                        modifier = Modifier.size(Spacing.dp21)
                     )
                 }
             }
@@ -162,7 +161,7 @@ fun OnboardingChooseLanguage(
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
                     contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(58.dp)
+                    modifier = Modifier.height(Spacing.dp58)
                 )
             }
         }
@@ -185,7 +184,7 @@ private fun LanguageCard(
             .fillMaxWidth()
             .clip(LocalShapes.current.roundedDp16)
             .background(backgroundColor)
-            .border(width = 1.2.dp, color = borderColor, shape = LocalShapes.current.roundedDp16)
+            .border(width = Spacing.dp1_2, color = borderColor, shape = LocalShapes.current.roundedDp16)
             .clickable(onClick = onClick)
     ) {
         Row(
@@ -213,7 +212,7 @@ private fun LanguageCard(
                     contentDescription = stringResource(Res.string.tick_icon_desc),
                     tint = White,
                     modifier = Modifier
-                        .size(22.dp)
+                        .size(Spacing.dp22)
                         .clip(CircleShape)
                         .background(color = MaterialTheme.colorScheme.primary)
                         .padding(Spacing.dp4)

@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
@@ -52,7 +51,7 @@ fun LoginWithPhoneNumberScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
+                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
@@ -68,7 +67,7 @@ fun LoginWithPhoneNumberScreen(
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8), modifier = Modifier.padding(bottom = 24.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8), modifier = Modifier.padding(bottom = Spacing.dp24)) {
                     Text(
                         text = stringResource(Res.string.otp_verify_identity),
                         color = GreyText,
@@ -98,7 +97,7 @@ fun LoginWithPhoneNumberScreen(
                                 modifier = Modifier.padding(end = Spacing.dp8)
                             )
                             VerticalDivider(
-                                modifier = Modifier.height(24.dp).padding(horizontal = Spacing.dp4),
+                                modifier = Modifier.height(Spacing.dp24).padding(horizontal = Spacing.dp4),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -108,7 +107,7 @@ fun LoginWithPhoneNumberScreen(
                 AppButton(
                     text = stringResource(Res.string.verify),
                     onClick = { onEvent(LoginWithPhoneNumberEvent.OnVerifyClicked) },
-                    modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
                 )
             }
 
@@ -121,7 +120,7 @@ fun LoginWithPhoneNumberScreen(
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
                     contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(58.dp)
+                    modifier = Modifier.height(Spacing.dp58)
                 )
             }
         }

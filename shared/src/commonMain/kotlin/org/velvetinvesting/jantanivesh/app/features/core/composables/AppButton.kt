@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
@@ -37,10 +36,10 @@ object AppButtonDefaults {
 
     @Composable
     fun style(
-        shape: Shape = RoundedCornerShape(12.dp),
+        shape: Shape = RoundedCornerShape(Spacing.dp12),
         containerColor: Color = Primary,
         contentColor: Color = White,
-        height: Dp = 52.dp
+        height: Dp = Spacing.dp52
     ): AppButtonStyle {
         return AppButtonStyle(
             shape = shape,
@@ -75,7 +74,7 @@ fun AppButton(
                 shadow = Shadow(
                     radius = Spacing.dp16,
                     spread = Spacing.dp12,
-                    offset = DpOffset(x = 0.dp, y = Spacing.dp8),
+                    offset = DpOffset(x = Spacing.dp0, y = Spacing.dp8),
                     color = ButtonShadow
                 )
             )

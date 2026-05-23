@@ -35,7 +35,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
@@ -69,7 +68,7 @@ fun EnterOtpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = Spacing.dp16)
+                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
@@ -92,21 +91,21 @@ fun EnterOtpScreen(
                 Text(
                     text = state.phoneNumber,
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.W700),
-                    modifier = Modifier.padding(bottom = 24.dp, top = Spacing.dp8)
+                    modifier = Modifier.padding(bottom = Spacing.dp24, top = Spacing.dp8)
                 )
 
                 OtpInputField(
                     otpValue = state.otpValue,
                     onValueChange = { onEvent(EnterOtpEvent.OnOtpChanged(it)) },
                     focusRequester = focusRequester,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    modifier = Modifier.padding(bottom = Spacing.dp24)
                 )
 
                 Text(
                     text = stringResource(Res.string.resend_code_timer, state.resendTimerSeconds),
                     color = GreyText,
                     modifier = Modifier
-                        .padding(bottom = 32.dp)
+                        .padding(bottom = Spacing.dp32)
                         .clickable {
                             if (state.resendTimerSeconds == 0) {
                                 onEvent(EnterOtpEvent.OnResendClicked)
@@ -117,7 +116,7 @@ fun EnterOtpScreen(
                 AppButton(
                     text = stringResource(Res.string.next),
                     onClick = { onEvent(EnterOtpEvent.OnNextClicked) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
                 )
             }
 
@@ -130,7 +129,7 @@ fun EnterOtpScreen(
                 Image(
                     painter = painterResource(Res.drawable.jantanivesh_logo),
                     contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(58.dp)
+                    modifier = Modifier.height(Spacing.dp58)
                 )
             }
         }
@@ -182,10 +181,10 @@ internal fun OtpInputField(
 
             Box(
                 modifier = Modifier
-                    .size(53.dp)
+                    .size(Spacing.dp53)
                     .clip(shape)
                     .border(
-                        width = 1.dp,
+                        width = Spacing.dp1,
                         color = if (char != null) TextFieldBorder else BoxBorder,
                         shape = shape,
                     )

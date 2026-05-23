@@ -13,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.arrowback_icon
 import org.jetbrains.compose.resources.painterResource
@@ -24,7 +23,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 
 @Composable
 fun TopAppBarWithBackButtonAndStepCount(stepCount: Int, totalSteps: Int, onBack: () -> Unit) {
-    Column(modifier = Modifier.padding(top = Spacing.dp16, bottom = 24.dp)) {
+    Column(modifier = Modifier.padding(top = Spacing.dp16, bottom = Spacing.dp24)) {
         Icon(
             painter = painterResource(Res.drawable.arrowback_icon),
             contentDescription = "Go Back",
