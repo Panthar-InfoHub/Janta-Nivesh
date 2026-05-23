@@ -8,6 +8,9 @@ import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.models.LanguageOption
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.OnboardingChooseLanguage
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageUiState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 
 @Composable
 @Preview
@@ -25,6 +28,7 @@ fun App() {
         availableSecondaryLanguages = mockLanguages,
         selectedLanguageId = "mr"
     )
+    JantaNiveshTheme {
 
     JantaNiveshTheme {
         OnboardingChooseLanguage(
