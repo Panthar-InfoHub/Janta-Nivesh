@@ -14,8 +14,6 @@ val TextOnSurface= Color(0xff191C1D)
 val Border= Color(0xffd0d1d5)
 val BorderFocused= Color(0xff23336E)
 
-val TextBlack = Color(0xff191C1D)
-
 val PrimaryLanguageText = Color(0xff191C1D)
 val White = Color(0xffffffff)
 val GreyLock = Color(0xFF767681)
