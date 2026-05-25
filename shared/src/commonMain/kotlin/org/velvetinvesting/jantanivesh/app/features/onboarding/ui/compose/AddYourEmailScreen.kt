@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,6 +28,8 @@ import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.velvetinvesting.jantanivesh.app.core.localization.LocalAppLanguageLocale
+import org.velvetinvesting.jantanivesh.app.core.localization.languageResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
@@ -38,6 +41,8 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Add
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 
 @Composable
@@ -75,46 +80,47 @@ fun AddYourEmailScreen(
                 }
 
                 Text(
-                    text = stringResource(Res.string.email_add_text) + stringResource(Res.string.email_add_text_translated),
+                    text = "Add your email for updates/" +
+                            stringResource(Res.string.email_add_text),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
-
-                Column(
-                    modifier = Modifier.padding(bottom = Spacing.dp24),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
-                ) {
-                    Text(
-                        text = stringResource(Res.string.transaction_updates),
-                        color = GreyText,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = stringResource(Res.string.transaction_updates_translated),
-                        color = GreyText,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-
-                AppTextField(
-                    value = state.email,
-                    onValueChange = { onEvent(AddYourEmailEvent.OnEmailChanged(it)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = {
-                        Text(
-                            text = stringResource(Res.string.email_placeholder),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = GreyText
-                        )
-                    }
+            Column(
+                modifier = Modifier.padding(bottom = Spacing.dp24),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+            ) {
+                Text(
+                    text = "We’ll send transaction updates here",
+                    color = GreyText,
+                    style = MaterialTheme.typography.titleMedium
                 )
-                AppButton(
-                    text = stringResource(Res.string.verify),
-                    onClick = { onEvent(AddYourEmailEvent.OnVerifyClicked) },
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
+
+                Text(
+                    text = stringResource(Res.string.transaction_updates),
+                    color = GreyText,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
+
+            AppTextField(
+                value = state.email,
+                onValueChange = { onEvent(AddYourEmailEvent.OnEmailChanged(it)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = stringResource(Res.string.email_placeholder),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = GreyText
+                    )
+                }
+            )
+            AppButton(
+                text = stringResource(Res.string.verify),
+                onClick = { onEvent(AddYourEmailEvent.OnVerifyClicked) },
+                modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
+            )
+        }
 
             Box(
                 modifier = Modifier
@@ -132,7 +138,7 @@ fun AddYourEmailScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ma")
 @Composable
 fun AddYourEmailScreenPreview() {
     JantaNiveshTheme {

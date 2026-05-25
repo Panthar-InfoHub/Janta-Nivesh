@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Janta Nivesh</string>
+
+    <string name="email_add_text">अपडेट्ससाठी तुमचा ईमेल जोडा</string>
+
+    <!-- OnboardingChooseLanguage -->
+    <string name="choose_languages">भाषा निवडा</string>
+    <string name="choose_languages_subtitle">इंग्रजी ही तुमची डीफॉल्ट प्राथमिक भाषा आहे. कृपया दुय्यम भाषा निवडा.</string>
+    <string name="primary_language">प्राथमिक भाषा</string>
+    <string name="english">इंग्रजी</string>
+    <string name="default_system_language">डीफॉल्ट सिस्टम भाषा</string>
+    <string name="lock_icon_desc">लॉक आयकॉन</string>
+    <string name="secondary_language">दुय्यम भाषा</string>
+    <string name="continue_text">पुढे चालू ठेवा</string>
+    <string name="janta_nivesh_logo_desc">जनता निवेश लोगो</string>
+    <string name="tick_icon_desc">टिक आयकॉन</string>
+
+    <!-- LogInWithPhoneNumberScreen -->
+    <string name="login_mobile_number">तुमच्या मोबाईल नंबरने लॉग इन करा</string>
+    <string name="otp_verify_identity">तुमची ओळख पडताळण्यासाठी आम्ही 4 अंकी OTP पाठवू</string>
+    <string name="india_code">+91</string>
+    <string name="verify">सत्यापित करा</string>
+
+    <!-- EnterOtpScreen -->
+    <string name="enter_code">कोड प्रविष्ट करा</string>
+    <string name="verification_code_sent">एक पडताळणी कोड पाठवण्यात आला आहे</string>
+    <string name="resend_code_timer">तुम्ही %1$d सेकंदात कोड पुन्हा पाठवू शकता</string>
+    <string name="next">पुढे</string>
+    <string name="otp_input_desc">कीबोर्डद्वारे OTP प्रविष्ट करा</string>
+
+    <!-- EnterNameFromPanScreen -->
+    <string name="pan_full_name">PAN नुसार तुमचे पूर्ण नाव</string>
+    <string name="as_on_pan">जसे तुमच्या PAN कार्डवर दिसते</string>
+    <string name="full_name_placeholder">पूर्ण नाव</string>
+
+    <!-- EnterYourDOBScreen -->
+    <string name="enter_dob">तुमची जन्मतारीख प्रविष्ट करा</string>
+    <string name="dob_identity_verification">ओळख पडताळणीसाठी कृपया तुमची जन्मतारीख द्या.</string>
+    <string name="select_dob_placeholder">तुमची DOB निवडा</string>
+    <string name="select_date_desc">तारीख निवडा</string>
+
+    <!-- AddYourEmailScreen -->
+    <string name="skip">वगळा</string>
+    <string name="transaction_updates">आम्ही येथे व्यवहार अपडेट्स पाठवू</string>
+    <string name="email_placeholder">@gmail.com</string>
+</resources>

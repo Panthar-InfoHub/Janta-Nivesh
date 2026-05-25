@@ -1,0 +1,77 @@
+<resources>
+
+    <string name="app_name">Janta Nivesh</string>
+
+    <string name="email_add_text">अपडेट पाने के लिए अपना ईमेल पता जोड़ें</string>
+
+    <!-- OnboardingChooseLanguage -->
+
+    <string name="choose_languages">भाषाएँ चुनें</string>
+
+    <string name="choose_languages_subtitle">अंग्रेज़ी आपकी प्राथमिक भाषा है। कृपया दूसरी भाषा चुनें।</string>
+
+    <string name="primary_language">प्राथमिक भाषा</string>
+
+    <string name="english">अंग्रेज़ी</string>
+
+    <string name="default_system_language">डिफ़ॉल्ट सिस्टम भाषा</string>
+
+    <string name="lock_icon_desc">लॉक आइकन</string>
+
+    <string name="secondary_language">दूसरी भाषा</string>
+
+    <string name="continue_text">जारी रखें</string>
+
+    <string name="janta_nivesh_logo_desc">जनता निवेश लोगो</string>
+
+    <string name="tick_icon_desc">टिक आइकन</string>
+
+    <!-- LogInWithPhoneNumberScreen -->
+
+    <string name="login_mobile_number">अपने मोबाइल नंबर से लॉग इन करें</string>
+
+    <string name="otp_verify_identity">हम आपकी पहचान सत्यापित करने के लिए 4 अंकों का OTP भेजेंगे</string>
+
+    <string name="india_code">+91</string>
+
+    <string name="verify">सत्यापित करें</string>
+
+    <!-- EnterOtpScreen -->
+
+    <string name="enter_code">कोड दर्ज करें</string>
+
+    <string name="verification_code_sent">सत्यापन कोड भेजा गया है</string>
+
+    <string name="resend_code_timer">आप %1$d सेकंड में कोड पुनः भेज सकते हैं</string>
+
+    <string name="next">अगला</string>
+
+    <string name="otp_input_desc">कीबोर्ड से OTP दर्ज करें</string>
+
+    <!-- EnterNameFromPanScreen -->
+
+    <string name="pan_full_name">पैन कार्ड के अनुसार आपका पूरा नाम</string>
+
+    <string name="as_on_pan">जैसा कि आपके पैन कार्ड पर दिखाई देता है</string>
+
+    <string name="full_name_placeholder">पूरा नाम</string>
+
+    <!-- EnterYourDOBScreen -->
+
+    <string name="enter_dob">अपना जन्मतिथि दर्ज करें</string>
+
+    <string name="dob_identity_verification">पहचान सत्यापन के लिए कृपया अपनी जन्मतिथि प्रदान करें</string>
+
+    <string name="select_dob_placeholder">अपनी DOB चुनें</string>
+
+    <string name="select_date_desc">तिथि चुनें</string>
+
+    <!-- AddYourEmailScreen -->
+
+    <string name="skip">छोड़ें</string>
+
+    <string name="transaction_updates">हम यहां लेनदेन संबंधी अपडेट भेजेंगे</string>
+
+    <string name="email_placeholder">@gmail.com</string>
+
+</resources>
