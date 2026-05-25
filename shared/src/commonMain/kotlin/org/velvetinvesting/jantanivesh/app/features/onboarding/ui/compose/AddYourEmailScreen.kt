@@ -138,7 +138,7 @@ fun AddYourEmailScreen(
     }
 }
 
-@Preview(showBackground = true, locale = "ma")
+@Preview(showBackground = true, locale = "mr")
 @Composable
 fun AddYourEmailScreenPreview() {
     JantaNiveshTheme {
