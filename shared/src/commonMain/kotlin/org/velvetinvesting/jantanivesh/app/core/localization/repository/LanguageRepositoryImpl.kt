@@ -27,7 +27,7 @@ class LanguageRepositoryImpl(
         return dataStore.data.first()[languageKey]
             ?.let {
                 AppLanguage.fromCode(it)
-            }?: AppLanguage.ENGLISH
+            }?: AppLanguage.HINDI
     }
 
      override suspend fun setLanguage(language: AppLanguage) {

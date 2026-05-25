@@ -15,35 +15,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import jantanivesh.shared.generated.resources.*
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.email_add_text
+import jantanivesh.shared.generated.resources.email_placeholder
+import jantanivesh.shared.generated.resources.janta_nivesh_logo_desc
+import jantanivesh.shared.generated.resources.jantanivesh_logo
+import jantanivesh.shared.generated.resources.skip
+import jantanivesh.shared.generated.resources.transaction_updates
+import jantanivesh.shared.generated.resources.verify
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
-import org.velvetinvesting.jantanivesh.app.core.localization.LocalAppLanguageLocale
-import org.velvetinvesting.jantanivesh.app.core.localization.languageResource
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailViewModel
-import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshShapes
-import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
-import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 
 @Composable
 fun AddYourEmailScreen(
@@ -138,7 +131,7 @@ fun AddYourEmailScreen(
     }
 }
 
-@Preview(showBackground = true, locale = "mr")
+@Preview(showBackground = true, locale = "te")
 @Composable
 fun AddYourEmailScreenPreview() {
     JantaNiveshTheme {

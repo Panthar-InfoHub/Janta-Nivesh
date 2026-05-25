@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Janta Nivesh</string>
+
+    <string name="email_add_text">અપડેટ્સ માટે તમારું ઇમેલ ઉમેરો</string>
+
+    <string name="choose_languages">ભાષાઓ પસંદ કરો</string>
+    <string name="choose_languages_subtitle">અંગ્રેજી તમારી ડિફોલ્ટ પ્રાથમિક ભાષા છે. કૃપા કરીને બીજી ભાષા પસંદ કરો.</string>
+    <string name="primary_language">પ્રાથમિક ભાષા</string>
+    <string name="english">અંગ્રેજી</string>
+    <string name="default_system_language">ડિફોલ્ટ સિસ્ટમ ભાષા</string>
+    <string name="lock_icon_desc">લોક આઇકન</string>
+    <string name="secondary_language">દ્વિતીય ભાષા</string>
+    <string name="continue_text">આગળ વધો</string>
+    <string name="janta_nivesh_logo_desc">જનતા નિવેશ લોગો</string>
+    <string name="tick_icon_desc">ટિક આઇકન</string>
+
+    <string name="login_mobile_number">તમારા મોબાઇલ નંબરથી લોગ ઇન કરો</string>
+    <string name="otp_verify_identity">તમારી ઓળખ ચકાસવા માટે અમે 4 અંકનો OTP મોકલીશું</string>
+    <string name="india_code">+91</string>
+    <string name="verify">ચકાસો</string>
+
+    <string name="enter_code">કોડ દાખલ કરો</string>
+    <string name="verification_code_sent">ચકાસણી કોડ મોકલવામાં આવ્યો છે</string>
+    <string name="resend_code_timer">તમે %1$d સેકન્ડમાં કોડ ફરી મોકલી શકો છો</string>
+    <string name="next">આગળ</string>
+    <string name="otp_input_desc">કીબોર્ડ દ્વારા OTP દાખલ કરો</string>
+
+    <string name="pan_full_name">PAN મુજબ તમારું પૂરું નામ</string>
+    <string name="as_on_pan">જેમ તમારા PAN કાર્ડ પર દેખાય છે</string>
+    <string name="full_name_placeholder">પૂર્ણ નામ</string>
+
+    <string name="enter_dob">તમારી જન્મ તારીખ દાખલ કરો</string>
+    <string name="dob_identity_verification">ઓળખ ચકાસણી માટે કૃપા કરીને તમારી જન્મ તારીખ આપો.</string>
+    <string name="select_dob_placeholder">તમારી DOB પસંદ કરો</string>
+    <string name="select_date_desc">તારીખ પસંદ કરો</string>
+
+    <string name="skip">છોડી દો</string>
+    <string name="transaction_updates">અમે અહીં વ્યવહાર અપડેટ્સ મોકલીશું</string>
+    <string name="email_placeholder">@gmail.com</string>
+</resources>

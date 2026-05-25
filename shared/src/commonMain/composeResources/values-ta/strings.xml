@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Janta Nivesh</string>
+
+    <string name="email_add_text">புதுப்பிப்புகளுக்காக உங்கள் மின்னஞ்சலை சேர்க்கவும்</string>
+
+    <string name="choose_languages">மொழிகளை தேர்ந்தெடுக்கவும்</string>
+    <string name="choose_languages_subtitle">ஆங்கிலம் உங்கள் இயல்புநிலை முதன்மை மொழியாகும். தயவுசெய்து இரண்டாம் மொழியை தேர்ந்தெடுக்கவும்.</string>
+    <string name="primary_language">முதன்மை மொழி</string>
+    <string name="english">ஆங்கிலம்</string>
+    <string name="default_system_language">இயல்புநிலை அமைப்பு மொழி</string>
+    <string name="lock_icon_desc">பூட்டு ஐகான்</string>
+    <string name="secondary_language">இரண்டாம் மொழி</string>
+    <string name="continue_text">தொடரவும்</string>
+    <string name="janta_nivesh_logo_desc">ஜந்தா நிவேஷ் லோகோ</string>
+    <string name="tick_icon_desc">டிக் ஐகான்</string>
+
+    <string name="login_mobile_number">உங்கள் மொபைல் எண்ணுடன் உள்நுழைக</string>
+    <string name="otp_verify_identity">உங்கள் அடையாளத்தை சரிபார்க்க 4 இலக்க OTP அனுப்பப்படும்</string>
+    <string name="india_code">+91</string>
+    <string name="verify">சரிபார்க்கவும்</string>
+
+    <string name="enter_code">குறியீட்டை உள்ளிடவும்</string>
+    <string name="verification_code_sent">சரிபார்ப்பு குறியீடு அனுப்பப்பட்டுள்ளது</string>
+    <string name="resend_code_timer">%1$d விநாடிகளில் மீண்டும் OTP அனுப்பலாம்</string>
+    <string name="next">அடுத்து</string>
+    <string name="otp_input_desc">விசைப்பலகை மூலம் OTP உள்ளிடவும்</string>
+
+    <string name="pan_full_name">PAN படி உங்கள் முழுப்பெயர்</string>
+    <string name="as_on_pan">உங்கள் PAN கார்டில் இருப்பதுபோல்</string>
+    <string name="full_name_placeholder">முழுப்பெயர்</string>
+
+    <string name="enter_dob">உங்கள் பிறந்த தேதியை உள்ளிடவும்</string>
+    <string name="dob_identity_verification">அடையாள சரிபார்ப்பிற்காக உங்கள் பிறந்த தேதியை வழங்கவும்.</string>
+    <string name="select_dob_placeholder">உங்கள் DOB ஐ தேர்ந்தெடுக்கவும்</string>
+    <string name="select_date_desc">தேதி தேர்ந்தெடுக்கவும்</string>
+
+    <string name="skip">தவிர்க்கவும்</string>
+    <string name="transaction_updates">பரிவர்த்தனை புதுப்பிப்புகளை இங்கே அனுப்புவோம்</string>
+    <string name="email_placeholder">@gmail.com</string>
+</resources>

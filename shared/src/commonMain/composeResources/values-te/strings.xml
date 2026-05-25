@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Janta Nivesh</string>
+
+    <string name="email_add_text">అప్డేట్స్ కోసం మీ ఇమెయిల్ జోడించండి</string>
+
+    <string name="choose_languages">భాషలను ఎంచుకోండి</string>
+    <string name="choose_languages_subtitle">ఇంగ్లీష్ మీ డిఫాల్ట్ ప్రాథమిక భాష. దయచేసి ద్వితీయ భాషను ఎంచుకోండి.</string>
+    <string name="primary_language">ప్రాథమిక భాష</string>
+    <string name="english">ఇంగ్లీష్</string>
+    <string name="default_system_language">డిఫాల్ట్ సిస్టమ్ భాష</string>
+    <string name="lock_icon_desc">లాక్ ఐకాన్</string>
+    <string name="secondary_language">ద్వితీయ భాష</string>
+    <string name="continue_text">కొనసాగించండి</string>
+    <string name="janta_nivesh_logo_desc">జంతా నివేశ్ లోగో</string>
+    <string name="tick_icon_desc">టిక్కు ఐకాన్</string>
+
+    <string name="login_mobile_number">మీ మొబైల్ నంబర్‌తో లాగిన్ అవ్వండి</string>
+    <string name="otp_verify_identity">మీ గుర్తింపును ధృవీకరించడానికి 4 అంకెల OTP పంపిస్తాము</string>
+    <string name="india_code">+91</string>
+    <string name="verify">ధృవీకరించండి</string>
+
+    <string name="enter_code">కోడ్ నమోదు చేయండి</string>
+    <string name="verification_code_sent">ధృవీకరణ కోడ్ పంపబడింది</string>
+    <string name="resend_code_timer">%1$d సెకన్లలో కోడ్‌ను మళ్లీ పంపవచ్చు</string>
+    <string name="next">తదుపరి</string>
+    <string name="otp_input_desc">కీబోర్డ్ ద్వారా OTP నమోదు చేయండి</string>
+
+    <string name="pan_full_name">PAN ప్రకారం మీ పూర్తి పేరు</string>
+    <string name="as_on_pan">మీ PAN కార్డులో ఉన్నట్లుగా</string>
+    <string name="full_name_placeholder">పూర్తి పేరు</string>
+
+    <string name="enter_dob">మీ పుట్టిన తేదీని నమోదు చేయండి</string>
+    <string name="dob_identity_verification">గుర్తింపు ధృవీకరణ కోసం దయచేసి మీ పుట్టిన తేదీని ఇవ్వండి.</string>
+    <string name="select_dob_placeholder">మీ DOB ఎంచుకోండి</string>
+    <string name="select_date_desc">తేదీ ఎంచుకోండి</string>
+
+    <string name="skip">దాటవేయండి</string>
+    <string name="transaction_updates">మేము ఇక్కడ లావాదేవీ అప్డేట్స్ పంపుతాము</string>
+    <string name="email_placeholder">@gmail.com</string>
+</resources>
