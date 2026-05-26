@@ -46,18 +46,17 @@ fun AddYourEmailScreen(
 ) {
     Scaffold(modifier = modifier) { paddingValues ->
         Column(
-            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
+                .padding(horizontal = Spacing.dp24)
         ) {
 
-            Column(modifier = Modifier.padding(top = Spacing.dp16, bottom = Spacing.dp24)) {
+            Column(modifier = Modifier.weight(1f)) {
                 Box {
                     TopAppBarWithBackButtonAndStepCount(
-                        stepCount = 5,
-                        totalSteps = 5,
+                        stepCount = 3,
+                        totalSteps = 3,
                         onBack = { onEvent(AddYourEmailEvent.OnBackClicked) }
                     )
                     Text(
@@ -65,10 +64,9 @@ fun AddYourEmailScreen(
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .offset(x = -Spacing.dp16, y = Spacing.dp17)
+                            .align(Alignment.CenterEnd)
+                            .offset(x = -Spacing.dp16, y = -Spacing.dp8)
                             .clickable { onEvent(AddYourEmailEvent.OnSkipClicked) }
-                            .padding(Spacing.dp4)
                     )
                 }
 

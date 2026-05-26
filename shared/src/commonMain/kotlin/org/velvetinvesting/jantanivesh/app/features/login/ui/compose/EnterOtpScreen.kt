@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.login.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -20,8 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +33,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -43,13 +40,12 @@ import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpEvent
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterOtpViewModel
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpEvent
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpUiState
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
 
 @Composable
 fun EnterOtpScreen(
@@ -72,11 +68,7 @@ fun EnterOtpScreen(
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
-                TopAppBarWithBackButtonAndStepCount(
-                    stepCount = 2,
-                    totalSteps = 5,
-                    onBack = { onEvent(EnterOtpEvent.OnBackClicked) }
-                )
+                AppBackButton(onClick = { onEvent(EnterOtpEvent.OnBackClicked) })
 
                 Text(
                     text = stringResource(Res.string.enter_code),
@@ -203,7 +195,7 @@ internal fun OtpInputField(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "hi")
 @Composable
 fun EnterOtpScreenPreview() {
     JantaNiveshTheme {

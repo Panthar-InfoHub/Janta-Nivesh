@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
+package org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,6 +37,7 @@ class LoginWithPhoneNumberViewModel : ViewModel() {
     fun handleEvent(event: LoginWithPhoneNumberEvent) {
         when (event) {
             is LoginWithPhoneNumberEvent.OnPhoneNumberChanged -> {
+                if(event.phoneNumber.length <= 10)
                 _uiState.update { it.copy(phoneNumber = event.phoneNumber) }
             }
 
@@ -49,6 +50,7 @@ class LoginWithPhoneNumberViewModel : ViewModel() {
         val currentNumber = _uiState.value.phoneNumber
 
         // TODO: Add backend API call to request OTP here.
+        if(currentNumber.length == 10)
         sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
     }
 

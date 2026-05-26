@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.login.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,27 +21,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.velvetinvesting.jantanivesh.app.core.localization.model.AppLanguage
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.onboarding.data.models.LanguageOption
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageEvent
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ChooseLanguageViewModel
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageEvent
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageUiState
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyLock
@@ -69,16 +63,16 @@ fun OnboardingChooseLanguage(
         ) {
 
             Text(
-                stringResource(Res.string.choose_languages),
+                "Choose Languages",
                 style = MaterialTheme.typography.headlineLarge
             )
             Text(
-                stringResource(Res.string.choose_languages_subtitle),
+                "English is your default primary language. Please select a secondary language.",
                 color = GreyText
             )
 
             Text(
-                stringResource(Res.string.primary_language),
+                "Primary Language",
                 style = MaterialTheme.typography.labelLarge,
                 color = PrimaryLanguageText
             )
@@ -101,12 +95,12 @@ fun OnboardingChooseLanguage(
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                         Text(
-                            stringResource(Res.string.english),
+                            "English",
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.Black
                         )
                         Text(
-                            stringResource(Res.string.default_system_language),
+                           "Default System Language",
                             style = MaterialTheme.typography.titleSmall,
                             color = GreyText
                         )
@@ -121,7 +115,7 @@ fun OnboardingChooseLanguage(
             }
 
             Text(
-                stringResource(Res.string.secondary_language),
+                "Secondary Language",
                 style = MaterialTheme.typography.labelLarge,
                 color = GreyText
             )
@@ -136,11 +130,11 @@ fun OnboardingChooseLanguage(
                     val language = state.availableSecondaryLanguages[index]
 
                     LanguageCard(
-                        language = language.nativeName,
+                        language = language.displayName,
                         languageSpelling = language.englishName,
-                        isSelected = state.selectedLanguageId == language.id,
+                        isSelected = state.selectedLanguage == language,
                         onClick = {
-                            onEvent(ChooseLanguageEvent.OnLanguageSelected(language.id))
+                            onEvent(ChooseLanguageEvent.OnLanguageSelected(language))
                         },
                     )
                 }
@@ -148,7 +142,7 @@ fun OnboardingChooseLanguage(
 
             AppButton(
                 text = stringResource(Res.string.continue_text),
-                onClick = {},
+                onClick = { onEvent(ChooseLanguageEvent.OnContinueClicked) },
                 modifier = Modifier.fillMaxWidth(),
             )
 
@@ -223,20 +217,20 @@ private fun LanguageCard(
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "te")
 fun OnboardingChooseLanguagePreview() {
     val mockLanguages = listOf(
-        LanguageOption("hi", "हिन्दी", "Hindi"),
-        LanguageOption("mr", "मराठी", "Marathi"),
-        LanguageOption("gu", "ગુજરાતી", "Gujarati"),
-        LanguageOption("ta", "தமிழ்", "Tamil"),
-        LanguageOption("te", "తెలుగు", "Telugu"),
-        LanguageOption("bn", "বাংলা", "Bengali")
+        AppLanguage.HINDI,
+        AppLanguage.MARATHI,
+        AppLanguage.GUJARATI,
+        AppLanguage.TAMIL,
+        AppLanguage.TELUGU,
+        AppLanguage.BENGALI
     )
 
     val dummyState = ChooseLanguageUiState(
         availableSecondaryLanguages = mockLanguages,
-        selectedLanguageId = "hi"
+        selectedLanguage = AppLanguage.DEFAULT
     )
 
     JantaNiveshTheme {

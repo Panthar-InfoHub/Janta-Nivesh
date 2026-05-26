@@ -24,16 +24,14 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 @Composable
 fun TopAppBarWithBackButtonAndStepCount(stepCount: Int, totalSteps: Int, onBack: () -> Unit) {
     Column(modifier = Modifier.padding(top = Spacing.dp16, bottom = Spacing.dp24)) {
-        Icon(
-            painter = painterResource(Res.drawable.arrowback_icon),
-            contentDescription = "Go Back",
-            modifier = Modifier.clickable(onClick = onBack)
+        AppBackButton(
+            onClick = onBack,
         )
         Row(
             modifier = Modifier
                 .padding(top = Spacing.dp16)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.dp8) // Proper spacing between segments
+            horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
         ) {
             for (i in 1..totalSteps) {
                 Box(

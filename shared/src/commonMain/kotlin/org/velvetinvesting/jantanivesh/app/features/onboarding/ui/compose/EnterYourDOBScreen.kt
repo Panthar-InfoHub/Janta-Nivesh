@@ -57,31 +57,31 @@ fun EnterYourDOBScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
+                .padding(horizontal = Spacing.dp24)
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
 
                 TopAppBarWithBackButtonAndStepCount(
-                    stepCount = 4,
-                    totalSteps = 5,
+                    stepCount = 2,
+                    totalSteps = 3,
                     onBack = { onEvent(EnterYourDOBEvent.OnBackClicked) }
                 )
 
                 Text(
-                    text = stringResource(Res.string.enter_dob) + stringResource(Res.string.enter_dob_translated),
+                    text = "Enter your date of birth/"+ stringResource(Res.string.enter_dob),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
                 Column(modifier = Modifier.padding(bottom = Spacing.dp24), verticalArrangement = Arrangement.spacedBy(Spacing.dp16)) {
                     Text(
-                        text = stringResource(Res.string.dob_identity_verification),
+                        text = "Please provide your date of birth for identity verification.",
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = stringResource(Res.string.dob_identity_verification_translated),
+                        text = stringResource(Res.string.dob_identity_verification),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -138,7 +138,7 @@ fun EnterYourDOBScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "te")
 @Composable
 fun EnterYourDOBScreenPreview() {
     JantaNiveshTheme {

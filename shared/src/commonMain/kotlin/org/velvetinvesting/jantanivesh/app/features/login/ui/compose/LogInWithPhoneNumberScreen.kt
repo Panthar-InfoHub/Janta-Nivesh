@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.login.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -8,21 +8,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -31,14 +33,11 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberEvent
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.LoginWithPhoneNumberViewModel
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberEvent
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberUiState
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
-import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
 
 @Composable
 fun LoginWithPhoneNumberScreen(
@@ -55,26 +54,25 @@ fun LoginWithPhoneNumberScreen(
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
-                TopAppBarWithBackButtonAndStepCount(
-                    stepCount = 1,
-                    totalSteps = 5,
-                    onBack = { onEvent(LoginWithPhoneNumberEvent.OnBackClicked) }
-                )
+                AppBackButton(onClick = { onEvent(LoginWithPhoneNumberEvent.OnBackClicked) })
 
                 Text(
-                    text = stringResource(Res.string.login_mobile_number) + stringResource(Res.string.login_mobile_number_translated),
+                    text = "Log in with your mobile number/" + stringResource(Res.string.login_mobile_number),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8), modifier = Modifier.padding(bottom = Spacing.dp24)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
+                    modifier = Modifier.padding(bottom = Spacing.dp24)
+                ) {
                     Text(
-                        text = stringResource(Res.string.otp_verify_identity),
+                        text = "We'll send a 4 digit OTP to verify your identity.",
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = stringResource(Res.string.otp_verify_identity_translated),
+                        text = stringResource(Res.string.otp_verify_identity),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -97,7 +95,8 @@ fun LoginWithPhoneNumberScreen(
                                 modifier = Modifier.padding(end = Spacing.dp8)
                             )
                             VerticalDivider(
-                                modifier = Modifier.height(Spacing.dp24).padding(horizontal = Spacing.dp4),
+                                modifier = Modifier.height(Spacing.dp24)
+                                    .padding(horizontal = Spacing.dp4),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -127,7 +126,7 @@ fun LoginWithPhoneNumberScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "te")
 @Composable
 fun LoginWithPhoneNumberPreview() {
     JantaNiveshTheme {

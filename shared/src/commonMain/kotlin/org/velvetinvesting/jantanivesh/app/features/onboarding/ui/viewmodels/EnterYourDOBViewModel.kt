@@ -60,10 +60,10 @@ class EnterYourDOBViewModel : ViewModel() {
 
     private fun verifyAndContinue() {
         val currentDob = _uiState.value.dob
-        if (currentDob.isNotBlank()) {
+        //if (currentDob.isNotBlank()) {
             // TODO: Add age validation or backend API calls here
             sendEffect(EnterYourDOBEffect.NavigateToNextScreen)
-        }
+        //}
     }
 
     private fun sendEffect(effect: EnterYourDOBEffect) {

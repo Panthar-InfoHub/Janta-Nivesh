@@ -49,31 +49,34 @@ fun EnterNameFromPanScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
+                .padding(horizontal = Spacing.dp24)
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
 
                 TopAppBarWithBackButtonAndStepCount(
-                    stepCount = 3,
-                    totalSteps = 5,
+                    stepCount = 1,
+                    totalSteps = 3,
                     onBack = { onEvent(EnterNameFromPanEvent.OnBackClicked) }
                 )
 
                 Text(
-                    text = stringResource(Res.string.pan_full_name) + stringResource(Res.string.pan_full_name_translated),
+                    text = "Your full name as per PAN/" + stringResource(Res.string.pan_full_name),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = Spacing.dp16)
                 )
 
-                Column(modifier = Modifier.padding(bottom = Spacing.dp24), verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+                Column(
+                    modifier = Modifier.padding(bottom = Spacing.dp24),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
+                ) {
                     Text(
-                        text = stringResource(Res.string.as_on_pan),
+                        text = "As it appear on your Pan Card",
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = stringResource(Res.string.as_on_pan_translated),
+                        text = stringResource(Res.string.as_on_pan),
                         color = GreyText,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -118,7 +121,7 @@ fun EnterNameFromPanScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "te")
 @Composable
 fun EnterNameFromPanScreenPreview() {
     JantaNiveshTheme {

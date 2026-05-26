@@ -84,7 +84,7 @@ fun AppTextField(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "te")
 @Composable
 fun AppTextFieldPreview() {
     JantaNiveshTheme {

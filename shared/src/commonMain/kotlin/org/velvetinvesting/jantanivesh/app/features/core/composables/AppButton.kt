@@ -84,7 +84,7 @@ fun AppButton(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "te")
 @Composable
 fun ButtonPreview() {
     JantaNiveshTheme {

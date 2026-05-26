@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
+package org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,7 +41,7 @@ class EnterOtpViewModel : ViewModel() {
     fun handleEvent(event: EnterOtpEvent) {
         when (event) {
             is EnterOtpEvent.OnOtpChanged -> {
-                if (event.otp.length <= 5) {
+                if (event.otp.length <= 5 && event.otp.all { it.isDigit() }) {
                     _uiState.update { it.copy(otpValue = event.otp) }
                 }
             }
