@@ -56,16 +56,20 @@ fun AppButton(
     text: String,
     onClick: () -> Unit,
     style: AppButtonStyle = AppButtonDefaults.style(),
+    enabled: Boolean=true,
+    loading: Boolean=false,
     modifier: Modifier = Modifier
-
 ) {
 
     Button(
         onClick = onClick,
+        enabled=enabled && !loading,
         shapes = ButtonDefaults.shapes(shape = style.shape),
         colors = ButtonDefaults.buttonColors(
             containerColor = style.containerColor,
-            contentColor = style.contentColor
+            contentColor = style.contentColor,
+            disabledContainerColor = style.containerColor.copy(alpha = 0.5f),
+            disabledContentColor = style.contentColor
         ),
         modifier = modifier
             .height(style.height)

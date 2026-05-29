@@ -73,9 +73,9 @@ fun rememberLessPayTypography(): Typography {
             ),
             titleSmall = TextStyle(
                 fontFamily = fontFamily,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                lineHeight = 14.sp
+                lineHeight = 18.sp
             ),
             bodyLarge = TextStyle(
                 fontFamily = fontFamily,

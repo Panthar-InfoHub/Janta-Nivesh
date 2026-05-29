@@ -25,26 +25,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import jantanivesh.shared.generated.resources.*
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.continue_text
+import jantanivesh.shared.generated.resources.janta_nivesh_logo_desc
+import jantanivesh.shared.generated.resources.jantanivesh_logo
+import jantanivesh.shared.generated.resources.lock_icon
+import jantanivesh.shared.generated.resources.lock_icon_desc
+import jantanivesh.shared.generated.resources.tick_icon
+import jantanivesh.shared.generated.resources.tick_icon_desc
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.localization.model.AppLanguage
-import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
-import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
-import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageEvent
-import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageUiState
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyLock
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.PrimaryLanguageText
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedTextColor
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageEvent
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageUiState
 
 
 @Composable
@@ -64,11 +71,12 @@ fun OnboardingChooseLanguage(
 
             Text(
                 "Choose Languages",
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineMedium
             )
             Text(
                 "English is your default primary language. Please select a secondary language.",
-                color = GreyText
+                color = GreyText,
+                style = MaterialTheme.typography.labelSmall
             )
 
             Text(
@@ -117,7 +125,6 @@ fun OnboardingChooseLanguage(
             Text(
                 "Secondary Language",
                 style = MaterialTheme.typography.labelLarge,
-                color = GreyText
             )
 
             LazyVerticalGrid(
@@ -192,12 +199,13 @@ private fun LanguageCard(
                 Text(
                     language,
                     style = MaterialTheme.typography.titleLarge,
-                    color = if (isSelected) SelectedTextColor else Color.Black
+                    color = Color.Black
                 )
                 Text(
                     languageSpelling,
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (isSelected) SelectedTextColor else GreyText
+                    fontWeight = FontWeight.Medium,
+                    color = GreyText
                 )
             }
             if (isSelected) {

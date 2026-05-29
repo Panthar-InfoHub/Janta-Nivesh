@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,8 +13,8 @@ import kotlinx.coroutines.launch
 
 data class EnterOtpUiState(
     val otpValue: String = "",
-    val phoneNumber: String = "+971 1 123 123 1234",
-    val resendTimerSeconds: Int = 24,
+    val phoneNumber: String = "",
+    val resendTimerSeconds: Int = 30,
     val isLoading: Boolean = false
 )
 
@@ -38,6 +39,19 @@ class EnterOtpViewModel : ViewModel() {
     private val _effect = Channel<EnterOtpEffect>()
     val effect = _effect.receiveAsFlow()
 
+    init {
+        startTimer()
+    }
+
+    private fun startTimer() {
+        viewModelScope.launch {
+            for (i in 30 downTo 0) {
+                _uiState.update { it.copy(resendTimerSeconds = i) }
+                delay(1000)
+            }
+        }
+    }
+
     fun handleEvent(event: EnterOtpEvent) {
         when (event) {
             is EnterOtpEvent.OnOtpChanged -> {
@@ -60,7 +74,7 @@ class EnterOtpViewModel : ViewModel() {
     }
 
     private fun resendOtp() {
-        // TODO: Call API to resend OTP and restart the timer
+        startTimer()
     }
 
     private fun sendEffect(effect: EnterOtpEffect) {
