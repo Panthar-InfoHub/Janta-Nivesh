@@ -74,6 +74,8 @@ fun EnterNameFromPanScreen(
             AppButton(
                 text = stringResource(Res.string.continue_text),
                 onClick = { onEvent(EnterNameFromPanEvent.OnContinueClicked) },
+                enabled = state.isNextEnabled,
+                loading = state.isLoading,
                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
             )
         }

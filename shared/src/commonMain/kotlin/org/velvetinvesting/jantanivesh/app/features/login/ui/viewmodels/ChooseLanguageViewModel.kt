@@ -14,7 +14,8 @@ import org.velvetinvesting.jantanivesh.app.core.localization.repository.Language
 data class ChooseLanguageUiState(
     val isLoading: Boolean = false,
     val availableSecondaryLanguages: List<AppLanguage> = emptyList(),
-    val selectedLanguage: AppLanguage? = null
+    val selectedLanguage: AppLanguage? = null,
+    val isNextEnabled: Boolean = false
 )
 
 sealed interface ChooseLanguageEvent {
@@ -45,7 +46,8 @@ class ChooseLanguageViewModel(private val languageSelector: LanguageRepository) 
             languageSelector.currentLanguageFlow().collect { currentLanguage ->
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    selectedLanguage = currentLanguage
+                    selectedLanguage = currentLanguage,
+                    isNextEnabled = currentLanguage != null
                 )
             }
         }

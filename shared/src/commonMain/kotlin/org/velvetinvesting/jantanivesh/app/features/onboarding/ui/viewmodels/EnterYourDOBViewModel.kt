@@ -9,11 +9,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 
 data class EnterYourDOBUiState(
     val dob: String = "",
     val showDatePicker: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isNextEnabled: Boolean = false
 )
 
 sealed interface EnterYourDOBEvent {
@@ -46,7 +48,8 @@ class EnterYourDOBViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         dob = event.selectedDob,
-                        showDatePicker = false
+                        showDatePicker = false,
+                        isNextEnabled = event.selectedDob.isNotBlank()
                     )
                 }
             }
@@ -60,10 +63,23 @@ class EnterYourDOBViewModel : ViewModel() {
 
     private fun verifyAndContinue() {
         val currentDob = _uiState.value.dob
-        //if (currentDob.isNotBlank()) {
-            // TODO: Add age validation or backend API calls here
-            sendEffect(EnterYourDOBEffect.NavigateToNextScreen)
-        //}
+        if (isValidDob(currentDob)) {
+        // TODO: Add age validation or backend API calls here
+        sendEffect(EnterYourDOBEffect.NavigateToNextScreen)
+        }
+    }
+
+    fun isValidDob(dob: String): Boolean {
+        val regex = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$".toRegex()
+        if (!dob.matches(regex)) return false
+        return try {
+            val parts = dob.split("/")
+            val isoFormat = "${parts[2]}-${parts[1]}-${parts[0]}"
+            LocalDate.parse(isoFormat)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun sendEffect(effect: EnterYourDOBEffect) {

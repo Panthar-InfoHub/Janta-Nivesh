@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 
 data class AddYourEmailUiState(
     val email: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isNextEnabled: Boolean = false
 )
 
 sealed interface AddYourEmailEvent {
@@ -38,7 +39,12 @@ class AddYourEmailViewModel : ViewModel() {
     fun handleEvent(event: AddYourEmailEvent) {
         when (event) {
             is AddYourEmailEvent.OnEmailChanged -> {
-                _uiState.update { it.copy(email = event.email) }
+                _uiState.update {
+                    it.copy(
+                        email = event.email,
+                        isNextEnabled = isValidEmail(event.email)
+                    )
+                }
             }
             AddYourEmailEvent.OnVerifyClicked -> verifyEmail()
             AddYourEmailEvent.OnSkipClicked -> skipEmail()
@@ -48,7 +54,7 @@ class AddYourEmailViewModel : ViewModel() {
 
     private fun verifyEmail() {
         val currentEmail = _uiState.value.email
-        if (currentEmail.isNotBlank() && currentEmail.contains("@")) {
+        if (isValidEmail(currentEmail)) {
             // TODO: Add backend verification/saving logic here
             sendEffect(AddYourEmailEffect.NavigateToNextScreen)
         }
@@ -56,6 +62,12 @@ class AddYourEmailViewModel : ViewModel() {
 
     private fun skipEmail() {
         sendEffect(AddYourEmailEffect.NavigateToNextScreen)
+    }
+
+    fun isValidEmail(email: String): Boolean {
+        if (email.isBlank()) return false
+        val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
+        return emailRegex.matches(email)
     }
 
     private fun sendEffect(effect: AddYourEmailEffect) {

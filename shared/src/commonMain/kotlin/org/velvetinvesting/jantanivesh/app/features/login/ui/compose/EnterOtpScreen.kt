@@ -116,6 +116,8 @@ fun EnterOtpScreen(
                 AppButton(
                     text = stringResource(Res.string.next),
                     onClick = { onEvent(EnterOtpEvent.OnNextClicked) },
+                    enabled = state.isNextEnabled,
+                    loading = state.isLoading,
                     modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
                 )
             }

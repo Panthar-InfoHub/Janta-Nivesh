@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 
 data class LoginWithPhoneNumberUiState(
     val phoneNumber: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isNextEnabled: Boolean = false
 )
 
 sealed interface LoginWithPhoneNumberEvent {
@@ -37,8 +38,14 @@ class LoginWithPhoneNumberViewModel : ViewModel() {
     fun handleEvent(event: LoginWithPhoneNumberEvent) {
         when (event) {
             is LoginWithPhoneNumberEvent.OnPhoneNumberChanged -> {
-                if(event.phoneNumber.length <= 10)
-                _uiState.update { it.copy(phoneNumber = event.phoneNumber) }
+                if (event.phoneNumber.all { it.isDigit() } && event.phoneNumber.length <= 10) {
+                    _uiState.update {
+                        it.copy(
+                            phoneNumber = event.phoneNumber,
+                            isNextEnabled = event.phoneNumber.length == 10
+                        )
+                    }
+                }
             }
 
             LoginWithPhoneNumberEvent.OnVerifyClicked -> verifyPhoneNumber()
@@ -51,7 +58,7 @@ class LoginWithPhoneNumberViewModel : ViewModel() {
 
         // TODO: Add backend API call to request OTP here.
         if(currentNumber.length == 10)
-        sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
+            sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
     }
 
     private fun sendEffect(effect: LoginWithPhoneNumberEffect) {

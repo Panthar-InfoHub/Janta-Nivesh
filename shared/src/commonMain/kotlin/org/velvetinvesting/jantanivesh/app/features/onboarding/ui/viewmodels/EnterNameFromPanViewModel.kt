@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 
 data class EnterNameFromPanUiState(
     val fullName: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isNextEnabled: Boolean = false
 )
 
 sealed interface EnterNameFromPanEvent {
@@ -37,16 +38,27 @@ class EnterNameFromPanViewModel : ViewModel() {
     fun handleEvent(event: EnterNameFromPanEvent) {
         when (event) {
             is EnterNameFromPanEvent.OnNameChanged -> {
-                _uiState.update { it.copy(fullName = event.name) }
+                _uiState.update {
+                    it.copy(
+                        fullName = event.name,
+                        isNextEnabled = isValidFullName(event.name)
+                    )
+                }
             }
             EnterNameFromPanEvent.OnContinueClicked -> saveNameAndContinue()
             EnterNameFromPanEvent.OnBackClicked -> sendEffect(EnterNameFromPanEffect.NavigateBack)
         }
     }
+    private fun isValidFullName(name: String): Boolean {
+        val trimmedName = name.trim()
+        if (trimmedName.isBlank()) return false
+        val nameRegex = "^[a-zA-Z\\s.'-]{2,100}$".toRegex()
+        return nameRegex.matches(trimmedName)
+    }
 
     private fun saveNameAndContinue() {
         val currentName = _uiState.value.fullName
-        if (currentName.isNotBlank()) {
+        if (isValidFullName(currentName)) {
             // TODO: Add any required validation or backend logic here
             sendEffect(EnterNameFromPanEffect.NavigateToNextScreen)
         }
