@@ -72,6 +72,8 @@ fun AddYourEmailScreen(
             AppButton(
                 text = stringResource(Res.string.verify),
                 onClick = { onEvent(AddYourEmailEvent.OnVerifyClicked) },
+                enabled = state.isNextEnabled,
+                loading = state.isLoading,
                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
             )
         }

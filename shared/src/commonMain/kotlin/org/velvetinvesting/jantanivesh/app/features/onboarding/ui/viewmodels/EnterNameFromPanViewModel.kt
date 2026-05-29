@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 
 data class EnterNameFromPanUiState(
     val fullName: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isNextEnabled: Boolean = false
 )
 
 sealed interface EnterNameFromPanEvent {
@@ -37,7 +38,12 @@ class EnterNameFromPanViewModel : ViewModel() {
     fun handleEvent(event: EnterNameFromPanEvent) {
         when (event) {
             is EnterNameFromPanEvent.OnNameChanged -> {
-                _uiState.update { it.copy(fullName = event.name) }
+                _uiState.update {
+                    it.copy(
+                        fullName = event.name,
+                        isNextEnabled = event.name.isNotBlank()
+                    )
+                }
             }
             EnterNameFromPanEvent.OnContinueClicked -> saveNameAndContinue()
             EnterNameFromPanEvent.OnBackClicked -> sendEffect(EnterNameFromPanEffect.NavigateBack)

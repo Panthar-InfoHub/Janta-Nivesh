@@ -15,7 +15,8 @@ data class EnterOtpUiState(
     val otpValue: String = "",
     val phoneNumber: String = "",
     val resendTimerSeconds: Int = 30,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isNextEnabled: Boolean = false
 )
 
 sealed interface EnterOtpEvent {
@@ -56,7 +57,12 @@ class EnterOtpViewModel : ViewModel() {
         when (event) {
             is EnterOtpEvent.OnOtpChanged -> {
                 if (event.otp.length <= 5 && event.otp.all { it.isDigit() }) {
-                    _uiState.update { it.copy(otpValue = event.otp) }
+                    _uiState.update {
+                        it.copy(
+                            otpValue = event.otp,
+                            isNextEnabled = event.otp.length == 5
+                        )
+                    }
                 }
             }
             EnterOtpEvent.OnNextClicked -> verifyOtp()

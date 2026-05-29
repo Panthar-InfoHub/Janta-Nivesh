@@ -63,6 +63,7 @@ kotlin {
             implementation(libs.datastore.core)
             implementation(libs.datastore.preferences.core)
             implementation(libs.datastore.core.okio)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
