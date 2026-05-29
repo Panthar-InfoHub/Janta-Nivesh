@@ -34,12 +34,9 @@ import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWi
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.AddYourEmailScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EnterNameFromPanScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EnterYourDOBScreen
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailViewModel
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanViewModel
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterYourDOBViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingViewModel
 
 private const val TOTAL_STEPS = 3
 @Composable
@@ -48,6 +45,8 @@ fun OnboardingNavigation(
 ){
 
     val navController = rememberNavController()
+    val onboardingViewModel: OnboardingViewModel = koinViewModel()
+    val state by onboardingViewModel.uiState.collectAsStateWithLifecycle()
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
@@ -59,6 +58,34 @@ fun OnboardingNavigation(
         Route.EnterEmail::class.qualifiedName -> 2
         Route.EnterDob::class.qualifiedName -> 3
         else -> 1
+    }
+
+    LaunchedEffect(onboardingViewModel.effect) {
+        onboardingViewModel.effect.collect { effect ->
+            when (effect) {
+                OnboardingEffect.EnterNameFromPan_NavigateToNext -> {
+                    navController.navigate(Route.EnterEmail)
+                }
+                OnboardingEffect.EnterNameFromPan_NavigateBack -> {
+                    navController.popBackStack()
+                }
+                OnboardingEffect.EnterYourDOB_NavigateToNext -> {
+                    onCompleted()
+                }
+                OnboardingEffect.EnterYourDOB_NavigateBack -> {
+                    navController.popBackStack()
+                }
+                OnboardingEffect.AddYourEmail_NavigateToNext -> {
+                    navController.navigate(Route.EnterDob)
+                }
+                OnboardingEffect.AddYourEmail_NavigateBack -> {
+                    navController.popBackStack()
+                }
+                is OnboardingEffect.ShowError -> {
+                    // Handle error show (e.g. snackbar)
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -88,7 +115,7 @@ fun OnboardingNavigation(
                             .align(Alignment.CenterEnd)
                             .offset(x = -Spacing.dp16, y = -Spacing.dp8)
                             .clickable {
-                                navController.navigate(Route.EnterDob)
+                                onboardingViewModel.handleEvent(OnboardingEvent.OnEmailSkipClicked)
                             }
                     )
                 }
@@ -99,75 +126,24 @@ fun OnboardingNavigation(
                 modifier = Modifier.weight(1f)
             ) {
                 composable<Route.EnterName> {
-                    val viewModel: EnterNameFromPanViewModel = koinViewModel()
-                    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-                    LaunchedEffect(viewModel.effect) {
-                        viewModel.effect.collect { effect ->
-                            when (effect) {
-                                EnterNameFromPanEffect.NavigateToNextScreen -> {
-                                    navController.navigate(Route.EnterEmail)
-                                }
-
-                                EnterNameFromPanEffect.NavigateBack -> {
-                                    navController.popBackStack()
-                                }
-                            }
-                        }
-                    }
-
                     EnterNameFromPanScreen(
                         state = state,
-                        onEvent = viewModel::handleEvent
+                        onEvent = onboardingViewModel::handleEvent
                     )
                 }
 
 
                 composable<Route.EnterEmail> {
-                    val viewModel: AddYourEmailViewModel = koinViewModel()
-                    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-                    LaunchedEffect(viewModel.effect) {
-                        viewModel.effect.collect { effect ->
-                            when (effect) {
-                                AddYourEmailEffect.NavigateToNextScreen -> {
-                                    navController.navigate(Route.EnterDob)
-                                }
-
-                                AddYourEmailEffect.NavigateBack -> {
-                                    navController.popBackStack()
-                                }
-                            }
-                        }
-                    }
-
                     AddYourEmailScreen(
                         state = state,
-                        onEvent = viewModel::handleEvent
+                        onEvent = onboardingViewModel::handleEvent
                     )
                 }
 
                 composable<Route.EnterDob> {
-                    val viewModel: EnterYourDOBViewModel = koinViewModel()
-                    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-                    LaunchedEffect(viewModel.effect) {
-                        viewModel.effect.collect { effect ->
-                            when (effect) {
-                                EnterYourDOBEffect.NavigateToNextScreen -> {
-                                    onCompleted()
-                                }
-
-                                EnterYourDOBEffect.NavigateBack -> {
-                                    navController.popBackStack()
-                                }
-                            }
-                        }
-                    }
-
                     EnterYourDOBScreen(
                         state = state,
-                        onEvent = viewModel::handleEvent
+                        onEvent = onboardingViewModel::handleEvent
                     )
                 }
             }

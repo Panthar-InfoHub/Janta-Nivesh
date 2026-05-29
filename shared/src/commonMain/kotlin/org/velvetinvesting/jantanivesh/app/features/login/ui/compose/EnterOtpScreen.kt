@@ -178,7 +178,7 @@ internal fun OtpInputField(
             .testTag("otp_input_row"),
         horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
     ) {
-        repeat(5) { index ->
+        repeat(4) { index ->
             val char = otpValue.getOrNull(index)
 
             Box(

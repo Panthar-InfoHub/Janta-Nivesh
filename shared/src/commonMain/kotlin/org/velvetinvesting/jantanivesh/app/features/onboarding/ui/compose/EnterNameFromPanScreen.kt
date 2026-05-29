@@ -24,13 +24,13 @@ import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanEvent
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EnterNameFromPanUiState
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingUiState
 
 @Composable
 fun EnterNameFromPanScreen(
-    state: EnterNameFromPanUiState,
-    onEvent: (EnterNameFromPanEvent) -> Unit,
+    state: OnboardingUiState,
+    onEvent: (OnboardingEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(modifier = modifier) { paddingValues ->
@@ -58,7 +58,7 @@ fun EnterNameFromPanScreen(
 
             AppTextField(
                 value = state.fullName,
-                onValueChange = { onEvent(EnterNameFromPanEvent.OnNameChanged(it)) },
+                onValueChange = { onEvent(OnboardingEvent.OnNameChanged(it)) },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = {
                     Text(
@@ -73,9 +73,8 @@ fun EnterNameFromPanScreen(
             )
             AppButton(
                 text = stringResource(Res.string.continue_text),
-                onClick = { onEvent(EnterNameFromPanEvent.OnContinueClicked) },
-                enabled = state.isNextEnabled,
-                loading = state.isLoading,
+                onClick = { onEvent(OnboardingEvent.OnNameContinueClicked) },
+                enabled = state.isNameNextEnabled,
                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
             )
         }
@@ -87,7 +86,7 @@ fun EnterNameFromPanScreen(
 fun EnterNameFromPanScreenPreview() {
     JantaNiveshTheme {
         EnterNameFromPanScreen(
-            state = EnterNameFromPanUiState(fullName = "Raju Rastogi"),
+            state = OnboardingUiState(fullName = "Raju Rastogi"),
             onEvent = {}
         )
     }

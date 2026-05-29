@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginWithNumberUseCase
 
 data class LoginWithPhoneNumberUiState(
     val phoneNumber: String = "",
@@ -27,7 +31,9 @@ sealed interface LoginWithPhoneNumberEffect {
     object NavigateBack : LoginWithPhoneNumberEffect
 }
 
-class LoginWithPhoneNumberViewModel : ViewModel() {
+class LoginWithPhoneNumberViewModel(
+    private val loginUseCase: LoginWithNumberUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginWithPhoneNumberUiState())
     val uiState: StateFlow<LoginWithPhoneNumberUiState> = _uiState.asStateFlow()
@@ -55,10 +61,20 @@ class LoginWithPhoneNumberViewModel : ViewModel() {
 
     private fun verifyPhoneNumber() {
         val currentNumber = _uiState.value.phoneNumber
+        if (currentNumber.length != 10) return
 
-        // TODO: Add backend API call to request OTP here.
-        if(currentNumber.length == 10)
-            sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            loginUseCase(currentNumber)
+                .onSuccess {
+                    _uiState.update { it.copy(isLoading = false) }
+                    sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
+                }
+                .onError {
+                    _uiState.update { it.copy(isLoading = false) }
+                    SnackBarController.showError(it.message)
+                }
+        }
     }
 
     private fun sendEffect(effect: LoginWithPhoneNumberEffect) {

@@ -28,4 +28,7 @@ sealed interface Route {
 
     @Serializable
     data object EnterEmail : Route
+
+    @Serializable
+    data object MainAppFlow : Route
 }

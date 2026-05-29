@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.VerifyOTPUseCase
 
 data class EnterOtpUiState(
     val otpValue: String = "",
@@ -21,18 +25,23 @@ data class EnterOtpUiState(
 
 sealed interface EnterOtpEvent {
     data class OnOtpChanged(val otp: String) : EnterOtpEvent
-    object OnNextClicked : EnterOtpEvent
-    object OnBackClicked : EnterOtpEvent
-    object OnResendClicked : EnterOtpEvent
+    data object OnNextClicked : EnterOtpEvent
+    data object OnBackClicked : EnterOtpEvent
+    data object OnResendClicked : EnterOtpEvent
+
+    data class OnPhoneNumberChanged(val phoneNumber: String) : EnterOtpEvent
 }
 
 sealed interface EnterOtpEffect {
-    object NavigateToNextScreen : EnterOtpEffect
-    object NavigateBack : EnterOtpEffect
+    data object NavigateOnboardingFlow : EnterOtpEffect
+    data object NavigateToMainAppFlow : EnterOtpEffect
+    data object NavigateBack : EnterOtpEffect
      data class ShowToast(val message: String) : EnterOtpEffect
 }
 
-class EnterOtpViewModel : ViewModel() {
+class EnterOtpViewModel(
+    private val verifyOtpUseCase: VerifyOTPUseCase,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EnterOtpUiState())
     val uiState: StateFlow<EnterOtpUiState> = _uiState.asStateFlow()
@@ -60,7 +69,7 @@ class EnterOtpViewModel : ViewModel() {
                     _uiState.update {
                         it.copy(
                             otpValue = event.otp,
-                            isNextEnabled = event.otp.length == 5
+                            isNextEnabled = event.otp.length == 4
                         )
                     }
                 }
@@ -68,14 +77,33 @@ class EnterOtpViewModel : ViewModel() {
             EnterOtpEvent.OnNextClicked -> verifyOtp()
             EnterOtpEvent.OnBackClicked -> sendEffect(EnterOtpEffect.NavigateBack)
             EnterOtpEvent.OnResendClicked -> resendOtp()
+            is EnterOtpEvent.OnPhoneNumberChanged -> {
+                _uiState.update { it.copy(phoneNumber = event.phoneNumber) }
+            }
         }
     }
 
     private fun verifyOtp() {
         val currentOtp = _uiState.value.otpValue
-        if (currentOtp.length == 5) {
-            // TODO: Implement backend verification here
-            sendEffect(EnterOtpEffect.NavigateToNextScreen)
+        if (currentOtp.length != 4) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            verifyOtpUseCase(
+                _uiState.value.phoneNumber,
+                currentOtp
+            )
+                .onSuccess {
+                    _uiState.update { it.copy(isLoading = false) }
+                    if (it.onboarded) {
+                        sendEffect(EnterOtpEffect.NavigateToMainAppFlow)
+                    } else {
+                        sendEffect(EnterOtpEffect.NavigateOnboardingFlow)
+                    }
+                }
+                .onError {
+                    _uiState.update { it.copy(isLoading = false) }
+                    SnackBarController.showError(it.message)
+                }
         }
     }
 

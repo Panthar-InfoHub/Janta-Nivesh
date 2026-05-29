@@ -56,7 +56,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
+
             implementation(libs.kotlinx.datetime)
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
@@ -64,6 +64,10 @@ kotlin {
             implementation(libs.datastore.preferences.core)
             implementation(libs.datastore.core.okio)
             implementation(libs.kotlinx.datetime)
+
+            implementation(libs.bundles.ktor)
+            implementation(libs.bundles.coil)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

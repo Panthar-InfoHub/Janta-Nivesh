@@ -24,13 +24,13 @@ import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailEvent
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddYourEmailUiState
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingUiState
 
 @Composable
 fun AddYourEmailScreen(
-    state: AddYourEmailUiState,
-    onEvent: (AddYourEmailEvent) -> Unit,
+    state: OnboardingUiState,
+    onEvent: (OnboardingEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(modifier = modifier) { paddingValues ->
@@ -58,7 +58,7 @@ fun AddYourEmailScreen(
 
             AppTextField(
                 value = state.email,
-                onValueChange = { onEvent(AddYourEmailEvent.OnEmailChanged(it)) },
+                onValueChange = { onEvent(OnboardingEvent.OnEmailChanged(it)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = {
@@ -71,9 +71,8 @@ fun AddYourEmailScreen(
             )
             AppButton(
                 text = stringResource(Res.string.verify),
-                onClick = { onEvent(AddYourEmailEvent.OnVerifyClicked) },
-                enabled = state.isNextEnabled,
-                loading = state.isLoading,
+                onClick = { onEvent(OnboardingEvent.OnEmailVerifyClicked) },
+                enabled = state.isEmailNextEnabled,
                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
             )
         }
@@ -85,7 +84,7 @@ fun AddYourEmailScreen(
 fun AddYourEmailScreenPreview() {
     JantaNiveshTheme {
         AddYourEmailScreen(
-            state = AddYourEmailUiState(email = "test@example.com"),
+            state = OnboardingUiState(email = "test@example.com"),
             onEvent = {}
         )
     }

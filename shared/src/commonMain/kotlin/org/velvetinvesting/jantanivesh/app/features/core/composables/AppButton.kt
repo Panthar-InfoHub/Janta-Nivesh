@@ -1,14 +1,20 @@
 package org.velvetinvesting.jantanivesh.app.features.core.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
@@ -18,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
@@ -29,7 +36,8 @@ data class AppButtonStyle(
     val shape: Shape,
     val containerColor: Color,
     val contentColor: Color,
-    val height: Dp
+    val height: Dp,
+    val indicatorSize: Dp
 )
 
 object AppButtonDefaults {
@@ -39,13 +47,15 @@ object AppButtonDefaults {
         shape: Shape = RoundedCornerShape(Spacing.dp12),
         containerColor: Color = Primary,
         contentColor: Color = White,
-        height: Dp = Spacing.dp52
+        height: Dp = Spacing.dp52,
+        indicatorSize: Dp = 16.dp
     ): AppButtonStyle {
         return AppButtonStyle(
             shape = shape,
             containerColor = containerColor,
             contentColor = contentColor,
-            height = height
+            height = height,
+            indicatorSize = indicatorSize
         )
     }
 }
@@ -83,8 +93,22 @@ fun AppButton(
                 )
             )
     ) {
-        Text(text, style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.W700))
-
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
+        ){
+            Text(
+                text,
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.W700)
+            )
+            AnimatedVisibility (loading){
+                CircularProgressIndicator(
+                    color = White,
+                    strokeWidth = Spacing.dp1,
+                    modifier = Modifier.size(style.indicatorSize)
+                )
+            }
+        }
     }
 }
 
@@ -94,7 +118,8 @@ fun ButtonPreview() {
     JantaNiveshTheme {
         AppButton(
             text = "ButtonPreview",
-            onClick = {}, modifier = Modifier.fillMaxWidth()
+            onClick = {}, modifier = Modifier.fillMaxWidth(),
+            loading = true
         )
     }
 }

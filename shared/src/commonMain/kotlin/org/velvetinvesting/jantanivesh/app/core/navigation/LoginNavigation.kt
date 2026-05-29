@@ -15,13 +15,15 @@ import org.velvetinvesting.jantanivesh.app.features.login.ui.compose.OnboardingC
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageEffect
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpEffect
+import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberEffect
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberViewModel
 
 @Composable
 fun LoginNavigation(
-    onLoginSuccess:()-> Unit
+    navigateToOnboardingGraph: () -> Unit,
+    navigateToMainAppFlow: () -> Unit
 ){
     val navController = rememberNavController()
     NavHost(
@@ -76,11 +78,17 @@ fun LoginNavigation(
             val viewModel: EnterOtpViewModel = koinViewModel()
             val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+            LaunchedEffect(Unit){
+                viewModel.handleEvent(
+                    EnterOtpEvent.OnPhoneNumberChanged(route.phoneNumber)
+                )
+            }
+
             LaunchedEffect(viewModel.effect) {
                 viewModel.effect.collect { effect ->
                     when (effect) {
-                        EnterOtpEffect.NavigateToNextScreen -> {
-                           onLoginSuccess()
+                        EnterOtpEffect.NavigateOnboardingFlow -> {
+                           navigateToOnboardingGraph()
                         }
                         EnterOtpEffect.NavigateBack -> {
                             navController.popBackStack()
@@ -88,12 +96,16 @@ fun LoginNavigation(
                         is EnterOtpEffect.ShowToast -> {
 
                         }
+
+                        EnterOtpEffect.NavigateToMainAppFlow -> {
+                            navigateToMainAppFlow()
+                        }
                     }
                 }
             }
 
             EnterOtpScreen(
-                state = state.copy(phoneNumber = route.phoneNumber),
+                state = state.copy(),
                 onEvent = viewModel::handleEvent
             )
         }
