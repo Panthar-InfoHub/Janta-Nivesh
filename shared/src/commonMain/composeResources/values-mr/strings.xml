@@ -50,6 +50,48 @@
     <string name="transaction_updates">आम्ही येथे व्यवहाराचे अपडेट्स पाठवू</string>
     <string name="email_placeholder">@gmail.com</string>
 
+    <!-- Fixed Deposits -->
+    <string name="fixed_deposits">मुदत ठेव</string>
+    <string name="best_rate">सर्वोत्तम दर</string>
+    <string name="per_annum">वार्षिक</string>
+    <string name="your_fds">तुमच्या मुदत ठेव</string>
+    <string name="active_count">सक्रिय</string>
+    <string name="invested">गुंतवलेले</string>
+    <string name="explore_fds">मुदत ठेव पहा</string>
+    <string name="loading">लोड होत आहे...</string>
+    <string name="interest_rate">व्याज दर</string>
+    <string name="tenure">कालावधी</string>
+    <string name="search_funds">%1$s फंड शोधा...</string>
+    <string name="public_bank">सार्वजनिक बँक</string>
+    <string name="nbfc">एनबीएफसी (NBFC)</string>
+    <string name="private_bank">खाजगी बँक</string>
+    <string name="top_funds">शीर्ष फंड</string>
+    <string name="load_more_funds">आणखी फंड लोड करा</string>
+    <string name="loading_more">आणखी लोड होत आहे...</string>
+    <string name="invest_now">आता गुंतवणूक करा</string>
+    <string name="tenure_options">कालावधी पर्याय</string>
+    <string name="interest_with_asterisk">व्याज*</string>
+    <string name="yield">यील्ड (Yield)</string>
+    <string name="faqs">वारंवार विचारले जाणारे प्रश्न</string>
+    <string name="min_amt">किमान रक्कम</string>
+    <string name="invest_amount_label">गुंतवणूक करा</string>
+    <string name="interest_payout">व्याज देयता</string>
+    <string name="applicable_for">साठी लागू</string>
+    <string name="select">निवडा</string>
+    <string name="annualized_disclaimer">* व्याजाचे दर वार्षिक आधारावर आहेत.</string>
+    <string name="maturity_payout_disclaimer">** \'परिपक्वतेवर\' (On maturity) देयता निवडीवर आधारित गणना केली.</string>
+    <string name="set_investment_details">गुंतवणुकीचे तपशील सेट करा</string>
+    <string name="fixed_deposit">मुदत ठेव</string>
+    <string name="dicgc_insured">₹५ लाखांपर्यंत DICGC विमा उतरवलेला</string>
+    <string name="investment_amount_title">गुंतवणुकीची रक्कम</string>
+    <string name="select_tenure">कालावधी निवडा</string>
+    <string name="days_unit">(दिवस)</string>
+    <string name="interest_payout_mode">व्याज देयता मोड</string>
+    <string name="projected_returns">अंदाजित परतावा</string>
+    <string name="maturity_amount">परिपक्वता रक्कम</string>
+    <string name="total_interest"> एकूण व्याज</string>
+    <string name="maturity_date">परिपक्वता तारीख</string>
+
     <!-- KYC Intro Screen -->
     <string name="kyc_intro_button_text">तुमची KYC पूर्ण करा →</string>
     <string name="kyc_intro_header_title">KYC</string>

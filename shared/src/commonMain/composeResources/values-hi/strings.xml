@@ -192,4 +192,46 @@
     <string name="address_line_3_details">पता पंक्ति 3 (लैंडमार्क)</string>
     <string name="add_more_joint_holder">अधिक संयुक्त धारक जोड़ें</string>
     <string name="nomination_subheading">मैं अपनी मृत्यु की स्थिति में, अपने खाते के लिए किसी व्यक्ति को नॉमिनेट करना चाहता हूँ।</string>
-</resources>
+
+    <!-- Fixed Deposits -->
+    <string name="fixed_deposits">फिक्स्ड डिपॉजिट</string>
+    <string name="best_rate">सर्वश्रेष्ठ दर</string>
+    <string name="per_annum">प्रति वर्ष</string>
+    <string name="your_fds">आपकी एफडी</string>
+    <string name="active_count">सक्रिय</string>
+    <string name="invested">निवेश किया गया</string>
+    <string name="explore_fds">एफडी देखें</string>
+    <string name="loading">लोड हो रहा है...</string>
+    <string name="interest_rate">ब्याज दर</string>
+    <string name="tenure">अवधि</string>
+    <string name="search_funds">%1$s फंड खोजें...</string>
+    <string name="public_bank">पब्लिक बैंक</string>
+    <string name="nbfc">एनबीएफसी (NBFC)</string>
+    <string name="private_bank">प्राइवेट बैंक</string>
+    <string name="top_funds">शीर्ष फंड</string>
+    <string name="load_more_funds">और फंड लोड करें</string>
+    <string name="loading_more">और लोड हो रहा है...</string>
+    <string name="invest_now">अभी निवेश करें</string>
+    <string name="tenure_options">अवधि के विकल्प</string>
+    <string name="interest_with_asterisk">ब्याज*</string>
+    <string name="yield">यील्ड (Yield)</string>
+    <string name="faqs">अक्सर पूछे जाने वाले प्रश्न</string>
+    <string name="min_amt">न्यूनतम राशि</string>
+    <string name="invest_amount_label">निवेश करें</string>
+    <string name="interest_payout">ब्याज भुगतान</string>
+    <string name="applicable_for">के लिए लागू</string>
+    <string name="select">चुनें</string>
+    <string name="annualized_disclaimer">* ब्याज दरें वार्षिक आधार पर हैं।</string>
+    <string name="maturity_payout_disclaimer">** \'परिपक्वता पर\' (On maturity) भुगतान चयन के आधार पर गणना की गई।</string>
+    <string name="set_investment_details">निवेश विवरण सेट करें</string>
+    <string name="fixed_deposit">फिक्स्ड डिपॉजिट</string>
+    <string name="dicgc_insured">₹5 लाख तक DICGC बीमाकृत</string>
+    <string name="investment_amount_title">निवेश राशि</string>
+    <string name="select_tenure">अवधि चुनें</string>
+    <string name="days_unit">(दिन)</string>
+    <string name="interest_payout_mode">ब्याज भुगतान मोड</string>
+    <string name="projected_returns">अनुमानित रिटर्न</string>
+    <string name="maturity_amount">परिपक्वता राशि</string>
+    <string name="total_interest">कुल ब्याज</string>
+    <string name="maturity_date">परिपक्वता तिथि</string>
+    </resources>

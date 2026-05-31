@@ -50,6 +50,48 @@
     <string name="transaction_updates">আমরা এখানে লেনদেনের আপডেট পাঠাব</string>
     <string name="email_placeholder">@gmail.com</string>
 
+    <!-- Fixed Deposits -->
+    <string name="fixed_deposits">ফিক্সড ডিপোজিট</string>
+    <string name="best_rate">সেরা হার</string>
+    <string name="per_annum">প্রতি বছর</string>
+    <string name="your_fds">আপনার এফডি</string>
+    <string name="active_count">সক্রিয়</string>
+    <string name="invested">বিনিয়োগ করা হয়েছে</string>
+    <string name="explore_fds">এফডিগুলি এক্সপ্লোর করুন</string>
+    <string name="loading">লোড হচ্ছে...</string>
+    <string name="interest_rate">সুদের হার</string>
+    <string name="tenure">মেয়াদ</string>
+    <string name="search_funds">%1$s টি ফান্ড খুঁজুন...</string>
+    <string name="public_bank">পাবলিক ব্যাংক</string>
+    <string name="nbfc">এনবিএফসি</string>
+    <string name="private_bank">প্রাইভেট ব্যাংক</string>
+    <string name="top_funds">সেরা ফান্ডসমূহ</string>
+    <string name="load_more_funds">আরও ফান্ড লোড করুন</string>
+    <string name="loading_more">আরও লোড হচ্ছে...</string>
+    <string name="invest_now">এখনই বিনিয়োগ করুন</string>
+    <string name="tenure_options">মেয়াদের বিকল্পসমূহ</string>
+    <string name="interest_with_asterisk">সুদ*</string>
+    <string name="yield">লাভ</string>
+    <string name="faqs">সাধারণ প্রশ্নসমূহ</string>
+    <string name="min_amt">নূন্যতম পরিমাণ</string>
+    <string name="invest_amount_label">বিনিয়োগ করুন</string>
+    <string name="interest_payout">সুদ প্রদান</string>
+    <string name="applicable_for">এর জন্য প্রযোজ্য</string>
+    <string name="select">নির্বাচন করুন</string>
+    <string name="annualized_disclaimer">* সুদের হার বার্ষিক হিসেবে হিসাব করা হয়েছে।</string>
+    <string name="maturity_payout_disclaimer">** \'মেয়াদ শেষে\' পে-আউট নির্বাচনের ভিত্তিতে গণনা করা হয়েছে।</string>
+    <string name="set_investment_details">বিনিয়োগের বিবরণ সেট করুন</string>
+    <string name="fixed_deposit">ফিক্সড ডিপোজিট</string>
+    <string name="dicgc_insured">₹৫ লক্ষ পর্যন্ত DICGC বিমাকৃত</string>
+    <string name="investment_amount_title">বিনিয়োগের পরিমাণ</string>
+    <string name="select_tenure">মেয়াদ নির্বাচন করুন</string>
+    <string name="days_unit">(দিন)</string>
+    <string name="interest_payout_mode">সুদ প্রদানের মোড</string>
+    <string name="projected_returns">সম্ভাব্য রিটার্ন</string>
+    <string name="maturity_amount">মেয়াদ শেষে পরিমাণ</string>
+    <string name="total_interest">মোট সুদ</string>
+    <string name="maturity_date">মেয়াদের তারিখ</string>
+
     <!-- KYC Intro Screen -->
     <string name="kyc_intro_button_text">আপনার কেওয়াইসি (KYC) সম্পূর্ণ করুন →</string>
     <string name="kyc_intro_header_title">কেওয়াইসি (KYC)</string>

@@ -49,6 +49,48 @@
     <string name="transaction_updates">We’ll send transaction updates here</string>
     <string name="email_placeholder">@gmail.com</string>
 
+    <!-- Fixed Deposits -->
+    <string name="fixed_deposits">Fixed Deposits</string>
+    <string name="best_rate">BEST RATE</string>
+    <string name="per_annum">p.a.</string>
+    <string name="your_fds">YOUR FDS</string>
+    <string name="active_count">Active</string>
+    <string name="invested">Invested</string>
+    <string name="explore_fds">Explore FDs</string>
+    <string name="loading">Loading...</string>
+    <string name="interest_rate">Interest Rate</string>
+    <string name="tenure">Tenure</string>
+    <string name="search_funds">Search %1$s funds...</string>
+    <string name="public_bank">Public Bank</string>
+    <string name="nbfc">NBFC</string>
+    <string name="private_bank">Private Bank</string>
+    <string name="top_funds">Top Funds</string>
+    <string name="load_more_funds">Load More Funds</string>
+    <string name="loading_more">Loading more...</string>
+    <string name="invest_now">Invest Now</string>
+    <string name="tenure_options">Tenure options</string>
+    <string name="interest_with_asterisk">Interest*</string>
+    <string name="yield">Yield</string>
+    <string name="faqs">FAQs</string>
+    <string name="min_amt">MIN. AMT</string>
+    <string name="invest_amount_label">Invest</string>
+    <string name="interest_payout">Interest payout</string>
+    <string name="applicable_for">Applicable for</string>
+    <string name="select">Select</string>
+    <string name="annualized_disclaimer">* Interest rates are annualized.</string>
+    <string name="maturity_payout_disclaimer">** Calculated based on \'On maturity\' payout selection.</string>
+    <string name="set_investment_details">Set Investment details</string>
+    <string name="fixed_deposit">Fixed Deposit</string>
+    <string name="dicgc_insured">DICGC Insured up to ₹5L</string>
+    <string name="investment_amount_title">Investment Amount</string>
+    <string name="select_tenure">Select Tenure</string>
+    <string name="days_unit">(Days)</string>
+    <string name="interest_payout_mode">Interest Payout Mode</string>
+    <string name="projected_returns">Projected Returns</string>
+    <string name="maturity_amount">Maturity Amount</string>
+    <string name="total_interest">Total Interest</string>
+    <string name="maturity_date">Maturity Date</string>
+
     <!-- KYC Intro Screen -->
     <string name="kyc_intro_button_text">COMPLETE YOUR KYC  →</string>
     <string name="kyc_intro_header_title">KYC</string>

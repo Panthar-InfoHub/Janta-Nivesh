@@ -163,4 +163,46 @@
     <string name="address_line_3_details">સરનામાની લાઇન 3 (લેન્ડમાર્ક)</string>
     <string name="add_more_joint_holder">વધુ જોઈન્ટ હોલ્ડર ઉમેરો</string>
     <string name="nomination_subheading">હું મારા મૃત્યુના કિસ્સામાં મારા એકાઉન્ટ માટે કોઈ વ્યક્તિને નોમિનેટ કરવા ઈચ્છું છું.</string>
-</resources>
+
+    <!-- Fixed Deposits -->
+    <string name="fixed_deposits">ફિક્સ્ડ ડિપોઝિટ</string>
+    <string name="best_rate">શ્રેષ્ઠ દર</string>
+    <string name="per_annum">વાર્ષિક</string>
+    <string name="your_fds">તમારી એફડી</string>
+    <string name="active_count">સક્રિય</string>
+    <string name="invested">રોકાણ કરેલ</string>
+    <string name="explore_fds">એફડી એક્સપ્લોર કરો</string>
+    <string name="loading">લોડ થઈ રહ્યું છે...</string>
+    <string name="interest_rate">વ્યાજ દર</string>
+    <string name="tenure">મુદત</string>
+    <string name="search_funds">%1$s ફંડ શોધો...</string>
+    <string name="public_bank">પબ્લિક બેંક</string>
+    <string name="nbfc">એનબીએફસી</string>
+    <string name="private_bank">પ્રાઇવેટ બેંક</string>
+    <string name="top_funds">મુખ્ય ફંડ</string>
+    <string name="load_more_funds">વધુ ફંડ લોડ કરો</string>
+    <string name="loading_more">વધુ લોડ થઈ રહ્યું છે...</string>
+    <string name="invest_now">અત્યારે રોકાણ કરો</string>
+    <string name="tenure_options">મુદત ના વિકલ્પો</string>
+    <string name="interest_with_asterisk">વ્યાજ*</string>
+    <string name="yield">યીલ્ડ (Yield)</string>
+    <string name="faqs">વારંવાર પૂછાતા પ્રશ્નો</string>
+    <string name="min_amt">લઘુત્તમ રકમ</string>
+    <string name="invest_amount_label">રોકાણ કરો</string>
+    <string name="interest_payout">વ્યાજ ચુકવણી</string>
+    <string name="applicable_for">માટે લાગુ</string>
+    <string name="select">પસંદ કરો</string>
+    <string name="annualized_disclaimer">* વ્યાજ દરો વાર્ષિક ધોરણે છે.</string>
+    <string name="maturity_payout_disclaimer">** \'પરિપક્વતા પર\' (On maturity) ચુકવણી પસંદગીના આધારે ગણતરી કરેલ.</string>
+    <string name="set_investment_details">રોકાણ વિગતો સેટ કરો</string>
+    <string name="fixed_deposit">ફિક્સ્ડ ડિપોઝિટ</string>
+    <string name="dicgc_insured">₹૫ લાખ સુધી DICGC વીમાકૃત</string>
+    <string name="investment_amount_title">રોકાણની રકમ</string>
+    <string name="select_tenure">મુદત પસંદ કરો</string>
+    <string name="days_unit">(દિવસો)</string>
+    <string name="interest_payout_mode">વ્યાજ ચુકવણી મોડ</string>
+    <string name="projected_returns">અંદાજિત વળતર</string>
+    <string name="maturity_amount">પરિપક્વતાની રકમ</string>
+    <string name="total_interest"> કુલ વ્યાજ</string>
+    <string name="maturity_date">પરિપક્વતાની તારીખ</string>
+    </resources>

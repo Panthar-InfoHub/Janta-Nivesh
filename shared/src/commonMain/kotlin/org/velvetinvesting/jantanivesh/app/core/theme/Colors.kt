@@ -7,12 +7,17 @@ val appGreen=Color(0xff008E23)
 val appRed=Color(0xffFF0600)
 
 val Primary= Color(0xff23336E)
+val InterestChip = Color(0xffC6E7FF)
+val InterestChipBorder = Color(0x3382CFFF)
 val TextOnPrimary= Color(0xffffffff)
 val PrimaryContainer= Color(0xffd7e2ff)
 val Background= Color(0xfffbfcff)
 val TextPrimary= Color(0xff191C1D)
 val Surface= Color(0xffffffff)
 val TextOnSurface= Color(0xff191C1D)
+val SelectTenureCardColor = Color(0xffF5F2F8)
+val SelectedTenureChipColor = Color(0xFFDDE1FF)
+val HighInterestTextColor = Color(0xff001E2D)
 val Border= Color(0xffd0d1d5)
 val BorderFocused= Color(0xff23336E)
 val Secondary=Color(0xff00AEEF)
@@ -29,12 +34,22 @@ val Black = Color(0xff000000)
 val TextFieldBorder = Color(0xff00AEEF)
 val ButtonShadow = Color(0x03144F26)
 val TextBlack = Color(0xff191C1D)
+val FilterChipUnselected = Color(0xffE4E1E7)
+
+// FD Feature Colors
+val TagPopularBg = Color(0xffFFDCC6)
+val HighlightRowBg = Color(0xFFEEF2FF)
+val TagBonusBg = Color(0xFFDCFCE7)
+val TagBonusText = Color(0xFF16A34A)
+val TagMaxReturnBg = Color(0xFFE0E7FF)
+val TagMaxReturnText = Color(0xFF4338CA)
+val BackgroundFill = Color(0xFFFAFAFA)
+val PreviewBackground = Color(0x0D2FBCFE)
+val GreyBoxDivider = Color(0xFFF3F4F6)
 
 // Verification Screen Colors
 val UploadBoxBackground = Color(0xffEFEDF3)
 val UploadBoxBorder = Color(0xffDDE1FF)
-
-val ShadowColor = Color(0xffDEE2F6).copy(alpha = 0.75f)
 val GrayBackGround = Color(0xffEFEDF3)
 
 // Home Screen Colors

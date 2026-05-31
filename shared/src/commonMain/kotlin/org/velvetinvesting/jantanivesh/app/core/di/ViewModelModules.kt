@@ -8,6 +8,10 @@ import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingViewModel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FixedDepositsViewModel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdViewModel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
@@ -27,6 +31,11 @@ val viewModelModule = module {
     viewModel { EnterOtpViewModel(get()) }
 
     viewModel { OnboardingViewModel(get()) }
+
+    viewModel { FixedDepositsViewModel(get()) }
+    viewModel { ExploreFdViewModel(get()) }
+    viewModel { FdDetailsViewModel(get(), get()) }
+    viewModel { SetInvestmentDetailsViewModel(get(), get()) }
     viewModel { KYCScreenViewModel(get(), get()) }
     viewModel { KYCFormScreenViewModel(get(), get(),get()) }
     viewModel { KYCImageUploaderScreenViewModel(get(), get(), get()) }
