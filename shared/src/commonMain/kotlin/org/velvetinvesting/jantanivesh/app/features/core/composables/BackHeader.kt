@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.core.composables
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,18 +18,18 @@ fun BackHeader(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = Spacing.dp16),
-        verticalAlignment = Alignment.CenterVertically
+        contentAlignment = Alignment.CenterStart
     ) {
         AppBackButton(onClick = onBack)
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = Spacing.dp16)
+            modifier = Modifier.align(Alignment.Center)
         )
     }
 }

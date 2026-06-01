@@ -31,6 +31,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenUiState
@@ -53,11 +54,10 @@ fun KycIntroScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBarWithBackButtonAndStepCount(
-                stepCount = 1,
-                totalSteps = 5,
+            BackHeader(
+                title = "KYC",
                 onBack = onBack,
-                modifier = Modifier.padding(horizontal = Spacing.dp24)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp24)
             )
         },
         bottomBar = {

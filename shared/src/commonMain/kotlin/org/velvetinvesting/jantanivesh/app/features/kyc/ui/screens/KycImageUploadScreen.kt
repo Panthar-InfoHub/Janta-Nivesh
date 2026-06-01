@@ -30,6 +30,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderUiState
@@ -53,11 +54,10 @@ fun KycImageUploadScreen(
 
     Scaffold(
         topBar = {
-            TopAppBarWithBackButtonAndStepCount(
-                stepCount = 3,
-                totalSteps = 5,
+            BackHeader(
+                title = "Verification Details",
                 onBack = onBack,
-                modifier = Modifier.padding(horizontal = Spacing.dp24)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp24)
             )
         },
         bottomBar = {

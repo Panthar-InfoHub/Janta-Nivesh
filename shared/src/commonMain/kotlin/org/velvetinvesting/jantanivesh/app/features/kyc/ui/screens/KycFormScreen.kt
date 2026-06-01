@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenEvent
@@ -43,11 +44,9 @@ fun KycFormScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBarWithBackButtonAndStepCount(
-                stepCount = 2,
-                totalSteps = 5,
-                onBack = onBack,
-                modifier = Modifier.padding(horizontal = Spacing.dp24)
+            BackHeader(
+                title = "KYC Form",
+                onBack=onBack
             )
         },
         bottomBar = {
