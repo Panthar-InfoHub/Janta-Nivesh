@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
@@ -27,14 +28,16 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.Gender
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.MaritalStatus
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.OccupationType
 
-@Preview
+@Preview(heightDp = 1500)
 @Composable
 fun KycFormScreenPreview() {
-    KycFormScreen(
-        state = KYCFormScreenUiState(),
-        onEvent = {},
-        onBack = {}
-    )
+    JantaNiveshTheme {
+        KycFormScreen(
+            state = KYCFormScreenUiState(),
+            onEvent = {},
+            onBack = {}
+        )
+    }
 }
 
 @Composable
@@ -232,7 +235,6 @@ fun KycFormScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-
         }
     }
 }

@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,28 +24,60 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.kyc_image
+import jantanivesh.shared.generated.resources.lock_icon
 import jantanivesh.shared.generated.resources.plain_credit_card_rafiki_1
+import jantanivesh.shared.generated.resources.receipt_icon
+import jantanivesh.shared.generated.resources.rupee_icon
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenUiState
 
-@Preview
+@Preview(heightDp = 1000)
 @Composable
 fun KycIntroScreenPreview() {
-    KycIntroScreen(
-        state = KYCScreenUiState(),
-        onEvent = {},
-        onBack = {}
-    )
+    JantaNiveshTheme{
+        KycIntroScreen(
+            state = KYCScreenUiState(),
+            onEvent = {},
+            onBack = {}
+        )
+    }
+}
+
+@Composable
+private fun LocalBackHeader(onBack: () -> Unit, title: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.dp16),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+    ) {
+        AppBackButton(onClick = onBack)
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
 
 @Composable
@@ -54,7 +88,7 @@ fun KycIntroScreen(
 ) {
     Scaffold(
         topBar = {
-            BackHeader(
+            LocalBackHeader(
                 title = "KYC",
                 onBack = onBack,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp24)
@@ -62,7 +96,7 @@ fun KycIntroScreen(
         },
         bottomBar = {
             AppButton(
-                text = "Complete your KYC",
+                text = "COMPLETE YOUR KYC  →",
                 onClick = { onEvent(KYCScreenEvent.OnStartKycClicked) },
                 loading = state.isLoading,
                 modifier = Modifier
@@ -76,80 +110,126 @@ fun KycIntroScreen(
                 .fillMaxSize()
                 .padding(pv)
                 .padding(horizontal = Spacing.dp24),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 Image(
-                    painter = painterResource(Res.drawable.plain_credit_card_rafiki_1),
+                    painter = painterResource(Res.drawable.kyc_image),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.size(Spacing.dp235),
                     contentScale = ContentScale.FillWidth
                 )
             }
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp12),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Complete your KYC in Under few minutes to get started",
-                        style = MaterialTheme.typography.headlineSmall,
+                        text = "Complete your KYC",
+                        style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "Experience more for no cost",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
+                        text = "Just a few steps to unlock your investment journey with Nivesh Sansar.",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = GreyText,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
             item {
-                Row(
+                Column(
                     modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
                 ) {
                     ZeroPriceCard(
-                        text = "Account Maintenance Charges",
-                        modifier = Modifier.weight(1f).fillMaxHeight()
+                        text = "₹ 0 Account Opening Fees",
+                        subText = "Start investing without any initial costs.",
+                        icon = Res.drawable.rupee_icon,
+                        modifier = Modifier.weight(1f).fillMaxWidth()
                     )
                     ZeroPriceCard(
-                        text = "Account Opening Fees",
-                        modifier = Modifier.weight(1f).fillMaxHeight()
+                        text = "₹ 0 Maintenance Charges",
+                        subText = "No hidden fees, keep what you earn.",
+                        icon = Res.drawable.receipt_icon,
+                        modifier = Modifier.weight(1f).fillMaxWidth()
                     )
                 }
+            }
+            item{
+                EncryptedDataCard()
             }
         }
     }
 }
 
 @Composable
-fun ZeroPriceCard(text: String, modifier: Modifier) {
-    Box(
+fun ZeroPriceCard(text: String, subText: String, icon: DrawableResource, modifier: Modifier) {
+    Row(
         modifier = modifier
             .clip(RoundedCornerShape(Spacing.dp12))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
-            .padding(Spacing.dp16)
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)) // TODO Color modification to white
+            .padding(Spacing.dp22),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(Spacing.dp64)
-                    .clip(RoundedCornerShape(Spacing.dp15))
-                    .background(Primary.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "₹0",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Primary
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = "Rupee Symbol",
+            tint = SelectedBoxBorder,
+            modifier = Modifier
+                .size(Spacing.dp48)
+                .background(
+                    color = Color(0xFFEFEDF3), //   TODO Color modification
+                    shape = CircleShape
                 )
-            }
+                .padding(Spacing.dp16)
+        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
+        ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                style = MaterialTheme.typography.labelLarge,
+            )
+            Text(
+                text = subText,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }
+    }
+}
+@Composable
+fun EncryptedDataCard() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Spacing.dp8))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            .padding(top = Spacing.dp16, start = Spacing.dp16, end = Spacing.dp16, bottom = Spacing.dp24),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp16)
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.lock_icon),
+            contentDescription = "Security Lock",
+            tint = GreyText,
+            modifier = Modifier
+                .size(Spacing.dp24)
+                .padding(top = Spacing.dp1_2)
+        )
+
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)){
+            Text(
+                text = "Your data is encrypted and secure",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+            )
+
+            Text(
+                text = "We use bank-level encryption to ensure your personal information remains completely confidential.",
+                style = MaterialTheme.typography.titleSmall
             )
         }
     }
