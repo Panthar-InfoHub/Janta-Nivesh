@@ -46,11 +46,11 @@ fun AppNavigation() {
         }
 
         composable<Route.KycGraph> {
-//            KycNavigation(
-//                onCompleted = {
-//
-//                }
-//            )
+            KycNavigation(
+                onCompleted = {
+
+                }
+            )
         }
     }
 }

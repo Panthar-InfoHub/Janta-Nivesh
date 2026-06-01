@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -61,119 +62,177 @@ fun KycFormScreen(
             )
         }
     ) { pv ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(pv)
-                .padding(horizontal = Spacing.dp24)
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = Spacing.dp24),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
         ) {
-            Text(
-                text = "Personal Details",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(top = Spacing.dp12)
-            )
+            item {
+                Text(
+                    text = "Personal Details",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = Spacing.dp12)
+                )
+            }
 
-            AppTextField(
-                value = state.formState.name,
-                onValueChange = { },
-                label = { Text("Full Name") },
-                readOnly = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = state.formState.name,
+                    onValueChange = {},
+                    label = { Text("Full Name") },
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            AppTextField(
-                value = state.formState.dob,
-                onValueChange = { },
-                label = { Text("Date of Birth") },
-                readOnly = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = state.formState.dob,
+                    onValueChange = {},
+                    label = { Text("Date of Birth") },
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            AppTextField(
-                value = maskAadhaar(state.formState.aadhaarNumber),
-                onValueChange = { },
-                label = { Text("Aadhaar Number") },
-                readOnly = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = maskAadhaar(state.formState.aadhaarNumber),
+                    onValueChange = {},
+                    label = { Text("Aadhaar Number") },
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            AppTextField(
-                value = state.formState.emailId,
-                onValueChange = { },
-                label = { Text("Email") },
-                readOnly = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = state.formState.emailId,
+                    onValueChange = {},
+                    label = { Text("Email") },
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            AppTextField(
-                value = state.formState.mobileNumber,
-                onValueChange = { },
-                label = { Text("Mobile Number") },
-                readOnly = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = state.formState.mobileNumber,
+                    onValueChange = {},
+                    label = { Text("Mobile Number") },
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            DropDownSelector(
-                items = Gender.entries,
-                selectedItem = Gender.entries.find { it.code == state.formState.gender } ?: Gender.MALE,
-                onItemSelected = { onEvent(KYCFormScreenEvent.OnGenderChanged(it.code)) },
-                label = "Gender",
-                itemToString = { it.displayName },
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                DropDownSelector(
+                    value = Gender.entries
+                        .find { it.code == state.formState.gender }
+                        ?.displayName
+                        .orEmpty(),
+                    onValueChange = {
+                        onEvent(KYCFormScreenEvent.OnGenderChanged(it.code))
+                    },
+                    placeHolder = "Select Gender",
+                    label = "Gender",
+                    list = Gender.entries,
+                    textConvertor = { it.displayName },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            DropDownSelector(
-                items = MaritalStatus.entries,
-                selectedItem = MaritalStatus.entries.find { it.code == state.formState.maritalStatus } ?: MaritalStatus.UNMARRIED,
-                onItemSelected = { onEvent(KYCFormScreenEvent.OnMaritalStatusChanged(it.code)) },
-                label = "Marital Status",
-                itemToString = { it.displayName },
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                DropDownSelector(
+                    value = MaritalStatus.entries
+                        .find { it.code == state.formState.maritalStatus }
+                        ?.displayName
+                        .orEmpty(),
+                    onValueChange = {
+                        onEvent(KYCFormScreenEvent.OnMaritalStatusChanged(it.code))
+                    },
+                    placeHolder = "Select Marital Status",
+                    label = "Marital Status",
+                    list = MaritalStatus.entries,
+                    textConvertor = { it.displayName },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            AppTextField(
-                value = state.formState.panNumber,
-                onValueChange = { onEvent(KYCFormScreenEvent.OnPanNumberChanged(it)) },
-                label = { Text("PAN Number") },
-                placeholder = { Text("Enter PAN Number") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = state.formState.panNumber,
+                    onValueChange = {
+                        onEvent(KYCFormScreenEvent.OnPanNumberChanged(it))
+                    },
+                    label = { Text("PAN Number") },
+                    placeholder = { Text("Enter PAN Number") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            AppTextField(
-                value = state.formState.fatherName,
-                onValueChange = { onEvent(KYCFormScreenEvent.OnFatherNameChanged(it)) },
-                label = { Text("Father's Name") },
-                placeholder = { Text("Enter father's name") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                DropDownSelector(
+                    value = OccupationType.entries
+                        .find { it.code == state.formState.occupationCode }
+                        ?.displayName
+                        .orEmpty(),
+                    onValueChange = {
+                        onEvent(
+                            KYCFormScreenEvent.OnOccupationChanged(
+                                it.displayName,
+                                it.code
+                            )
+                        )
+                    },
+                    placeHolder = "Select Occupation",
+                    label = "Occupation",
+                    list = OccupationType.entries,
+                    textConvertor = { "${it.code}: ${it.displayName}" },
+                    mandatory = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            AppTextField(
-                value = state.formState.motherName,
-                onValueChange = { onEvent(KYCFormScreenEvent.OnMotherNameChanged(it)) },
-                label = { Text("Mother's Name") },
-                placeholder = { Text("Enter mother's name") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = state.formState.fatherName,
+                    onValueChange = {
+                        onEvent(KYCFormScreenEvent.OnFatherNameChanged(it))
+                    },
+                    label = { Text("Father Name") },
+                    placeholder = { Text("Enter Father Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            AppTextField(
-                value = state.formState.placeOfBirth,
-                onValueChange = { onEvent(KYCFormScreenEvent.OnPlaceOfBirthChanged(it)) },
-                label = { Text("Place of Birth") },
-                placeholder = { Text("Enter place of birth") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = state.formState.motherName,
+                    onValueChange = {
+                        onEvent(KYCFormScreenEvent.OnMotherNameChanged(it))
+                    },
+                    label = { Text("Mother Name") },
+                    placeholder = { Text("Enter Mother Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            DropDownSelector(
-                items = OccupationType.entries,
-                selectedItem = OccupationType.fromCode(state.formState.occupationCode) ?: OccupationType.OTHERS,
-                onItemSelected = { onEvent(KYCFormScreenEvent.OnOccupationChanged(it.displayName, it.code)) },
-                label = "Occupation",
-                itemToString = { it.displayName },
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                AppTextField(
+                    value = state.formState.placeOfBirth,
+                    onValueChange = {
+                        onEvent(KYCFormScreenEvent.OnPlaceOfBirthChanged(it))
+                    },
+                    label = { Text("Place of Birth") },
+                    placeholder = { Text("Enter Place of Birth") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
         }
     }
 }
