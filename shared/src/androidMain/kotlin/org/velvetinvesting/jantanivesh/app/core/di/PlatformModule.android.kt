@@ -4,6 +4,8 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.velvetinvesting.jantanivesh.app.core.datastore.createAndroidDataStore
 import org.velvetinvesting.jantanivesh.app.core.platform.AndroidSharedPreferences
+import org.velvetinvesting.jantanivesh.app.core.platform.PdfViewer
+import org.velvetinvesting.jantanivesh.app.core.platform.PdfViewerAndroid
 import org.velvetinvesting.jantanivesh.app.core.platform.SharedPreference
 import org.velvetinvesting.jantanivesh.app.core.utils.deviceinfo.DeviceInfoRetriever
 import org.velvetinvesting.jantanivesh.app.core.utils.deviceinfo.DeviceInfoRetrieverAndroid
@@ -12,4 +14,5 @@ actual val platformModule: Module = module{
     single { createAndroidDataStore(get()) }
     single<SharedPreference> { AndroidSharedPreferences(get()) }
     single<DeviceInfoRetriever> { DeviceInfoRetrieverAndroid(get()) }
+    single<PdfViewer> { PdfViewerAndroid(get()) }
 }

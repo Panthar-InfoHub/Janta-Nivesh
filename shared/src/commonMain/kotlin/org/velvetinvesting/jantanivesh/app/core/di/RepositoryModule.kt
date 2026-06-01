@@ -11,6 +11,8 @@ import org.velvetinvesting.jantanivesh.app.features.login.data.repository.UserAu
 import org.velvetinvesting.jantanivesh.app.features.login.domain.repository.UserAuth
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.remote.repository.OnboardingRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.repository.OnboardingRepo
+import org.velvetinvesting.jantanivesh.app.features.kyc.data.repository.MFKYCRepoImpl
+import org.velvetinvesting.jantanivesh.app.features.kyc.domain.repository.MFKYCRepository
 
 val repositoryModule = module {
     single<LanguageRepository> { LanguageRepositoryImpl(get()) }
@@ -18,4 +20,5 @@ val repositoryModule = module {
     single<HttpClient> { getHttpClient(get()) }
     single<UserAuth> { UserAuthenticationRepo(get(), get(), get()) }
     single<OnboardingRepo> { OnboardingRepoImpl(get(), get()) }
+    single<MFKYCRepository> { MFKYCRepoImpl(get()) }
 }

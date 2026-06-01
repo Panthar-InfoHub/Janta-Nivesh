@@ -17,12 +17,12 @@ fun AppNavigation() {
     val startDestination = when {
         !isLoggedIn -> Route.LoginGraph
         !onboardingCompleted -> Route.OnboardingGraph
-        else -> Route.MainAppFlow
+        else -> Route.KycGraph
     }
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination =startDestination
     ) {
 
         //Login Graph
@@ -45,8 +45,12 @@ fun AppNavigation() {
             )
         }
 
-        composable<Route.MainAppFlow> {
-
+        composable<Route.KycGraph> {
+//            KycNavigation(
+//                onCompleted = {
+//
+//                }
+//            )
         }
     }
 }

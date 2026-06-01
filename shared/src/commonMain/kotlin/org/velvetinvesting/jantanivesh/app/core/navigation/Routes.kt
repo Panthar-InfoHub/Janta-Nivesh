@@ -31,4 +31,23 @@ sealed interface Route {
 
     @Serializable
     data object MainAppFlow : Route
+
+    // KYC Routes
+    @Serializable
+    data object KycGraph : Route
+
+    @Serializable
+    data object KycIntro : Route
+
+    @Serializable
+    data object KycForm : Route
+
+    @Serializable
+    data object KycImageUpload : Route
+
+    @Serializable
+    data object KycContract : Route
+
+    @Serializable
+    data object KycSuccess : Route
 }

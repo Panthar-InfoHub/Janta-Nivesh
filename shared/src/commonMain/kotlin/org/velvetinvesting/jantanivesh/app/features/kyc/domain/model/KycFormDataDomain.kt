@@ -1,0 +1,32 @@
+package org.velvetinvesting.jantanivesh.app.features.kyc.domain.model
+
+data class KycFormDataDomain(
+    val aadhaarNumber: String,
+    val applicationStatusCode: String = "R",
+    val applicationStatusDescription: String = "Resident Indian",
+    val citizenshipCountry: String = "India",
+    val citizenshipCountryCode: String = "101",
+    val communicationAddressCode: String = "02",
+    val communicationAddressType: String = "Residential",
+    val countryCode: Int = 91,
+    val dob: String,
+    val emailId: String,
+    val fatherName: String,
+    val fatherTitle: String,
+    val gender: String,
+    val kycAccountCode: String,
+    val kycAccountDescription: String = "New",
+    val maritalStatus: String,
+    val mobileNumber: String,
+    val motherName: String,
+    val motherTitle: String,
+    val name: String,
+    val nomineeRelationShip: String = "FATHER",
+    val occupationCode: String,
+    val occupationDescription: String,
+    val panNumber: String,
+    val permanentAddressCode: String = "02",
+    val permanentAddressType: String = "Residential",
+    val placeOfBirth: String,
+    val residentialStatus: String
+)

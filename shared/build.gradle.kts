@@ -68,6 +68,8 @@ kotlin {
             implementation(libs.bundles.ktor)
             implementation(libs.bundles.coil)
 
+            implementation("io.github.ismoy:imagepickerkmp:1.0.41")
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
