@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -95,7 +97,7 @@ fun SetInvestmentDetailsScreen(
             .padding(
                 vertical = Spacing.dp8,
                 horizontal = Spacing.dp20
-            ) // General screen side padding
+            )
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
     ) {
@@ -120,7 +122,8 @@ fun SetInvestmentDetailsScreen(
         )
 
         InterestPayoutCard(
-            selectedPayoutMode = state.selectedPayoutMode?.displayName ?: stringResource(Res.string.select),
+            selectedPayoutMode = state.selectedPayoutMode?.displayName
+                ?: stringResource(Res.string.select),
             onPayoutModeChange = { /* Handle payout mode click */ TODO() }
         )
 
@@ -144,7 +147,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
         AppBackButton(onClick = onNavigateBack)
         Text(
             text = stringResource(Res.string.set_investment_details),
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             color = Black
         )
     }
@@ -191,11 +194,11 @@ private fun BankNameCard(
                 ) {
                     Text(
                         text = bankName,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     )
                     Text(
                         text = invType,
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = GreyText
                     )
                 }
@@ -213,7 +216,7 @@ private fun BankNameCard(
                 ) {
                     Text(
                         "High Interest",
-                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
                         color = HighInterestTextColor
                     )
                 }
@@ -230,7 +233,7 @@ private fun BankNameCard(
                     modifier = Modifier.size(Spacing.dp16),
                     tint = SelectedBoxBorder
                 )
-                Text(insuredText, style = MaterialTheme.typography.labelMedium, color = GreyText)
+                Text(insuredText, style = MaterialTheme.typography.labelSmall, color = GreyText)
             }
         }
     }
@@ -248,7 +251,7 @@ fun InvestmentCard(amount: String, onAmountChange: (String) -> Unit) {
         Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp16)) {
             Text(
                 stringResource(Res.string.investment_amount_title),
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.labelLarge
             )
 
             AppTextField(
@@ -258,7 +261,13 @@ fun InvestmentCard(amount: String, onAmountChange: (String) -> Unit) {
                 style = AppTextFieldDefaults.style(
                     textStyle = MaterialTheme.typography.headlineMedium,
                     unfocusedBorderColor = SelectedBoxBorder
-                )
+                ),
+                leadingIcon = {
+                    Text(
+                        "₹",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
             )
 
             Row(
@@ -280,7 +289,7 @@ fun InvestmentCard(amount: String, onAmountChange: (String) -> Unit) {
                         )
                     })
                 AmountChip(
-                    amount = "1,00,00,000",
+                    amount = "1,00,000",
                     onClick = {
                         onAmountChange(
                             (amount.toLongOrNull() ?: 0L).plus(100000).toString()
@@ -305,7 +314,11 @@ fun AmountChip(amount: String, onClick: () -> Unit) {
             .padding(horizontal = Spacing.dp12, vertical = Spacing.dp8),
         contentAlignment = Alignment.Center
     ) {
-        Text("+$amount", style = MaterialTheme.typography.labelMedium, color = GreyText)
+        Text(
+            "+$amount",
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+            color = GreyText
+        )
     }
 }
 
@@ -318,7 +331,7 @@ fun TenureCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp16))
+            .clip(RoundedCornerShape(Spacing.dp12))
             .background(SelectTenureCardColor)
             .padding(Spacing.dp20)
     ) {
@@ -328,11 +341,11 @@ fun TenureCard(
             Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     text = stringResource(Res.string.select_tenure),
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.labelLarge
                 )
                 Text(
                     text = "(Days)",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.labelSmall,
                     color = GreyText
                 )
             }
@@ -383,7 +396,7 @@ fun TenureChip(
             if (isSelected && interestRate != null) {
                 Text(
                     text = interestRate,
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                     color = textColor
                 )
             }
@@ -408,7 +421,7 @@ fun InterestPayoutCard(
         ) {
             Text(
                 text = stringResource(Res.string.interest_payout_mode),
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.labelLarge
             )
             AppTextField(
                 value = selectedPayoutMode,
@@ -425,7 +438,8 @@ fun InterestPayoutCard(
                     )
                 },
                 style = AppTextFieldDefaults.style(
-                    unfocusedBorderColor = SelectedBoxBorder
+                    unfocusedBorderColor = SelectedBoxBorder,
+                    shape = RoundedCornerShape(Spacing.dp4)
                 )
             )
         }
@@ -442,7 +456,7 @@ fun ProjectedReturnsCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp16))
+            .clip(RoundedCornerShape(Spacing.dp12))
             .background(White)
             .padding(Spacing.dp20)
     ) {
@@ -451,7 +465,7 @@ fun ProjectedReturnsCard(
         ) {
             Text(
                 text = stringResource(Res.string.projected_returns),
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.labelLarge,
             )
 
             Row(
@@ -472,12 +486,7 @@ fun ProjectedReturnsCard(
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Spacing.dp1)
-                    .background(BoxBorder.copy(alpha = 0.5f))
-            )
+            HorizontalDivider(thickness = Spacing.dp1, color = BoxBorder.copy(alpha = 0.5f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -487,13 +496,13 @@ fun ProjectedReturnsCard(
                     label = stringResource(Res.string.interest_rate),
                     value = interestRate,
                     valueColor = Black,
-                    modifier = Modifier.weight(1f)
+                    valueStyle = MaterialTheme.typography.labelLarge,
                 )
                 ReturnDetailItem(
                     label = stringResource(Res.string.maturity_date),
                     value = maturityDate,
                     valueColor = Black,
-                    modifier = Modifier.weight(1f)
+                    valueStyle = MaterialTheme.typography.labelLarge,
                 )
             }
         }
@@ -505,6 +514,7 @@ private fun ReturnDetailItem(
     label: String,
     value: String,
     valueColor: Color,
+    valueStyle: TextStyle = MaterialTheme.typography.headlineSmall,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -513,12 +523,12 @@ private fun ReturnDetailItem(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.titleSmall,
             color = GreyText
         )
         Text(
             text = value,
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             color = valueColor
         )
     }

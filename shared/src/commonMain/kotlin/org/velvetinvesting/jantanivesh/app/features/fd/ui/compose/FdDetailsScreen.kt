@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -111,25 +112,9 @@ fun FdDetailsScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
         ) {
             // Top Bar
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                AppBackButton(onClick = { onEvent(FdDetailsEvent.OnBackClicked) })
-
-                IconButton(
-                    onClick = { onEvent(FdDetailsEvent.OnShareClicked) },
-                    colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.share_icon),
-                        contentDescription = "Share",
-                        tint = SelectedBoxBorder,
-                        modifier = Modifier.size(Spacing.dp20)
-                    )
-                }
-            }
+            TopBar(
+                onBack = { onEvent(FdDetailsEvent.OnBackClicked) },
+                onShare = { onEvent(FdDetailsEvent.OnShareClicked) })
 
             // Header Card
             HeaderCard(details = details)
@@ -141,7 +126,7 @@ fun FdDetailsScreen(
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                 Text(
                     text = stringResource(Res.string.tenure_options),
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.headlineSmall.copy(fontSize = 16.sp),
                     color = Primary
                 )
 
@@ -154,12 +139,18 @@ fun FdDetailsScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
                         text = stringResource(Res.string.annualized_disclaimer),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 10.sp,
+                            lineHeight = 15.sp
+                        ),
                         color = GreyText
                     )
                     Text(
                         text = stringResource(Res.string.maturity_payout_disclaimer),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 10.sp,
+                            lineHeight = 15.sp
+                        ),
                         color = GreyText
                     )
                 }
@@ -170,7 +161,7 @@ fun FdDetailsScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                     Text(
                         text = "Key Features",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.labelLarge,
                         color = Primary
                     )
 
@@ -197,14 +188,35 @@ fun FdDetailsScreen(
     }
 }
 
-// --- SUB-COMPONENTS ---
+@Composable
+private fun TopBar(onBack: () -> Unit, onShare: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        AppBackButton(onClick = onBack)
+
+        IconButton(
+            onClick = onShare,
+            colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent)
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.share_icon),
+                contentDescription = "Share",
+                tint = SelectedBoxBorder,
+                modifier = Modifier.size(Spacing.dp20)
+            )
+        }
+    }
+}
 
 @Composable
 private fun HeaderCard(details: FDDetailsDomain) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp16))
+            .clip(RoundedCornerShape(Spacing.dp8))
             .background(White)
             .padding(Spacing.dp16)
     ) {
@@ -233,7 +245,7 @@ private fun HeaderCard(details: FDDetailsDomain) {
                         Text(
                             text = details.bankName.take(1) + details.bankName.substringAfter(" ")
                                 .take(1),
-                            style = MaterialTheme.typography.labelLarge,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                             color = Primary
                         )
                     }
@@ -241,7 +253,7 @@ private fun HeaderCard(details: FDDetailsDomain) {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
                         text = details.bankName,
-                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.labelLarge,
                         color = Black
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
@@ -298,7 +310,7 @@ private fun MetricBox(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(Spacing.dp12))
+            .clip(RoundedCornerShape(Spacing.dp8))
             .background(GreyBox)
             .padding(vertical = Spacing.dp12),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -308,13 +320,13 @@ private fun MetricBox(
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
                 text = value,
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.labelLarge,
                 color = valueColor
             )
             if (suffix != null) {
                 Text(
                     text = suffix,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.titleSmall,
                     color = GreyText,
                     modifier = Modifier.padding(bottom = Spacing.dp2)
                 )
@@ -331,7 +343,7 @@ private fun InvestmentConfigCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp16))
+            .clip(RoundedCornerShape(Spacing.dp12))
             .background(White)
     ) {
         Column {
@@ -346,12 +358,15 @@ private fun InvestmentConfigCard(
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
                         text = stringResource(Res.string.invest_amount_label),
-                        style = MaterialTheme.typography.labelMedium.copy(fontSize = 11.sp),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 11.sp,
+                            lineHeight = 14.sp
+                        ),
                         color = GreyText
                     )
                     Text(
                         text = "₹ ${details.invest}",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.headlineSmall,
                         color = Primary
                     )
                 }
@@ -366,8 +381,8 @@ private fun InvestmentConfigCard(
                     Icon(
                         painter = painterResource(Res.drawable.edit_icon),
                         contentDescription = "Edit Amount",
-                        tint = SelectedBoxBorder,
-                        modifier = Modifier.size(Spacing.dp12)
+                        tint = Primary,
+                        modifier = Modifier.size(Spacing.dp14)
                     )
                 }
             }
@@ -386,14 +401,16 @@ private fun InvestmentConfigCard(
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
                         text = stringResource(Res.string.interest_payout),
-                        style = MaterialTheme.typography.labelMedium.copy(fontSize = 11.sp),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 11.sp,
+                            lineHeight = 14.sp
+                        ),
                         color = GreyText
                     )
                     Text(
                         text = details.selectedPayout?.displayName
                             ?: stringResource(Res.string.select),
                         style = MaterialTheme.typography.titleMedium,
-                        color = Primary
                     )
                 }
                 Icon(
@@ -418,7 +435,10 @@ private fun InvestmentConfigCard(
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
                         text = stringResource(Res.string.applicable_for),
-                        style = MaterialTheme.typography.labelMedium.copy(fontSize = 11.sp),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 11.sp,
+                            lineHeight = 14.sp
+                        ),
                         color = GreyText
                     )
                     Row(
@@ -428,7 +448,6 @@ private fun InvestmentConfigCard(
                         Text(
                             text = details.applicable,
                             style = MaterialTheme.typography.titleMedium,
-                            color = Primary
                         )
                     }
                 }
@@ -451,7 +470,7 @@ private fun TenureOptionsCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp16))
+            .clip(RoundedCornerShape(Spacing.dp12))
             .background(White)
     ) {
         Column {
@@ -462,20 +481,29 @@ private fun TenureOptionsCard(
             ) {
                 Text(
                     text = stringResource(Res.string.tenure),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 11.sp,
+                        lineHeight = 14.sp
+                    ),
                     color = GreyText,
                     modifier = Modifier.weight(1f)
                 )
                 Text(
                     text = stringResource(Res.string.interest_with_asterisk),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 11.sp,
+                        lineHeight = 14.sp
+                    ),
                     color = GreyText,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = "You receive**",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 11.sp,
+                        lineHeight = 14.sp
+                    ),
                     color = GreyText,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.End
@@ -500,7 +528,12 @@ private fun TenureOptionsCard(
                         VerticalDivider(
                             thickness = Spacing.dp4,
                             color = Primary,
-                            modifier = Modifier.height(Spacing.dp52).clip(RoundedCornerShape(topStart = Spacing.dp16, bottomStart = Spacing.dp16))
+                            modifier = Modifier.height(Spacing.dp52).clip(
+                                RoundedCornerShape(
+                                    topStart = Spacing.dp16,
+                                    bottomStart = Spacing.dp16
+                                )
+                            )
                         )
                     Column(
                         modifier = Modifier.weight(1f),
@@ -552,7 +585,7 @@ private fun FeatureCard(feature: KeyFeatureDomain) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp16))
+            .clip(RoundedCornerShape(Spacing.dp8))
             .background(White)
             .padding(Spacing.dp16)
     ) {
@@ -562,7 +595,7 @@ private fun FeatureCard(feature: KeyFeatureDomain) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(Spacing.dp40)
+                    .size(Spacing.dp32)
                     .clip(RoundedCornerShape(Spacing.dp8))
                     .background(BackgroundFill),
                 contentAlignment = Alignment.Center
@@ -578,19 +611,19 @@ private fun FeatureCard(feature: KeyFeatureDomain) {
                         painter = painterResource(Res.drawable.ic_feature_compounding),
                         contentDescription = feature.title,
                         tint = Primary,
-                        modifier = Modifier.size(Spacing.dp20)
+                        modifier = Modifier.size(Spacing.dp16)
                     )
                 }
             }
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     text = feature.title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     color = Primary
                 )
                 Text(
                     text = feature.description,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     color = GreyText,
                     lineHeight = 16.sp
                 )
@@ -636,10 +669,10 @@ private fun TagChip(
             .padding(horizontal = Spacing.dp8, vertical = Spacing.dp4)
     ) {
         Text(
-            text = text,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 8.sp,
-                fontWeight = FontWeight.Bold
+            text = text.uppercase(),
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = 10.sp
             ),
             color = textColor
         )
@@ -689,7 +722,10 @@ fun FdDetailsScreenPreview() {
             insuranceAmount = "₹5L",
             about = "SBI FD is secure.",
             keyFeatures = listOf(
-                KeyFeatureDomain("Quarterly Compounding", "Interest is calculated every 3 months.")
+                KeyFeatureDomain(
+                    "Quarterly Compounding",
+                    "Interest is calculated every 3 months and added back to your savings for higher total growth."
+                )
             ),
             faqs = emptyList()
         )

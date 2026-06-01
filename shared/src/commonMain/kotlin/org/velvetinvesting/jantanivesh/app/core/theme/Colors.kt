@@ -43,7 +43,7 @@ val TagBonusBg = Color(0xFFDCFCE7)
 val TagBonusText = Color(0xFF16A34A)
 val TagMaxReturnBg = Color(0xFFE0E7FF)
 val TagMaxReturnText = Color(0xFF4338CA)
-val BackgroundFill = Color(0xFFFAFAFA)
+val BackgroundFill = Color(0xffEEF2FF)
 val PreviewBackground = Color(0x0D2FBCFE)
 val GreyBoxDivider = Color(0xFFF3F4F6)
 
