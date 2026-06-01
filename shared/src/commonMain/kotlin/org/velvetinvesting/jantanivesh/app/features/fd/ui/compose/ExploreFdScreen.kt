@@ -32,8 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.bank_logo_desc
 import jantanivesh.shared.generated.resources.dropdown_icon
 import jantanivesh.shared.generated.resources.filter_icon
+import jantanivesh.shared.generated.resources.filter_icon_desc
 import jantanivesh.shared.generated.resources.load_more_funds
 import jantanivesh.shared.generated.resources.loading
 import jantanivesh.shared.generated.resources.loading_more
@@ -41,8 +43,11 @@ import jantanivesh.shared.generated.resources.nbfc
 import jantanivesh.shared.generated.resources.per_annum
 import jantanivesh.shared.generated.resources.private_bank
 import jantanivesh.shared.generated.resources.public_bank
+import jantanivesh.shared.generated.resources.search_fds
 import jantanivesh.shared.generated.resources.search_funds
 import jantanivesh.shared.generated.resources.search_icon
+import jantanivesh.shared.generated.resources.search_icon_desc
+import jantanivesh.shared.generated.resources.sort_options_desc
 import jantanivesh.shared.generated.resources.top_funds
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -83,11 +88,11 @@ fun SearchFundsScreen(
             value = state.searchQuery,
             onValueChange = { onEvent(ExploreFdEvent.OnSearchQueryChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Search FDs...", style = MaterialTheme.typography.labelMedium) },
+            placeholder = { Text(stringResource(Res.string.search_fds), style = MaterialTheme.typography.labelMedium) },
             leadingIcon = {
                 Icon(
                     painterResource(Res.drawable.search_icon),
-                    contentDescription = "Search",
+                    contentDescription = stringResource(Res.string.search_icon_desc),
                     modifier = Modifier.size(Spacing.dp18),
                     tint = GreyText
                 )
@@ -95,7 +100,7 @@ fun SearchFundsScreen(
             trailingIcon = {
                 Icon(
                     painterResource(Res.drawable.filter_icon),
-                    contentDescription = "Search",
+                    contentDescription = stringResource(Res.string.filter_icon_desc),
                     modifier = Modifier.size(Spacing.dp16).clickable(onClick = {  onEvent(ExploreFdEvent.OnFilterMenuClicked)  }),
                     tint = Primary
 
@@ -163,7 +168,7 @@ fun SearchFundsScreen(
                 )
                 Icon(
                     painter = painterResource(Res.drawable.dropdown_icon),
-                    contentDescription = "Sort Options",
+                    contentDescription = stringResource(Res.string.sort_options_desc),
                     tint = SelectedBoxBorder,
                     modifier = Modifier.size(Spacing.dp8).clickable(onClick = {/*TODO implement dropdown menu*/})
                 )
@@ -273,7 +278,7 @@ private fun FundListItem(
                     contentAlignment = Alignment.Center
                 ) {
                     if (item.bankLogoUrl.isNotEmpty()) {
-                        AsyncImage(model = item.bankLogoUrl, contentDescription = "Bank Logo")
+                        AsyncImage(model = item.bankLogoUrl, contentDescription = stringResource(Res.string.bank_logo_desc))
                     } else {
                         Text(
                             text = item.bankName.take(1),

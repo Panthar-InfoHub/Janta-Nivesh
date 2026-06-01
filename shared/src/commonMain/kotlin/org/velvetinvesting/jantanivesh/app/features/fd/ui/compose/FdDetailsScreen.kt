@@ -40,7 +40,9 @@ import coil3.compose.AsyncImage
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.annualized_disclaimer
 import jantanivesh.shared.generated.resources.applicable_for
+import jantanivesh.shared.generated.resources.bank_logo_desc
 import jantanivesh.shared.generated.resources.dropdown_outlined_icon
+import jantanivesh.shared.generated.resources.edit_amount_desc
 import jantanivesh.shared.generated.resources.edit_icon
 import jantanivesh.shared.generated.resources.faqs
 import jantanivesh.shared.generated.resources.ic_feature_compounding
@@ -49,15 +51,22 @@ import jantanivesh.shared.generated.resources.interest_rate
 import jantanivesh.shared.generated.resources.interest_with_asterisk
 import jantanivesh.shared.generated.resources.invest_amount_label
 import jantanivesh.shared.generated.resources.invest_now
+import jantanivesh.shared.generated.resources.key_features
 import jantanivesh.shared.generated.resources.loading
 import jantanivesh.shared.generated.resources.maturity_payout_disclaimer
+import jantanivesh.shared.generated.resources.max_return
 import jantanivesh.shared.generated.resources.min_amt
 import jantanivesh.shared.generated.resources.per_annum
+import jantanivesh.shared.generated.resources.popular
 import jantanivesh.shared.generated.resources.select
+import jantanivesh.shared.generated.resources.select_desc
 import jantanivesh.shared.generated.resources.share_icon
+import jantanivesh.shared.generated.resources.share_icon_desc
+import jantanivesh.shared.generated.resources.something_went_wrong
 import jantanivesh.shared.generated.resources.tenure
 import jantanivesh.shared.generated.resources.tenure_options
 import jantanivesh.shared.generated.resources.yield
+import jantanivesh.shared.generated.resources.you_receive_with_asterisk
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.*
@@ -79,7 +88,7 @@ fun FdDetailsScreen(
             if (state.isLoading) {
                 Text(stringResource(Res.string.loading))
             } else {
-                Text(state.errorMessage ?: "Something went wrong")
+                Text(state.errorMessage ?: stringResource(Res.string.something_went_wrong))
             }
         }
         return
@@ -160,7 +169,7 @@ fun FdDetailsScreen(
             if (details.keyFeatures.isNotEmpty()) {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                     Text(
-                        text = "Key Features",
+                        text = stringResource(Res.string.key_features),
                         style = MaterialTheme.typography.labelLarge,
                         color = Primary
                     )
@@ -203,7 +212,7 @@ private fun TopBar(onBack: () -> Unit, onShare: () -> Unit) {
         ) {
             Icon(
                 painter = painterResource(Res.drawable.share_icon),
-                contentDescription = "Share",
+                contentDescription = stringResource(Res.string.share_icon_desc),
                 tint = SelectedBoxBorder,
                 modifier = Modifier.size(Spacing.dp20)
             )
@@ -235,7 +244,7 @@ private fun HeaderCard(details: FDDetailsDomain) {
                 ) {
                     if (details.bankLogo.isNotEmpty()) {
                         AsyncImage(
-                            model = details.bankLogo, contentDescription = "Bank Logo",
+                            model = details.bankLogo, contentDescription = stringResource(Res.string.bank_logo_desc),
                             modifier = Modifier
                                 .size(Spacing.dp40)
                                 .clip(RoundedCornerShape(Spacing.dp58))
@@ -258,7 +267,7 @@ private fun HeaderCard(details: FDDetailsDomain) {
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                         TagChip(
-                            text = "POPULAR",
+                            text = stringResource(Res.string.popular),
                             bgColor = TagPopularBg,
                             textColor = Black
                         )
@@ -380,7 +389,7 @@ private fun InvestmentConfigCard(
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.edit_icon),
-                        contentDescription = "Edit Amount",
+                        contentDescription = stringResource(Res.string.edit_amount_desc),
                         tint = Primary,
                         modifier = Modifier.size(Spacing.dp14)
                     )
@@ -415,7 +424,7 @@ private fun InvestmentConfigCard(
                 }
                 Icon(
                     painter = painterResource(Res.drawable.dropdown_outlined_icon),
-                    contentDescription = "Select",
+                    contentDescription = stringResource(Res.string.select_desc),
                     tint = GreyText,
                     modifier = Modifier.size(Spacing.dp12)
                 )
@@ -453,7 +462,7 @@ private fun InvestmentConfigCard(
                 }
                 Icon(
                     painter = painterResource(Res.drawable.dropdown_outlined_icon),
-                    contentDescription = "Select",
+                    contentDescription = stringResource(Res.string.select_desc),
                     tint = GreyText,
                     modifier = Modifier.size(Spacing.dp12)
                 )
@@ -499,7 +508,7 @@ private fun TenureOptionsCard(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "You receive**",
+                    text = stringResource(Res.string.you_receive_with_asterisk),
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 11.sp,
                         lineHeight = 14.sp
@@ -546,7 +555,7 @@ private fun TenureOptionsCard(
                         )
                         if (option.isDefault) {
                             TagChip(
-                                text = "MAX RETURN",
+                                text = stringResource(Res.string.max_return),
                                 bgColor = TagMaxReturnBg,
                                 textColor = TagMaxReturnText
                             )

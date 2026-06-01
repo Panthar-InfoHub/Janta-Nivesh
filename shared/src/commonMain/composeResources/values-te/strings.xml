@@ -90,6 +90,27 @@
     <string name="maturity_amount">మెచ్యూరిటీ మొత్తం</string>
     <string name="total_interest"> మొత్తం వడ్డీ</string>
     <string name="maturity_date">మెచ్యూరిటీ తేదీ</string>
+    <string name="search_fds">FDలను వెతకండి...</string>
+    <string name="search_icon_desc">వెతుకు</string>
+    <string name="filter_icon_desc">ఫిల్టర్</string>
+    <string name="explore_more_desc">మరిన్ని చూడండి</string>
+    <string name="go_back_desc">వెనక్కి వెళ్లు</string>
+    <string name="bank_logo_desc">బ్యాంకు లోగో</string>
+    <string name="min_with_value">కనిష్ట ₹%1$s</string>
+    <string name="not_available">అందుబాటులో లేదు</string>
+    <string name="sort_options_desc">క్రమబద్ధీకరణ ఎంపికలు</string>
+    <string name="something_went_wrong">ఏదో తప్పు జరిగింది</string>
+    <string name="key_features">ప్రధాన ఫీచర్లు</string>
+    <string name="share_icon_desc">షేర్ చేయండి</string>
+    <string name="popular">ప్రాచుర్యం పొందినది</string>
+    <string name="edit_amount_desc">మొత్తాన్ని మార్చండి</string>
+    <string name="select_desc">ఎంచుకోండి</string>
+    <string name="you_receive_with_asterisk">మీకు లభిస్తుంది**</string>
+    <string name="max_return">గరిష్ట రాబడి</string>
+    <string name="insured_icon_desc">భీమా చేయబడింది</string>
+    <string name="rupee_symbol">₹</string>
+    <string name="high_interest">అధిక వడ్డీ</string>
+    <string name="dropdown_icon_desc">డ్రాప్‌డౌన్ చిహ్నం</string>
 
     <!-- KYC Intro Screen -->
     <string name="kyc_intro_button_text">మీ KYCని పూర్తి చేయండి →</string>

@@ -91,6 +91,27 @@
     <string name="maturity_amount">முதிர்வுத் தொகை</string>
     <string name="total_interest"> மொத்த வட்டி</string>
     <string name="maturity_date">முதிர்வுத் தேதி</string>
+    <string name="search_fds">FD-களைத் தேடு...</string>
+    <string name="search_icon_desc">தேடு</string>
+    <string name="filter_icon_desc">வடிகட்டி</string>
+    <string name="explore_more_desc">மேலும் காண்க</string>
+    <string name="go_back_desc">பின்செல்</string>
+    <string name="bank_logo_desc">வங்கி லோகோ</string>
+    <string name="min_with_value">குறைந்தபட்சம் ₹%1$s</string>
+    <string name="not_available">கிடைக்கவில்லை</string>
+    <string name="sort_options_desc">வரிசைப்படுத்துதல் விருப்பங்கள்</string>
+    <string name="something_went_wrong">ஏதோ தவறு நடந்துவிட்டது</string>
+    <string name="key_features">முக்கிய அம்சங்கள்</string>
+    <string name="share_icon_desc">பகிரவும்</string>
+    <string name="popular">பிரபலமானது</string>
+    <string name="edit_amount_desc">தொகையை மாற்றவும்</string>
+    <string name="select_desc">தேர்ந்தெடுக்கவும்</string>
+    <string name="you_receive_with_asterisk">உங்களுக்குக் கிடைக்கும்**</string>
+    <string name="max_return">அதிகபட்ச லாபம்</string>
+    <string name="insured_icon_desc">காப்பீடு செய்யப்பட்டது</string>
+    <string name="rupee_symbol">₹</string>
+    <string name="high_interest">அதிக வட்டி</string>
+    <string name="dropdown_icon_desc">கீழ்தோன்றும் ஐகான்</string>
 
     <!-- KYC Intro Screen -->
     <string name="kyc_intro_button_text">உங்கள் KYC ஐ முடிக்கவும் →</string>

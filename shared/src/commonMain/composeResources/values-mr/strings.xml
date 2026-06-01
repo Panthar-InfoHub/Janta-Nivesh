@@ -91,6 +91,27 @@
     <string name="maturity_amount">परिपक्वता रक्कम</string>
     <string name="total_interest"> एकूण व्याज</string>
     <string name="maturity_date">परिपक्वता तारीख</string>
+    <string name="search_fds">FD शोधा...</string>
+    <string name="search_icon_desc">शोधा</string>
+    <string name="filter_icon_desc">फिल्टर</string>
+    <string name="explore_more_desc">अधिक पहा</string>
+    <string name="go_back_desc">मागे जा</string>
+    <string name="bank_logo_desc">बँक लोगो</string>
+    <string name="min_with_value">किमान ₹%1$s</string>
+    <string name="not_available">उपलब्ध नाही</string>
+    <string name="sort_options_desc">सॉर्ट पर्याय</string>
+    <string name="something_went_wrong">काहीतरी चुकीचे घडले</string>
+    <string name="key_features">मुख्य वैशिष्ट्ये</string>
+    <string name="share_icon_desc">शेअर करा</string>
+    <string name="popular">लोकप्रिय</string>
+    <string name="edit_amount_desc">रक्कम बदला</string>
+    <string name="select_desc">निवडा</string>
+    <string name="you_receive_with_asterisk">तुम्हाला मिळेल**</string>
+    <string name="max_return">जास्तीत जास्त परतावा</string>
+    <string name="insured_icon_desc">विमा उतरवलेला</string>
+    <string name="rupee_symbol">₹</string>
+    <string name="high_interest">उच्च व्याज</string>
+    <string name="dropdown_icon_desc">ड्रॉपडाउन आयकॉन</string>
 
     <!-- KYC Intro Screen -->
     <string name="kyc_intro_button_text">तुमची KYC पूर्ण करा →</string>
