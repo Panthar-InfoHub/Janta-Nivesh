@@ -121,7 +121,8 @@ fun FDDetailsDto.toDomain(): FDDetailsDomain {
                 question = it.title,
                 answer = it.description.parseHtmlToReadableText()
             )
-        }
+        },
+        tags = `data`.tags.map { it.text }
     )
 }
 

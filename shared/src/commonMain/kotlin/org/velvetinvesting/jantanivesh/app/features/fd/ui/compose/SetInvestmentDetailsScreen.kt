@@ -32,20 +32,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.amount_10k
+import jantanivesh.shared.generated.resources.amount_1lakh
+import jantanivesh.shared.generated.resources.amount_50k
+import jantanivesh.shared.generated.resources.bank_logo_desc
+import jantanivesh.shared.generated.resources.days_unit
 import jantanivesh.shared.generated.resources.dicgc_insured
+import jantanivesh.shared.generated.resources.dropdown_icon_desc
 import jantanivesh.shared.generated.resources.dropdown_outlined_icon
 import jantanivesh.shared.generated.resources.fixed_deposit
+import jantanivesh.shared.generated.resources.high_interest
 import jantanivesh.shared.generated.resources.interest_payout_mode
 import jantanivesh.shared.generated.resources.interest_rate
 import jantanivesh.shared.generated.resources.insured_icon
+import jantanivesh.shared.generated.resources.insured_icon_desc
 import jantanivesh.shared.generated.resources.investment_amount_title
 import jantanivesh.shared.generated.resources.loading
 import jantanivesh.shared.generated.resources.maturity_amount
 import jantanivesh.shared.generated.resources.maturity_date
 import jantanivesh.shared.generated.resources.projected_returns
+import jantanivesh.shared.generated.resources.rupee_symbol
 import jantanivesh.shared.generated.resources.select
 import jantanivesh.shared.generated.resources.select_tenure
 import jantanivesh.shared.generated.resources.set_investment_details
+import jantanivesh.shared.generated.resources.something_went_wrong
 import jantanivesh.shared.generated.resources.total_interest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -85,7 +95,7 @@ fun SetInvestmentDetailsScreen(
             if (state.isLoading) {
                 Text(stringResource(Res.string.loading))
             } else {
-                Text(state.errorMessage ?: "Something went wrong")
+                Text(state.errorMessage ?: stringResource(Res.string.something_went_wrong))
             }
         }
         return
@@ -107,7 +117,8 @@ fun SetInvestmentDetailsScreen(
             bankName = details.bankName,
             bankLogoUrl = details.bankLogo,
             invType = stringResource(Res.string.fixed_deposit),
-            insuredText = stringResource(Res.string.dicgc_insured)
+            insuredText = stringResource(Res.string.dicgc_insured),
+            tags = details.tags
         )
 
         InvestmentCard(
@@ -158,7 +169,8 @@ private fun BankNameCard(
     bankName: String,
     bankLogoUrl: String,
     invType: String,
-    insuredText: String
+    insuredText: String,
+    tags: List<String>
 ) {
     Box(
         modifier = Modifier
@@ -174,7 +186,7 @@ private fun BankNameCard(
             ) {
                 if (bankLogoUrl.isNotEmpty()) {
                     AsyncImage(
-                        model = bankLogoUrl, contentDescription = "Bank Logo",
+                        model = bankLogoUrl, contentDescription = stringResource(Res.string.bank_logo_desc),
                         modifier = Modifier
                             .size(Spacing.dp40)
                             .clip(RoundedCornerShape(Spacing.dp58))
@@ -215,7 +227,7 @@ private fun BankNameCard(
                         .padding(horizontal = Spacing.dp10, vertical = Spacing.dp4)
                 ) {
                     Text(
-                        "High Interest",
+                        tags.firstOrNull() ?: stringResource(Res.string.high_interest),
                         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
                         color = HighInterestTextColor
                     )
@@ -229,7 +241,7 @@ private fun BankNameCard(
                 Spacer(modifier = Modifier.size(Spacing.dp40))
                 Icon(
                     painter = painterResource(Res.drawable.insured_icon),
-                    contentDescription = "Insured",
+                    contentDescription = stringResource(Res.string.insured_icon_desc),
                     modifier = Modifier.size(Spacing.dp16),
                     tint = SelectedBoxBorder
                 )
@@ -264,7 +276,7 @@ fun InvestmentCard(amount: String, onAmountChange: (String) -> Unit) {
                 ),
                 leadingIcon = {
                     Text(
-                        "₹",
+                        stringResource(Res.string.rupee_symbol),
                         style = MaterialTheme.typography.headlineMedium
                     )
                 }
@@ -275,21 +287,21 @@ fun InvestmentCard(amount: String, onAmountChange: (String) -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
             ) {
                 AmountChip(
-                    amount = "10,000",
+                    amount = stringResource(Res.string.amount_10k),
                     onClick = {
                         onAmountChange(
                             (amount.toLongOrNull() ?: 0L).plus(10000).toString()
                         )
                     })
                 AmountChip(
-                    amount = "50,000",
+                    amount = stringResource(Res.string.amount_50k),
                     onClick = {
                         onAmountChange(
                             (amount.toLongOrNull() ?: 0L).plus(50000).toString()
                         )
                     })
                 AmountChip(
-                    amount = "1,00,000",
+                    amount = stringResource(Res.string.amount_1lakh),
                     onClick = {
                         onAmountChange(
                             (amount.toLongOrNull() ?: 0L).plus(100000).toString()
@@ -344,7 +356,7 @@ fun TenureCard(
                     style = MaterialTheme.typography.labelLarge
                 )
                 Text(
-                    text = "(Days)",
+                    text = stringResource(Res.string.days_unit),
                     style = MaterialTheme.typography.labelSmall,
                     color = GreyText
                 )
@@ -433,7 +445,7 @@ fun InterestPayoutCard(
                 trailingIcon = {
                     Icon(
                         painter = painterResource(Res.drawable.dropdown_outlined_icon),
-                        contentDescription = "Dropdown",
+                        contentDescription = stringResource(Res.string.dropdown_icon_desc),
                         tint = GreyText
                     )
                 },
@@ -576,7 +588,8 @@ fun SetInvestmentDetailsScreenPreview() {
             insuranceAmount = "₹5L",
             about = "HDFC FD.",
             keyFeatures = emptyList(),
-            faqs = emptyList()
+            faqs = emptyList(),
+            tags = listOf("High Interest", "DICGC Insured")
         )
 
         SetInvestmentDetailsScreen(

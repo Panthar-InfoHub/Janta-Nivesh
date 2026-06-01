@@ -19,7 +19,8 @@ data class FDDetailsDomain(
     val insuranceAmount: String,
     val about: String,
     val keyFeatures: List<KeyFeatureDomain>,
-    val faqs: List<FDFaqDomain>
+    val faqs: List<FDFaqDomain>,
+    val tags: List<String> = emptyList()
 )
 
 data class KeyFeatureDomain(
