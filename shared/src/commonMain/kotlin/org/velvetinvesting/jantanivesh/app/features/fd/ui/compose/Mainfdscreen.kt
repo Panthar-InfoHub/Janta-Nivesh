@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.active_count
@@ -110,7 +111,7 @@ fun FixedDepositsScreen(
             value = state.searchQuery,
             onValueChange = { onEvent(FixedDepositsEvent.OnSearchQueryChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Search FDs...") },
+            placeholder = { Text("Search FDs...", style = MaterialTheme.typography.labelMedium) },
             leadingIcon = {
                 Icon(
                     painterResource(Res.drawable.search_icon),
@@ -173,7 +174,7 @@ fun FixedDepositsScreen(
                 }
                 Text(
                     text = state.bestRateBank,
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     color = Primary
                 )
             }
@@ -221,15 +222,17 @@ fun FixedDepositsScreen(
         ) {
             Text(
                 text = stringResource(Res.string.explore_fds),
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             )
             Icon(
                 painter = painterResource(Res.drawable.arrow_front_icon),
                 contentDescription = "Explore More",
                 tint = SelectedBoxBorder,
                 modifier = Modifier
-                    .size(Spacing.dp22)
+                    .padding(end = Spacing.dp8) // Couldn't figure out an easier way
+                    .size(Spacing.dp16)
                     .clickable { onEvent(FixedDepositsEvent.OnExploreFdsArrowClicked) }
+
             )
         }
 
@@ -291,7 +294,7 @@ private fun FdListItem(
                         Text(
                             text = item.bankName.take(1) + item.bankName.substringAfter(" ")
                                 .take(1),
-                            style = MaterialTheme.typography.labelLarge,
+                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp),
                             color = Primary
                         )
                     }
@@ -323,7 +326,7 @@ private fun FdListItem(
                     Row(verticalAlignment = Alignment.Bottom) {
                         Text(
                             text = "${item.baseInterest}%",
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                             color = SelectedBoxBorder
                         )
                         Text(
@@ -337,12 +340,12 @@ private fun FdListItem(
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = stringResource(Res.string.tenure),
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.titleSmall,
                         color = GreyText
                     )
                     Text(
                         text = item.tenures.firstOrNull()?.tenureDays?.toString() ?: "N/A",
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     )
                 }
             }

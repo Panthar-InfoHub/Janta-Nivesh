@@ -3,6 +3,9 @@ package org.velvetinvesting.jantanivesh.app.features.fd.ui.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,10 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -78,12 +83,12 @@ fun SearchFundsScreen(
             value = state.searchQuery,
             onValueChange = { onEvent(ExploreFdEvent.OnSearchQueryChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Search FDs...") },
+            placeholder = { Text("Search FDs...", style = MaterialTheme.typography.labelMedium) },
             leadingIcon = {
                 Icon(
                     painterResource(Res.drawable.search_icon),
                     contentDescription = "Search",
-                    modifier = Modifier.size(Spacing.dp16),
+                    modifier = Modifier.size(Spacing.dp18),
                     tint = GreyText
                 )
             },
@@ -91,7 +96,7 @@ fun SearchFundsScreen(
                 Icon(
                     painterResource(Res.drawable.filter_icon),
                     contentDescription = "Search",
-                    modifier = Modifier.clickable(onClick = {  onEvent(ExploreFdEvent.OnFilterMenuClicked)  }),
+                    modifier = Modifier.size(Spacing.dp16).clickable(onClick = {  onEvent(ExploreFdEvent.OnFilterMenuClicked)  }),
                     tint = Primary
 
                 )
@@ -108,7 +113,7 @@ fun SearchFundsScreen(
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
         ) {
             FilterChip(
@@ -136,12 +141,12 @@ fun SearchFundsScreen(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                 Text(
                     text = stringResource(Res.string.top_funds),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.labelLarge,
                     color = Primary
                 )
                 Text(
                     text = "(${state.totalFundsCount})",
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.labelSmall,
                     color = GreyText
                 )
             }
@@ -153,14 +158,14 @@ fun SearchFundsScreen(
             ) {
                 Text(
                     text = state.sortOption,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelSmall,
                     color = SelectedBoxBorder
                 )
                 Icon(
                     painter = painterResource(Res.drawable.dropdown_icon),
                     contentDescription = "Sort Options",
                     tint = SelectedBoxBorder,
-                    modifier = Modifier.size(Spacing.dp8)
+                    modifier = Modifier.size(Spacing.dp8).clickable(onClick = {/*TODO implement dropdown menu*/})
                 )
             }
         }
@@ -201,11 +206,11 @@ fun SearchFundsScreen(
                             .background(color = White)
                             .border(1.dp, BoxBorder, RoundedCornerShape(Spacing.dp24))
                             .clickable { onEvent(ExploreFdEvent.OnLoadMoreClicked) }
-                            .padding(horizontal = Spacing.dp32, vertical = Spacing.dp12)
+                            .padding(horizontal = Spacing.dp24, vertical = Spacing.dp10)
                     ) {
                         Text(
                             text = stringResource(Res.string.load_more_funds),
-                            style = MaterialTheme.typography.labelMedium,
+                            style = MaterialTheme.typography.labelSmall,
                             color = Primary
                         )
                     }
@@ -227,7 +232,7 @@ private fun FilterChip(
             .clip(RoundedCornerShape(Spacing.dp24))
             .background(if (isSelected) Primary else FilterChipUnselected)
             .clickable { onClick() }
-            .padding(horizontal = Spacing.dp20, vertical = Spacing.dp12),
+            .padding(horizontal = Spacing.dp14, vertical = Spacing.dp8),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -307,7 +312,7 @@ private fun FundListItem(
                     color = Primary
                 )
                 Text(
-                    text = stringResource(Res.string.per_annum),
+                    text = stringResource(Res.string.per_annum), //TODO Implement return duration display
                     style = MaterialTheme.typography.titleSmall,
                     color = GreyText
                 )
@@ -316,8 +321,7 @@ private fun FundListItem(
     }
 }
 
-// --- PREVIEW ---
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 350)
 @Composable
 fun SearchFundsScreenPreview() {
     JantaNiveshTheme {
@@ -334,12 +338,13 @@ fun SearchFundsScreenPreview() {
                 tags = listOf("Public Bank")
             )
         )
-        SearchFundsScreen(
-            state = ExploreFdUiState(
-                fundsList = dummyData
-            ),
-            onEvent = {},
-            modifier = Modifier.background(PreviewBackground)
-        )
+            SearchFundsScreen(
+                state = ExploreFdUiState(
+                    fundsList = dummyData
+                ),
+                onEvent = {},
+                modifier = Modifier.background(PreviewBackground)
+            )
+
     }
 }
