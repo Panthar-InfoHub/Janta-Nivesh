@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,13 +19,15 @@ data class KYCImageUploaderUiState(
     val isLoading: Boolean = false,
     val userPhotoBytes: ByteArray? = null,
     val signatureBytes: ByteArray? = null,
+    val photoMimeType: String?= null,
+    val signatureMimeType: String?= null,
     val showSignatureSelector: Boolean = false,
     val showPhotoSelector: Boolean = false
 )
 
 sealed interface KYCImageUploaderEvent {
-    data class OnUserPhotoSelected(val bytes: ByteArray) : KYCImageUploaderEvent
-    data class OnSignatureSelected(val bytes: ByteArray) : KYCImageUploaderEvent
+    data class OnUserPhotoSelected(val bytes: ByteArray, val mimeType: String) : KYCImageUploaderEvent
+    data class OnSignatureSelected(val bytes: ByteArray, val mimeType: String) : KYCImageUploaderEvent
     data object OnUploadClicked : KYCImageUploaderEvent
     data object showSignatureSelector : KYCImageUploaderEvent
     data object showPhotoSelector : KYCImageUploaderEvent
@@ -54,6 +57,7 @@ class KYCImageUploaderScreenViewModel(
             is KYCImageUploaderEvent.OnUserPhotoSelected -> _uiState.update {
                 it.copy(
                     userPhotoBytes = event.bytes,
+                    photoMimeType = event.mimeType,
                     showPhotoSelector = false
                 )
             }
@@ -61,6 +65,7 @@ class KYCImageUploaderScreenViewModel(
             is KYCImageUploaderEvent.OnSignatureSelected -> _uiState.update {
                 it.copy(
                     signatureBytes = event.bytes,
+                    signatureMimeType = event.mimeType,
                     showSignatureSelector = false
                 )
             }
@@ -86,40 +91,110 @@ class KYCImageUploaderScreenViewModel(
     private fun uploadImages() {
         viewModelScope.launch {
             val state = _uiState.value
-            val userPhotoBytes = state.userPhotoBytes
-            val signatureBytes = state.signatureBytes
 
-            if (userPhotoBytes == null || signatureBytes == null) {
-                sendEffect(KYCImageUploaderEffect.ShowError("Please select both photo and signature"))
+            val photoBytes = state.userPhotoBytes ?: run {
+                sendEffect(
+                    KYCImageUploaderEffect.ShowError(
+                        "Please select both photo and signature"
+                    )
+                )
                 return@launch
             }
+
+            val signatureBytes = state.signatureBytes ?: run {
+                sendEffect(
+                    KYCImageUploaderEffect.ShowError(
+                        "Please select both photo and signature"
+                    )
+                )
+                return@launch
+            }
+
+            val photoMimeType = state.photoMimeType ?: "image/jpeg"
+            val signatureMimeType = state.signatureMimeType ?: "image/jpeg"
 
             _uiState.update { it.copy(isLoading = true) }
-            
-            // Upload User Photo
-            val photoResponse = uploadKycImageUseCase(userPhotoBytes, "image/jpeg")
-            if (photoResponse is NetworkResponse.Error) {
-                sendEffect(KYCImageUploaderEffect.ShowError("Photo upload failed: ${photoResponse.error.message}"))
-                _uiState.update { it.copy(isLoading = false) }
-                return@launch
+
+            try {
+                val photoDeferred = async {
+                    uploadKycImageUseCase(
+                        photoBytes,
+                        photoMimeType
+                    )
+                }
+
+                val signatureDeferred = async {
+                    uploadKycSignatureUseCase(
+                        signatureBytes,
+                        signatureMimeType
+                    )
+                }
+
+                val photoUploadResult = photoDeferred.await()
+                val signatureUploadResult = signatureDeferred.await()
+
+                if (photoUploadResult is NetworkResponse.Error) {
+                    sendEffect(
+                        KYCImageUploaderEffect.ShowError(
+                            photoUploadResult.error.message
+                        )
+                    )
+                    return@launch
+                }
+
+                if (signatureUploadResult is NetworkResponse.Error) {
+                    sendEffect(
+                        KYCImageUploaderEffect.ShowError(
+                            signatureUploadResult.error.message
+                        )
+                    )
+                    return@launch
+                }
+
+                val photoUrl =
+                    (photoUploadResult as NetworkResponse.Success).data
+
+                val signatureUrl =
+                    (signatureUploadResult as NetworkResponse.Success).data
+
+                val photoLinkResult =
+                    linkKycDocumentsUseCase(
+                        type = "photo",
+                        imgUrl = photoUrl
+                    )
+
+                if (photoLinkResult is NetworkResponse.Error) {
+                    sendEffect(
+                        KYCImageUploaderEffect.ShowError(
+                            photoLinkResult.error.message
+                        )
+                    )
+                    return@launch
+                }
+
+                val signatureLinkResult =
+                    linkKycDocumentsUseCase(
+                        type = "signature",
+                        imgUrl = signatureUrl
+                    )
+
+                if (signatureLinkResult is NetworkResponse.Error) {
+                    sendEffect(
+                        KYCImageUploaderEffect.ShowError(
+                            signatureLinkResult.error.message
+                        )
+                    )
+                    return@launch
+                }
+
+                sendEffect(
+                    KYCImageUploaderEffect.NavigateToContract
+                )
+            } finally {
+                _uiState.update {
+                    it.copy(isLoading = false)
+                }
             }
-            val photoUrl = (photoResponse as NetworkResponse.Success).data
-
-            // Upload Signature
-            val sigResponse = uploadKycSignatureUseCase(signatureBytes, "image/jpeg")
-            if (sigResponse is NetworkResponse.Error) {
-                sendEffect(KYCImageUploaderEffect.ShowError("Signature upload failed: ${sigResponse.error.message}"))
-                _uiState.update { it.copy(isLoading = false) }
-                return@launch
-            }
-            val sigUrl = (sigResponse as NetworkResponse.Success).data
-
-            // Link documents
-            linkKycDocumentsUseCase("identityVideo", photoUrl)
-            linkKycDocumentsUseCase("signature", sigUrl)
-
-            _uiState.update { it.copy(isLoading = false) }
-            sendEffect(KYCImageUploaderEffect.NavigateToContract)
         }
     }
 

@@ -48,6 +48,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.UploadBoxBackground
 import org.velvetinvesting.jantanivesh.app.core.theme.UploadBoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.ImageUploader
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
@@ -64,43 +65,56 @@ fun KycImageUploadScreen(
 
 
     val scope= rememberCoroutineScope()
-    if (state.showSignatureSelector) {
-        ImageUploader(
-            showGallery = state.showSignatureSelector,
-            onDismiss = {
-                onEvent(KYCImageUploaderEvent.hideSignatureSelector)
-            },
-            onSelected = {
-                it.fileSize?.let {size->
-                    if (size>5_242_880L) {
-                        scope.launch { SnackBarController.showError("File exceeds 5MB limit") }
-                        onEvent(KYCImageUploaderEvent.hideSignatureSelector)
-                        return@ImageUploader
+    ImageUploader(
+        showGallery = state.showSignatureSelector,
+        onDismiss = {
+            onEvent(KYCImageUploaderEvent.hideSignatureSelector)
+        },
+        onSelected = { photoResult ->
+            photoResult.fileSize?.let { size ->
+                if (size > 5_242_880L) {
+                    scope.launch {
+                        SnackBarController.showError("File exceeds 5MB limit")
                     }
+                    onEvent(KYCImageUploaderEvent.hideSignatureSelector)
+                    return@ImageUploader
                 }
-                onEvent(KYCImageUploaderEvent.OnSignatureSelected(it.loadBytes()))
             }
-        )
-    }
 
-    if (state.showPhotoSelector){
-        ImageUploader(
-            showGallery = state.showPhotoSelector,
-            onDismiss = {
-                onEvent(KYCImageUploaderEvent.hidePhotoSelector)
-            },
-            onSelected = {
-                it.fileSize?.let {size->
-                    if (size>5_242_880L) {
-                        scope.launch { SnackBarController.showError("File exceeds 5MB limit") }
-                        onEvent(KYCImageUploaderEvent.hidePhotoSelector)
-                        return@ImageUploader
+            onEvent(
+                KYCImageUploaderEvent.OnSignatureSelected(
+                    photoResult.loadBytes(),
+                    photoResult.mimeType ?:"image/jpeg"
+                )
+            )
+        }
+    )
+
+    ImageUploader(
+        showGallery = state.showPhotoSelector,
+        onDismiss = {
+            onEvent(KYCImageUploaderEvent.hidePhotoSelector)
+        },
+        onSelected = { photoResult ->
+            photoResult.fileSize?.let { size ->
+                if (size > 5_242_880L) {
+                    scope.launch {
+                        SnackBarController.showError("File exceeds 5MB limit")
                     }
+                    onEvent(KYCImageUploaderEvent.hidePhotoSelector)
+                    return@ImageUploader
                 }
-                onEvent(KYCImageUploaderEvent.OnUserPhotoSelected(it.loadBytes()))
             }
-        )
-    }
+
+            onEvent(
+                KYCImageUploaderEvent.OnUserPhotoSelected(
+                    photoResult.loadBytes(),
+                    photoResult.mimeType ?:"image/jpeg"
+
+                )
+            )
+        }
+    )
 
     Scaffold(
         bottomBar = {
@@ -113,7 +127,8 @@ fun KycImageUploadScreen(
                     .fillMaxWidth()
                     .padding(Spacing.dp24)
             )
-        }
+        },
+        containerColor = White
     ) { pv ->
         Column(
             modifier = Modifier

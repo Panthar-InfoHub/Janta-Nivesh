@@ -18,12 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.localization.LocalAppLanguageLocale
 import org.velvetinvesting.jantanivesh.app.core.localization.model.AppLanguage
 import org.velvetinvesting.jantanivesh.app.core.localization.repository.LanguageRepository
@@ -31,11 +28,6 @@ import org.velvetinvesting.jantanivesh.app.core.navigation.AppNavigation
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarType
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycFormScreen
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycImageUploadScreen
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenUiState
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderUiState
 
 @Composable
 fun App() {
@@ -97,14 +89,7 @@ fun App() {
                     }
                 }
             ) {
-//                AppNavigation()
-                val vm: KYCImageUploaderScreenViewModel = koinInject()
-                val state by vm.uiState.collectAsStateWithLifecycle()
-                KycImageUploadScreen(
-                    state = state,
-                    onEvent = vm::handleEvent,
-                    onBack = {}
-                )
+                AppNavigation()
             }
         }
     }

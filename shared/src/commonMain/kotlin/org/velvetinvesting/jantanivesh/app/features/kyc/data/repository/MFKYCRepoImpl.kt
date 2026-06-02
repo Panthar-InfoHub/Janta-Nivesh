@@ -109,7 +109,7 @@ class MFKYCRepoImpl(
                                     append(HttpHeaders.ContentType, mimeType)
                                     append(
                                         HttpHeaders.ContentDisposition,
-                                        "form-data; name=\"file\"; filename=\"signature.jpg\""
+                                        "form-data; name=\"file\"; filename=\"image.jpg\""
                                     )
                                 }
                             )

@@ -10,21 +10,26 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.FinalizeKycUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.GetContractPdfUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.GetESignUrlUseCase
 
 data class KycContractUiState(
-    val isLoading: Boolean = false,
+    val isContractLoading: Boolean = false,
+    val isSubmitLoading: Boolean = false,
     val contractPdfUrl: String? = null,
-    val eSignUrl: String? = null,
-    val isKycFinalized: Boolean = false
+    val isMarkedAsRead: Boolean = false,
+    val isKycFinalized: Boolean = false,
+    val showError: Boolean = false,
+    val errorMessage: String = ""
 )
 
 sealed interface KycContractEvent {
     data object OnLoadContract : KycContractEvent
     data object OnStartESignClicked : KycContractEvent
     data object OnESignCompleted : KycContractEvent
+    data object OnToggleMarkedAsRead : KycContractEvent
 }
 
 sealed interface KycContractEffect {
@@ -45,58 +50,140 @@ class KycContractViewModel(
     private val _effect = Channel<KycContractEffect>()
     val effect = _effect.receiveAsFlow()
 
+    init {
+        handleEvent(KycContractEvent.OnLoadContract)
+    }
+
     fun handleEvent(event: KycContractEvent) {
         when (event) {
             KycContractEvent.OnLoadContract -> loadContractPdf()
             KycContractEvent.OnStartESignClicked -> loadESignUrl()
             KycContractEvent.OnESignCompleted -> finalizeKyc()
+
+            KycContractEvent.OnToggleMarkedAsRead -> {
+                _uiState.update {
+                    it.copy(
+                        isMarkedAsRead = !it.isMarkedAsRead
+                    )
+                }
+            }
         }
     }
 
     private fun loadContractPdf() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+
+            _uiState.update {
+                it.copy(isContractLoading = true)
+            }
+
             when (val response = getContractPdfUseCase()) {
+
                 is NetworkResponse.Success -> {
-                    _uiState.update { it.copy(contractPdfUrl = response.data) }
+                    _uiState.update {
+                        it.copy(
+                            contractPdfUrl = response.data,
+                            isContractLoading = false
+                        )
+                    }
                 }
+
                 is NetworkResponse.Error -> {
-                    sendEffect(KycContractEffect.ShowError(response.error.message))
+                    _uiState.update {
+                        it.copy(isContractLoading = false,
+                            showError = true,
+                            errorMessage = response.error.message)
+                    }
                 }
             }
-            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
     private fun loadESignUrl() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+
+            _uiState.update {
+                it.copy(isSubmitLoading = true)
+            }
+
             when (val response = getESignUrlUseCase()) {
+
                 is NetworkResponse.Success -> {
-                    _uiState.update { it.copy(eSignUrl = response.data) }
-                    sendEffect(KycContractEffect.OpenBrowser(response.data))
+
+                    _uiState.update {
+                        it.copy(isSubmitLoading = false)
+                    }
+
+                    sendEffect(
+                        KycContractEffect.OpenBrowser(
+                            response.data
+                        )
+                    )
                 }
+
                 is NetworkResponse.Error -> {
-                    sendEffect(KycContractEffect.ShowError(response.error.message))
+
+                    _uiState.update {
+                        it.copy(isSubmitLoading = false)
+                    }
+
+                    sendEffect(
+                        KycContractEffect.ShowError(
+                            response.error.message
+                        )
+                    )
                 }
             }
-            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
     private fun finalizeKyc() {
+
+        val existingPdfUrl = _uiState.value.contractPdfUrl
+
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+
+            _uiState.update {
+                it.copy(
+                    isContractLoading = true
+                )
+            }
+
             when (val response = finalizeKycUseCase()) {
+
                 is NetworkResponse.Success -> {
-                    _uiState.update { it.copy(isKycFinalized = true) }
-                    sendEffect(KycContractEffect.NavigateToSuccess)
+
+                    AppEventsController.sendHomeRefreshEvent()
+
+                    _uiState.update {
+                        it.copy(
+                            isContractLoading = false,
+                            contractPdfUrl = existingPdfUrl,
+                            isKycFinalized = true
+                        )
+                    }
+
+                    sendEffect(
+                        KycContractEffect.NavigateToSuccess
+                    )
                 }
+
                 is NetworkResponse.Error -> {
-                    sendEffect(KycContractEffect.ShowError(response.error.message))
+
+                    _uiState.update {
+                        it.copy(
+                            isContractLoading = false,
+                            contractPdfUrl = existingPdfUrl
+                        )
+                    }
+
+                    sendEffect(
+                        KycContractEffect.ShowError(
+                            response.error.message
+                        )
+                    )
                 }
             }
-            _uiState.update { it.copy(isLoading = false) }
         }
     }
 

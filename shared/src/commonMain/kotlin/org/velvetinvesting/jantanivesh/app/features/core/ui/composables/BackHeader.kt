@@ -29,7 +29,7 @@ fun BackHeader(
         AppBackButton(onClick = onBack)
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.Center)
         )

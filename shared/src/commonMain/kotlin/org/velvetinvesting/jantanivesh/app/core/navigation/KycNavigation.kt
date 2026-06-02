@@ -9,22 +9,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.viewmodel.koinViewModel
+import org.velvetinvesting.jantanivesh.app.core.utils.AppBackHandler
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycContractScreen
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycFormScreen
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycIntroScreen
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEffect
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEvent
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenViewModel
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenViewModel
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenEvent
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycSuccessScreen
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenEffect
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderEvent
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderEffect
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractViewModel
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractEvent
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEffect
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractEffect
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractEvent
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractViewModel
 
 @Composable
 fun KycNavigation(
@@ -95,7 +95,9 @@ fun KycNavigation(
                 viewModel.effect.collect { effect ->
                     when (effect) {
                         KYCImageUploaderEffect.NavigateToContract -> navController.navigate(Route.KycContract)
-                        is KYCImageUploaderEffect.ShowError -> { /* Show error */ }
+                        is KYCImageUploaderEffect.ShowError -> {
+                            SnackBarController.showError(effect.message)
+                        }
                     }
                 }
             }
@@ -109,26 +111,45 @@ fun KycNavigation(
         composable<Route.KycContract> {
             val viewModel: KycContractViewModel = koinViewModel()
             val state by viewModel.uiState.collectAsStateWithLifecycle()
+            val browserReturnLauncher = rememberBrowserReturnLauncher()
 
             LaunchedEffect(viewModel.effect) {
                 viewModel.effect.collect { effect ->
                     when (effect) {
-                        is KycContractEffect.OpenBrowser -> uriHandler.openUri(effect.url)
-                        KycContractEffect.NavigateToSuccess -> navController.navigate(Route.KycSuccess)
-                        is KycContractEffect.ShowError -> { /* Show error */ }
+
+                        is KycContractEffect.OpenBrowser -> {
+                            browserReturnLauncher.launch(
+                                url = effect.url,
+                                onReturn = {
+                                   viewModel.handleEvent(KycContractEvent.OnESignCompleted)
+                                }
+                            )
+                        }
+
+                        KycContractEffect.NavigateToSuccess -> {
+                            navController.navigate(Route.KycSuccess)
+                        }
+
+                        is KycContractEffect.ShowError -> {
+                            SnackBarController.showError(effect.message)
+                        }
                     }
+
                 }
             }
 
-            org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycContractScreen(
+            KycContractScreen(
                 state = state,
                 onEvent = viewModel::handleEvent,
                 onBack = { navController.popBackStack() }
             )
         }
         composable<Route.KycSuccess> {
-            org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycSuccessScreen(
-                onCompleted = onCompleted
+            AppBackHandler(enabled = true) {
+                onBackNavigation()
+            }
+            KycSuccessScreen(
+                onCompleted = onBackNavigation
             )
         }
     }

@@ -102,7 +102,7 @@ data class ImageFileDto(
 @Serializable
 data class UrlUploadBodyDto(
     val type: String,
-    val imgUrl: String
+    val img_url: String
 )
 
 @Serializable
