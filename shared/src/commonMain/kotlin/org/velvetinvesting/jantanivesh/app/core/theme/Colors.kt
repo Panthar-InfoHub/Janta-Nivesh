@@ -27,3 +27,7 @@ val Black = Color(0xff000000)
 val TextFieldBorder = Color(0xff00AEEF)
 val ButtonShadow = Color(0x03144F26)
 val TextBlack = Color(0xff191C1D)
+
+// Verification Screen Colors
+val UploadBoxBackground = Color(0xffEFEDF3)
+val UploadBoxBorder = Color(0xffDDE1FF)

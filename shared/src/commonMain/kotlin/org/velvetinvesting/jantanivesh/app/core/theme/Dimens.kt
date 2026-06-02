@@ -4,6 +4,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object Spacing {
+    val dp6: Dp =6.dp
+    val dp2: Dp = 2.dp
     val dp18: Dp = 18.dp
     val dp48: Dp = 48.dp
     val dp235: Dp = 235.dp
