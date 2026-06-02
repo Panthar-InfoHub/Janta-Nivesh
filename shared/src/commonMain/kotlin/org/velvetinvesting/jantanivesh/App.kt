@@ -12,6 +12,8 @@ import org.velvetinvesting.jantanivesh.app.core.localization.model.AppLanguage
 import org.velvetinvesting.jantanivesh.app.core.localization.repository.LanguageRepository
 import org.velvetinvesting.jantanivesh.app.core.navigation.AppNavigation
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycFormScreen
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenUiState
 
 @Composable
 fun App() {
@@ -25,7 +27,12 @@ fun App() {
         LocalAppLanguageLocale provides currentLanguage.code
     ) {
         JantaNiveshTheme {
-            AppNavigation()
+            //AppNavigation()
+            KycFormScreen(
+                state = KYCFormScreenUiState(),
+                onEvent = {},
+                onBack = {},
+            )
         }
     }
 }

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.dob_dropdown_icon
+import jantanivesh.shared.generated.resources.dropdown_icon
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Border
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
@@ -169,7 +170,7 @@ private fun GenericDropDownHeader(value:String, placeHolder: String, onClick: ()
             modifier = Modifier.weight(1f).padding(start = 16.dp)
         )
         Icon(
-            painter = painterResource(Res.drawable.dob_dropdown_icon),
+            painter = painterResource(Res.drawable.dropdown_icon),
             contentDescription = null,
             modifier = Modifier.padding(end = 24.dp).rotate(animatedIcon),
             tint = Primary

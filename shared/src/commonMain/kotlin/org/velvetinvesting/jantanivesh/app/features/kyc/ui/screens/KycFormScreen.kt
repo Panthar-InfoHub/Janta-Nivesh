@@ -295,30 +295,14 @@ fun KycFormScreen(
                             "Gender/ (लिंग)",
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                         )
-                        AppTextField(
+                        DropDownSelector(
                             value = state.formState.gender,
-                            onValueChange = {},
-                            placeholder = {
-                                Text(
-                                    "Select gender",
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
-                                    color = TextBlack
-                                )
-                            },
-                            readOnly = true,
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = { /* TODO: Open Gender Dropdown */ },
-                                    modifier = Modifier.padding(end = Spacing.dp8)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.dropdown_icon),
-                                        contentDescription = "Dropdown Icon",
-                                        modifier = Modifier.size(Spacing.dp12)
-                                    )
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
+                            onValueChange = { onEvent(KYCFormScreenEvent.OnGenderChanged(it.code)) },
+                            label = "",
+                            list = Gender.entries,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeHolder = "Select gender",
+                            textConvertor = { it.displayName }
                         )
                     }
 
@@ -327,30 +311,14 @@ fun KycFormScreen(
                             "Marital Status/ (वैवाहिक स्थिति)",
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                         )
-                        AppTextField(
+                        DropDownSelector(
                             value = state.formState.maritalStatus,
-                            onValueChange = {},
-                            placeholder = {
-                                Text(
-                                    "Select status",
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
-                                    color = TextBlack
-                                )
-                            },
-                            readOnly = true,
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = { /* TODO: Open Marital Status Dropdown */ },
-                                    modifier = Modifier.padding(end = Spacing.dp8)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.dropdown_icon),
-                                        contentDescription = "Dropdown Icon",
-                                        modifier = Modifier.size(Spacing.dp12)
-                                    )
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
+                            onValueChange = { onEvent(KYCFormScreenEvent.OnMaritalStatusChanged(it.displayName)) },
+                            label = "",
+                            list = MaritalStatus.entries,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeHolder = "Select status",
+                            textConvertor = { it.displayName }
                         )
                     }
                 }
@@ -383,30 +351,14 @@ fun KycFormScreen(
                             "Title/ (शीर्षक)",
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                         )
-                        AppTextField(
+                        DropDownSelector(
                             value = state.formState.fatherTitle,
-                            onValueChange = {},
-                            placeholder = {
-                                Text(
-                                    "Select title",
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
-                                    color = TextBlack
-                                )
-                            },
-                            readOnly = true,
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = { /* TODO: Open Title Dropdown */ },
-                                    modifier = Modifier.padding(end = Spacing.dp8)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.dropdown_icon),
-                                        contentDescription = "Dropdown Icon",
-                                        modifier = Modifier.size(Spacing.dp12)
-                                    )
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
+                            onValueChange = { /* TODO: Add OnTitleChanged event to ViewModel */ },
+                            label = "",
+                            list = listOf("Mr.", "Mrs.", "Ms."),
+                            modifier = Modifier.fillMaxWidth(),
+                            placeHolder = "Select title",
+                            textConvertor = { it }
                         )
                     }
 
@@ -457,30 +409,14 @@ fun KycFormScreen(
                             "Occupation/ (पेशा)",
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                         )
-                        AppTextField(
+                        DropDownSelector(
                             value = state.formState.occupationDescription,
-                            onValueChange = {},
-                            placeholder = {
-                                Text(
-                                    "Select occupation",
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
-                                    color = TextBlack
-                                )
-                            },
-                            readOnly = true,
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = { /* TODO: Open Occupation Dropdown */ },
-                                    modifier = Modifier.padding(end = Spacing.dp8)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.dropdown_icon),
-                                        contentDescription = "Dropdown Icon",
-                                        modifier = Modifier.size(Spacing.dp12)
-                                    )
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
+                            onValueChange = { onEvent(KYCFormScreenEvent.OnOccupationChanged(it.displayName, it.code)) },
+                            label = "",
+                            list = OccupationType.entries,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeHolder = "Select occupation",
+                            textConvertor = { it.displayName }
                         )
                     }
                 }
