@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.core.composables
+package org.velvetinvesting.jantanivesh.app.features.core.ui.composables
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState

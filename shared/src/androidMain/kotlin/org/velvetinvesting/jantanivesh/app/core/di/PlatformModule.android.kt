@@ -7,6 +7,8 @@ import org.velvetinvesting.jantanivesh.app.core.platform.AndroidSharedPreference
 import org.velvetinvesting.jantanivesh.app.core.platform.PdfViewer
 import org.velvetinvesting.jantanivesh.app.core.platform.PdfViewerAndroid
 import org.velvetinvesting.jantanivesh.app.core.platform.SharedPreference
+import org.velvetinvesting.jantanivesh.app.core.utils.AndroidBrowserLauncher
+import org.velvetinvesting.jantanivesh.app.core.utils.BrowserLauncher
 import org.velvetinvesting.jantanivesh.app.core.utils.deviceinfo.DeviceInfoRetriever
 import org.velvetinvesting.jantanivesh.app.core.utils.deviceinfo.DeviceInfoRetrieverAndroid
 
@@ -15,4 +17,5 @@ actual val platformModule: Module = module{
     single<SharedPreference> { AndroidSharedPreferences(get()) }
     single<DeviceInfoRetriever> { DeviceInfoRetrieverAndroid(get()) }
     single<PdfViewer> { PdfViewerAndroid(get()) }
+    single<BrowserLauncher> { AndroidBrowserLauncher(get()) }
 }

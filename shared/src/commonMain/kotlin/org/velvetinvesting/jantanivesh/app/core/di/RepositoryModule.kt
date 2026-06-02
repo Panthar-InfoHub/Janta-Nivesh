@@ -6,7 +6,9 @@ import org.velvetinvesting.jantanivesh.app.core.localization.repository.Language
 import org.velvetinvesting.jantanivesh.app.core.localization.repository.LanguageRepositoryImpl
 import org.velvetinvesting.jantanivesh.app.core.networking.getHttpClient
 import org.velvetinvesting.jantanivesh.app.features.core.data.local.repository.AuthPrefsImpl
+import org.velvetinvesting.jantanivesh.app.features.core.data.remote.repository.UserDataRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
 import org.velvetinvesting.jantanivesh.app.features.login.data.repository.UserAuthenticationRepo
 import org.velvetinvesting.jantanivesh.app.features.login.domain.repository.UserAuth
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.remote.repository.OnboardingRepoImpl
@@ -21,4 +23,5 @@ val repositoryModule = module {
     single<UserAuth> { UserAuthenticationRepo(get(), get(), get()) }
     single<OnboardingRepo> { OnboardingRepoImpl(get(), get()) }
     single<MFKYCRepository> { MFKYCRepoImpl(get()) }
+    single<UserDataRepo> { UserDataRepoImpl(get()) }
 }

@@ -17,13 +17,19 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKy
 data class KYCImageUploaderUiState(
     val isLoading: Boolean = false,
     val userPhotoBytes: ByteArray? = null,
-    val signatureBytes: ByteArray? = null
+    val signatureBytes: ByteArray? = null,
+    val showSignatureSelector: Boolean = false,
+    val showPhotoSelector: Boolean = false
 )
 
 sealed interface KYCImageUploaderEvent {
     data class OnUserPhotoSelected(val bytes: ByteArray) : KYCImageUploaderEvent
     data class OnSignatureSelected(val bytes: ByteArray) : KYCImageUploaderEvent
     data object OnUploadClicked : KYCImageUploaderEvent
+    data object showSignatureSelector : KYCImageUploaderEvent
+    data object showPhotoSelector : KYCImageUploaderEvent
+    data object hideSignatureSelector : KYCImageUploaderEvent
+    data object hidePhotoSelector : KYCImageUploaderEvent
 }
 
 sealed interface KYCImageUploaderEffect {
@@ -45,9 +51,35 @@ class KYCImageUploaderScreenViewModel(
 
     fun handleEvent(event: KYCImageUploaderEvent) {
         when (event) {
-            is KYCImageUploaderEvent.OnUserPhotoSelected -> _uiState.update { it.copy(userPhotoBytes = event.bytes) }
-            is KYCImageUploaderEvent.OnSignatureSelected -> _uiState.update { it.copy(signatureBytes = event.bytes) }
+            is KYCImageUploaderEvent.OnUserPhotoSelected -> _uiState.update {
+                it.copy(
+                    userPhotoBytes = event.bytes,
+                    showPhotoSelector = false
+                )
+            }
+
+            is KYCImageUploaderEvent.OnSignatureSelected -> _uiState.update {
+                it.copy(
+                    signatureBytes = event.bytes,
+                    showSignatureSelector = false
+                )
+            }
+
             KYCImageUploaderEvent.OnUploadClicked -> uploadImages()
+            KYCImageUploaderEvent.showSignatureSelector -> _uiState.update {
+                it.copy(
+                    showSignatureSelector = true
+                )
+            }
+
+            KYCImageUploaderEvent.showPhotoSelector -> _uiState.update { it.copy(showPhotoSelector = true) }
+            KYCImageUploaderEvent.hideSignatureSelector -> _uiState.update {
+                it.copy(
+                    showSignatureSelector = false
+                )
+            }
+
+            KYCImageUploaderEvent.hidePhotoSelector -> _uiState.update { it.copy(showPhotoSelector = false) }
         }
     }
 

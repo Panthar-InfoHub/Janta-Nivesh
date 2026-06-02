@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.core.di
 
 import org.koin.dsl.module
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.FinalizeKycUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.GetContractPdfUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.GetDigiLockerDetailsUseCase
@@ -18,6 +19,7 @@ val useCaseModule = module {
     factory { LoginWithNumberUseCase(get()) }
     factory { VerifyOTPUseCase(get()) }
     factory { OnboardUserUseCase(get()) }
+    factory { GetUserDataUseCase(get()) }
 
     // KYC UseCases
     factory { InitiateKycUseCase(get()) }

@@ -48,8 +48,8 @@ import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpUiState
 

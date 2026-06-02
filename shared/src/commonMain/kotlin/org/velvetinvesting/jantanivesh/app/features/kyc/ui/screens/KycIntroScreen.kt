@@ -3,11 +3,9 @@ package org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,56 +27,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.kyc_image
 import jantanivesh.shared.generated.resources.lock_icon
-import jantanivesh.shared.generated.resources.plain_credit_card_rafiki_1
 import jantanivesh.shared.generated.resources.receipt_icon
 import jantanivesh.shared.generated.resources.rupee_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.GrayBackGround
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.BackHeader
-import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
+import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenUiState
-
-@Preview(heightDp = 1000)
-@Composable
-fun KycIntroScreenPreview() {
-    JantaNiveshTheme{
-        KycIntroScreen(
-            state = KYCScreenUiState(),
-            onEvent = {},
-            onBack = {}
-        )
-    }
-}
-
-@Composable
-private fun LocalBackHeader(onBack: () -> Unit, title: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = Spacing.dp16),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
-    ) {
-        AppBackButton(onClick = onBack)
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
 
 @Composable
 fun KycIntroScreen(
@@ -87,13 +53,6 @@ fun KycIntroScreen(
     onBack: () -> Unit
 ) {
     Scaffold(
-        topBar = {
-            LocalBackHeader(
-                title = "KYC",
-                onBack = onBack,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp24)
-            )
-        },
         bottomBar = {
             AppButton(
                 text = "COMPLETE YOUR KYC  →",
@@ -101,66 +60,75 @@ fun KycIntroScreen(
                 loading = state.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(Spacing.dp24)
+                    .padding(Spacing.dp24),
             )
-        }
+        },
+        containerColor = White
     ) { pv ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(pv)
-                .padding(horizontal = Spacing.dp24),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                Image(
-                    painter = painterResource(Res.drawable.kyc_image),
-                    contentDescription = null,
-                    modifier = Modifier.size(Spacing.dp235),
-                    contentScale = ContentScale.FillWidth
-                )
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp12),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Complete your KYC",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        text = "Just a few steps to unlock your investment journey with Nivesh Sansar.",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = GreyText,
-                        textAlign = TextAlign.Center
+        Column(
+            modifier = Modifier.fillMaxSize().padding(pv)
+        ){
+            LocalBackHeader(
+                title = "KYC",
+                onBack = onBack,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp24)
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = Spacing.dp24),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    Image(
+                        painter = painterResource(Res.drawable.kyc_image),
+                        contentDescription = null,
+                        modifier = Modifier.size(Spacing.dp235),
+                        contentScale = ContentScale.FillWidth
                     )
                 }
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
-                ) {
-                    ZeroPriceCard(
-                        text = "₹ 0 Account Opening Fees",
-                        subText = "Start investing without any initial costs.",
-                        icon = Res.drawable.rupee_icon,
-                        modifier = Modifier.weight(1f).fillMaxWidth()
-                    )
-                    ZeroPriceCard(
-                        text = "₹ 0 Maintenance Charges",
-                        subText = "No hidden fees, keep what you earn.",
-                        icon = Res.drawable.receipt_icon,
-                        modifier = Modifier.weight(1f).fillMaxWidth()
-                    )
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp12),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Complete your KYC",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = "Just a few steps to unlock your investment journey with Nivesh Sansar.",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = GreyText,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
-            }
-            item{
-                EncryptedDataCard()
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
+                    ) {
+                        ZeroPriceCard(
+                            text = "₹ 0 Account Opening Fees",
+                            subText = "Start investing without any initial costs.",
+                            icon = Res.drawable.rupee_icon,
+                            modifier = Modifier.weight(1f).fillMaxWidth()
+                        )
+                        ZeroPriceCard(
+                            text = "₹ 0 Maintenance Charges",
+                            subText = "No hidden fees, keep what you earn.",
+                            icon = Res.drawable.receipt_icon,
+                            modifier = Modifier.weight(1f).fillMaxWidth()
+                        )
+                    }
+                }
+                item {
+                    EncryptedDataCard()
+                }
             }
         }
     }
@@ -170,25 +138,27 @@ fun KycIntroScreen(
 fun ZeroPriceCard(text: String, subText: String, icon: DrawableResource, modifier: Modifier) {
     Row(
         modifier = modifier
+            .genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .clip(RoundedCornerShape(Spacing.dp12))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)) // TODO Color modification to white
+            .background(Color.White)
             .padding(Spacing.dp22),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(icon),
             contentDescription = "Rupee Symbol",
-            tint = SelectedBoxBorder,
+            tint = Primary,
             modifier = Modifier
                 .size(Spacing.dp48)
                 .background(
-                    color = Color(0xFFEFEDF3), //   TODO Color modification
+                    color = GrayBackGround,
                     shape = CircleShape
                 )
                 .padding(Spacing.dp16)
         )
         Column(
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp4)
         ) {
             Text(
                 text = text,
@@ -232,5 +202,35 @@ fun EncryptedDataCard() {
                 style = MaterialTheme.typography.titleSmall
             )
         }
+    }
+}
+
+@Composable
+private fun LocalBackHeader(onBack: () -> Unit, title: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+    ) {
+        AppBackButton(onClick = onBack)
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+
+@Preview(heightDp = 1000)
+@Composable
+fun KycIntroScreenPreview() {
+    JantaNiveshTheme{
+        KycIntroScreen(
+            state = KYCScreenUiState(),
+            onEvent = {},
+            onBack = {}
+        )
     }
 }

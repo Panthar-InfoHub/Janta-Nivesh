@@ -19,7 +19,7 @@ val viewModelModule = module {
 
     viewModel { OnboardingViewModel(get()) }
     viewModel { KYCScreenViewModel(get(), get()) }
-    viewModel { KYCFormScreenViewModel(get(), get()) }
+    viewModel { KYCFormScreenViewModel(get(), get(),get()) }
     viewModel { KYCImageUploaderScreenViewModel(get(), get(), get()) }
     viewModel { KycContractViewModel(get(), get(), get()) }
 }

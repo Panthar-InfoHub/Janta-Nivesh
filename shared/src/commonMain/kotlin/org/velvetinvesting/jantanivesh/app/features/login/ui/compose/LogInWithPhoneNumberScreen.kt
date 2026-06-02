@@ -32,9 +32,9 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberUiState
 

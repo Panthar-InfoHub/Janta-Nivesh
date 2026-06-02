@@ -22,8 +22,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingUiState
 

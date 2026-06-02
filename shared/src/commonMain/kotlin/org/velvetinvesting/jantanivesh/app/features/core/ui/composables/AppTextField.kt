@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.core.composables
+package org.velvetinvesting.jantanivesh.app.features.core.ui.composables
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +10,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,8 +30,8 @@ object AppTextFieldDefaults {
     fun style(
         shape: Shape = LocalShapes.current.roundedDp12,
         textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
-        unfocusedBorderColor: androidx.compose.ui.graphics.Color = BoxBorder,
-        focusedBorderColor: androidx.compose.ui.graphics.Color = TextFieldBorder
+        unfocusedBorderColor: Color = BoxBorder,
+        focusedBorderColor: Color = TextFieldBorder
     ): AppTextFieldStyle {
         return AppTextFieldStyle(
             shape = shape,

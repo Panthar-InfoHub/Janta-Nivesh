@@ -32,7 +32,7 @@ fun AppNavigation() {
                     navController.navigate(Route.OnboardingGraph)
                 },
                 navigateToMainAppFlow = {
-                    navController.navigate(Route.MainAppFlow)
+                    navController.navigate(Route.KycGraph)
                 }
             )
         }
@@ -40,13 +40,14 @@ fun AppNavigation() {
         composable<Route.OnboardingGraph> { 
             OnboardingNavigation(
                 onCompleted = {
-                    navController.navigate(Route.MainAppFlow)
+                    navController.navigate(Route.KycGraph)
                 }
             )
         }
 
         composable<Route.KycGraph> {
             KycNavigation(
+                onBackNavigation = {navController.popBackStack()},
                 onCompleted = {
 
                 }

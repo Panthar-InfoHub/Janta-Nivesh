@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,13 +11,15 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.model.KycFormDataDomain
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.GetDigiLockerDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycFormDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.KycFormUiState
 
 data class KYCFormScreenUiState(
-    val isLoading: Boolean = false,
+    val isScreenLoading: Boolean = true,
+    val isButtonLoading: Boolean = false,
     val formState: KycFormUiState = KycFormUiState()
 )
 
@@ -34,12 +37,13 @@ sealed interface KYCFormScreenEvent {
 
 sealed interface KYCFormScreenEffect {
     data object NavigateToImageUpload : KYCFormScreenEffect
-    data class ShowError(val message: String) : KYCFormScreenEffect
+    data class ShowError(val message: String, val navigateBack: Boolean = false) : KYCFormScreenEffect
 }
 
 class KYCFormScreenViewModel(
     private val getDigiLockerDetailsUseCase: GetDigiLockerDetailsUseCase,
-    private val uploadKycFormDataUseCase: UploadKycFormDataUseCase
+    private val uploadKycFormDataUseCase: UploadKycFormDataUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(KYCFormScreenUiState())
@@ -82,28 +86,59 @@ class KYCFormScreenViewModel(
 
     private fun loadInitialData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            when (val response = getDigiLockerDetailsUseCase()) {
-                is NetworkResponse.Success -> {
-                    val details = response.data
-                    _uiState.update { 
-                        it.copy(
-                            formState = it.formState.copy(
-                                name = details.fullName,
-                                dob = details.dob,
-                                gender = details.gender,
-                                aadhaarNumber = details.uid
-                                // emailId and mobileNumber are not in DigiLockerDetailsDomain, 
-                                // they should be handled by another usecase if available
-                            )
-                        )
-                    }
-                }
-                is NetworkResponse.Error -> {
-                    sendEffect(KYCFormScreenEffect.ShowError(response.error.message))
-                }
+            _uiState.update { it.copy(isScreenLoading = true) }
+
+            val digiLockerDeferred = async { getDigiLockerDetailsUseCase() }
+            val userDataDeferred = async { getUserDataUseCase() }
+
+            val digiLockerResult = digiLockerDeferred.await()
+            val userDataResult = userDataDeferred.await()
+
+            if (digiLockerResult is NetworkResponse.Error) {
+                sendEffect(
+                    KYCFormScreenEffect.ShowError(
+                        digiLockerResult.error.message,
+                        true
+                    )
+                )
+                _uiState.update { it.copy(isScreenLoading = false) }
+                return@launch
             }
-            _uiState.update { it.copy(isLoading = false) }
+
+            if (userDataResult is NetworkResponse.Error) {
+                sendEffect(
+                    KYCFormScreenEffect.ShowError(
+                        userDataResult.error.message,
+                        true
+                    )
+                )
+                _uiState.update { it.copy(isScreenLoading = false) }
+                return@launch
+            }
+
+            val digiLockerData =
+                (digiLockerResult as NetworkResponse.Success).data
+
+            val userData =
+                (userDataResult as NetworkResponse.Success).data
+
+            _uiState.update {
+                it.copy(
+                    formState = it.formState.copy(
+                        name = digiLockerData.fullName,
+                        dob = digiLockerData.dob,
+                        gender = if (digiLockerData.gender == "MALE") "M" else "F",
+                        aadhaarNumber = digiLockerData.uid,
+
+                        emailId = userData.email,
+                        mobileNumber = userData.mobile,
+                    )
+                )
+            }
+
+            _uiState.update {
+                it.copy(isScreenLoading = false)
+            }
         }
     }
 
@@ -135,7 +170,7 @@ class KYCFormScreenViewModel(
                 residentialStatus = state.residentialStatus
             )
 
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isButtonLoading = true) }
             when (val response = uploadKycFormDataUseCase(formData)) {
                 is NetworkResponse.Success -> {
                     sendEffect(KYCFormScreenEffect.NavigateToImageUpload)
@@ -144,7 +179,7 @@ class KYCFormScreenViewModel(
                     sendEffect(KYCFormScreenEffect.ShowError(response.error.message))
                 }
             }
-            _uiState.update { it.copy(isLoading = false) }
+            _uiState.update { it.copy(isButtonLoading = false) }
         }
     }
 

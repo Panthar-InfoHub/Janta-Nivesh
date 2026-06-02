@@ -30,7 +30,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.AddYourEmailScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EnterNameFromPanScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EnterYourDOBScreen

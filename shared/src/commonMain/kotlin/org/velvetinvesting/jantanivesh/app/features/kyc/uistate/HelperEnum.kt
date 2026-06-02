@@ -5,7 +5,13 @@ enum class Gender(
     val displayName: String
 ) {
     MALE("M", "Male"),
-    FEMALE("F", "Female")
+    FEMALE("F", "Female");
+
+    companion object{
+        fun fromCode(code: String): Gender? {
+            return entries.find { it.code == code }
+        }
+    }
 }
 
 enum class MaritalStatus(
@@ -13,5 +19,5 @@ enum class MaritalStatus(
     val displayName: String,
 ) {
     MARRIED("MARRIED", "Married"),
-    UNMARRIED("UNMARRIED", "Unmarried")
+    UNMARRIED("UNMARRIED", "Unmarried");
 }

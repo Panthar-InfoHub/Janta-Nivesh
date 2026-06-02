@@ -49,7 +49,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageUiState
 

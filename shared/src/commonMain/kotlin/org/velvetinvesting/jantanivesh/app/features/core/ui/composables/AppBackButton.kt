@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.core.composables
+package org.velvetinvesting.jantanivesh.app.features.core.ui.composables
 
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Icon

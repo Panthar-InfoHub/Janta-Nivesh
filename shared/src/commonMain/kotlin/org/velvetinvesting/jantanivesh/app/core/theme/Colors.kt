@@ -31,3 +31,6 @@ val TextBlack = Color(0xff191C1D)
 // Verification Screen Colors
 val UploadBoxBackground = Color(0xffEFEDF3)
 val UploadBoxBorder = Color(0xffDDE1FF)
+
+val ShadowColor = Color(0xffDEE2F6).copy(alpha = 0.75f)
+val GrayBackGround = Color(0xffEFEDF3)

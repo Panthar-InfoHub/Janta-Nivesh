@@ -15,8 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.velvetinvesting.jantanivesh.app.core.platform.PdfViewer
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.TopAppBarWithBackButtonAndStepCount
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractUiState
 

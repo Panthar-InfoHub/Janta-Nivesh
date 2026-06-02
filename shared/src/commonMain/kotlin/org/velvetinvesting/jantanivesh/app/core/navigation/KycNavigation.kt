@@ -9,6 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.viewmodel.koinViewModel
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycFormScreen
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycIntroScreen
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEffect
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenViewModel
@@ -24,10 +28,12 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContrac
 
 @Composable
 fun KycNavigation(
+    onBackNavigation:() -> Unit,
     onCompleted: () -> Unit
 ) {
     val navController = rememberNavController()
     val uriHandler = LocalUriHandler.current
+    val browserLauncher = rememberBrowserReturnLauncher()
 
     NavHost(
         navController = navController,
@@ -40,17 +46,23 @@ fun KycNavigation(
             LaunchedEffect(viewModel.effect) {
                 viewModel.effect.collect { effect ->
                     when (effect) {
-                        is KYCScreenEffect.OpenBrowser -> uriHandler.openUri(effect.url)
+                        is KYCScreenEffect.OpenBrowser ->{
+                            browserLauncher.launch(effect.url) {
+                                navController.navigate(Route.KycForm)
+                            }
+                        }
                         KYCScreenEffect.NavigateToForm -> navController.navigate(Route.KycForm)
-                        is KYCScreenEffect.ShowError -> { /* Show error */ }
+                        is KYCScreenEffect.ShowError -> {
+                            SnackBarController.showError(effect.message)
+                        }
                     }
                 }
             }
 
-            org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycIntroScreen(
+            KycIntroScreen(
                 state = state,
                 onEvent = viewModel::handleEvent,
-                onBack = { /* Handle back */ }
+                onBack = onBackNavigation
             )
         }
         composable<Route.KycForm> {
@@ -61,12 +73,15 @@ fun KycNavigation(
                 viewModel.effect.collect { effect ->
                     when (effect) {
                         KYCFormScreenEffect.NavigateToImageUpload -> navController.navigate(Route.KycImageUpload)
-                        is KYCFormScreenEffect.ShowError -> { /* Show error */ }
+                        is KYCFormScreenEffect.ShowError -> {
+                            if (effect.navigateBack){ navController.popBackStack() }
+                            SnackBarController.showError(effect.message)
+                        }
                     }
                 }
             }
 
-            org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycFormScreen(
+            KycFormScreen(
                 state = state,
                 onEvent = viewModel::handleEvent,
                 onBack = { navController.popBackStack() }

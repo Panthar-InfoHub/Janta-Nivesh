@@ -20,7 +20,6 @@ data class KYCScreenUiState(
 
 sealed interface KYCScreenEvent {
     data object OnStartKycClicked : KYCScreenEvent
-    data object OnDigiLockerCompleted : KYCScreenEvent
 }
 
 sealed interface KYCScreenEffect {
@@ -43,7 +42,6 @@ class KYCScreenViewModel(
     fun handleEvent(event: KYCScreenEvent) {
         when (event) {
             KYCScreenEvent.OnStartKycClicked -> initiateKyc()
-            KYCScreenEvent.OnDigiLockerCompleted -> loadDigiLockerDetails()
         }
     }
 

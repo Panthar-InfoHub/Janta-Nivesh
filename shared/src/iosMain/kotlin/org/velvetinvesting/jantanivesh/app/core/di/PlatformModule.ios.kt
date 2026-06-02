@@ -7,6 +7,8 @@ import org.velvetinvesting.jantanivesh.app.core.platform.IosSharedPreferences
 import org.velvetinvesting.jantanivesh.app.core.platform.PdfViewer
 import org.velvetinvesting.jantanivesh.app.core.platform.PdfViewerIos
 import org.velvetinvesting.jantanivesh.app.core.platform.SharedPreference
+import org.velvetinvesting.jantanivesh.app.core.utils.BrowserLauncher
+import org.velvetinvesting.jantanivesh.app.core.utils.IOSBrowserLauncher
 import org.velvetinvesting.jantanivesh.app.core.utils.deviceinfo.DeviceInfoRetriever
 import org.velvetinvesting.jantanivesh.app.core.utils.deviceinfo.DeviceInfoRetrieverIos
 
@@ -15,4 +17,5 @@ actual val platformModule: Module = module {
     single<SharedPreference> { IosSharedPreferences() }
     single<DeviceInfoRetriever> { DeviceInfoRetrieverIos() }
     single<PdfViewer>{ PdfViewerIos() }
+    single<BrowserLauncher> { IOSBrowserLauncher() }
 }
