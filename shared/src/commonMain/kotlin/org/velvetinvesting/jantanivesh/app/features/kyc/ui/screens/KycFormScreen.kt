@@ -27,33 +27,20 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.calendar_icon_desc
 import jantanivesh.shared.generated.resources.dob_dropdown_icon
 import jantanivesh.shared.generated.resources.kyc_form_aadhaar_number_label
-import jantanivesh.shared.generated.resources.kyc_form_aadhaar_number_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_additional_details_title
 import jantanivesh.shared.generated.resources.kyc_form_basic_info_title
-import jantanivesh.shared.generated.resources.kyc_form_continue_button
 import jantanivesh.shared.generated.resources.kyc_form_dob_label
-import jantanivesh.shared.generated.resources.kyc_form_dob_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_email_address_label
-import jantanivesh.shared.generated.resources.kyc_form_email_address_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_father_name_label
-import jantanivesh.shared.generated.resources.kyc_form_father_name_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_full_name_label
-import jantanivesh.shared.generated.resources.kyc_form_full_name_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_gender_label
-import jantanivesh.shared.generated.resources.kyc_form_gender_placeholder
-import jantanivesh.shared.generated.resources.kyc_form_header_title
 import jantanivesh.shared.generated.resources.kyc_form_identity_details_title
 import jantanivesh.shared.generated.resources.kyc_form_marital_status_label
-import jantanivesh.shared.generated.resources.kyc_form_marital_status_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_mobile_number_label
 import jantanivesh.shared.generated.resources.kyc_form_mother_name_label
-import jantanivesh.shared.generated.resources.kyc_form_mother_name_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_occupation_label
-import jantanivesh.shared.generated.resources.kyc_form_occupation_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_pan_number_label
-import jantanivesh.shared.generated.resources.kyc_form_pan_number_placeholder
 import jantanivesh.shared.generated.resources.kyc_form_place_of_birth_label
-import jantanivesh.shared.generated.resources.kyc_form_place_of_birth_placeholder
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
@@ -336,10 +323,9 @@ private fun FormContent(
                     DropDownSelector(
                         value = Gender.fromCode(state.formState.gender)?.displayName ?: "",
                         onValueChange = { onEvent(KYCFormScreenEvent.OnGenderChanged(it.code)) },
-                        label = "",
                         list = Gender.entries,
                         modifier = Modifier.fillMaxWidth(),
-                        placeHolder = "Select gender",
+                        placeholder = "Select gender",
                         textConvertor = { it.displayName }
                     )
                 }
@@ -358,10 +344,9 @@ private fun FormContent(
                                 )
                             )
                         },
-                        label = "",
                         list = MaritalStatus.entries,
                         modifier = Modifier.fillMaxWidth(),
-                        placeHolder = "Select status",
+                        placeholder = "Select status",
                         textConvertor = { it.displayName }
                     )
                 }
@@ -448,10 +433,9 @@ private fun FormContent(
                                 )
                             )
                         },
-                        label = "",
                         list = OccupationType.entries,
                         modifier = Modifier.fillMaxWidth(),
-                        placeHolder = "Select occupation",
+                        placeholder = "Select occupation",
                         textConvertor = { it.displayName }
                     )
                 }

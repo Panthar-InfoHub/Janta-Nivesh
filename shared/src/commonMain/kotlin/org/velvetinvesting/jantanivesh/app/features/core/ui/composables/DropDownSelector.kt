@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
@@ -33,45 +35,63 @@ import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Border
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 
 @Composable
 fun <T> DropDownSelector(
+    title: String = "",
     value: String,
     onValueChange: (T) -> Unit,
-    placeHolder: String,
+    placeholder: String,
     mandatory: Boolean = false,
-    label: String,
     modifier: Modifier = Modifier,
     list: List<T>,
     textConvertor: (T) -> String
 ) {
     var extended by remember { mutableStateOf(false) }
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(15.dp))
-            .background(Color.White, RoundedCornerShape(15.dp))
-            .border(
-                width = 0.7.dp,
-                shape = RoundedCornerShape(15.dp),
-                color = BoxBorder
-            )
-            .animateContentSize()
-    ) {
-        GenericDropDownHeader(
-            value = value,
-            placeHolder = placeHolder,
-            onClick = { extended = !extended },
-            extended = extended
-        )
-        if (extended) {
-            GenericDropDownContent(
-                list = list,
-                textConvertor = textConvertor,
-                onSelected = { it ->
-                    onValueChange(it)
-                    extended = false
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8), modifier = modifier) {
+        if (title.isNotEmpty()) {
+            Row(verticalAlignment = Alignment.Top) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
+                    color = Color(0xff44464F)
+                )
+                if (mandatory) {
+                    Text(
+                        text = "*",
+                        color = MaterialTheme.colorScheme.error,
+                    )
                 }
+            }
+        }
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(15.dp))
+                .background(Color.White, RoundedCornerShape(15.dp))
+                .border(
+                    width = 0.7.dp,
+                    shape = RoundedCornerShape(15.dp),
+                    color = BoxBorder
+                )
+                .animateContentSize()
+        ) {
+            GenericDropDownHeader(
+                value = value,
+                placeHolder = placeholder,
+                onClick = { extended = !extended },
+                extended = extended
             )
+            if (extended) {
+                GenericDropDownContent(
+                    list = list,
+                    textConvertor = textConvertor,
+                    onSelected = { it ->
+                        onValueChange(it)
+                        extended = false
+                    }
+                )
+            }
         }
     }
 }

@@ -25,13 +25,18 @@ fun TopAppBarWithBackButtonAndStepCount(
     stepCount: Int,
     totalSteps: Int,
     onBack: () -> Unit,
+    title: String = "",
     modifier: Modifier= Modifier
 ) {
     Column(modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
-        AppBackButton(
-            onClick = onBack,
-        )
+        if(title.isNotEmpty()){
+            BackHeader(title = title, onBack = onBack)
+        }else {
+            AppBackButton(
+                onClick = onBack,
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
