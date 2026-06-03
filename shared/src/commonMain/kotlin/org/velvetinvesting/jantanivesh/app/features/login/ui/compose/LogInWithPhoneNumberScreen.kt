@@ -35,6 +35,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberUiState
 
@@ -106,18 +107,8 @@ fun LoginWithPhoneNumberScreen(
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = Spacing.dp16),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(Res.drawable.jantanivesh_logo),
-                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(Spacing.dp58)
-                )
-            }
+            JantaNiveshAndVelvetLogo()
+
         }
     }
 }

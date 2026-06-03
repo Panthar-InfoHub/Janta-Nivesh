@@ -30,6 +30,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.AddYourEmailScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EnterNameFromPanScreen
@@ -149,18 +150,7 @@ fun OnboardingNavigation(
             }
 
             //App Identifier
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = Spacing.dp16),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(Res.drawable.jantanivesh_logo),
-                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(Spacing.dp58)
-                )
-            }
+            JantaNiveshAndVelvetLogo()
         }
     }
 }

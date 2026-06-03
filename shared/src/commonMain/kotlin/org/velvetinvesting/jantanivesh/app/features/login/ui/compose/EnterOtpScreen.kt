@@ -50,6 +50,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpUiState
 
@@ -121,19 +122,7 @@ fun EnterOtpScreen(
                     modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
                 )
             }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = Spacing.dp16),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(Res.drawable.jantanivesh_logo),
-                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(Spacing.dp58)
-                )
-            }
+            JantaNiveshAndVelvetLogo()
         }
     }
 }

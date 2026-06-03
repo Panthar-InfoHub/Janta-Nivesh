@@ -50,6 +50,8 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.PoweredByVelvet
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageUiState
 
@@ -154,19 +156,7 @@ fun OnboardingChooseLanguage(
                 loading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = Spacing.dp16),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(Res.drawable.jantanivesh_logo),
-                    contentDescription = stringResource(Res.string.janta_nivesh_logo_desc),
-                    modifier = Modifier.height(Spacing.dp58)
-                )
-            }
+            JantaNiveshAndVelvetLogo()
         }
     }
 }
