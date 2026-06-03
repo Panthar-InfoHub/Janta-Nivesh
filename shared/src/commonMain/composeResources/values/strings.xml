@@ -15,6 +15,11 @@
     <string name="janta_nivesh_logo_desc">Janta Nivesh Logo</string>
     <string name="tick_icon_desc">tick icon</string>
 
+    <string name="rupee_symbol_desc">Rupee Symbol</string>
+    <string name="security_lock_desc">Security Lock</string>
+    <string name="selected_desc">Selected</string>
+    <string name="calendar_icon_desc">Calendar Icon</string>
+
     <!-- LogInWithPhoneNumberScreen -->
     <string name="login_mobile_number">Log in with your mobile number</string>
     <string name="otp_verify_identity">We\'ll send a 4 digit OTP to verify your identity</string>
@@ -43,4 +48,72 @@
     <string name="skip">Skip</string>
     <string name="transaction_updates">We’ll send transaction updates here</string>
     <string name="email_placeholder">@gmail.com</string>
+
+    <!-- KYC Intro Screen -->
+    <string name="kyc_intro_button_text">COMPLETE YOUR KYC  →</string>
+    <string name="kyc_intro_header_title">KYC</string>
+    <string name="kyc_intro_title">Complete your KYC</string>
+    <string name="kyc_intro_subtitle">Just a few steps to unlock your investment journey with Nivesh Sansar.</string>
+    <string name="kyc_intro_account_opening_fee">₹ 0 Account Opening Fees</string>
+    <string name="kyc_intro_account_opening_fee_subtitle">Start investing without any initial costs.</string>
+    <string name="kyc_intro_maintenance_charges">₹ 0 Maintenance Charges</string>
+    <string name="kyc_intro_maintenance_charges_subtitle">No hidden fees, keep what you earn.</string>
+    <string name="kyc_intro_encrypted_data_title">Your data is encrypted and secure</string>
+    <string name="kyc_intro_encrypted_data_subtitle">We use bank-level encryption to ensure your personal information remains completely confidential.</string>
+
+    <!-- KYC Contract Screen -->
+    <string name="kyc_contract_complete_button">Complete KYC</string>
+    <string name="kyc_contract_header_title">KYC Confirmation</string>
+    <string name="kyc_contract_view_doc_title">View KYC Document</string>
+    <string name="kyc_contract_view_doc_subtitle">Tap to preview your KYC verification document and ensure all information is correct.</string>
+    <string name="kyc_contract_preview_button">PREVIEW DOCUMENT</string>
+    <string name="kyc_contract_consent_text">I have read and understood the KYC document and confirm that the provided details are accurate.</string>
+
+    <!-- KYC Image Upload Screen -->
+    <string name="kyc_image_upload_save_button">Save &amp; Continue →</string>
+    <string name="kyc_image_upload_header_title">Verification Details</string>
+    <string name="kyc_image_upload_title">Upload Documents</string>
+    <string name="kyc_image_upload_subtitle">Please provide clear images of your signature and photo for identity verification.</string>
+    <string name="kyc_image_upload_signature_title">Upload Signature</string>
+    <string name="kyc_image_upload_signature_instruction">Click to Upload Signature</string>
+    <string name="kyc_image_upload_photo_title">Upload Photo</string>
+    <string name="kyc_image_upload_photo_instruction">Click to Upload Photo</string>
+    <string name="kyc_image_upload_doc_selected">Document Selected</string>
+    <string name="kyc_image_upload_file_format_info">JPEG, PNG up to 5 MB</string>
+    <string name="kyc_image_upload_file_size_error">File exceeds 5MB limit</string>
+
+    <!-- KYC Form Screen -->
+    <string name="kyc_form_continue_button">Continue</string>
+    <string name="kyc_form_header_title">KYC Form</string>
+    <string name="kyc_form_basic_info_title">Basic Information</string>
+    <string name="kyc_form_full_name_label">Full Name</string>
+    <string name="kyc_form_full_name_placeholder">Enter your full name</string>
+    <string name="kyc_form_dob_label">Date of Birth</string>
+    <string name="kyc_form_dob_placeholder">mm/dd/yyyy</string>
+    <string name="kyc_form_place_of_birth_label">Place of Birth</string>
+    <string name="kyc_form_place_of_birth_placeholder">City of birth</string>
+    <string name="kyc_form_mobile_number_label">Mobile Number</string>
+    <string name="kyc_form_email_address_label">Email Address</string>
+    <string name="kyc_form_email_address_placeholder">name@example.com</string>
+    <string name="kyc_form_identity_details_title">Identity Details</string>
+    <string name="kyc_form_pan_number_label">PAN Number</string>
+    <string name="kyc_form_pan_number_placeholder">ABCDE1234F</string>
+    <string name="kyc_form_aadhaar_number_label">Aadhaar Number</string>
+    <string name="kyc_form_aadhaar_number_placeholder">XXXX XXXX XXXX</string>
+    <string name="kyc_form_gender_label">Gender</string>
+    <string name="kyc_form_gender_placeholder">Select gender</string>
+    <string name="kyc_form_marital_status_label">Marital Status</string>
+    <string name="kyc_form_marital_status_placeholder">Select status</string>
+    <string name="kyc_form_additional_details_title">Additional Details</string>
+    <string name="kyc_form_father_name_label">Father\'s Name</string>
+    <string name="kyc_form_father_name_placeholder">Enter name</string>
+    <string name="kyc_form_mother_name_label">Mother\'s Name</string>
+    <string name="kyc_form_mother_name_placeholder">Enter name</string>
+    <string name="kyc_form_occupation_label">Occupation</string>
+    <string name="kyc_form_occupation_placeholder">Select occupation</string>
+
+    <!-- KYC Success Screen -->
+    <string name="kyc_success_button">Get Started</string>
+    <string name="kyc_success_title">KYC Completed Successfully!</string>
+    <string name="kyc_success_subtitle">Your account is now ready. You can start investing in mutual funds.</string>
 </resources>

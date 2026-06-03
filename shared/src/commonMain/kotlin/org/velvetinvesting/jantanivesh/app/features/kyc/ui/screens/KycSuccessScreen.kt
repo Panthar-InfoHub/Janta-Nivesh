@@ -17,18 +17,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.kyc_success_button
+import jantanivesh.shared.generated.resources.kyc_success_subtitle
+import jantanivesh.shared.generated.resources.kyc_success_title
 import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 
-@Preview
+@Preview(locale = "hi")
 @Composable
 fun KycSuccessScreenPreview() {
-    KycSuccessScreen(
-        onCompleted = {}
-    )
+    JantaNiveshTheme{
+        KycSuccessScreen(
+            onCompleted = {}
+        )
+    }
 }
 
 @Composable

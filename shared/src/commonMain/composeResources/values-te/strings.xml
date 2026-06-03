@@ -14,6 +14,11 @@
     <string name="janta_nivesh_logo_desc">జంతా నివేశ్ లోగో</string>
     <string name="tick_icon_desc">టిక్కు ఐకాన్</string>
 
+    <string name="rupee_symbol_desc">రూపాయి గుర్తు</string>
+    <string name="security_lock_desc">సెక్యూరిటీ లాక్</string>
+    <string name="selected_desc">ఎంపిక చేయబడింది</string>
+    <string name="calendar_icon_desc">క్యాలెండర్ ఐకాన్</string>
+
     <string name="login_mobile_number">మీ మొబైల్ నంబర్‌తో లాగిన్ అవ్వండి</string>
     <string name="otp_verify_identity">మీ గుర్తింపును ధృవీకరించడానికి 4 అంకెల OTP పంపిస్తాము</string>
     <string name="india_code">+91</string>
@@ -37,4 +42,73 @@
     <string name="skip">దాటవేయండి</string>
     <string name="transaction_updates">మేము ఇక్కడ లావాదేవీ అప్డేట్స్ పంపుతాము</string>
     <string name="email_placeholder">@gmail.com</string>
+
+    <!-- KYC Intro Screen -->
+    <string name="kyc_intro_button_text">మీ KYC పూర్తి చేయండి →</string>
+    <string name="kyc_intro_header_title">KYC</string>
+    <string name="kyc_intro_title">మీ KYC పూర్తి చేయండి</string>
+    <string name="kyc_intro_subtitle">నివేష్ సంసార్‌తో మీ పెట్టుబడి ప్రయాణాన్ని ప్రారంభించడానికి కేవలం కొన్ని అడుగులు.</string>
+    <string name="kyc_intro_account_opening_fee">₹ 0 ఖాతా ప్రారంభ రుసుము</string>
+    <string name="kyc_intro_account_opening_fee_subtitle">ఎటువంటి ప్రాథమిక ఖర్చు లేకుండా పెట్టుబడిని ప్రారంభించండి.</string>
+    <string name="kyc_intro_maintenance_charges">₹ 0 నిర్వహణ రుసుము</string>
+    <string name="kyc_intro_maintenance_charges_subtitle">దాచిన రుసుములు లేవు, మీరు సంపాదించినది మీ వద్దే ఉంచుకోండి.</string>
+    <string name="kyc_intro_encrypted_data_title">మీ డేటా ఎన్‌క్రిప్ట్ చేయబడింది మరియు సురక్షితంగా ఉంది</string>
+    <string name="kyc_intro_encrypted_data_subtitle">మీ వ్యక్తిగత సమాచారం పూర్తిగా గోప్యంగా ఉండేలా మేము బ్యాంక్-స్థాయి ఎన్‌క్రిప్షన్‌ను ఉపయోగిస్తాము.</string>
+
+    <!-- KYC Contract Screen -->
+    <string name="kyc_contract_complete_button">KYC పూర్తి చేయండి</string>
+    <string name="kyc_contract_header_title">KYC నిర్ధారణ</string>
+    <string name="kyc_contract_view_doc_title">KYC పత్రాన్ని చూడండి</string>
+    <string name="kyc_contract_view_doc_subtitle">మీ KYC ధృవీకరణ పత్రాన్ని ప్రివ్యూ చేయడానికి ట్యాప్ చేయండి మరియు మొత్తం సమాచారం సరైనదని నిర్ధారించుకోండి.</string>
+    <string name="kyc_contract_preview_button">పత్రాన్ని ప్రివ్యూ చేయండి</string>
+    <string name="kyc_contract_consent_text">నేను KYC పత్రాన్ని చదివి అర్థం చేసుకున్నాను మరియు అందించిన వివరాలు ఖచ్చితమైనవని నిర్ధారిస్తున్నాను.</string>
+
+    <!-- KYC Image Upload Screen -->
+    <string name="kyc_image_upload_save_button">సేవ్ చేసి కొనసాగండి →</string>
+    <string name="kyc_image_upload_header_title">ధృవీకరణ వివరాలు</string>
+    <string name="kyc_image_upload_title">పత్రాలను అప్‌లోడ్ చేయండి</string>
+    <string name="kyc_image_upload_subtitle">గుర్తింపు ధృవీకరణ కోసం దయచేసి మీ సంతకం మరియు ఫోటో యొక్క స్పష్టమైన చిత్రాలను అందించండి.</string>
+    <string name="kyc_image_upload_signature_title">సంతకాన్ని అప్‌లోడ్ చేయండి</string>
+    <string name="kyc_image_upload_signature_instruction">సంతకాన్ని అప్‌లోడ్ చేయడానికి క్లిక్ చేయండి</string>
+    <string name="kyc_image_upload_photo_title">ఫోటోను అప్‌లోడ్ చేయండి</string>
+    <string name="kyc_image_upload_photo_instruction">ఫోటోను అప్‌లోడ్ చేయడానికి క్లిక్ చేయండి</string>
+    <string name="kyc_image_upload_doc_selected">పత్రం ఎంపిక చేయబడింది</string>
+    <string name="kyc_image_upload_file_format_info">JPEG, PNG 5 MB వరకు</string>
+    <string name="kyc_image_upload_file_size_error">ఫైల్ 5MB పరిమితిని మించిపోయింది</string>
+
+    <!-- KYC Form Screen -->
+    <string name="kyc_form_continue_button">కొనసాగించండి</string>
+    <string name="kyc_form_header_title">KYC ఫారమ్</string>
+    <string name="kyc_form_basic_info_title">ప్రాథమిక సమాచారం</string>
+    <string name="kyc_form_full_name_label">పూర్తి పేరు</string>
+    <string name="kyc_form_full_name_placeholder">మీ పూర్తి పేరును నమోదు చేయండి</string>
+    <string name="kyc_form_dob_label">పుట్టిన తేదీ</string>
+    <string name="kyc_form_dob_placeholder">నెల/తేదీ/సంవత్సరం</string>
+    <string name="kyc_form_place_of_birth_label">పుట్టిన స్థలం</string>
+    <string name="kyc_form_place_of_birth_placeholder">పుట్టిన నగరం</string>
+    <string name="kyc_form_mobile_number_label">మొబైల్ నంబర్</string>
+    <string name="kyc_form_email_address_label">ఈమెయిల్</string>
+    <string name="kyc_form_email_address_placeholder">name@example.com</string>
+    <string name="kyc_form_identity_details_title">గుర్తింపు వివరాలు</string>
+    <string name="kyc_form_pan_number_label">PAN నంబర్</string>
+    <string name="kyc_form_pan_number_placeholder">ABCDE1234F</string>
+    <string name="kyc_form_aadhaar_number_label">ఆధార్ సంఖ్య</string>
+    <string name="kyc_form_aadhaar_number_placeholder">XXXX XXXX XXXX</string>
+    <string name="kyc_form_gender_label">లింగం</string>
+    <string name="kyc_form_gender_placeholder">లింగాన్ని ఎంచుకోండి</string>
+    <string name="kyc_form_marital_status_label">వైవాహిక స్థితి</string>
+    <string name="kyc_form_marital_status_placeholder">స్థితిని ఎంచుకోండి</string>
+    <string name="kyc_form_additional_details_title">అదనపు వివరాలు</string>
+    <string name="kyc_form_father_name_label">తండ్రి పేరు</string>
+    <string name="kyc_form_father_name_placeholder">పేరును నమోదు చేయండి</string>
+    <string name="kyc_form_mother_name_label">తల్లి పేరు</string>
+    <string name="kyc_form_mother_name_placeholder">పేరును నమోదు చేయండి</string>
+    <string name="kyc_form_occupation_label">వృత్తి</string>
+    <string name="kyc_form_occupation_placeholder">వృత్తిని ఎంచుకోండి</string>
+
+    <!-- KYC Success Screen -->
+    <string name="kyc_success_button">ప్రారంభించండి</string>
+    <string name="kyc_success_title">KYC విజయవంతంగా పూర్తయింది!</string>
+    <string name="kyc_success_subtitle">మీ ఖాతా ఇప్పుడు సిద్ధంగా ఉంది. మీరు మ్యూచువల్ ఫండ్లలో పెట్టుబడి పెట్టడం ప్రారంభించవచ్చు.</string>
+
 </resources>

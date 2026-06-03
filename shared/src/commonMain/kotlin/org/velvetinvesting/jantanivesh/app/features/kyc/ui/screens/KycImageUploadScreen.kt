@@ -22,24 +22,25 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.ismoy.imagepickerkmp.domain.extensions.loadBytes
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.kyc_image_upload_file_size_error
+import jantanivesh.shared.generated.resources.kyc_image_upload_header_title
+import jantanivesh.shared.generated.resources.kyc_image_upload_photo_title
+import jantanivesh.shared.generated.resources.kyc_image_upload_save_button
+import jantanivesh.shared.generated.resources.kyc_image_upload_signature_title
+import jantanivesh.shared.generated.resources.selected_desc
 import jantanivesh.shared.generated.resources.tick_icon
 import jantanivesh.shared.generated.resources.upload_photo_icon
 import jantanivesh.shared.generated.resources.upload_signature_icon
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -53,6 +54,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.ImageUploader
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.dashedBorder
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderUiState
 
@@ -65,6 +67,7 @@ fun KycImageUploadScreen(
 
 
     val scope= rememberCoroutineScope()
+    val fileLimitError = stringResource(Res.string.kyc_image_upload_file_size_error)
     ImageUploader(
         showGallery = state.showSignatureSelector,
         onDismiss = {
@@ -74,7 +77,7 @@ fun KycImageUploadScreen(
             photoResult.fileSize?.let { size ->
                 if (size > 5_242_880L) {
                     scope.launch {
-                        SnackBarController.showError("File exceeds 5MB limit")
+                        SnackBarController.showError(fileLimitError)
                     }
                     onEvent(KYCImageUploaderEvent.hideSignatureSelector)
                     return@ImageUploader
@@ -99,7 +102,7 @@ fun KycImageUploadScreen(
             photoResult.fileSize?.let { size ->
                 if (size > 5_242_880L) {
                     scope.launch {
-                        SnackBarController.showError("File exceeds 5MB limit")
+                        SnackBarController.showError(fileLimitError)
                     }
                     onEvent(KYCImageUploaderEvent.hidePhotoSelector)
                     return@ImageUploader
@@ -170,7 +173,7 @@ fun KycImageUploadScreen(
 
             item {
                 UploadDocumentCard(
-                    title = "Upload Signature/ (हस्ताक्षर अपलोड करें)",
+                    title = "Upload Signature/" + stringResource(Res.string.kyc_image_upload_signature_title),
                     instructionText = "Click to Upload Signature",
                     icon = Res.drawable.upload_signature_icon,
                     topLineColor = Primary.copy(alpha = 0.5f),
@@ -183,7 +186,7 @@ fun KycImageUploadScreen(
 
             item {
                 UploadDocumentCard(
-                    title = "Upload Photo/ (फोटो अपलोड करें)",
+                    title = "Upload Photo/" + stringResource(Res.string.kyc_image_upload_photo_title),
                     instructionText = "Click to Upload Photo",
                     icon = Res.drawable.upload_photo_icon,
                     topLineColor = SelectedBoxBorder.copy(alpha = 0.4f),
@@ -261,14 +264,14 @@ fun UploadDocumentCard(
                             if (isSelected) {
                                 Icon(
                                     painter = painterResource(Res.drawable.tick_icon),
-                                    contentDescription = "Selected",
+                                    contentDescription = stringResource(Res.string.selected_desc),
                                     tint = Primary,
                                     modifier = Modifier.size(Spacing.dp24)
                                 )
                             } else {
                                 Icon(
                                     painter = painterResource(icon),
-                                    contentDescription = "Selected",
+                                    contentDescription = stringResource(Res.string.selected_desc),
                                     tint = Primary,
                                     modifier = Modifier.size(Spacing.dp24)
                                 )
@@ -298,27 +301,8 @@ fun UploadDocumentCard(
 
     }
 }
-fun Modifier.dashedBorder(
-    color: Color,
-    strokeWidth: Dp = 1.dp,
-    cornerRadius: Dp = 8.dp,
-    dashLength: Dp = 8.dp,
-    gapLength: Dp = 4.dp
-) = this.drawBehind {
-    drawRoundRect(
-        color = color,
-        style = Stroke(
-            width = strokeWidth.toPx(),
-            pathEffect = PathEffect.dashPathEffect(
-                intervals = floatArrayOf(dashLength.toPx(), gapLength.toPx()),
-                phase = 0f
-            )
-        ),
-        cornerRadius = CornerRadius(cornerRadius.toPx(), cornerRadius.toPx())
-    )
-}
 
-@Preview
+@Preview(locale = "hi")
 @Composable
 fun KycImageUploadScreenPreview() {
     JantaNiveshTheme {

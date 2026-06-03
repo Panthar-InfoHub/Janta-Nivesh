@@ -24,8 +24,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.calendar_icon_desc
 import jantanivesh.shared.generated.resources.dob_dropdown_icon
+import jantanivesh.shared.generated.resources.kyc_form_aadhaar_number_label
+import jantanivesh.shared.generated.resources.kyc_form_aadhaar_number_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_additional_details_title
+import jantanivesh.shared.generated.resources.kyc_form_basic_info_title
+import jantanivesh.shared.generated.resources.kyc_form_continue_button
+import jantanivesh.shared.generated.resources.kyc_form_dob_label
+import jantanivesh.shared.generated.resources.kyc_form_dob_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_email_address_label
+import jantanivesh.shared.generated.resources.kyc_form_email_address_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_father_name_label
+import jantanivesh.shared.generated.resources.kyc_form_father_name_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_full_name_label
+import jantanivesh.shared.generated.resources.kyc_form_full_name_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_gender_label
+import jantanivesh.shared.generated.resources.kyc_form_gender_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_header_title
+import jantanivesh.shared.generated.resources.kyc_form_identity_details_title
+import jantanivesh.shared.generated.resources.kyc_form_marital_status_label
+import jantanivesh.shared.generated.resources.kyc_form_marital_status_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_mobile_number_label
+import jantanivesh.shared.generated.resources.kyc_form_mother_name_label
+import jantanivesh.shared.generated.resources.kyc_form_mother_name_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_occupation_label
+import jantanivesh.shared.generated.resources.kyc_form_occupation_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_pan_number_label
+import jantanivesh.shared.generated.resources.kyc_form_pan_number_placeholder
+import jantanivesh.shared.generated.resources.kyc_form_place_of_birth_label
+import jantanivesh.shared.generated.resources.kyc_form_place_of_birth_placeholder
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -42,6 +72,7 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScr
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.Gender
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.MaritalStatus
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.OccupationType
+
 @Composable
 fun KycFormScreen(
     state: KYCFormScreenUiState,
@@ -114,14 +145,14 @@ private fun FormContent(
                 verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
             ) {
                 Text(
-                    text = "Basic Information/" + "(मूल जानकारी)",
+                    text = "Basic Information/ " + "("+stringResource(Res.string.kyc_form_basic_info_title)+")",
                     style = MaterialTheme.typography.labelLarge,
                     color = Primary
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Full Name/" + "(पूरा नाम)",
+                        "Full Name/ " + "("+stringResource(Res.string.kyc_form_full_name_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -141,7 +172,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Date of Birth/ (जन्म तिथि)",
+                        "Date of Birth/ " + "("+stringResource(Res.string.kyc_form_dob_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -162,7 +193,7 @@ private fun FormContent(
                             ) {
                                 Icon(
                                     painterResource(Res.drawable.dob_dropdown_icon),
-                                    contentDescription = "Calendar Icon",
+                                    contentDescription = "("+stringResource(Res.string.calendar_icon_desc)+")",
                                     modifier = Modifier.size(Spacing.dp24)
                                 )
                             }
@@ -173,7 +204,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Place of Birth/ (जन्म स्थान)",
+                        "Place of Birth/ " + "("+stringResource(Res.string.kyc_form_place_of_birth_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -194,7 +225,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Mobile Number/ (मोबाइल नंबर)",
+                        "Mobile Number/ " + "("+stringResource(Res.string.kyc_form_mobile_number_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -214,7 +245,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Email Address/ (ई-मेल)",
+                        "Email Address/ " + "("+stringResource(Res.string.kyc_form_email_address_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -251,14 +282,14 @@ private fun FormContent(
                 verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
             ) {
                 Text(
-                    text = "Identity Details/ पहचान विवरण",
+                    text = "Identity Details/ " + "("+stringResource(Res.string.kyc_form_identity_details_title)+")",
                     style = MaterialTheme.typography.labelLarge,
                     color = Primary
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "PAN Number/ (पैन नंबर)",
+                        "PAN Number/ " + "("+stringResource(Res.string.kyc_form_pan_number_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -279,7 +310,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Aadhaar Number/ (आधार संख्या)",
+                        "Aadhaar Number/ " + "("+stringResource(Res.string.kyc_form_aadhaar_number_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -299,7 +330,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Gender/ (लिंग)",
+                        "Gender/ " + "("+stringResource(Res.string.kyc_form_gender_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     DropDownSelector(
@@ -315,7 +346,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Marital Status/ (वैवाहिक स्थिति)",
+                        "Marital Status/ " + "("+stringResource(Res.string.kyc_form_marital_status_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     DropDownSelector(
@@ -354,7 +385,7 @@ private fun FormContent(
                 verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
             ) {
                 Text(
-                    text = "Additional Details/ अतिरिक्त विवरण",
+                    text = "Additional Details/ " + "("+stringResource(Res.string.kyc_form_additional_details_title)+")",
                     style = MaterialTheme.typography.labelLarge,
                     color = Primary
                 )
@@ -362,7 +393,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Father's Name/ (पिता का नाम)",
+                        "Father's Name/ " + "("+stringResource(Res.string.kyc_form_father_name_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -383,7 +414,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Mother's Name/ (माता का नाम)",
+                        "Mother's Name/ " + "("+stringResource(Res.string.kyc_form_mother_name_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     AppTextField(
@@ -404,7 +435,7 @@ private fun FormContent(
 
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        "Occupation/ (पेशा)",
+                        "Occupation/ " + "("+stringResource(Res.string.kyc_form_occupation_label)+")",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     DropDownSelector(
@@ -436,7 +467,7 @@ private fun maskAadhaar(aadhaar: String): String {
     return masked + visible
 }
 
-@Preview(heightDp = 2000)
+@Preview(heightDp = 2000, locale = "hi")
 @Composable
 fun KycFormScreenPreview() {
     JantaNiveshTheme {

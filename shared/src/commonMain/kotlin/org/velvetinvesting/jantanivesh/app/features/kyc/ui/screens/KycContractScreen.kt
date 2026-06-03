@@ -289,7 +289,7 @@ fun ConsentSection(
     }
 }
 
-@Preview
+@Preview(locale = "hi")
 @Composable
 fun KycContractScreenPreview() {
     JantaNiveshTheme{

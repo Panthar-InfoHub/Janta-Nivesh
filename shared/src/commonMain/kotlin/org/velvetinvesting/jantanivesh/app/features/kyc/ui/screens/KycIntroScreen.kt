@@ -29,11 +29,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.kyc_image
+import jantanivesh.shared.generated.resources.kyc_intro_account_opening_fee
+import jantanivesh.shared.generated.resources.kyc_intro_account_opening_fee_subtitle
+import jantanivesh.shared.generated.resources.kyc_intro_button_text
+import jantanivesh.shared.generated.resources.kyc_intro_encrypted_data_subtitle
+import jantanivesh.shared.generated.resources.kyc_intro_encrypted_data_title
+import jantanivesh.shared.generated.resources.kyc_intro_header_title
+import jantanivesh.shared.generated.resources.kyc_intro_maintenance_charges
+import jantanivesh.shared.generated.resources.kyc_intro_maintenance_charges_subtitle
+import jantanivesh.shared.generated.resources.kyc_intro_subtitle
+import jantanivesh.shared.generated.resources.kyc_intro_title
 import jantanivesh.shared.generated.resources.lock_icon
+import jantanivesh.shared.generated.resources.rupee_symbol_desc
+import jantanivesh.shared.generated.resources.security_lock_desc
 import jantanivesh.shared.generated.resources.receipt_icon
 import jantanivesh.shared.generated.resources.rupee_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GrayBackGround
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -147,7 +160,7 @@ fun ZeroPriceCard(text: String, subText: String, icon: DrawableResource, modifie
     ) {
         Icon(
             painter = painterResource(icon),
-            contentDescription = "Rupee Symbol",
+            contentDescription = stringResource(Res.string.rupee_symbol_desc),
             tint = Primary,
             modifier = Modifier
                 .size(Spacing.dp48)
@@ -223,7 +236,7 @@ private fun LocalBackHeader(onBack: () -> Unit, title: String, modifier: Modifie
 }
 
 
-@Preview(heightDp = 1000)
+@Preview(heightDp = 1000, locale = "hi")
 @Composable
 fun KycIntroScreenPreview() {
     JantaNiveshTheme{
