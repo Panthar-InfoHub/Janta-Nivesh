@@ -43,15 +43,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.delete_icon
 import jantanivesh.shared.generated.resources.full_name_placeholder
+import jantanivesh.shared.generated.resources.joint_holder2_icon
 import jantanivesh.shared.generated.resources.kyc_form_aadhaar_number_label
 import jantanivesh.shared.generated.resources.kyc_form_email_address_label
 import jantanivesh.shared.generated.resources.location_icon
+import jantanivesh.shared.generated.resources.plus_inside_circle_icon
 import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -90,7 +94,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
 
-@Preview(heightDp = 2000, showBackground = true, locale = "hi")
+@Preview(heightDp = 3000, showBackground = true, locale = "hi")
 @Composable
 fun TradingAccountFinancialDetailsPreview() {
     JantaNiveshTheme {
@@ -98,7 +102,7 @@ fun TradingAccountFinancialDetailsPreview() {
             pv = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
-                holderNature = Holding.SINGLE
+                holderNature = Holding.JOINT
             ),
             handleEvent = {},
             onClick = {},
@@ -143,7 +147,10 @@ fun TradingAccountFinancialDetailsScreen(
                             modifier = Modifier
                                 .genericDropShadow(RoundedCornerShape(Spacing.dp16))
                                 .clip(RoundedCornerShape(Spacing.dp24))
-                                .background(color = Color.White, shape = RoundedCornerShape(Spacing.dp10))
+                                .background(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(Spacing.dp10)
+                                )
                                 .padding(Spacing.dp16),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
@@ -182,127 +189,31 @@ fun TradingAccountFinancialDetailsScreen(
                     if (uiState.holderNature == Holding.JOINT) {
                         item {
                             JointHolder(
-                                jointHolder = "Second Holder",
-
-                                secondHolderFirstName = data.second_holder_first_name,
-                                onSecondHolderFirstNameChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnSecondFirstNameChange(
-                                            it
-                                        )
-                                    )
-                                },
-
-                                secondHolderPan = data.second_holder_pan,
-                                onSecondHolderPanChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnSecondPanChange(
-                                            it
-                                        )
-                                    )
-                                },
-
-                                secondHolderEmail = data.second_holder_email,
-                                onSecondHolderEmailChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnSecondEmailChange(
-                                            it
-                                        )
-                                    )
-                                },
-
-                                secondHolderMobile = data.second_holder_mobile,
-                                onSecondHolderMobileChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnSecondMobileChange(
-                                            it
-                                        )
-                                    )
-                                },
-
-                                secondHolderDOB = data.second_holder_dob,
-                                onSecondHolderDOBClick = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnSecondDobChange(
-                                            it
-                                        )
-                                    )
-                                },
-                            )
-                        }
-
-                        item {
-                            CheckBoxComp(
-                                heading = "+ Add Another Nominee",
-                                checked = uiState.enableThirdHolder,
-                                onCheckedChange = {
-                                    if (it) handleEvent(TradingAccountEvent.AddThirdHolder)
-                                    else handleEvent(TradingAccountEvent.RemoveThirdHolder)
-                                }
+                                data = data,
+                                handleEvent = handleEvent,
+                                jointHolder = "Joint Holder 2",
                             )
                         }
                         if (uiState.enableThirdHolder) {
                             item {
                                 JointHolder(
-                                    jointHolder = "Third Holder",
-
-                                    secondHolderFirstName = data.third_holder_first_name,
-                                    onSecondHolderFirstNameChange = {
-                                        handleEvent(
-                                            TradingAccountEvent.OnThirdFirstNameChange(it)
-                                        )
-                                    },
-
-                                    secondHolderPan = data.third_holder_pan,
-                                    onSecondHolderPanChange = {
-                                        handleEvent(
-                                            TradingAccountEvent.OnThirdPanChange(
-                                                it
-                                            )
-                                        )
-                                    },
-
-                                    secondHolderEmail = data.third_holder_email,
-                                    onSecondHolderEmailChange = {
-                                        handleEvent(
-                                            TradingAccountEvent.OnThirdEmailChange(
-                                                it
-                                            )
-                                        )
-                                    },
-
-                                    secondHolderMobile = data.third_holder_mobile,
-                                    onSecondHolderMobileChange = {
-                                        handleEvent(
-                                            TradingAccountEvent.OnThirdMobileChange(
-                                                it
-                                            )
-                                        )
-                                    },
-
-                                    secondHolderDOB = data.third_holder_dob,
-                                    onSecondHolderDOBClick = {
-                                        handleEvent(
-                                            TradingAccountEvent.OnThirdDobChange(
-                                                it
-                                            )
-                                        )
-                                    }
+                                    jointHolder = "Joint Holder 3",
+                                    data = data,
+                                    handleEvent = handleEvent,
                                 )
                             }
                         }
                     } // joint holder if block end
 
                     item {
-
-                    }
-
-                    item {
                         Column(
                             modifier = Modifier
                                 .genericDropShadow(RoundedCornerShape(Spacing.dp16))
                                 .clip(RoundedCornerShape(Spacing.dp24))
-                                .background(color = Color.White, shape = RoundedCornerShape(Spacing.dp10))
+                                .background(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(Spacing.dp10)
+                                )
                                 .padding(horizontal = Spacing.dp16, vertical = Spacing.dp24),
                             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                         ) {
@@ -557,8 +468,15 @@ fun TradingAccountFinancialDetailsScreen(
                         Button(
                             onClick = {},
                             shape = RoundedCornerShape(Spacing.dp8),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Black),
-                            modifier = Modifier.fillMaxWidth().dashedBorder(color = SelectedBoxBorder, dashLength = Spacing.dp2, gapLength = Spacing.dp2)
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = Black
+                            ),
+                            modifier = Modifier.fillMaxWidth().dashedBorder(
+                                color = SelectedBoxBorder,
+                                dashLength = Spacing.dp2,
+                                gapLength = Spacing.dp2
+                            )
                         ) {
                             Text(
                                 "+ Add Another Nominee",
@@ -566,55 +484,48 @@ fun TradingAccountFinancialDetailsScreen(
                             )
                         }
                     }
-
-
-                    if (data.nominee_1_minor_flag == "Y") {
-                        item {
-                            TitledAppTextField(
-                                title = "Guardian Name",
-                                value = data.nominee_1_guardian,
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnNominee1GuardianChange(
-                                            it
-                                        )
-                                    )
-                                },
-                                placeholder = "Enter Guardian Name",
-                                mandatory = true,
-                                modifier = Modifier.fillMaxWidth(),
-                                keyboardType = KeyboardType.Text,
-                            )
-                        }
-
-                        item {
-                            TitledAppTextField(
-                                title = "Guardian PAN",
-                                value = data.nominee_1_guardian_pan,
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnNominee1GuardianPanChange(
-                                            it
-                                        )
-                                    )
-                                },
-                                placeholder = "Enter Guardian PAN",
-                                mandatory = true,
-                                modifier = Modifier.fillMaxWidth(),
-                                keyboardType = KeyboardType.Text,
-                            )
-                        }
-                    }
                     item {
                         Spacer(modifier = Modifier.height(pv.calculateBottomPadding() + 16.dp))
                     }
                 }
-                NextButtonFooter(
-                    onClick = onClick,
-                    pv = pv,
-                    value = "Next",
-                    enabled = uiState.financeScreenButtonEnabled
-                )
+                if (uiState.holderNature == Holding.SINGLE) {
+                    NextButtonFooter(
+                        onClick = onClick,
+                        pv = pv,
+                        value = "Next",
+                        enabled = uiState.financeScreenButtonEnabled
+                    )
+                } else {
+                    Column {
+                        Button(
+                            onClick = {},
+                            shape = RoundedCornerShape(Spacing.dp8),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = Black
+                            ),
+                            modifier = Modifier.fillMaxWidth().padding(Spacing.dp24).border(
+                                width = Spacing.dp1,
+                                shape = RoundedCornerShape(Spacing.dp8),
+                                color = BoxBorder
+                            )
+                        ) {
+                            Text(
+                                "Back",
+                                style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp),
+                                color = Primary,
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                        NextButtonFooter(
+                            onClick = onClick,
+                            pv = pv,
+                            value = "Save & Continue",
+                            enabled = uiState.financeScreenButtonEnabled
+                        )
+                    }
+                }
             }
             if (uiState.showCalender) {
                 AppDatePicker(
@@ -735,55 +646,117 @@ fun CheckBoxComp(
 @Composable
 fun JointHolder(
     jointHolder: String,
-
-    secondHolderFirstName: String,
-    onSecondHolderFirstNameChange: (String) -> Unit,
-
-    secondHolderPan: String,
-    onSecondHolderPanChange: (String) -> Unit,
-
-    secondHolderEmail: String,
-    onSecondHolderEmailChange: (String) -> Unit,
-
-    secondHolderMobile: String,
-    onSecondHolderMobileChange: (String) -> Unit,
-
-    secondHolderDOB: String,
-    onSecondHolderDOBClick: (String) -> Unit,
+    data: Data,
+    handleEvent: (TradingAccountEvent) -> Unit,
 ) {
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .genericDropShadow(RoundedCornerShape(Spacing.dp16))
+            .clip(RoundedCornerShape(Spacing.dp24))
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(Spacing.dp10)
+            )
+            .padding(Spacing.dp24),
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
     ) {
 
-        BarHeader(
-            title = jointHolder
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.joint_holder2_icon),
+                contentDescription = "Second Joint Holder",
+                modifier = Modifier.size(width = Spacing.dp20, height = Spacing.dp16).weight(0.2f),
+                tint = Primary
+            )
+            Text(
+                jointHolder,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                color = Primary,
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(
+                onClick = {}, // TODO add delete functionality
+                modifier = Modifier.padding(end = Spacing.dp16).weight(0.2f)
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.delete_icon),
+                    contentDescription = "Delete",
+                    modifier = Modifier.size(Spacing.dp15),
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+        HorizontalDivider(
+            thickness = Spacing.dp1,
+            color = Color(0xffDCE9FF),
         )
 
         TitledAppTextField(
-            title = "Full Name",
-            value = secondHolderFirstName,
-            onValueChange = onSecondHolderFirstNameChange,
+            title = "Full Name (As per PAN)/ ", //TODO Add stringResource
+            value = data.second_holder_first_name,
+            onValueChange = {
+                handleEvent(
+                    TradingAccountEvent.OnSecondFirstNameChange(
+                        it
+                    )
+                )
+            },
             placeholder = "Enter full Name",
             mandatory = true,
         )
+        DropDownSelector(
+            title = "Relation/ ",
+            value = NomineeRelationship.getDisplayNameFromCode(data.nominee_1_relationship)
+                ?: "",
+            onValueChange = { handleEvent(TradingAccountEvent.OnNominee1RelationChange(it.code)) },
+            placeholder = "Relation",
+            mandatory = true,
+            list = NomineeRelationship.entries,
+            textConvertor = {
+                it.displayName
+            }
+        )
 
+
+        OnBoardingDateField(
+            modifier = Modifier.fillMaxWidth(),
+            value = data.second_holder_dob,
+            placeholder = "Select DOB",
+            label = "Date of Birth/ ", //todo add stringResource
+            mandatory = true,
+            onClick = {
+                showDatePicker = true
+            }
+        )
         TitledAppTextField(
-            title = "PAN",
-            value = secondHolderPan,
-            onValueChange = onSecondHolderPanChange,
+            title = "PAN Number/ ", //TODO Add stringResource
+            value = data.second_holder_pan,
+            onValueChange = {
+                handleEvent(
+                    TradingAccountEvent.OnSecondPanChange(
+                        it
+                    )
+                )
+            },
             placeholder = "Enter PAN number",
             mandatory = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardType = KeyboardType.Text,
         )
-
         TitledAppTextField(
-            title = "Email Address",
-            value = secondHolderEmail,
-            onValueChange = onSecondHolderEmailChange,
+            title = "Email Address/ ", //TODO Add stringResource
+            value = data.second_holder_email,
+            onValueChange = {
+                handleEvent(
+                    TradingAccountEvent.OnSecondEmailChange(
+                        it
+                    )
+                )
+            },
             placeholder = "Enter email address",
             mandatory = true,
             modifier = Modifier.fillMaxWidth(),
@@ -791,37 +764,202 @@ fun JointHolder(
         )
 
         TitledAppTextField(
-            title = "Mobile Number",
-            value = secondHolderMobile,
-            onValueChange = onSecondHolderMobileChange,
+            title = "Mobile Number/ ",  //TODO Add stringResource
+            value = data.second_holder_mobile,
+            onValueChange = {
+                handleEvent(
+                    TradingAccountEvent.OnSecondDobChange(
+                        it
+                    )
+                )
+            },
             placeholder = "Enter Mobile number",
             mandatory = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardType = KeyboardType.Number,
         )
-
-        OnBoardingDateField(
-            modifier = Modifier.fillMaxWidth(),
-            value = secondHolderDOB,
-            placeholder = "Select DOB",
-            label = "Holder DOB",
+        TitledAppTextField(
+            title = "Percentage of Holding(%)/ ",  //TODO Add stringResource
+            value = "secondHolderMobile",
+            onValueChange = { TODO() }, //TODO Implement this feature
+            placeholder = "e.g. 50",
             mandatory = true,
-            onClick = {
-                showDatePicker = true
-            }
+            modifier = Modifier.fillMaxWidth(),
+            keyboardType = KeyboardType.Number,
         )
+        Column(
+            modifier = Modifier.padding(top = Spacing.dp40)
+                .genericDropShadow(RoundedCornerShape(Spacing.dp16))
+                .clip(RoundedCornerShape(Spacing.dp12))
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(Spacing.dp12)
+                )
+                .padding(Spacing.dp16),
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.location_icon),
+                    contentDescription = null,
+                    modifier = Modifier.size(Spacing.dp20),
+                    tint = GreyText
+                )
+                Text(
+                    "Address Details",
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            TitledAppTextField(
+                title = "Address Line 1 (Flat/House No., Building)/ ", //TODO add stringResource
+                value = data.nominee_1_address1, //todo adjust data
+                onValueChange = {
+                    handleEvent(
+                        TradingAccountEvent.OnNominee1Address1Change(
+                            it
+                        )
+                    )
+                },
+                placeholder = "Address Line 1",
+                modifier = Modifier.fillMaxWidth(),
+                keyboardType = KeyboardType.Text,
+            )
+            TitledAppTextField(
+                title = "Address Line 2 (Street, Sector, Area)/ ", //TODO add StringResource
+                value = data.nominee_1_address2,     //todo adjust data
+                onValueChange = {
+                    handleEvent(
+                        TradingAccountEvent.OnNominee1Address2Change(
+                            it
+                        )
+                    )
+                },
+                placeholder = "Address Line 2 (Optional)",
+                mandatory = false,
+                modifier = Modifier.fillMaxWidth(),
+                keyboardType = KeyboardType.Text,
+            )
+            TitledAppTextField(
+                title = "Address Line 3 (Landmark)/ ", //TODO add StringResource
+                value = data.nominee_1_address2,     //todo adjust data
+                onValueChange = {
+                    handleEvent(
+                        TradingAccountEvent.OnNominee1Address2Change(
+                            it
+                        )
+                    )
+                },
+                placeholder = "Address Line 2 (Optional)",
+                mandatory = false,
+                modifier = Modifier.fillMaxWidth(),
+                keyboardType = KeyboardType.Text,
+            )
+            TitledAppTextField(
+                title = "City/ ", //TODO add StringResource
+                value = data.nominee_1_city,
+                onValueChange = {
+                    handleEvent(
+                        TradingAccountEvent.OnNominee1CityChange(
+                            it
+                        )
+                    )
+                },
+                placeholder = "City",
+                mandatory = false,
+                keyboardType = KeyboardType.Text,
+            )
+
+
+            TitledAppTextField(
+                title = "Pincode/ ", //TODO add StringResource
+                value = data.nominee_1_pin,
+                onValueChange = {
+                    handleEvent(
+                        TradingAccountEvent.OnNominee1PincodeChange(
+                            it
+                        )
+                    )
+                },
+                placeholder = "Pincode",
+                mandatory = true,
+                keyboardType = KeyboardType.Text,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+            ) {
+            }
+            DropDownSelector(
+                title = "Country/ ", //TODO add StringResource
+                value = data.nominee_1_country,
+                onValueChange = {
+                    handleEvent(
+                        TradingAccountEvent.OnNominee1CountryChange(
+                            it.code
+                        )
+                    )
+                },
+                placeholder = "Country",
+                list = Country.entries.toList(),
+                textConvertor = {
+                    it.displayName
+                }
+            )
+        }
+        Button(
+            onClick = {},
+            shape = RoundedCornerShape(Spacing.dp8),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = Black
+            ),
+            modifier = Modifier.fillMaxWidth().dashedBorder(
+                strokeWidth = Spacing.dp2,
+                color = SelectedBoxBorder,
+                dashLength = Spacing.dp4,
+                gapLength = Spacing.dp4
+            )
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(
+                        Res.drawable.plus_inside_circle_icon
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier.size(Spacing.dp20),
+                    tint = Primary
+                )
+
+                Text(
+                    "Add More Joint Holder/ ", //TODO add stringResource
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp),
+                    color = Primary,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 
     if (showDatePicker) {
         AppDatePicker(
             show = showDatePicker,
-            selectedDate = DateTimeUtils.slashDateToEpochMillis(secondHolderDOB),
+            selectedDate = DateTimeUtils.slashDateToEpochMillis(data.second_holder_dob),
             onDismiss = {
                 showDatePicker = false
             },
             onDateSelected = {
                 it?.let {
-                    onSecondHolderDOBClick(DateTimeUtils.epochMillisToSlashDate(it))
+                    handleEvent(
+                        TradingAccountEvent.OnSecondDobChange(
+                            DateTimeUtils.epochMillisToSlashDate(
+                                it
+                            )
+                        )
+                    )
                 }
             }
         )

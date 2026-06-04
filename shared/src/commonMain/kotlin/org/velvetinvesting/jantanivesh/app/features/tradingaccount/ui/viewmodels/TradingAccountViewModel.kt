@@ -274,27 +274,108 @@ class TradingAccountViewModel(
             is TradingAccountEvent.SubmitForm -> submitForm(event.onSuccessfulSubmit)
             is TradingAccountEvent.ConfirmAccount -> confirmAccount(event.onSuccessfulSubmit)
             is TradingAccountEvent.VerifyPan -> verifyPan(event.pan)
-            is TradingAccountEvent.OnFirstNameChange -> updateData { it.copy(primary_holder_first_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnMiddleNameChange -> updateData { it.copy(primary_holder_middle_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnLastNameChange -> updateData { it.copy(primary_holder_last_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPanChange -> updateData { it.copy(primary_holder_pan = event.value.trim().toUpperCase(Locale.current)) }
+            is TradingAccountEvent.OnFirstNameChange -> updateData {
+                it.copy(
+                    primary_holder_first_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnMiddleNameChange -> updateData {
+                it.copy(
+                    primary_holder_middle_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnLastNameChange -> updateData {
+                it.copy(
+                    primary_holder_last_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPanChange -> updateData {
+                it.copy(
+                    primary_holder_pan = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
             is TradingAccountEvent.OnDobChange -> {
-                updateData { it.copy(primary_holder_dob_incorporation = event.value.trim().toUpperCase(Locale.current)) }
+                updateData {
+                    it.copy(
+                        primary_holder_dob_incorporation = event.value.trim()
+                            .toUpperCase(Locale.current)
+                    )
+                }
                 _uiState.update { it.copy(isMinor = isMinor(event.value)) }
             }
 
-            is TradingAccountEvent.OnGenderChange -> updateData { it.copy(gender = event.value.trim().toUpperCase(Locale.current)) }
+            is TradingAccountEvent.OnGenderChange -> updateData {
+                it.copy(
+                    gender = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
             is TradingAccountEvent.OnEmailChange -> updateData { it.copy(email = event.value.trim()) }
-            is TradingAccountEvent.OnPhoneChange -> updateData { it.copy(indian_mobile_no = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnTaxStatusChange -> updateData { it.copy(tax_status = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnOccupationChange -> updateData { it.copy(occupation_code = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnOccTypeChange -> updateData { it.copy(occ_type = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPlaceOfBirthChange -> updateData { it.copy(po_bir_inc = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPrimaryCkycChange -> updateData { it.copy(primary_holder_ckyc_number = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPrimaryKycTypeChange -> updateData { it.copy(primary_holder_kyc_type = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPrimaryPanExemptChange -> updateData { it.copy(primary_holder_pan_exempt = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPrimaryKraExemptRefChange -> updateData { it.copy(primary_holder_kra_exempt_ref_no = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPrimaryExemptCategoryChange -> updateData { it.copy(primary_holder_exempt_category = event.value.trim().toUpperCase(Locale.current)) }
+            is TradingAccountEvent.OnPhoneChange -> updateData {
+                it.copy(
+                    indian_mobile_no = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnTaxStatusChange -> updateData {
+                it.copy(
+                    tax_status = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnOccupationChange -> updateData {
+                it.copy(
+                    occupation_code = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnOccTypeChange -> updateData {
+                it.copy(
+                    occ_type = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPlaceOfBirthChange -> updateData {
+                it.copy(
+                    po_bir_inc = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPrimaryCkycChange -> updateData {
+                it.copy(
+                    primary_holder_ckyc_number = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPrimaryKycTypeChange -> updateData {
+                it.copy(
+                    primary_holder_kyc_type = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPrimaryPanExemptChange -> updateData {
+                it.copy(
+                    primary_holder_pan_exempt = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPrimaryKraExemptRefChange -> updateData {
+                it.copy(
+                    primary_holder_kra_exempt_ref_no = event.value.trim()
+                        .toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPrimaryExemptCategoryChange -> updateData {
+                it.copy(
+                    primary_holder_exempt_category = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
             is TradingAccountEvent.OnHoldingNatureChange -> updateData { it.copy(holding_nature = event.value) }
             is TradingAccountEvent.OnHolderNatureChangeUi -> {
                 _uiState.update { it.copy(holderNature = event.value) }
@@ -317,43 +398,229 @@ class TradingAccountViewModel(
                 resetThirdHolder()
             }
 
-            is TradingAccountEvent.OnSecondFirstNameChange -> updateData { it.copy(second_holder_first_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondMiddleNameChange -> updateData { it.copy(second_holder_middle_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondLastNameChange -> updateData { it.copy(second_holder_last_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondPanChange -> updateData { it.copy(second_holder_pan = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondDobChange -> updateData { it.copy(second_holder_dob = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondEmailChange -> updateData { it.copy(second_holder_email = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondMobileChange -> updateData { it.copy(second_holder_mobile = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondCkycChange -> updateData { it.copy(second_holder_ckyc_number = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondKycTypeChange -> updateData { it.copy(second_holder_kyc_type = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondPanExemptChange -> updateData { it.copy(second_holder_pan_exempt = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondExemptCategoryChange -> updateData { it.copy(second_holder_exempt_category = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondEmailDeclChange -> updateData { it.copy(second_holder_email_declaration = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSecondMobileDeclChange -> updateData { it.copy(second_holder_mobile_declaration = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdFirstNameChange -> updateData { it.copy(third_holder_first_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdMiddleNameChange -> updateData { it.copy(third_holder_middle_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdLastNameChange -> updateData { it.copy(third_holder_last_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdPanChange -> updateData { it.copy(third_holder_pan = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdDobChange -> updateData { it.copy(third_holder_dob = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdEmailChange -> updateData { it.copy(third_holder_email = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdMobileChange -> updateData { it.copy(third_holder_mobile = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdCkycChange -> updateData { it.copy(third_holder_ckyc_number = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdKycTypeChange -> updateData { it.copy(third_holder_kyc_type = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdPanExemptChange -> updateData { it.copy(third_holder_pan_exempt = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdExemptCategoryChange -> updateData { it.copy(third_holder_exempt_category = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdEmailDeclChange -> updateData { it.copy(third_holder_email_declaration = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnThirdMobileDeclChange -> updateData { it.copy(third_holder_mobile_declaration = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianRelationChange -> updateData { it.copy(guardian_relation = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianFirstNameChange -> updateData { it.copy(guardian_first_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianMiddleNameChange -> updateData { it.copy(guardian_middle_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianLastNameChange -> updateData { it.copy(guardian_last_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianPanChange -> updateData { it.copy(guardian_pan = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianDobChange -> updateData { it.copy(guardian_dob = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianCkycChange -> updateData { it.copy(guardian_ckyc_number = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianKycTypeChange -> updateData { it.copy(guardian_kyc_type = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianPanExemptChange -> updateData { it.copy(guardian_pan_exempt = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianExemptCategoryChange -> updateData { it.copy(guardian_exempt_category = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnGuardianExemptRefNoChange -> updateData { it.copy(guardian_exempt_ref_no = event.value.trim().toUpperCase(Locale.current)) }
+            is TradingAccountEvent.OnSecondFirstNameChange -> updateData {
+                it.copy(
+                    second_holder_first_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondMiddleNameChange -> updateData {
+                it.copy(
+                    second_holder_middle_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondLastNameChange -> updateData {
+                it.copy(
+                    second_holder_last_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondPanChange -> updateData {
+                it.copy(
+                    second_holder_pan = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondDobChange -> updateData {
+                it.copy(
+                    second_holder_dob = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondEmailChange -> updateData {
+                it.copy(
+                    second_holder_email = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondMobileChange -> updateData {
+                it.copy(
+                    second_holder_mobile = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondCkycChange -> updateData {
+                it.copy(
+                    second_holder_ckyc_number = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondKycTypeChange -> updateData {
+                it.copy(
+                    second_holder_kyc_type = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondPanExemptChange -> updateData {
+                it.copy(
+                    second_holder_pan_exempt = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondExemptCategoryChange -> updateData {
+                it.copy(
+                    second_holder_exempt_category = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondEmailDeclChange -> updateData {
+                it.copy(
+                    second_holder_email_declaration = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSecondMobileDeclChange -> updateData {
+                it.copy(
+                    second_holder_mobile_declaration = event.value.trim()
+                        .toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdFirstNameChange -> updateData {
+                it.copy(
+                    third_holder_first_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdMiddleNameChange -> updateData {
+                it.copy(
+                    third_holder_middle_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdLastNameChange -> updateData {
+                it.copy(
+                    third_holder_last_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdPanChange -> updateData {
+                it.copy(
+                    third_holder_pan = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdDobChange -> updateData {
+                it.copy(
+                    third_holder_dob = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdEmailChange -> updateData {
+                it.copy(
+                    third_holder_email = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdMobileChange -> updateData {
+                it.copy(
+                    third_holder_mobile = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdCkycChange -> updateData {
+                it.copy(
+                    third_holder_ckyc_number = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdKycTypeChange -> updateData {
+                it.copy(
+                    third_holder_kyc_type = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdPanExemptChange -> updateData {
+                it.copy(
+                    third_holder_pan_exempt = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdExemptCategoryChange -> updateData {
+                it.copy(
+                    third_holder_exempt_category = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdEmailDeclChange -> updateData {
+                it.copy(
+                    third_holder_email_declaration = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnThirdMobileDeclChange -> updateData {
+                it.copy(
+                    third_holder_mobile_declaration = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianRelationChange -> updateData {
+                it.copy(
+                    guardian_relation = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianFirstNameChange -> updateData {
+                it.copy(
+                    guardian_first_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianMiddleNameChange -> updateData {
+                it.copy(
+                    guardian_middle_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianLastNameChange -> updateData {
+                it.copy(
+                    guardian_last_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianPanChange -> updateData {
+                it.copy(
+                    guardian_pan = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianDobChange -> updateData {
+                it.copy(
+                    guardian_dob = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianCkycChange -> updateData {
+                it.copy(
+                    guardian_ckyc_number = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianKycTypeChange -> updateData {
+                it.copy(
+                    guardian_kyc_type = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianPanExemptChange -> updateData {
+                it.copy(
+                    guardian_pan_exempt = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianExemptCategoryChange -> updateData {
+                it.copy(
+                    guardian_exempt_category = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnGuardianExemptRefNoChange -> updateData {
+                it.copy(
+                    guardian_exempt_ref_no = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
             is TradingAccountEvent.OnNomineeCheckedChange -> {
                 _uiState.update { it.copy(nomineeChecked = event.value) }
                 handleEvent(TradingAccountEvent.OnNominationOptChange(if (event.value) "Y" else "N"))
@@ -363,29 +630,125 @@ class TradingAccountViewModel(
             TradingAccountEvent.ShowCalender -> _uiState.update { it.copy(showCalender = true) }
             TradingAccountEvent.HideCalender -> _uiState.update { it.copy(showCalender = false) }
             is TradingAccountEvent.OnNomineeDobChange -> {
-                handleEvent(TradingAccountEvent.OnNominee1DobChange(DateTimeUtils.epochMillisToSlashDate(event.dob)))
+                handleEvent(
+                    TradingAccountEvent.OnNominee1DobChange(
+                        DateTimeUtils.epochMillisToSlashDate(
+                            event.dob
+                        )
+                    )
+                )
                 val isMinor = DateTimeUtils.epochMillisToIsoUtc(event.dob)?.let { isMinor(it) }
                 handleEvent(TradingAccountEvent.OnNominee1MinorFlagChange(if (isMinor == true) "Y" else "N"))
             }
 
-            is TradingAccountEvent.OnNominee1NameChange -> updateData { it.copy(nominee_1_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1RelationChange -> updateData { it.copy(nominee_1_relationship = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1DobChange -> updateData { it.copy(nominee_1_dob = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1EmailChange -> updateData { it.copy(nominee_1_email = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1MobileChange -> updateData { it.copy(nominee_1_mobile = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1IdentityTypeChange -> updateData { it.copy(nominee_1_identity_type = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1IdentityNumberChange -> updateData { it.copy(nominee_1_identity_number = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1Address1Change -> updateData { it.copy(nominee_1_address1 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1Address2Change -> updateData { it.copy(nominee_1_address2 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1Address3Change -> updateData { it.copy(nominee_1_address3 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1CityChange -> updateData { it.copy(nominee_1_city = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1PincodeChange -> updateData { it.copy(nominee_1_pin = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1CountryChange -> updateData { it.copy(nominee_1_country = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1MinorFlagChange -> updateData { it.copy(nominee_1_minor_flag = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1GuardianChange -> updateData { it.copy(nominee_1_guardian = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1GuardianPanChange -> updateData { it.copy(nominee_1_guardian_pan = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominee1ApplicableChange -> updateData { it.copy(nominee_1_applicable = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNomineeSoaChange -> updateData { it.copy(nominee_soa = event.value.trim().toUpperCase(Locale.current)) }
+            is TradingAccountEvent.OnNominee1NameChange -> updateData {
+                it.copy(
+                    nominee_1_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1RelationChange -> updateData {
+                it.copy(
+                    nominee_1_relationship = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1DobChange -> updateData {
+                it.copy(
+                    nominee_1_dob = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1EmailChange -> updateData {
+                it.copy(
+                    nominee_1_email = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1MobileChange -> updateData {
+                it.copy(
+                    nominee_1_mobile = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1IdentityTypeChange -> updateData {
+                it.copy(
+                    nominee_1_identity_type = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1IdentityNumberChange -> updateData {
+                it.copy(
+                    nominee_1_identity_number = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1Address1Change -> updateData {
+                it.copy(
+                    nominee_1_address1 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1Address2Change -> updateData {
+                it.copy(
+                    nominee_1_address2 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1Address3Change -> updateData {
+                it.copy(
+                    nominee_1_address3 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1CityChange -> updateData {
+                it.copy(
+                    nominee_1_city = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1PincodeChange -> updateData {
+                it.copy(
+                    nominee_1_pin = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1CountryChange -> updateData {
+                it.copy(
+                    nominee_1_country = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1MinorFlagChange -> updateData {
+                it.copy(
+                    nominee_1_minor_flag = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1GuardianChange -> updateData {
+                it.copy(
+                    nominee_1_guardian = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1GuardianPanChange -> updateData {
+                it.copy(
+                    nominee_1_guardian_pan = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominee1ApplicableChange -> updateData {
+                it.copy(
+                    nominee_1_applicable = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNomineeSoaChange -> updateData {
+                it.copy(
+                    nominee_soa = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
             TradingAccountEvent.AddBankAccount -> {
                 val current = _uiState.value.visibleBankAccounts
                 if (current.size >= 5) return
@@ -449,38 +812,198 @@ class TradingAccountViewModel(
                 }
             }
 
-            is TradingAccountEvent.OnAccountType1Change -> updateData { it.copy(account_type_1 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountNumber1Change -> updateData { it.copy(account_no_1 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnIfscCode1Change -> updateData { it.copy(ifsc_code_1 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnMicrNo1Change -> updateData { it.copy(micr_no_1 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnDefaultBankFlag1Change -> updateData { it.copy(default_bank_flag_1 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountType2Change -> updateData { it.copy(account_type_2 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountType3Change -> updateData { it.copy(account_type_3 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountType4Change -> updateData { it.copy(account_type_4 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountType5Change -> updateData { it.copy(account_type_5 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountNumber2Change -> updateData { it.copy(account_no_2 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountNumber3Change -> updateData { it.copy(account_no_3 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountNumber4Change -> updateData { it.copy(account_no_4 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAccountNumber5Change -> updateData { it.copy(account_no_5 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnIfscCode2Change -> updateData { it.copy(ifsc_code_2 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnIfscCode3Change -> updateData { it.copy(ifsc_code_3 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnIfscCode4Change -> updateData { it.copy(ifsc_code_4 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnIfscCode5Change -> updateData { it.copy(ifsc_code_5 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnMicrNo2Change -> updateData { it.copy(micr_no_2 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnMicrNo3Change -> updateData { it.copy(micr_no_3 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnMicrNo4Change -> updateData { it.copy(micr_no_4 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnMicrNo5Change -> updateData { it.copy(micr_no_5 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnDefaultBankFlag2Change -> updateData { it.copy(default_bank_flag_2 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnDefaultBankFlag3Change -> updateData { it.copy(default_bank_flag_3 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnDefaultBankFlag4Change -> updateData { it.copy(default_bank_flag_4 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnDefaultBankFlag5Change -> updateData { it.copy(default_bank_flag_5 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAddress1Change -> updateData { it.copy(address_1 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAddress2Change -> updateData { it.copy(address_2 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAddress3Change -> updateData { it.copy(address_3 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnCityChange -> updateData { it.copy(city = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnStateChange -> updateData { it.copy(state = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPincodeChange -> updateData { it.copy(pincode = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnCountryChange -> updateData { it.copy(country = event.value.trim().toUpperCase(Locale.current)) }
+            is TradingAccountEvent.OnAccountType1Change -> updateData {
+                it.copy(
+                    account_type_1 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountNumber1Change -> updateData {
+                it.copy(
+                    account_no_1 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnIfscCode1Change -> updateData {
+                it.copy(
+                    ifsc_code_1 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnMicrNo1Change -> updateData {
+                it.copy(
+                    micr_no_1 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnDefaultBankFlag1Change -> updateData {
+                it.copy(
+                    default_bank_flag_1 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountType2Change -> updateData {
+                it.copy(
+                    account_type_2 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountType3Change -> updateData {
+                it.copy(
+                    account_type_3 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountType4Change -> updateData {
+                it.copy(
+                    account_type_4 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountType5Change -> updateData {
+                it.copy(
+                    account_type_5 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountNumber2Change -> updateData {
+                it.copy(
+                    account_no_2 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountNumber3Change -> updateData {
+                it.copy(
+                    account_no_3 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountNumber4Change -> updateData {
+                it.copy(
+                    account_no_4 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAccountNumber5Change -> updateData {
+                it.copy(
+                    account_no_5 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnIfscCode2Change -> updateData {
+                it.copy(
+                    ifsc_code_2 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnIfscCode3Change -> updateData {
+                it.copy(
+                    ifsc_code_3 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnIfscCode4Change -> updateData {
+                it.copy(
+                    ifsc_code_4 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnIfscCode5Change -> updateData {
+                it.copy(
+                    ifsc_code_5 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnMicrNo2Change -> updateData {
+                it.copy(
+                    micr_no_2 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnMicrNo3Change -> updateData {
+                it.copy(
+                    micr_no_3 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnMicrNo4Change -> updateData {
+                it.copy(
+                    micr_no_4 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnMicrNo5Change -> updateData {
+                it.copy(
+                    micr_no_5 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnDefaultBankFlag2Change -> updateData {
+                it.copy(
+                    default_bank_flag_2 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnDefaultBankFlag3Change -> updateData {
+                it.copy(
+                    default_bank_flag_3 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnDefaultBankFlag4Change -> updateData {
+                it.copy(
+                    default_bank_flag_4 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnDefaultBankFlag5Change -> updateData {
+                it.copy(
+                    default_bank_flag_5 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAddress1Change -> updateData {
+                it.copy(
+                    address_1 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAddress2Change -> updateData {
+                it.copy(
+                    address_2 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAddress3Change -> updateData {
+                it.copy(
+                    address_3 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnCityChange -> updateData {
+                it.copy(
+                    city = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnStateChange -> updateData {
+                it.copy(
+                    state = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPincodeChange -> updateData {
+                it.copy(
+                    pincode = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnCountryChange -> updateData {
+                it.copy(
+                    country = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
             is TradingAccountEvent.OnClientTypeChangeUi -> {
                 handleEvent(TradingAccountEvent.OnClientTypeChange(event.clientType.code))
                 resetClientTypeDependentFields(event.clientType)
@@ -491,42 +1014,221 @@ class TradingAccountViewModel(
                 resetDefaultDpDependentFields(event.defaultDp)
             }
 
-            is TradingAccountEvent.OnClientTypeChange -> updateData { it.copy(client_type = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPmsChange -> updateData { it.copy(pms = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnDefaultDpChange -> updateData { it.copy(default_dp = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnCdslDpidChange -> updateData { it.copy(cdsl_dpid = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnCdslCltidChange -> updateData { it.copy(cdslcltid = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNsdlDpidChange -> updateData { it.copy(nsdldpid = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNsdlCltidChange -> updateData { it.copy(nsdlcltid = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnCmbpIdChange -> updateData { it.copy(cmbp_id = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominationOptChange -> updateData { it.copy(nomination_opt = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnNominationAuthChange -> updateData { it.copy(nomination_authentication = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnDivPayModeChange -> updateData { it.copy(div_pay_mode = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnAadhaarUpdatedChange -> updateData { it.copy(aadhaar_updated = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnChequeNameChange -> updateData { it.copy(cheque_name = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnCommunicationModeChange -> updateData { it.copy(communication_mode = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnEmailDeclFlagChange -> updateData { it.copy(email_declaration_flag = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnMobileDeclFlagChange -> updateData { it.copy(mobile_declaration_flag = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnPaperlessFlagChange -> updateData { it.copy(paperless_flag = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnLeiNoChange -> updateData { it.copy(lei_no = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnLeiValidityChange -> updateData { it.copy(lei_validity = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnMapinIdChange -> updateData { it.copy(mapin_id = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnSourceWealthChange -> updateData { it.copy(srce_wealt = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignAddress1Change -> updateData { it.copy(foreign_address_1 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignAddress2Change -> updateData { it.copy(foreign_address_2 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignAddress3Change -> updateData { it.copy(foreign_address_3 = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignCityChange -> updateData { it.copy(foreign_address_city = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignStateChange -> updateData { it.copy(foreign_address_state = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignPincodeChange -> updateData { it.copy(foreign_address_pincode = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignCountryChange -> updateData { it.copy(foreign_address_country = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignPhoneChange -> updateData { it.copy(foreign_address_resi_phone = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignFaxChange -> updateData { it.copy(foreign_address_fax = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignOfficePhoneChange -> updateData { it.copy(foreign_address_off_phone = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnForeignOfficeFaxChange -> updateData { it.copy(foreign_address_off_fax = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnResiPhoneChange -> updateData { it.copy(resi_phone = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnResiFaxChange -> updateData { it.copy(resi_fax = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnOfficePhoneChange -> updateData { it.copy(office_phone = event.value.trim().toUpperCase(Locale.current)) }
-            is TradingAccountEvent.OnOfficeFaxChange -> updateData { it.copy(office_fax = event.value.trim().toUpperCase(Locale.current)) }
+            is TradingAccountEvent.OnClientTypeChange -> updateData {
+                it.copy(
+                    client_type = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPmsChange -> updateData {
+                it.copy(
+                    pms = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnDefaultDpChange -> updateData {
+                it.copy(
+                    default_dp = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnCdslDpidChange -> updateData {
+                it.copy(
+                    cdsl_dpid = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnCdslCltidChange -> updateData {
+                it.copy(
+                    cdslcltid = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNsdlDpidChange -> updateData {
+                it.copy(
+                    nsdldpid = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNsdlCltidChange -> updateData {
+                it.copy(
+                    nsdlcltid = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnCmbpIdChange -> updateData {
+                it.copy(
+                    cmbp_id = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominationOptChange -> updateData {
+                it.copy(
+                    nomination_opt = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnNominationAuthChange -> updateData {
+                it.copy(
+                    nomination_authentication = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnDivPayModeChange -> updateData {
+                it.copy(
+                    div_pay_mode = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnAadhaarUpdatedChange -> updateData {
+                it.copy(
+                    aadhaar_updated = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnChequeNameChange -> updateData {
+                it.copy(
+                    cheque_name = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnCommunicationModeChange -> updateData {
+                it.copy(
+                    communication_mode = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnEmailDeclFlagChange -> updateData {
+                it.copy(
+                    email_declaration_flag = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnMobileDeclFlagChange -> updateData {
+                it.copy(
+                    mobile_declaration_flag = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnPaperlessFlagChange -> updateData {
+                it.copy(
+                    paperless_flag = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnLeiNoChange -> updateData {
+                it.copy(
+                    lei_no = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnLeiValidityChange -> updateData {
+                it.copy(
+                    lei_validity = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnMapinIdChange -> updateData {
+                it.copy(
+                    mapin_id = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnSourceWealthChange -> updateData {
+                it.copy(
+                    srce_wealt = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignAddress1Change -> updateData {
+                it.copy(
+                    foreign_address_1 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignAddress2Change -> updateData {
+                it.copy(
+                    foreign_address_2 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignAddress3Change -> updateData {
+                it.copy(
+                    foreign_address_3 = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignCityChange -> updateData {
+                it.copy(
+                    foreign_address_city = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignStateChange -> updateData {
+                it.copy(
+                    foreign_address_state = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignPincodeChange -> updateData {
+                it.copy(
+                    foreign_address_pincode = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignCountryChange -> updateData {
+                it.copy(
+                    foreign_address_country = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignPhoneChange -> updateData {
+                it.copy(
+                    foreign_address_resi_phone = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignFaxChange -> updateData {
+                it.copy(
+                    foreign_address_fax = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignOfficePhoneChange -> updateData {
+                it.copy(
+                    foreign_address_off_phone = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnForeignOfficeFaxChange -> updateData {
+                it.copy(
+                    foreign_address_off_fax = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnResiPhoneChange -> updateData {
+                it.copy(
+                    resi_phone = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnResiFaxChange -> updateData {
+                it.copy(
+                    resi_fax = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnOfficePhoneChange -> updateData {
+                it.copy(
+                    office_phone = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
+
+            is TradingAccountEvent.OnOfficeFaxChange -> updateData {
+                it.copy(
+                    office_fax = event.value.trim().toUpperCase(Locale.current)
+                )
+            }
         }
     }
 
@@ -542,16 +1244,17 @@ class TradingAccountViewModel(
                 data.tax_status.isNotEmpty()
 
         // bankScreenButtonEnabled
-        val bankScreenButtonEnabled = data.div_pay_mode.isNotBlank() && state.visibleBankAccounts.all { index ->
-            when (index) {
-                1 -> data.account_type_1.isNotBlank() && data.account_no_1.isNotBlank() && data.ifsc_code_1.isNotBlank() && data.default_bank_flag_1.isNotBlank()
-                2 -> data.account_type_2.isNotBlank() && data.account_no_2.isNotBlank() && data.ifsc_code_2.isNotBlank() && data.default_bank_flag_2.isNotBlank()
-                3 -> data.account_type_3.isNotBlank() && data.account_no_3.isNotBlank() && data.ifsc_code_3.isNotBlank() && data.default_bank_flag_3.isNotBlank()
-                4 -> data.account_type_4.isNotBlank() && data.account_no_4.isNotBlank() && data.ifsc_code_4.isNotBlank() && data.default_bank_flag_4.isNotBlank()
-                5 -> data.account_type_5.isNotBlank() && data.account_no_5.isNotBlank() && data.ifsc_code_5.isNotBlank() && data.default_bank_flag_5.isNotBlank()
-                else -> false
+        val bankScreenButtonEnabled =
+            data.div_pay_mode.isNotBlank() && state.visibleBankAccounts.all { index ->
+                when (index) {
+                    1 -> data.account_type_1.isNotBlank() && data.account_no_1.isNotBlank() && data.ifsc_code_1.isNotBlank() && data.default_bank_flag_1.isNotBlank()
+                    2 -> data.account_type_2.isNotBlank() && data.account_no_2.isNotBlank() && data.ifsc_code_2.isNotBlank() && data.default_bank_flag_2.isNotBlank()
+                    3 -> data.account_type_3.isNotBlank() && data.account_no_3.isNotBlank() && data.ifsc_code_3.isNotBlank() && data.default_bank_flag_3.isNotBlank()
+                    4 -> data.account_type_4.isNotBlank() && data.account_no_4.isNotBlank() && data.ifsc_code_4.isNotBlank() && data.default_bank_flag_4.isNotBlank()
+                    5 -> data.account_type_5.isNotBlank() && data.account_no_5.isNotBlank() && data.ifsc_code_5.isNotBlank() && data.default_bank_flag_5.isNotBlank()
+                    else -> false
+                }
             }
-        }
 
         // clientScreenButtonEnabled
         val clientTypeValid = data.client_type.isNotBlank()
@@ -574,16 +1277,20 @@ class TradingAccountViewModel(
             Holding.JOINT.code -> data.second_holder_first_name.isNotBlank() && data.second_holder_pan.isNotBlank() && data.second_holder_email.isNotBlank() && data.second_holder_mobile.isNotBlank() && data.second_holder_dob.isNotBlank()
             else -> true
         }
-        val thirdHolderStarted = data.third_holder_first_name.isNotBlank() || data.third_holder_pan.isNotBlank() || data.third_holder_email.isNotBlank() || data.third_holder_mobile.isNotBlank() || data.third_holder_dob.isNotBlank()
+        val thirdHolderStarted =
+            data.third_holder_first_name.isNotBlank() || data.third_holder_pan.isNotBlank() || data.third_holder_email.isNotBlank() || data.third_holder_mobile.isNotBlank() || data.third_holder_dob.isNotBlank()
         val thirdHolderValid = when (holdingNature) {
             Holding.JOINT.code -> if (!thirdHolderStarted) true else data.third_holder_first_name.isNotBlank() && data.third_holder_pan.isNotBlank() && data.third_holder_email.isNotBlank() && data.third_holder_mobile.isNotBlank() && data.third_holder_dob.isNotBlank()
             else -> true
         }
-        val nominee1IsMinor = data.nominee_1_dob.isNotBlank() && isMinor(DateTimeUtils.slashDateToIsoUtc(data.nominee_1_dob))
-        val nomineeGuardianValid = if (nominee1IsMinor) data.nominee_1_guardian.isNotBlank() && data.nominee_1_guardian_pan.isNotBlank() else true
+        val nominee1IsMinor =
+            data.nominee_1_dob.isNotBlank() && isMinor(DateTimeUtils.slashDateToIsoUtc(data.nominee_1_dob))
+        val nomineeGuardianValid =
+            if (nominee1IsMinor) data.nominee_1_guardian.isNotBlank() && data.nominee_1_guardian_pan.isNotBlank() else true
         val nominationEnabled = data.nomination_opt == "Y"
         val nominationValid = if (nominationEnabled) {
-            val nomineeFilled = data.nominee_1_name.isNotBlank() && data.nominee_1_relationship.isNotBlank() && data.nominee_1_identity_type.isNotBlank() && data.nominee_1_identity_number.isNotBlank() && data.nominee_1_dob.isNotBlank() && data.nominee_1_email.isNotBlank() && data.nominee_1_mobile.isNotBlank() && data.nominee_1_address1.isNotBlank() && data.nominee_1_city.isNotBlank() && data.nominee_1_pin.isNotBlank() && data.nominee_1_country.isNotBlank() && nomineeGuardianValid
+            val nomineeFilled =
+                data.nominee_1_name.isNotBlank() && data.nominee_1_relationship.isNotBlank() && data.nominee_1_identity_type.isNotBlank() && data.nominee_1_identity_number.isNotBlank() && data.nominee_1_dob.isNotBlank() && data.nominee_1_email.isNotBlank() && data.nominee_1_mobile.isNotBlank() && data.nominee_1_address1.isNotBlank() && data.nominee_1_city.isNotBlank() && data.nominee_1_pin.isNotBlank() && data.nominee_1_country.isNotBlank() && nomineeGuardianValid
             val authValid = data.nomination_authentication in listOf("W", "E", "O")
             nomineeFilled && authValid
         } else data.nomination_authentication in listOf("O", "V")
@@ -604,7 +1311,8 @@ class TradingAccountViewModel(
         val addressScreenButtonEnabled = addressValid && kycValid && onboardingValid
 
         // guardianScreenButtonEnabled
-        val guardianScreenButtonEnabled = data.guardian_first_name.isNotBlank() && data.guardian_relation.isNotBlank() && data.guardian_dob.isNotBlank() && data.guardian_pan.isNotBlank()
+        val guardianScreenButtonEnabled =
+            data.guardian_first_name.isNotBlank() && data.guardian_relation.isNotBlank() && data.guardian_dob.isNotBlank() && data.guardian_pan.isNotBlank()
 
         return state.copy(
             basicDetailsNextEnabled = basicDetailsNextEnabled,
@@ -712,10 +1420,19 @@ class TradingAccountViewModel(
     private fun resetSecondHolder() {
         updateData {
             it.copy(
-                second_holder_first_name = "", second_holder_middle_name = "", second_holder_last_name = "",
-                second_holder_pan = "", second_holder_dob = "", second_holder_email = "", second_holder_mobile = "",
-                second_holder_ckyc_number = "", second_holder_kyc_type = "", second_holder_pan_exempt = "",
-                second_holder_exempt_category = "", second_holder_email_declaration = "", second_holder_mobile_declaration = "",
+                second_holder_first_name = "",
+                second_holder_middle_name = "",
+                second_holder_last_name = "",
+                second_holder_pan = "",
+                second_holder_dob = "",
+                second_holder_email = "",
+                second_holder_mobile = "",
+                second_holder_ckyc_number = "",
+                second_holder_kyc_type = "",
+                second_holder_pan_exempt = "",
+                second_holder_exempt_category = "",
+                second_holder_email_declaration = "",
+                second_holder_mobile_declaration = "",
                 second_holder_kra_exempt_ref_no = ""
             )
         }
@@ -724,10 +1441,19 @@ class TradingAccountViewModel(
     private fun resetThirdHolder() {
         updateData {
             it.copy(
-                third_holder_first_name = "", third_holder_middle_name = "", third_holder_last_name = "",
-                third_holder_pan = "", third_holder_dob = "", third_holder_email = "", third_holder_mobile = "",
-                third_holder_ckyc_number = "", third_holder_kyc_type = "", third_holder_pan_exempt = "",
-                third_holder_exempt_category = "", third_holder_email_declaration = "", third_holder_mobile_declaration = "",
+                third_holder_first_name = "",
+                third_holder_middle_name = "",
+                third_holder_last_name = "",
+                third_holder_pan = "",
+                third_holder_dob = "",
+                third_holder_email = "",
+                third_holder_mobile = "",
+                third_holder_ckyc_number = "",
+                third_holder_kyc_type = "",
+                third_holder_pan_exempt = "",
+                third_holder_exempt_category = "",
+                third_holder_email_declaration = "",
+                third_holder_mobile_declaration = "",
                 third_holder_kra_exempt_ref_no = ""
             )
         }
@@ -736,10 +1462,38 @@ class TradingAccountViewModel(
     private fun resetBankAccount(index: Int) {
         updateData {
             when (index) {
-                2 -> it.copy(account_type_2 = "", account_no_2 = "", ifsc_code_2 = "", micr_no_2 = "", default_bank_flag_2 = "")
-                3 -> it.copy(account_type_3 = "", account_no_3 = "", ifsc_code_3 = "", micr_no_3 = "", default_bank_flag_3 = "")
-                4 -> it.copy(account_type_4 = "", account_no_4 = "", ifsc_code_4 = "", micr_no_4 = "", default_bank_flag_4 = "")
-                5 -> it.copy(account_type_5 = "", account_no_5 = "", ifsc_code_5 = "", micr_no_5 = "", default_bank_flag_5 = "")
+                2 -> it.copy(
+                    account_type_2 = "",
+                    account_no_2 = "",
+                    ifsc_code_2 = "",
+                    micr_no_2 = "",
+                    default_bank_flag_2 = ""
+                )
+
+                3 -> it.copy(
+                    account_type_3 = "",
+                    account_no_3 = "",
+                    ifsc_code_3 = "",
+                    micr_no_3 = "",
+                    default_bank_flag_3 = ""
+                )
+
+                4 -> it.copy(
+                    account_type_4 = "",
+                    account_no_4 = "",
+                    ifsc_code_4 = "",
+                    micr_no_4 = "",
+                    default_bank_flag_4 = ""
+                )
+
+                5 -> it.copy(
+                    account_type_5 = "",
+                    account_no_5 = "",
+                    ifsc_code_5 = "",
+                    micr_no_5 = "",
+                    default_bank_flag_5 = ""
+                )
+
                 else -> it
             }
         }
@@ -748,7 +1502,16 @@ class TradingAccountViewModel(
     private fun resetClientTypeDependentFields(clientType: ClientType) {
         updateData { data ->
             when (clientType) {
-                ClientType.PHYSICAL -> data.copy(pms = "", default_dp = "", cdsl_dpid = "", cdslcltid = "", cmbp_id = "", nsdldpid = "", nsdlcltid = "")
+                ClientType.PHYSICAL -> data.copy(
+                    pms = "",
+                    default_dp = "",
+                    cdsl_dpid = "",
+                    cdslcltid = "",
+                    cmbp_id = "",
+                    nsdldpid = "",
+                    nsdlcltid = ""
+                )
+
                 ClientType.DEMAT -> data
             }
         }
@@ -791,11 +1554,15 @@ fun isMinor(dobIsoUtc: String): Boolean {
         val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         val age = calculateAge(birthDate, today)
         age < 18
-    } catch (_: Exception) { false }
+    } catch (_: Exception) {
+        false
+    }
 }
 
 private fun calculateAge(birthDate: LocalDate, today: LocalDate): Int {
     var age = today.year - birthDate.year
-    if (today.month.number < birthDate.month.number || (today.month.number == birthDate.month.number && today.day < birthDate.day)) { age-- }
+    if (today.month.number < birthDate.month.number || (today.month.number == birthDate.month.number && today.day < birthDate.day)) {
+        age--
+    }
     return age
 }
