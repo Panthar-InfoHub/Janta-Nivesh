@@ -1,36 +1,50 @@
 package org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.building_icon
+import jantanivesh.shared.generated.resources.monument_icon
+import org.jetbrains.compose.resources.painterResource
 import org.sharad.velvetinvestment.utils.tradingaccount.FatcaOccupationType
 import org.sharad.velvetinvestment.utils.tradingaccount.SourceOfWealth
 import org.sharad.velvetinvestment.utils.tradingaccount.YesNo
+import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.YesNoRadioGroup
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.ClientType
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.DefaultDp
@@ -40,7 +54,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
 
-@Preview
+@Preview(showBackground = true, heightDp = 1500)
 @Composable
 fun TradingAccountClientInfoPreview() {
     JantaNiveshTheme {
@@ -68,8 +82,8 @@ fun TradingAccountClientInfoScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading Account",
-            stepCount = 7,
-            totalSteps = 7,
+            stepCount = 3,
+            totalSteps = 5,
             onBack = onBackClick,
             modifier = Modifier.padding(pv)
         )
@@ -91,141 +105,184 @@ fun TradingAccountClientInfoScreen(
                 ) {
                     item {
                         Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(Spacing.dp2)
-                        ) {
-                            Text(
-                                "Client Information Form",
-                                style = MaterialTheme.typography.headlineLarge
-                            )
-                            Text(
-                                "Fields are conditionally mandatory based on your selections",
-                                fontSize = 14.sp,
-                                color = Color(0xff4A5565)
-                            )
-                        }
-                    }
-
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .genericDropShadow(RoundedCornerShape(Spacing.dp16))
-                                .clip(RoundedCornerShape(Spacing.dp24))
-                                .background(Color.White)
-                                .padding(Spacing.dp16),
                             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                         ) {
                             DropDownSelector(
-                                title = "Client Type",
+                                title = "Client Type/ (क्लाइंट प्रकार)",
                                 value = ClientType.getDisplayName(data.client_type),
-                                onValueChange = { handleEvent(TradingAccountEvent.OnClientTypeChangeUi(it)) },
-                                placeholder = "Client Type",
+                                onValueChange = {
+                                    handleEvent(
+                                        TradingAccountEvent.OnClientTypeChangeUi(
+                                            it
+                                        )
+                                    )
+                                },
+                                placeholder = "Select Client Type",
                                 mandatory = true,
                                 modifier = Modifier.fillMaxWidth(),
                                 list = ClientType.entries,
                                 textConvertor = { it.displayName }
                             )
 
-                            if (data.client_type == ClientType.DEMAT.code) {
-                                DropDownSelector(
-                                    title = "PMS",
-                                    value = YesNo.displayNameFromCode(data.pms),
-                                    onValueChange = { handleEvent(TradingAccountEvent.OnPmsChange(it.code)) },
-                                    placeholder = "Y/N",
-                                    mandatory = true,
-                                    list = YesNo.entries,
-                                    textConvertor = { it.displayName }
-                                )
+                            YesNoRadioGroup(
+                                title = "PMS Service/ (पीएमएस सेवा)",
+                                selectedCode = data.pms,
+                                onValueChange = { handleEvent(TradingAccountEvent.OnPmsChange(it)) },
+                                modifier = Modifier.fillMaxWidth(),
+                                mandatory = true
+                            )
+                            DropDownSelector(
+                                title = "Default Depository Participant (DP)/ ",
+                                value = DefaultDp.getDisplayName(data.default_dp),
+                                onValueChange = {
+                                    handleEvent(
+                                        TradingAccountEvent.OnDefaultDpChangeUi(
+                                            it
+                                        )
+                                    )
+                                },
+                                placeholder = "Select Default DP",
+                                mandatory = true,
+                                list = DefaultDp.entries,
+                                textConvertor = { it.displayName }
+                            )
+                            Column(
+                                modifier = Modifier.genericDropShadow(RoundedCornerShape(Spacing.dp16))
+                                    .clip(RoundedCornerShape(Spacing.dp16))
+                                    .border(width = Spacing.dp1, color = BoxBorder)
+                                    .background(Color.White)
+                                    .padding(Spacing.dp24),
+                                verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.monument_icon), // Replace with actual CDSL icon if available
+                                        contentDescription = null,
+                                        modifier = Modifier.size(Spacing.dp20),
+                                        tint = Primary
+                                    )
+                                    Text(
+                                        "CDSL Details/ (सीडीएसएल विवरण)",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Primary
+                                    )
+                                }
 
-                                DropDownSelector(
-                                    title = "Default DP",
-                                    value = DefaultDp.getDisplayName(data.default_dp),
-                                    onValueChange = { handleEvent(TradingAccountEvent.OnDefaultDpChangeUi(it)) },
-                                    placeholder = "Select Default DP",
-                                    mandatory = true,
-                                    list = DefaultDp.entries,
-                                    textConvertor = { it.displayName }
-                                )
-                            }
-
-                            if (data.default_dp == DefaultDp.CDSL.code) {
                                 TitledAppTextField(
-                                    title = "CDSL DP ID",
+                                    title = "CDSL DP ID/ (सीडीएसएल डीपी आईडी)",
                                     value = data.cdsl_dpid,
-                                    onValueChange = { handleEvent(TradingAccountEvent.OnCdslDpidChange(it)) },
-                                    placeholder = "Enter CDSL DP ID",
-                                    mandatory = true,
+                                    onValueChange = {
+                                        handleEvent(
+                                            TradingAccountEvent.OnCdslDpidChange(
+                                                it
+                                            )
+                                        )
+                                    },
+                                    placeholder = "Enter DP ID",
                                     keyboardType = KeyboardType.Number
                                 )
 
                                 TitledAppTextField(
-                                    title = "CDSL Client ID",
+                                    title = "CDSL Client ID/ (सीडीएसएल क्लाइंट आईडी)",
                                     value = data.cdslcltid,
-                                    onValueChange = { handleEvent(TradingAccountEvent.OnCdslCltidChange(it)) },
-                                    placeholder = "Enter CDSL Client ID",
-                                    mandatory = true,
+                                    onValueChange = {
+                                        handleEvent(
+                                            TradingAccountEvent.OnCdslCltidChange(
+                                                it
+                                            )
+                                        )
+                                    },
+                                    placeholder = "Enter Client ID",
                                     keyboardType = KeyboardType.Number
                                 )
                             }
 
-                            if (data.default_dp == DefaultDp.NSDL.code) {
-                                TitledAppTextField(
-                                    title = "CMBP ID",
-                                    value = data.cmbp_id,
-                                    onValueChange = { handleEvent(TradingAccountEvent.OnCmbpIdChange(it)) },
-                                    placeholder = "Enter CMBP ID",
-                                    mandatory = true,
-                                    keyboardType = KeyboardType.Text
-                                )
+                            // NSDL Block
+                            TitledAppTextField(
+                                title = "CMBP ID/ (सीएमबीपी आईडी)",
+                                value = data.cmbp_id,
+                                onValueChange = { handleEvent(TradingAccountEvent.OnCmbpIdChange(it)) },
+                                placeholder = "Enter CMBP ID (Clearing Member Business Partner)",
+                                mandatory = true,
+                                keyboardType = KeyboardType.Text
+                            )
 
-                                TitledAppTextField(
-                                    title = "NSDL DP ID",
-                                    value = data.nsdldpid,
-                                    onValueChange = { handleEvent(TradingAccountEvent.OnNsdlDpidChange(it)) },
-                                    placeholder = "Enter NSDL DP ID",
-                                    mandatory = true,
-                                    keyboardType = KeyboardType.Text
-                                )
+                            Column(
+                                modifier = Modifier.genericDropShadow(RoundedCornerShape(Spacing.dp16))
+                                    .clip(RoundedCornerShape(Spacing.dp16))
+                                    .border(width = Spacing.dp1, color = BoxBorder)
+                                    .background(Color.White)
+                                    .padding(Spacing.dp24),
+                                verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.building_icon), // Replace with actual NSDL icon if available
+                                        contentDescription = null,
+                                        modifier = Modifier.size(Spacing.dp20),
+                                        tint = Primary
+                                    )
+                                    Text(
+                                        "NSDL Details/ (एनएसडीएल विवरण)",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Primary
+                                    )
+                                }
 
-                                TitledAppTextField(
-                                    title = "NSDL Client ID",
-                                    value = data.nsdlcltid,
-                                    onValueChange = { handleEvent(TradingAccountEvent.OnNsdlCltidChange(it)) },
-                                    placeholder = "Enter NSDL Client ID",
-                                    mandatory = true,
-                                    keyboardType = KeyboardType.Number
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+                                ) {
+                                    TitledAppTextField(
+                                        title = "NSDL DP ID/ (एनएसडीएल डीपी आईडी)",
+                                        value = data.nsdldpid,
+                                        onValueChange = {
+                                            handleEvent(
+                                                TradingAccountEvent.OnNsdlDpidChange(
+                                                    it
+                                                )
+                                            )
+                                        },
+                                        placeholder = "Enter NSDL DP ID",
+                                        mandatory = true,
+                                        modifier = Modifier.weight(1f),
+                                        keyboardType = KeyboardType.Text
+                                    )
+
+                                    TitledAppTextField(
+                                        title = "NSDL Client ID/ (एनएसडीएल क्लाइंट आईडी)",
+                                        value = data.nsdlcltid,
+                                        onValueChange = {
+                                            handleEvent(
+                                                TradingAccountEvent.OnNsdlCltidChange(
+                                                    it
+                                                )
+                                            )
+                                        },
+                                        placeholder = "Enter NSDL Client ID",
+                                        mandatory = true,
+                                        modifier = Modifier.weight(1f),
+                                        keyboardType = KeyboardType.Number
+                                    )
+                                }
                             }
 
-                            DropDownSelector(
-                                title = "Source Of Wealth",
-                                value = SourceOfWealth.getDisplayName(data.srce_wealt),
-                                onValueChange = { handleEvent(TradingAccountEvent.OnSourceWealthChange(it.code)) },
-                                placeholder = "Source Of Wealth",
-                                mandatory = true,
-                                list = SourceOfWealth.entries,
-                                textConvertor = { it.displayName }
-                            )
-
-                            DropDownSelector(
-                                title = "Occupation Category",
-                                value = FatcaOccupationType.getDisplayName(data.occ_type),
-                                onValueChange = { handleEvent(TradingAccountEvent.OnOccTypeChange(it.code)) },
-                                placeholder = "Occupation Category",
-                                mandatory = true,
-                                list = FatcaOccupationType.entries,
-                                textConvertor = { it.displayName }
-                            )
                         }
                     }
-
                     item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
-
                 NextButtonFooter(
                     onClick = onClick,
                     pv = pv,
-                    value = "Next",
+                    value = "Continue →",
                     enabled = uiState.clientScreenButtonEnabled
                 )
             }

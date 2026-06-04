@@ -12,10 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonShapes
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,13 +39,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.info_icon
+import jantanivesh.shared.generated.resources.lock_icon
+import jantanivesh.shared.generated.resources.lock_outlined_icon
 import jantanivesh.shared.generated.resources.receipt_icon
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
@@ -65,6 +79,7 @@ fun TradingAccountPANDetailsPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TradingAccountPANDetailsScreen(
     pv: PaddingValues,
@@ -76,8 +91,8 @@ fun TradingAccountPANDetailsScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading Account",
-            stepCount = 2,
-            totalSteps = 7,
+            stepCount = 1,
+            totalSteps = 5,
             onBack = onBackClick,
             modifier = Modifier.padding(pv)
         )
@@ -97,15 +112,16 @@ fun TradingAccountPANDetailsScreen(
                     verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                 ) {
                     item {
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                             Text(
                                 "KYC & PAN Details",
-                                style = MaterialTheme.typography.headlineLarge
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold
                             )
                             Text(
-                                "Verify your identity documents",
-                                fontSize = 14.sp,
-                                color = Color(0xff4A5565)
+                                "Verify your identity documents to continue.",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = GreyText
                             )
                         }
                     }
@@ -114,112 +130,107 @@ fun TradingAccountPANDetailsScreen(
                         Column(
                             modifier = Modifier
                                 .genericDropShadow(RoundedCornerShape(Spacing.dp16))
-                                .clip(RoundedCornerShape(Spacing.dp24))
+                                .clip(RoundedCornerShape(Spacing.dp12))
                                 .background(Color.White)
                                 .padding(Spacing.dp16),
                             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                         ) {
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Row(verticalAlignment = Alignment.Top) {
-                                    Text(
-                                        text = "PAN Number",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = Color.Black
+                                Row(
+                                    verticalAlignment = Alignment.Top,
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
+                                ) {
+                                    TitledAppTextField(
+                                        title = "Pan Number/ ",
+                                        value = data.primary_holder_pan,
+                                        placeholder = "ABCD1234F",
+                                        mandatory = true,
+                                        modifier = Modifier.padding(top = Spacing.dp16).weight(1f),
+                                        onValueChange = {
+                                            handleEvent(
+                                                TradingAccountEvent.OnPanChange(
+                                                    it.uppercase()
+                                                )
+                                            )
+                                        },
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                                     )
-                                    Text(text = "*", color = Color.Red)
+                                    if (!uiState.panVerified || uiState.verifiedPanNumber != data.primary_holder_pan) {
+                                        AppButton(
+                                            text = "Verify",
+                                            onClick = {
+                                                handleEvent(
+                                                    TradingAccountEvent.VerifyPan(
+                                                        data.primary_holder_pan
+                                                    )
+                                                )
+                                            },
+                                            modifier = Modifier.align(Alignment.Bottom)
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "Verified",
+                                            color = appGreen,
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 16.sp
+                                        )
+                                    }
                                 }
 
-                                BasicTextField(
-                                    value = data.primary_holder_pan,
-                                    onValueChange = { handleEvent(TradingAccountEvent.OnPanChange(it.toUpperCase(Locale.current))) },
-                                    singleLine = true,
-                                    textStyle = MaterialTheme.typography.bodySmall,
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(54.dp)
-                                        .clip(RoundedCornerShape(15.dp))
-                                        .background(Color.White, RoundedCornerShape(15.dp))
-                                        .border(0.7.dp, Color(0xFFC5A572), RoundedCornerShape(15.dp)),
-                                    decorationBox = { innerTextField ->
-                                        Box(
-                                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                                            contentAlignment = Alignment.CenterStart
-                                        ) {
-                                            if (data.primary_holder_pan.isEmpty()) {
-                                                Text(
-                                                    text = "ABCDE1234F",
-                                                    style = MaterialTheme.typography.bodySmall,
-                                                    color = Color(0xffC5C5C5),
-                                                )
-                                            }
-                                            innerTextField()
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.End
-                                            ) {
-                                                if (!uiState.panVerified || uiState.verifiedPanNumber != data.primary_holder_pan) {
-                                                    TextButton(onClick = { handleEvent(TradingAccountEvent.VerifyPan(data.primary_holder_pan)) }) {
-                                                        Text(
-                                                            text = "Verify",
-                                                            color = Color(0xFF1447E6),
-                                                            fontWeight = FontWeight.SemiBold,
-                                                            fontSize = 16.sp
-                                                        )
-                                                    }
-                                                } else {
-                                                    Text(
-                                                        text = "Verified",
-                                                        color = appGreen,
-                                                        fontWeight = FontWeight.SemiBold,
-                                                        fontSize = 16.sp
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp4)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.lock_outlined_icon),
+                                        contentDescription = null,
+                                        tint = GreyText,
+                                        modifier = Modifier.size(Spacing.dp12)
+                                    )
+                                    Text(
+                                        "Your details are secure with us.",
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontSize = 12.sp,
+                                        color = GreyText
+                                    )
+                                }
                             }
-
-                            Text(
-                                "Enter your 10-character PAN card number (5 letters, 4 digits, 1 letter)",
-                                fontSize = 12.sp,
-                                color = Color(0xff4A5565)
-                            )
                         }
                     }
-
                     item {
-                        Box(
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(24.dp))
-                                .background(Color(0xFFFFFBEB))
-                                .border(0.7.dp, Color(0xffFEE685), RoundedCornerShape(24.dp))
-                                .padding(16.dp)
+                                .genericDropShadow(RoundedCornerShape(Spacing.dp16))
+                                .clip(RoundedCornerShape(Spacing.dp8))
+                                .background(Color(0xffEFEDF3))
+                                .padding(Spacing.dp20),
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.receipt_icon),
-                                    contentDescription = "notice icon",
-                                    tint = Color(0xffE17100)
+                            Icon(
+                                painter = painterResource(Res.drawable.info_icon),
+                                contentDescription = null,
+                                tint = Color(0xff00658D),
+                                modifier = Modifier.size(Spacing.dp20)
+                            )
+                            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp16)) {
+                                Text(
+                                    "Regulatory Disclosure",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = Primary
                                 )
-                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Text(
-                                        "Regulatory Disclosure",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp,
-                                        color = Color(0xff7B3306)
-                                    )
-                                    Text(
-                                        "UCC will be rejected outright if PAN and KYC identifiers are inconsistent.",
-                                        fontSize = 14.sp,
-                                        color = Color(0xffBB4D00)
-                                    )
-                                }
+                                Text(
+                                    "Please ensure your PAN matches your KYC records. If the PAN and KYC identifiers are inconsistent, the Unique Client Code (UCC) registration will be rejected by the exchange.",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = GreyText,
+                                    modifier = Modifier.padding(bottom = Spacing.dp16)
+                                )
+                                Text(
+                                    "कृपया सुनिश्चित करें कि आपका PAN आपके KYC रिकॉर्ड से मेल खाता हो। यदि PAN और KYC पहचानकर्ता मेल नहीं खाते हैं, तो एक्सचेंज द्वारा Unique Client Code (UCC) पंजीकरण अस्वीकृत कर दिया जाएगा।",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = GreyText,
+                                    modifier = Modifier.padding(bottom = Spacing.dp16)
+                                )
+
                             }
                         }
                     }
