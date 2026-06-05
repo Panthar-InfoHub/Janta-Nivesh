@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -33,10 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.info_filled_icon
+import jantanivesh.shared.generated.resources.info_icon
 import jantanivesh.shared.generated.resources.receipt_icon
 import org.jetbrains.compose.resources.painterResource
 import org.sharad.velvetinvestment.utils.tradingaccount.GuardianRelation
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
@@ -53,7 +59,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
 
-@Preview(showBackground = true, locale = "hi")
+@Preview(showBackground = true, locale = "hi", heightDp = 1000)
 @Composable
 fun TradingAccountGuardianDetailPreview() {
     JantaNiveshTheme {
@@ -82,9 +88,9 @@ fun TradingAccountGuardianDetailScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
-            title = "Trading Account",
-            stepCount = 5,
-            totalSteps = 7,
+            title = "Trading",
+            stepCount = 2,
+            totalSteps = 6,
             onBack = onBackClick,
             modifier = Modifier.padding(pv)
         )
@@ -110,12 +116,13 @@ fun TradingAccountGuardianDetailScreen(
                         ) {
                             Text(
                                 "Guardian Details",
-                                style = MaterialTheme.typography.headlineLarge
+                                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                                color = Primary
                             )
                             Text(
-                                "Provide guardian information for the minor account holder",
-                                fontSize = 14.sp,
-                                color = Color(0xff4A5565)
+                                "Please provide the details of the legal guardian responsible for this policy.",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = GreyText
                             )
                         }
                     }
@@ -123,59 +130,108 @@ fun TradingAccountGuardianDetailScreen(
                     item { WhyThisNeeded() }
 
                     item {
-                        Column(
-                            modifier = Modifier
-                                .genericDropShadow(RoundedCornerShape(Spacing.dp16))
-                                .clip(RoundedCornerShape(Spacing.dp24))
-                                .background(Color.White)
-                                .padding(Spacing.dp16),
-                            verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                        TitledAppTextField(
+                            title = "Guardian Name",
+                            value = data.guardian_first_name,
+                            onValueChange = {
+                                handleEvent(
+                                    TradingAccountEvent.OnGuardianFirstNameChange(
+                                        it
+                                    )
+                                )
+                            },
+                            placeholder = "Enter full legal Name",
+                            mandatory = true,
+                            keyboardType = KeyboardType.Text
+                        )
+                    }
+                    item {
+                        DropDownSelector(
+                            title = "Minor Relationship",
+                            value = GuardianRelation.getDisplayName(data.guardian_relation),
+                            onValueChange = {
+                                handleEvent(
+                                    TradingAccountEvent.OnGuardianRelationChange(
+                                        it.code
+                                    )
+                                )
+                            },
+                            placeholder = "Select Relationship",
+                            mandatory = true,
+                            list = GuardianRelation.entries,
+                            textConvertor = { it.displayName }
+                        )
+                    }
+                    item {
+
+                        OnBoardingDateField(
+                            label = "Guardian Date of Birth",
+                            value = data.guardian_dob,
+                            placeholder = "DD/MM/YYYY",
+                            mandatory = true,
+                            onClick = { showDateSelector = true }
+                        )
+                    }
+                    item {
+                        Text(
+                            "Guardian Mobile Number *",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = GreyText,
+                            modifier = Modifier.padding(bottom = Spacing.dp4)
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            TitledAppTextField(
-                                title = "Guardian Name",
-                                value = data.guardian_first_name,
-                                onValueChange = { handleEvent(TradingAccountEvent.OnGuardianFirstNameChange(it)) },
-                                placeholder = "Enter Guardian Name",
-                                mandatory = true,
-                                keyboardType = KeyboardType.Text
-                            )
-
                             DropDownSelector(
-                                title = "Guardian Relationship",
-                                value = GuardianRelation.getDisplayName(data.guardian_relation),
-                                onValueChange = { handleEvent(TradingAccountEvent.OnGuardianRelationChange(it.code)) },
-                                placeholder = "Select Relationship",
-                                mandatory = true,
-                                list = GuardianRelation.entries,
-                                textConvertor = { it.displayName }
+                                value = "+91 ",
+                                onValueChange = { TODO() },
+                                placeholder = "+91",
+                                list = listOf("+91", "+92", "+93"),
+                                textConvertor = { TODO() },
+                                modifier = Modifier.weight(0.4f)
                             )
-
-                            OnBoardingDateField(
-                                label = "Guardian DOB",
-                                value = data.guardian_dob,
-                                placeholder = "DD/MM/YYYY",
-                                mandatory = true,
-                                onClick = { showDateSelector = true }
-                            )
-
                             TitledAppTextField(
-                                title = "Guardian PAN",
-                                value = data.guardian_pan,
-                                onValueChange = { handleEvent(TradingAccountEvent.OnGuardianPanChange(it.toUpperCase(Locale.current))) },
-                                placeholder = "ABCDE1234F",
+                                value = "", // TODO Implement phone number
+                                onValueChange = {
+                                    handleEvent(
+                                        TradingAccountEvent.OnGuardianPanChange(
+                                            it.toUpperCase(Locale.current)
+                                        )
+                                    )
+                                },
+                                placeholder = "Mobile Number",
                                 mandatory = true,
-                                keyboardType = KeyboardType.Text
+                                keyboardType = KeyboardType.Number,
+                                modifier = Modifier.weight(1f)
                             )
                         }
+                    }
+                    item{
+
+                        TitledAppTextField(
+                            title = "Guardian Email Address",
+                            value = "", // TODO Implement email
+                            onValueChange = {
+                                handleEvent(
+                                    TradingAccountEvent.OnGuardianPanChange(
+                                        it.toUpperCase(Locale.current)
+                                    )
+                                )
+                            },
+                            placeholder = "Enter Email Address",
+                            mandatory = true,
+                            keyboardType = KeyboardType.Number,
+                            modifier = Modifier.weight(1f)
+                        )
                     }
 
                     item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
-
                 NextButtonFooter(
                     onClick = onClick,
                     pv = pv,
-                    value = "Next",
+                    value = "Continue to step 3 →",
                     enabled = uiState.guardianScreenButtonEnabled
                 )
             }
@@ -187,7 +243,13 @@ fun TradingAccountGuardianDetailScreen(
                     onDismiss = { showDateSelector = false },
                     onDateSelected = { dob ->
                         dob?.let {
-                            handleEvent(TradingAccountEvent.OnGuardianDobChange(DateTimeUtils.epochMillisToSlashDate(it)))
+                            handleEvent(
+                                TradingAccountEvent.OnGuardianDobChange(
+                                    DateTimeUtils.epochMillisToSlashDate(
+                                        it
+                                    )
+                                )
+                            )
                         }
                     }
                 )
@@ -201,9 +263,9 @@ fun WhyThisNeeded() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .border(0.7.dp, shape = RoundedCornerShape(10.dp), color = Color(0xffBEDBFF))
+            .border(Spacing.dp1, shape = RoundedCornerShape(10.dp), color = Color(0x4dE4FEd3))
             .clip(RoundedCornerShape(10.dp))
-            .background(color = Color(0xffEFF6FF))
+            .background(color = Color(0xffEFF4FF))
             .padding(16.dp)
     ) {
         Row(
@@ -211,21 +273,24 @@ fun WhyThisNeeded() {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Icon(
-                painter = painterResource(Res.drawable.receipt_icon),
+                painter = painterResource(Res.drawable.info_filled_icon),
                 contentDescription = "guardian icon",
-                tint = Color(0xff155DFC)
+                modifier = Modifier.clip(RoundedCornerShape(Spacing.dp8))
+                    .size(36.dp)
+                    .background(Color(0x1a376822)).padding(Spacing.dp8),
+                tint = Primary
             )
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                 Text(
                     "Why is this needed?",
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF0B1C30),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
+                    color = Primary,
                     fontSize = 16.sp
                 )
                 Text(
-                    "Guardian details are required because the account holder is under 18 years of age. The guardian will have legal authority over the account until the minor turns 18.",
-                    fontSize = 14.sp,
-                    color = Color(0xff1447E6)
+                    "Financial regulations require us to verify the identity of the guardian for minor-linked insurance accounts to ensure maximum protection and legal compliance.",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = GreyText
                 )
             }
         }

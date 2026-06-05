@@ -80,9 +80,9 @@ fun TradingAccountAddressScreen(
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
-            title = "Trading Account",
-            stepCount = 3,
-            totalSteps = 7,
+            title = "Trading",
+            stepCount = 5,
+            totalSteps = 5,
             onBack = onBackClick,
             modifier = Modifier.padding(pv)
         )

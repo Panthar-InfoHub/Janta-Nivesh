@@ -18,6 +18,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 
 data class AppTextFieldStyle(
     val shape: Shape,
@@ -38,7 +39,9 @@ object AppTextFieldDefaults {
             textStyle = textStyle,
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = unfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor
+                focusedBorderColor = focusedBorderColor,
+                unfocusedContainerColor = White,
+                focusedContainerColor = White
             )
         )
     }

@@ -90,7 +90,7 @@ fun TradingAccountPANDetailsScreen(
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
-            title = "Trading Account",
+            title = "Trading",
             stepCount = 1,
             totalSteps = 5,
             onBack = onBackClick,

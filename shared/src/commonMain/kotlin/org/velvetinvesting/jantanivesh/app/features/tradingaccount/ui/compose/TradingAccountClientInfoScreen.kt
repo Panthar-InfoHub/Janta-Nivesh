@@ -81,7 +81,7 @@ fun TradingAccountClientInfoScreen(
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
-            title = "Trading Account",
+            title = "Trading",
             stepCount = 3,
             totalSteps = 5,
             onBack = onBackClick,
