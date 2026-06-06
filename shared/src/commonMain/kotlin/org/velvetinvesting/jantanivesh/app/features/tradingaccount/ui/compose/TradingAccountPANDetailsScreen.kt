@@ -42,8 +42,10 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.info_icon
 import jantanivesh.shared.generated.resources.lock_icon
 import jantanivesh.shared.generated.resources.lock_outlined_icon
+import jantanivesh.shared.generated.resources.pan_number
 import jantanivesh.shared.generated.resources.receipt_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -62,7 +64,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
 
-@Preview(showBackground = true, locale = "hi")
+@Preview(showBackground = true, locale = "gu")
 @Composable
 fun TradingAccountPANDetailsPreview() {
     JantaNiveshTheme {
@@ -141,7 +143,7 @@ fun TradingAccountPANDetailsScreen(
                                     horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
                                 ) {
                                     TitledAppTextField(
-                                        title = "Pan Number/ ",
+                                        title = "Pan Number/ " + "(" + stringResource(Res.string.pan_number) + ")",
                                         value = data.primary_holder_pan,
                                         placeholder = "ABCD1234F",
                                         mandatory = true,

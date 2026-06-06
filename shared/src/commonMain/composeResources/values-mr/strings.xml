@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Janta Nivesh</string>
+    <string name="app_name">जनता निवेश</string>
 
     <string name="email_add_text">अपडेट्ससाठी तुमचा ईमेल जोडा</string>
 
@@ -11,55 +12,55 @@
     <string name="default_system_language">डीफॉल्ट सिस्टम भाषा</string>
     <string name="lock_icon_desc">लॉक आयकॉन</string>
     <string name="secondary_language">दुय्यम भाषा</string>
-    <string name="continue_text">पुढे चालू ठेवा</string>
+    <string name="continue_text">पुढे जा</string>
     <string name="janta_nivesh_logo_desc">जनता निवेश लोगो</string>
     <string name="tick_icon_desc">टिक आयकॉन</string>
 
-    <string name="rupee_symbol_desc">रुपया चिन्ह</string>
+    <string name="rupee_symbol_desc">रुपयाचे चिन्ह</string>
     <string name="security_lock_desc">सुरक्षा लॉक</string>
     <string name="selected_desc">निवडलेले</string>
     <string name="calendar_icon_desc">कॅलेंडर आयकॉन</string>
 
     <!-- LogInWithPhoneNumberScreen -->
     <string name="login_mobile_number">तुमच्या मोबाईल नंबरने लॉग इन करा</string>
-    <string name="otp_verify_identity">तुमची ओळख पडताळण्यासाठी आम्ही 4 अंकी OTP पाठवू</string>
-    <string name="india_code">+91</string>
+    <string name="otp_verify_identity">तुमची ओळख सत्यापित करण्यासाठी आम्ही ४ अंकी OTP पाठवू</string>
+    <string name="india_code">+९१</string>
     <string name="verify">सत्यापित करा</string>
 
     <!-- EnterOtpScreen -->
-    <string name="enter_code">कोड प्रविष्ट करा</string>
-    <string name="verification_code_sent">एक पडताळणी कोड पाठवण्यात आला आहे</string>
+    <string name="enter_code">कोड एंटर करा</string>
+    <string name="verification_code_sent">यावर सत्यापन कोड पाठवला आहे</string>
     <string name="resend_code_timer">तुम्ही %1$d सेकंदात कोड पुन्हा पाठवू शकता</string>
-    <string name="next">पुढे</string>
+    <string name="next">पुढील</string>
     <string name="otp_input_desc">कीबोर्डद्वारे OTP प्रविष्ट करा</string>
 
     <!-- EnterNameFromPanScreen -->
-    <string name="pan_full_name">PAN नुसार तुमचे पूर्ण नाव</string>
-    <string name="as_on_pan">जसे तुमच्या PAN कार्डवर दिसते</string>
+    <string name="pan_full_name">पॅन नुसार तुमचे पूर्ण नाव</string>
+    <string name="as_on_pan">जसे ते तुमच्या पॅन कार्डवर दिसते</string>
     <string name="full_name_placeholder">पूर्ण नाव</string>
 
     <!-- EnterYourDOBScreen -->
-    <string name="enter_dob">तुमची जन्मतारीख प्रविष्ट करा</string>
-    <string name="dob_identity_verification">ओळख पडताळणीसाठी कृपया तुमची जन्मतारीख द्या.</string>
-    <string name="select_dob_placeholder">तुमची DOB निवडा</string>
+    <string name="enter_dob">तुमची जन्मतारीख एंटर करा</string>
+    <string name="dob_identity_verification">कृपया ओळख पडताळणीसाठी तुमची जन्मतारीख द्या.</string>
+    <string name="select_dob_placeholder">तुमची जन्मतारीख निवडा</string>
     <string name="select_date_desc">तारीख निवडा</string>
 
     <!-- AddYourEmailScreen -->
     <string name="skip">वगळा</string>
-    <string name="transaction_updates">आम्ही येथे व्यवहार अपडेट्स पाठवू</string>
+    <string name="transaction_updates">आम्ही येथे व्यवहाराचे अपडेट्स पाठवू</string>
     <string name="email_placeholder">@gmail.com</string>
 
     <!-- KYC Intro Screen -->
-    <string name="kyc_intro_button_text">तुमचे KYC पूर्ण करा →</string>
+    <string name="kyc_intro_button_text">तुमची KYC पूर्ण करा →</string>
     <string name="kyc_intro_header_title">KYC</string>
-    <string name="kyc_intro_title">तुमचे KYC पूर्ण करा</string>
-    <string name="kyc_intro_subtitle">निर्वेश संसारसोबत तुमचा गुंतवणुकीचा प्रवास सुरू करण्यासाठी फक्त काही पावले.</string>
-    <string name="kyc_intro_account_opening_fee">₹ 0 खाते उघडण्याचे शुल्क</string>
+    <string name="kyc_intro_title">तुमची KYC पूर्ण करा</string>
+    <string name="kyc_intro_subtitle">निवेश संसारसोबत तुमचा गुंतवणूक प्रवास सुरू करण्यासाठी फक्त काही पायऱ्या.</string>
+    <string name="kyc_intro_account_opening_fee">₹ ० खाते उघडण्याचे शुल्क</string>
     <string name="kyc_intro_account_opening_fee_subtitle">कोणत्याही सुरुवातीच्या खर्चाशिवाय गुंतवणूक सुरू करा.</string>
-    <string name="kyc_intro_maintenance_charges">₹ 0 देखभाल शुल्क</string>
-    <string name="kyc_intro_maintenance_charges_subtitle">कोणतेही छुपे शुल्क नाही, जे तुम्ही कमवता ते स्वतःकडे ठेवा.</string>
-    <string name="kyc_intro_encrypted_data_title">तुमचा डेटा एन्क्रिप्टेड आणि सुरक्षित आहे</string>
-    <string name="kyc_intro_encrypted_data_subtitle">तुमची वैयक्तिक माहिती पूर्णपणे गोपनीय राहील याची खात्री करण्यासाठी आम्ही बँक-स्तरीय एन्क्रिप्शन वापरतो.</string>
+    <string name="kyc_intro_maintenance_charges">₹ ० देखभाल शुल्क</string>
+    <string name="kyc_intro_maintenance_charges_subtitle">कोणतेही छुपे शुल्क नाही, तुम्ही जे कमवाल ते तुमचेच राहील.</string>
+    <string name="kyc_intro_encrypted_data_title">तुमचा डेटा कूटबद्ध (Encrypted) आणि सुरक्षित आहे</string>
+    <string name="kyc_intro_encrypted_data_subtitle">तुमची वैयक्तिक माहिती पूर्णपणे गोपनीय राहावी यासाठी आम्ही बँक-स्तरीय एन्क्रिप्शन वापरतो.</string>
 
     <!-- KYC Contract Screen -->
     <string name="kyc_contract_complete_button">KYC पूर्ण करा</string>
@@ -67,38 +68,38 @@
     <string name="kyc_contract_view_doc_title">KYC दस्तऐवज पहा</string>
     <string name="kyc_contract_view_doc_subtitle">तुमच्या KYC पडताळणी दस्तऐवजाचे पूर्वावलोकन करण्यासाठी टॅप करा आणि सर्व माहिती बरोबर असल्याची खात्री करा.</string>
     <string name="kyc_contract_preview_button">दस्तऐवजाचे पूर्वावलोकन करा</string>
-    <string name="kyc_contract_consent_text">मी KYC दस्तऐवज वाचला आणि समजला आहे आणि पुष्टी करतो की दिलेले तपशील अचूक आहेत.</string>
+    <string name="kyc_contract_consent_text">मी KYC दस्तऐवज वाचले आणि समजून घेतले आहे आणि प्रदान केलेले तपशील अचूक असल्याची पुष्टी करतो.</string>
 
     <!-- KYC Image Upload Screen -->
-    <string name="kyc_image_upload_save_button">जतन करा आणि पुढे चालू ठेवा →</string>
+    <string name="kyc_image_upload_save_button">सेव्ह करा आणि पुढे जा →</string>
     <string name="kyc_image_upload_header_title">पडताळणी तपशील</string>
     <string name="kyc_image_upload_title">दस्तऐवज अपलोड करा</string>
-    <string name="kyc_image_upload_subtitle">ओळख पडताळणीसाठी कृपया तुमच्या स्वाक्षरीची आणि फोटोची स्पष्ट चित्रे द्या.</string>
+    <string name="kyc_image_upload_subtitle">कृपया ओळख पडताळणीसाठी तुमच्या स्वाक्षरी आणि फोटोच्या स्पष्ट प्रतिमा प्रदान करा.</string>
     <string name="kyc_image_upload_signature_title">स्वाक्षरी अपलोड करा</string>
     <string name="kyc_image_upload_signature_instruction">स्वाक्षरी अपलोड करण्यासाठी क्लिक करा</string>
     <string name="kyc_image_upload_photo_title">फोटो अपलोड करा</string>
     <string name="kyc_image_upload_photo_instruction">फोटो अपलोड करण्यासाठी क्लिक करा</string>
-    <string name="kyc_image_upload_doc_selected">दस्तऐवज निवडला</string>
-    <string name="kyc_image_upload_file_format_info">JPEG, PNG 5 MB पर्यंत</string>
-    <string name="kyc_image_upload_file_size_error">फाईल 5MB मर्यादेपेक्षा जास्त आहे</string>
+    <string name="kyc_image_upload_doc_selected">दस्तऐवज निवडले</string>
+    <string name="kyc_image_upload_file_format_info">JPEG, PNG ५ MB पर्यंत</string>
+    <string name="kyc_image_upload_file_size_error">फाइल ५MB च्या मर्यादेपेक्षा जास्त आहे</string>
 
     <!-- KYC Form Screen -->
-    <string name="kyc_form_continue_button">पुढे चालू ठेवा</string>
+    <string name="kyc_form_continue_button">पुढे जा</string>
     <string name="kyc_form_header_title">KYC फॉर्म</string>
-    <string name="kyc_form_basic_info_title">मूलभूत माहिती</string>
+    <string name="kyc_form_basic_info_title">प्राथमिक माहिती</string>
     <string name="kyc_form_full_name_label">पूर्ण नाव</string>
-    <string name="kyc_form_full_name_placeholder">तुमचे पूर्ण नाव प्रविष्ट करा</string>
-    <string name="kyc_form_dob_label">जन्म तारीख</string>
-    <string name="kyc_form_dob_placeholder">महिना/दिवस/वर्ष</string>
-    <string name="kyc_form_place_of_birth_label">जन्म स्थान</string>
+    <string name="kyc_form_full_name_placeholder">तुमचे पूर्ण नाव एंटर करा</string>
+    <string name="kyc_form_dob_label">जन्मतारीख</string>
+    <string name="kyc_form_dob_placeholder">दिवस/महिना/वर्ष</string>
+    <string name="kyc_form_place_of_birth_label">जन्मस्थान</string>
     <string name="kyc_form_place_of_birth_placeholder">जन्माचे शहर</string>
     <string name="kyc_form_mobile_number_label">मोबाईल नंबर</string>
-    <string name="kyc_form_email_address_label">ई-मेल</string>
+    <string name="kyc_form_email_address_label">ईमेल पत्ता</string>
     <string name="kyc_form_email_address_placeholder">name@example.com</string>
-    <string name="kyc_form_identity_details_title">ओळख तपशील</string>
-    <string name="kyc_form_pan_number_label">PAN नंबर</string>
+    <string name="kyc_form_identity_details_title">ओळखीचा तपशील</string>
+    <string name="kyc_form_pan_number_label">पॅन नंबर</string>
     <string name="kyc_form_pan_number_placeholder">ABCDE1234F</string>
-    <string name="kyc_form_aadhaar_number_label">आधार संख्या</string>
+    <string name="kyc_form_aadhaar_number_label">आधार नंबर</string>
     <string name="kyc_form_aadhaar_number_placeholder">XXXX XXXX XXXX</string>
     <string name="kyc_form_gender_label">लिंग</string>
     <string name="kyc_form_gender_placeholder">लिंग निवडा</string>
@@ -113,8 +114,53 @@
     <string name="kyc_form_occupation_placeholder">व्यवसाय निवडा</string>
 
     <!-- KYC Success Screen -->
-    <string name="kyc_success_button">सुरू करा</string>
-    <string name="kyc_success_title">KYC यशस्वीरित्या पूर्ण झाले!</string>
+    <string name="kyc_success_button">सुरुवात करा</string>
+    <string name="kyc_success_title">KYC यशस्वीरित्या पूर्ण झाली!</string>
     <string name="kyc_success_subtitle">तुमचे खाते आता तयार आहे. तुम्ही म्युच्युअल फंडात गुंतवणूक सुरू करू शकता.</string>
 
+    <!-- Trading Account Feature -->
+    <string name="guardian_pan_number">पालकाचा पॅन नंबर</string>
+    <string name="address_line_1">पत्ता ओळ १</string>
+    <string name="address_line_2_optional">पत्ता ओळ २ (पर्यायी)</string>
+    <string name="address_line_3_optional">पत्ता ओळ ३ (पर्यायी)</string>
+    <string name="city">शहर</string>
+    <string name="state">राज्य</string>
+    <string name="pincode">पिनकोड</string>
+    <string name="country">देश</string>
+    <string name="email">ईमेल</string>
+    <string name="mobile_optional">मोबाईल (पर्यायी)</string>
+    <string name="fax_number_optional">फॅक्स नंबर (पर्यायी)</string>
+    <string name="office_number">ऑफिसचा नंबर</string>
+    <string name="office_fax_optional">ऑफिसचा फॅक्स (पर्यायी)</string>
+    <string name="foreign_address_line_1">परदेशी पत्ता ओळ १</string>
+    <string name="foreign_city">शहर</string>
+    <string name="foreign_country">देश</string>
+    <string name="foreign_phone_optional">परदेशी फोन (पर्यायी)</string>
+    <string name="kyc_type">KYC प्रकार</string>
+    <string name="ckyc_no">CKYC क्र.</string>
+    <string name="investor_onboarding">गुंतवणूकदार ऑनबोर्डिंग</string>
+    <string name="lei_validity">LEI वैधता</string>
+    <string name="lei_number_optional">LEI नंबर (पर्यायी)</string>
+    <string name="account_type">खात्याचा प्रकार</string>
+    <string name="account_number">खाते क्रमांक</string>
+    <string name="micro_number">MICR नंबर</string>
+    <string name="payment_mode">पेमेंट मोड</string>
+    <string name="default_dp">डीफॉल्ट डिपॉझिटरी पार्टिसिपंट (DP)</string>
+    <string name="occupation">व्यवसाय</string>
+    <string name="nominee_1">नॉमिनी १</string>
+    <string name="relation">नाते</string>
+    <string name="date_of_birth">जन्मतारीख</string>
+    <string name="identity_type">ओळखीचा प्रकार</string>
+    <string name="nominee_address">नॉमिनीचा पत्ता</string>
+    <string name="holder_nature">धारकाचे स्वरूप</string>
+    <string name="full_name_as_per_pan">पूर्ण नाव (पॅन नुसार)</string>
+    <string name="pan_number">पॅन नंबर</string>
+    <string name="email_address">ईमेल पत्ता</string>
+    <string name="mobile_number">मोबाईल नंबर</string>
+    <string name="percentage_of_holding">होल्डिंगची टक्केवारी (%)</string>
+    <string name="address_line_1_details">पत्ता ओळ १ (फ्लॅट/घर क्र., इमारत)</string>
+    <string name="address_line_2_details">पत्ता ओळ २ (रस्ता, सेक्टर, भाग)</string>
+    <string name="address_line_3_details">पत्ता ओळ ३ (खूण)</string>
+    <string name="add_more_joint_holder">आणखी संयुक्त धारक जोडा</string>
+    <string name="nomination_subheading">माझ्या मृत्यूनंतर मी माझ्या खात्यासाठी एखाद्या व्यक्तीला नामनिर्देशित करू इच्छितो.</string>
 </resources>

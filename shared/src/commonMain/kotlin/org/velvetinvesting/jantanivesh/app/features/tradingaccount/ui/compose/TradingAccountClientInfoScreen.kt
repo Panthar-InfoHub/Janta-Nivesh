@@ -29,8 +29,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.building_icon
+import jantanivesh.shared.generated.resources.default_dp
 import jantanivesh.shared.generated.resources.monument_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.sharad.velvetinvestment.utils.tradingaccount.FatcaOccupationType
 import org.sharad.velvetinvestment.utils.tradingaccount.SourceOfWealth
 import org.sharad.velvetinvestment.utils.tradingaccount.YesNo
@@ -132,7 +134,7 @@ fun TradingAccountClientInfoScreen(
                                 mandatory = true
                             )
                             DropDownSelector(
-                                title = "Default Depository Participant (DP)/ ",
+                                title = "Default Depository Participant (DP)/ " + "(" + stringResource(Res.string.default_dp) + ")",
                                 value = DefaultDp.getDisplayName(data.default_dp),
                                 onValueChange = {
                                     handleEvent(

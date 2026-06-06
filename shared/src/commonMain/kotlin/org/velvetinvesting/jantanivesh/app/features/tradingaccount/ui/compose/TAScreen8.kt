@@ -41,11 +41,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.checkbadge_icon
 import jantanivesh.shared.generated.resources.guardian_icon
+import jantanivesh.shared.generated.resources.guardian_pan_number
 import jantanivesh.shared.generated.resources.lock_outlined_icon
 import jantanivesh.shared.generated.resources.receipt_icon
 import jantanivesh.shared.generated.resources.secure_icon
 import jantanivesh.shared.generated.resources.securetick_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -188,7 +190,7 @@ fun TradingAccountGuardianPanScreen(
                                     horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
                                 ) {
                                     TitledAppTextField(
-                                        title = "Guardian PAN Number/ ",
+                                        title = "Guardian PAN Number/ " + "(" + stringResource(Res.string.guardian_pan_number) + ")",
                                         value = data.primary_holder_pan,
                                         placeholder = "e.g. ABCD1234F",
                                         mandatory = true,

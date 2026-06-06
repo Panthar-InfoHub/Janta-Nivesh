@@ -30,8 +30,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.address_line_1
+import jantanivesh.shared.generated.resources.address_line_2_optional
+import jantanivesh.shared.generated.resources.address_line_3_optional
+import jantanivesh.shared.generated.resources.city
+import jantanivesh.shared.generated.resources.ckyc_no
+import jantanivesh.shared.generated.resources.country
+import jantanivesh.shared.generated.resources.email
+import jantanivesh.shared.generated.resources.fax_number_optional
+import jantanivesh.shared.generated.resources.foreign_address_line_1
+import jantanivesh.shared.generated.resources.foreign_city
+import jantanivesh.shared.generated.resources.foreign_country
+import jantanivesh.shared.generated.resources.foreign_phone_optional
 import jantanivesh.shared.generated.resources.info_icon
+import jantanivesh.shared.generated.resources.investor_onboarding
+import jantanivesh.shared.generated.resources.kyc_type
+import jantanivesh.shared.generated.resources.lei_number_optional
+import jantanivesh.shared.generated.resources.lei_validity
+import jantanivesh.shared.generated.resources.mobile_optional
+import jantanivesh.shared.generated.resources.office_fax_optional
+import jantanivesh.shared.generated.resources.office_number
+import jantanivesh.shared.generated.resources.pincode
+import jantanivesh.shared.generated.resources.state
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.sharad.velvetinvestment.utils.tradingaccount.InvestorOnboarding
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -128,7 +150,7 @@ fun TradingAccountAddressScreen(
                             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                         ) {
                             TitledAppTextField(
-                                title = "Address Line 1/ ",
+                                title = "Address Line 1/ " + "(" + stringResource(Res.string.address_line_1) + ")",
                                 value = data.address_1,
                                 onValueChange = {
                                     handleEvent(
@@ -141,7 +163,7 @@ fun TradingAccountAddressScreen(
                                 mandatory = true
                             )
                             TitledAppTextField(
-                                title = "Address Line 2 (Optional)/ ",
+                                title = "Address Line 2 (Optional)/ " + "(" + stringResource(Res.string.address_line_2_optional) + ")",
                                 value = data.address_2,
                                 onValueChange = {
                                     handleEvent(
@@ -153,7 +175,7 @@ fun TradingAccountAddressScreen(
                                 placeholder = "Street, Area",
                             )
                             TitledAppTextField(
-                                title = "Address Line 3 (Optional)/ ",
+                                title = "Address Line 3 (Optional)/ " + "(" + stringResource(Res.string.address_line_3_optional) + ")",
                                 value = data.city,
                                 onValueChange = {
                                     handleEvent(
@@ -169,7 +191,7 @@ fun TradingAccountAddressScreen(
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
                                 TitledAppTextField(
-                                    title = "City/ ",
+                                    title = "City/ " + "(" + stringResource(Res.string.city) + ")",
                                     value = data.pincode,
                                     modifier = Modifier.weight(1f),
                                     onValueChange = {
@@ -184,7 +206,7 @@ fun TradingAccountAddressScreen(
                                     keyboardType = KeyboardType.Number
                                 )
                                 DropDownSelector(
-                                    title = "State/ ",
+                                    title = "State/ " + "(" + stringResource(Res.string.state) + ")",
                                     value = StateCode.getDisplayName(data.state),
                                     placeholder = "Select State",
                                     onValueChange = {},
@@ -200,7 +222,7 @@ fun TradingAccountAddressScreen(
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
                                 TitledAppTextField(
-                                    title = "Pincode/ ",
+                                    title = "Pincode/ " + "(" + stringResource(Res.string.pincode) + ")",
                                     value = data.pincode,
                                     onValueChange = {
                                         handleEvent(
@@ -215,7 +237,7 @@ fun TradingAccountAddressScreen(
                                     keyboardType = KeyboardType.Number
                                 )
                                 DropDownSelector(
-                                    title = "Country/ ",
+                                    title = "Country/ " + "(" + stringResource(Res.string.country) + ")",
                                     value = StateCode.getDisplayName(data.country),
                                     placeholder = "India",
                                     onValueChange = {},
@@ -244,7 +266,7 @@ fun TradingAccountAddressScreen(
                             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                         ) {
                             TitledAppTextField(
-                                title = "Email/ ",
+                                title = "Email/ " + "(" + stringResource(Res.string.email) + ")",
                                 value = data.email,
                                 onValueChange = {
                                     handleEvent(
@@ -260,7 +282,7 @@ fun TradingAccountAddressScreen(
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
                                 TitledAppTextField(
-                                    title = "Mobile (Optional)/ ",
+                                    title = "Mobile (Optional)/ " + "(" + stringResource(Res.string.mobile_optional) + ")",
                                     value = "",
                                     modifier = Modifier.weight(1f),
                                     onValueChange = {
@@ -270,7 +292,7 @@ fun TradingAccountAddressScreen(
                                     keyboardType = KeyboardType.Number
                                 )
                                 TitledAppTextField(
-                                    title = "Fax Number (Optional)/ ",
+                                    title = "Fax Number (Optional)/ " + "(" + stringResource(Res.string.fax_number_optional) + ")",
                                     value = "",
                                     modifier = Modifier.weight(1f),
                                     onValueChange = {
@@ -285,7 +307,7 @@ fun TradingAccountAddressScreen(
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
                                 TitledAppTextField(
-                                    title = "Office Number/ ",
+                                    title = "Office Number/ " + "(" + stringResource(Res.string.office_number) + ")",
                                     value = data.pincode,
                                     onValueChange = {
                                         handleEvent(
@@ -299,7 +321,7 @@ fun TradingAccountAddressScreen(
                                     keyboardType = KeyboardType.Number
                                 )
                                 TitledAppTextField(
-                                    title = "Office Fax (Optional)/ ",
+                                    title = "Office Fax (Optional)/ " + "(" + stringResource(Res.string.office_fax_optional) + ")",
                                     value = "",
                                     modifier = Modifier.weight(1f),
                                     onValueChange = {
@@ -357,7 +379,7 @@ fun TradingAccountAddressScreen(
                                     )
                                 }
                                 TitledAppTextField(
-                                    title = "Foreign Address Line 1/ ",
+                                    title = "Foreign Address Line 1/ " + "(" + stringResource(Res.string.foreign_address_line_1) + ")",
                                     value = data.email,
                                     onValueChange = {
                                         handleEvent(
@@ -374,7 +396,7 @@ fun TradingAccountAddressScreen(
                                     horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                                 ) {
                                     TitledAppTextField(
-                                        title = "City/ ",
+                                        title = "City/ " + "(" + stringResource(Res.string.foreign_city) + ")",
                                         value = "",
                                         modifier = Modifier.weight(1f),
                                         onValueChange = {
@@ -385,7 +407,7 @@ fun TradingAccountAddressScreen(
                                         mandatory = true
                                     )
                                     DropDownSelector(
-                                        title = "Country/ ",
+                                        title = "Country/ " + "(" + stringResource(Res.string.foreign_country) + ")",
                                         value = StateCode.getDisplayName(data.country),
                                         placeholder = "Select Country",
                                         onValueChange = {},
@@ -397,7 +419,7 @@ fun TradingAccountAddressScreen(
                                     )
                                 }
                                 TitledAppTextField(
-                                    title = "Foreign Phone (Optional)/ ",
+                                    title = "Foreign Phone (Optional)/ " + "(" + stringResource(Res.string.foreign_phone_optional) + ")",
                                     value = "",
                                     modifier = Modifier.weight(1f),
                                     onValueChange = {
@@ -427,7 +449,7 @@ fun TradingAccountAddressScreen(
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
                                 DropDownSelector(
-                                    title = "KYC Type/ ",
+                                    title = "KYC Type/ " + "(" + stringResource(Res.string.kyc_type) + ")",
                                     value = KycType.getDisplayName(data.primary_holder_kyc_type),
                                     placeholder = "Normal",
                                     onValueChange = {},
@@ -439,7 +461,7 @@ fun TradingAccountAddressScreen(
                                     mandatory = true
                                 )
                                 TitledAppTextField(
-                                    title = "CKYC No./ ",
+                                    title = "CKYC No./ " + "(" + stringResource(Res.string.ckyc_no) + ")",
                                     value = "",
                                     modifier = Modifier.weight(1f),
                                     onValueChange = {
@@ -460,7 +482,7 @@ fun TradingAccountAddressScreen(
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
                                 DropDownSelector(
-                                    title = "Investor Onboarding/ ",
+                                    title = "Investor Onboarding/ " + "(" + stringResource(Res.string.investor_onboarding) + ")",
                                     value = InvestorOnboarding.getDisplayName(""), //TODO implement this
                                     placeholder = "Direct",
                                     onValueChange = {},
@@ -474,14 +496,14 @@ fun TradingAccountAddressScreen(
                                 OnBoardingDateField(
                                     value = "", //TODO implement this
                                     placeholder = "mm/dd/yyyy",
-                                    label = "Lei Validity/ ",
+                                    label = "Lei Validity/ " + "(" + stringResource(Res.string.lei_validity) + ")",
                                     mandatory = true,
                                     onClick = {},
                                     modifier = Modifier.weight(1f)
                                 )
                             }
                             TitledAppTextField(
-                                title = "Lei Number (Optional)/ ",
+                                title = "Lei Number (Optional)/ " + "(" + stringResource(Res.string.lei_number_optional) + ")",
                                 value = "",
                                 modifier = Modifier.weight(1f),
                                 onValueChange = {

@@ -49,13 +49,33 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.add_more_joint_holder
+import jantanivesh.shared.generated.resources.address_line_1_details
+import jantanivesh.shared.generated.resources.address_line_2_details
+import jantanivesh.shared.generated.resources.address_line_3_details
+import jantanivesh.shared.generated.resources.city
+import jantanivesh.shared.generated.resources.country
+import jantanivesh.shared.generated.resources.date_of_birth
 import jantanivesh.shared.generated.resources.delete_icon
+import jantanivesh.shared.generated.resources.email_address
+import jantanivesh.shared.generated.resources.full_name_as_per_pan
 import jantanivesh.shared.generated.resources.full_name_placeholder
+import jantanivesh.shared.generated.resources.holder_nature
+import jantanivesh.shared.generated.resources.identity_type
 import jantanivesh.shared.generated.resources.joint_holder2_icon
 import jantanivesh.shared.generated.resources.kyc_form_aadhaar_number_label
 import jantanivesh.shared.generated.resources.kyc_form_email_address_label
 import jantanivesh.shared.generated.resources.location_icon
+import jantanivesh.shared.generated.resources.mobile_number
+import jantanivesh.shared.generated.resources.nomination_subheading
+import jantanivesh.shared.generated.resources.nominee_1
+import jantanivesh.shared.generated.resources.nominee_address
+import jantanivesh.shared.generated.resources.occupation
+import jantanivesh.shared.generated.resources.pan_number
+import jantanivesh.shared.generated.resources.percentage_of_holding
+import jantanivesh.shared.generated.resources.pincode
 import jantanivesh.shared.generated.resources.plus_inside_circle_icon
+import jantanivesh.shared.generated.resources.relation
 import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -155,7 +175,7 @@ fun TradingAccountFinancialDetailsScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                "Occupation/ ",
+                                "Occupation/ " + "(" + stringResource(Res.string.occupation) + ")",
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
                                 color = HolderNatureTextColor
                             )
@@ -219,7 +239,7 @@ fun TradingAccountFinancialDetailsScreen(
                         ) {
                             CheckBoxComp(
                                 heading = "I wish to nominate a person for my account in the event of my death",
-                                subheading = "मैं अपनी मृत्यु की स्थिति में, अपने खाते के लिए किसी व्यक्ति को नॉमिनेट करना चाहता हूँ।", // TODO add stringResource,
+                                subheading = stringResource(Res.string.nomination_subheading),
                                 onCheckedChange = {},
                                 checked = false
                             )
@@ -234,7 +254,7 @@ fun TradingAccountFinancialDetailsScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    "Nominee 1/ ",
+                                    "Nominee 1/ " + "(" + stringResource(Res.string.nominee_1) + ")",
                                     style = MaterialTheme.typography.titleMedium,
                                     color = Color(0xff0B1C30)
                                 )
@@ -251,7 +271,7 @@ fun TradingAccountFinancialDetailsScreen(
                                 }
                             }
                             TitledAppTextField(
-                                title = "Full Name/ " + stringResource(Res.string.full_name_placeholder),
+                                title = "Full Name/ " + "(" + stringResource(Res.string.full_name_placeholder) + ")",
                                 value = data.nominee_1_name,
                                 onValueChange = {
                                     handleEvent(
@@ -269,7 +289,7 @@ fun TradingAccountFinancialDetailsScreen(
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
                                 DropDownSelector(
-                                    title = "Relation/ ",
+                                    title = "Relation/ " + "(" + stringResource(Res.string.relation) + ")",
                                     value = NomineeRelationship.getDisplayNameFromCode(data.nominee_1_relationship)
                                         ?: "",
                                     onValueChange = {
@@ -291,7 +311,7 @@ fun TradingAccountFinancialDetailsScreen(
                                 OnBoardingDateField(
                                     value = data.nominee_1_dob,
                                     placeholder = "Select DOB",
-                                    label = "Date of Birth/ ", //TODO add stringResource
+                                    label = "Date of Birth/ " + "(" + stringResource(Res.string.date_of_birth) + ")",
                                     mandatory = true,
                                     onClick = {
                                         handleEvent(TradingAccountEvent.ShowCalender)
@@ -300,7 +320,7 @@ fun TradingAccountFinancialDetailsScreen(
                                 )
                             }
                             DropDownSelector(
-                                title = "Identity Type/ ", // TODO add stringResource
+                                title = "Identity Type/ " + "(" + stringResource(Res.string.identity_type) + ")",
                                 value = NomineeIdentityType.getDisplayNameFromCode(data.nominee_1_identity_type)
                                     ?: "",
                                 onValueChange = { selection ->
@@ -347,7 +367,7 @@ fun TradingAccountFinancialDetailsScreen(
                                 keyboardType = KeyboardType.Email,
                             )
                             TitledAppTextField(
-                                title = "Mobile Number",
+                                title = "Mobile Number/ " + "(" + stringResource(Res.string.mobile_number) + ")",
                                 value = data.nominee_1_mobile,
                                 onValueChange = {
                                     handleEvent(
@@ -377,7 +397,7 @@ fun TradingAccountFinancialDetailsScreen(
                                         tint = GreyText
                                     )
                                     Text(
-                                        "Nominee Address/ ",
+                                        "Nominee Address/ " + "(" + stringResource(Res.string.nominee_address) + ")",
                                         style = MaterialTheme.typography.titleMedium
                                     )
                                 }
@@ -548,7 +568,7 @@ fun HolderNature(selected: Holding, onHolderNatureChange: (Holding) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row {
             Text(
-                "Holder nature/ " + "Insert stringResource here",
+                "Holder nature/ " + "(" + stringResource(Res.string.holder_nature) + ")",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
                 color = HolderNatureTextColor
             )
@@ -558,7 +578,7 @@ fun HolderNature(selected: Holding, onHolderNatureChange: (Holding) -> Unit) {
         ) {
             Holding.entries.forEach {
                 HoldingCard(
-                    cardHeading = it.heading.substringBefore(" ") + "/ ", //TODO Use stringResource
+                    cardHeading = it.heading.substringBefore(" ") + "/ " + "(" + stringResource(Res.string.holder_nature) + ")",
                     icon = it.icon,
                     isSelected = it == selected,
                     onHolderNatureChange = { onHolderNatureChange(it) },
@@ -696,7 +716,7 @@ fun JointHolder(
         )
 
         TitledAppTextField(
-            title = "Full Name (As per PAN)/ ", //TODO Add stringResource
+            title = "Full Name (As per PAN)/ " + "(" + stringResource(Res.string.full_name_as_per_pan) + ")",
             value = data.second_holder_first_name,
             onValueChange = {
                 handleEvent(
@@ -709,7 +729,7 @@ fun JointHolder(
             mandatory = true,
         )
         DropDownSelector(
-            title = "Relation/ ",
+            title = "Relation/ " + "(" + stringResource(Res.string.relation) + ")",
             value = NomineeRelationship.getDisplayNameFromCode(data.nominee_1_relationship)
                 ?: "",
             onValueChange = { handleEvent(TradingAccountEvent.OnNominee1RelationChange(it.code)) },
@@ -726,14 +746,14 @@ fun JointHolder(
             modifier = Modifier.fillMaxWidth(),
             value = data.second_holder_dob,
             placeholder = "Select DOB",
-            label = "Date of Birth/ ", //todo add stringResource
+            label = "Date of Birth/ " + "(" + stringResource(Res.string.date_of_birth) + ")",
             mandatory = true,
             onClick = {
                 showDatePicker = true
             }
         )
         TitledAppTextField(
-            title = "PAN Number/ ", //TODO Add stringResource
+            title = "PAN Number/ " + "(" + stringResource(Res.string.pan_number) + ")",
             value = data.second_holder_pan,
             onValueChange = {
                 handleEvent(
@@ -748,7 +768,7 @@ fun JointHolder(
             keyboardType = KeyboardType.Text,
         )
         TitledAppTextField(
-            title = "Email Address/ ", //TODO Add stringResource
+            title = "Email Address/ " + "(" + stringResource(Res.string.email_address) + ")",
             value = data.second_holder_email,
             onValueChange = {
                 handleEvent(
@@ -764,7 +784,7 @@ fun JointHolder(
         )
 
         TitledAppTextField(
-            title = "Mobile Number/ ",  //TODO Add stringResource
+            title = "Mobile Number/ " + "(" + stringResource(Res.string.mobile_number) + ")",
             value = data.second_holder_mobile,
             onValueChange = {
                 handleEvent(
@@ -779,7 +799,7 @@ fun JointHolder(
             keyboardType = KeyboardType.Number,
         )
         TitledAppTextField(
-            title = "Percentage of Holding(%)/ ",  //TODO Add stringResource
+            title = "Percentage of Holding(%)/ " + "(" + stringResource(Res.string.percentage_of_holding) + ")",
             value = "secondHolderMobile",
             onValueChange = { TODO() }, //TODO Implement this feature
             placeholder = "e.g. 50",
@@ -814,7 +834,7 @@ fun JointHolder(
                 )
             }
             TitledAppTextField(
-                title = "Address Line 1 (Flat/House No., Building)/ ", //TODO add stringResource
+                title = "Address Line 1 (Flat/House No., Building)/ " + "(" + stringResource(Res.string.address_line_1_details) + ")",
                 value = data.nominee_1_address1, //todo adjust data
                 onValueChange = {
                     handleEvent(
@@ -828,7 +848,7 @@ fun JointHolder(
                 keyboardType = KeyboardType.Text,
             )
             TitledAppTextField(
-                title = "Address Line 2 (Street, Sector, Area)/ ", //TODO add StringResource
+                title = "Address Line 2 (Street, Sector, Area)/ " + "(" + stringResource(Res.string.address_line_2_details) + ")",
                 value = data.nominee_1_address2,     //todo adjust data
                 onValueChange = {
                     handleEvent(
@@ -843,7 +863,7 @@ fun JointHolder(
                 keyboardType = KeyboardType.Text,
             )
             TitledAppTextField(
-                title = "Address Line 3 (Landmark)/ ", //TODO add StringResource
+                title = "Address Line 3 (Landmark)/ " + "(" + stringResource(Res.string.address_line_3_details) + ")",
                 value = data.nominee_1_address2,     //todo adjust data
                 onValueChange = {
                     handleEvent(
@@ -858,7 +878,7 @@ fun JointHolder(
                 keyboardType = KeyboardType.Text,
             )
             TitledAppTextField(
-                title = "City/ ", //TODO add StringResource
+                title = "City/ " + "(" + stringResource(Res.string.city) + ")",
                 value = data.nominee_1_city,
                 onValueChange = {
                     handleEvent(
@@ -874,7 +894,7 @@ fun JointHolder(
 
 
             TitledAppTextField(
-                title = "Pincode/ ", //TODO add StringResource
+                title = "Pincode/ " + "(" + stringResource(Res.string.pincode) + ")",
                 value = data.nominee_1_pin,
                 onValueChange = {
                     handleEvent(
@@ -893,7 +913,7 @@ fun JointHolder(
             ) {
             }
             DropDownSelector(
-                title = "Country/ ", //TODO add StringResource
+                title = "Country/ " + "(" + stringResource(Res.string.country) + ")",
                 value = data.nominee_1_country,
                 onValueChange = {
                     handleEvent(
@@ -934,7 +954,7 @@ fun JointHolder(
                 )
 
                 Text(
-                    "Add More Joint Holder/ ", //TODO add stringResource
+                    "Add More Joint Holder/ " + "(" + stringResource(Res.string.add_more_joint_holder) + ")",
                     style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp),
                     color = Primary,
                     modifier = Modifier.weight(1f),
@@ -1109,7 +1129,3 @@ fun LocalTopAppBarWithBackButtonAndStepCount(
         )
     }
 }
-
-
-
-

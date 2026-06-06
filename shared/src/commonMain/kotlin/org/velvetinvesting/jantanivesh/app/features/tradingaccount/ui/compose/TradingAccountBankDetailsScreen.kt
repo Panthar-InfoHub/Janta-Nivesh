@@ -43,9 +43,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.account_number
+import jantanivesh.shared.generated.resources.account_type
 import jantanivesh.shared.generated.resources.info_icon
+import jantanivesh.shared.generated.resources.micro_number
+import jantanivesh.shared.generated.resources.payment_mode
 import jantanivesh.shared.generated.resources.secure_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.sharad.velvetinvestment.utils.tradingaccount.AccountType
 import org.sharad.velvetinvestment.utils.tradingaccount.DividendPayMode
 import org.sharad.velvetinvestment.utils.tradingaccount.YesNo
@@ -123,7 +128,7 @@ fun TradingAccountBankDetailsScreen(
 
                     item{
                         DropDownSelector(
-                            title = "Account Type/ ",
+                            title = "Account Type/ " + "(" + stringResource(Res.string.account_type) + ")",
                             value = DividendPayMode.getDisplayName(data.div_pay_mode),
                             onValueChange = {
                                 handleEvent(
@@ -140,7 +145,7 @@ fun TradingAccountBankDetailsScreen(
                     }
                     item{
                         TitledAppTextField(
-                            title = "Account Number/ ",
+                            title = "Account Number/ " + "(" + stringResource(Res.string.account_number) + ")",
                             value = data.primary_holder_pan,
                             placeholder = "Enter account number",
                             onValueChange = {
@@ -155,7 +160,7 @@ fun TradingAccountBankDetailsScreen(
                     }
                     item{
                         TitledAppTextField(
-                            title = "Micro Number/ ",
+                            title = "Micro Number/ " + "(" + stringResource(Res.string.micro_number) + ")",
                             value = data.primary_holder_pan,
                             placeholder = "Enter Micro number",
                             onValueChange = {
@@ -170,7 +175,7 @@ fun TradingAccountBankDetailsScreen(
                     }
                     item{
                         DropDownSelector(
-                            title = "Payment Mode/ ",
+                            title = "Payment Mode/ " + "(" + stringResource(Res.string.payment_mode) + ")",
                             value = DividendPayMode.getDisplayName(data.div_pay_mode),
                             onValueChange = {
                                 handleEvent(
