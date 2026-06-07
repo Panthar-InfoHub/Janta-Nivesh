@@ -1,8 +1,12 @@
 package org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 
 import kotlinx.serialization.Serializable
+import org.sharad.velvetinvestment.utils.tradingaccount.AccountType
+import org.sharad.velvetinvestment.utils.tradingaccount.DividendPayMode
+import org.sharad.velvetinvestment.utils.tradingaccount.YesNo
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.ClientType
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
-
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.TaxStatus
 
 @Serializable
 data class Data(
@@ -12,7 +16,7 @@ data class Data(
     val account_no_3: String = "",
     val account_no_4: String = "",
     val account_no_5: String = "",
-    val account_type_1: String = "",
+    val account_type_1: String = AccountType.SAVINGS_BANK.code,
     val account_type_2: String = "",
     val account_type_3: String = "",
     val account_type_4: String = "",
@@ -24,17 +28,17 @@ data class Data(
     val cdslcltid: String = "",
     val cheque_name: String = "",
     val city: String = "",
-    val client_type: String = "",
+    val client_type: String = ClientType.PHYSICAL.code,
     val cmbp_id: String = "",
     val communication_mode: String = "E",
     val country: String = "",
-    val default_bank_flag_1: String = "",
+    val default_bank_flag_1: String = YesNo.YES.code,
     val default_bank_flag_2: String = "",
     val default_bank_flag_3: String = "",
     val default_bank_flag_4: String = "",
     val default_bank_flag_5: String = "",
     val default_dp: String = "",
-    val div_pay_mode: String = "",
+    val div_pay_mode: String = DividendPayMode.ECS.code,
     val email: String = "",
     val email_declaration_flag: String = "SE",
     val foreign_address_1: String = "",
@@ -171,7 +175,7 @@ data class Data(
     val second_holder_pan_exempt: String = "",
     val srce_wealt: String = "",
     val state: String = "",
-    val tax_status: String = "",
+    val tax_status: String = TaxStatus.INDIVIDUAL.code,
     val third_holder_ckyc_number: String = "",
     val third_holder_dob: String = "",
     val third_holder_email: String = "",

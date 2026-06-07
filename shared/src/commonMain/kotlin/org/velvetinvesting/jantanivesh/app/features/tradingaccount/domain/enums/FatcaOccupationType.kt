@@ -1,4 +1,4 @@
-package org.sharad.velvetinvestment.utils.tradingaccount
+package org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums
 
 enum class FatcaOccupationType(
     val code: String,

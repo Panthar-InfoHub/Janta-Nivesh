@@ -169,5 +169,18 @@ enum class StateCode(
         fun getDisplayName(code: String): String {
             return fromCode(code)?.displayName.orEmpty()
         }
+        fun fromDisplayName(name: String):StateCode? {
+            val normalizedInput = name.normalizeStateName()
+            return StateCode.entries.find {
+                it.displayName.normalizeStateName() == normalizedInput
+            }
+        }
+
+        private fun String.normalizeStateName(): String {
+            return trim()
+                .lowercase()
+                .replace("&", "and")
+                .replace(Regex("\\s+"), " ")
+        }
     }
 }

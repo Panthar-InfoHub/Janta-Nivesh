@@ -5,27 +5,35 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.BrowserLauncher
 import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.ClientType
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.DefaultDp
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.FatcaOccupationType
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.KycType
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.SourceOfWealth
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.StateCode
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.TaxStatus
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.Data
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.TradingAccountFormDomain
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.GetTradingAccountPrefilledDataUseCase
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.SubmitTradingAccountFormUseCase
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.TradingAccountConfirmationUseCase
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.VerifyPANUseCase
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -237,11 +245,11 @@ sealed interface TradingAccountEffect {
 }
 
 class TradingAccountViewModel(
-//    private val getUserDataUseCase: GetUserDataUseCase,
-//    private val verifyPANUseCase: VerifyPANUseCase,
-//    private val submitTradingAccountFormUseCase: SubmitTradingAccountFormUseCase,
-//    private val tradingAccountConfirmationUseCase: TradingAccountConfirmationUseCase,
-//    private val openBrowserLauncher: BrowserLauncher
+    private val getTradingAccountPrefilledDataUseCase: GetTradingAccountPrefilledDataUseCase,
+    private val verifyPANUseCase: VerifyPANUseCase,
+    private val submitTradingAccountFormUseCase: SubmitTradingAccountFormUseCase,
+    private val tradingAccountConfirmationUseCase: TradingAccountConfirmationUseCase,
+    private val openBrowserLauncher: BrowserLauncher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TradingAccountUiState())
@@ -276,7 +284,7 @@ class TradingAccountViewModel(
             is TradingAccountEvent.VerifyPan -> verifyPan(event.pan)
             is TradingAccountEvent.OnFirstNameChange -> updateData {
                 it.copy(
-                    primary_holder_first_name = event.value.trim().toUpperCase(Locale.current)
+                    primary_holder_first_name = event.value.toUpperCase(Locale.current)
                 )
             }
 
@@ -341,7 +349,7 @@ class TradingAccountViewModel(
 
             is TradingAccountEvent.OnPlaceOfBirthChange -> updateData {
                 it.copy(
-                    po_bir_inc = event.value.trim().toUpperCase(Locale.current)
+                    po_bir_inc = event.value.toUpperCase(Locale.current)
                 )
             }
 
@@ -643,7 +651,7 @@ class TradingAccountViewModel(
 
             is TradingAccountEvent.OnNominee1NameChange -> updateData {
                 it.copy(
-                    nominee_1_name = event.value.trim().toUpperCase(Locale.current)
+                    nominee_1_name = event.value.toUpperCase(Locale.current)
                 )
             }
 
@@ -661,7 +669,7 @@ class TradingAccountViewModel(
 
             is TradingAccountEvent.OnNominee1EmailChange -> updateData {
                 it.copy(
-                    nominee_1_email = event.value.trim().toUpperCase(Locale.current)
+                    nominee_1_email = event.value.trim()
                 )
             }
 
@@ -685,25 +693,25 @@ class TradingAccountViewModel(
 
             is TradingAccountEvent.OnNominee1Address1Change -> updateData {
                 it.copy(
-                    nominee_1_address1 = event.value.trim().toUpperCase(Locale.current)
+                    nominee_1_address1 = event.value.toUpperCase(Locale.current)
                 )
             }
 
             is TradingAccountEvent.OnNominee1Address2Change -> updateData {
                 it.copy(
-                    nominee_1_address2 = event.value.trim().toUpperCase(Locale.current)
+                    nominee_1_address2 = event.value.toUpperCase(Locale.current)
                 )
             }
 
             is TradingAccountEvent.OnNominee1Address3Change -> updateData {
                 it.copy(
-                    nominee_1_address3 = event.value.trim().toUpperCase(Locale.current)
+                    nominee_1_address3 = event.value.toUpperCase(Locale.current)
                 )
             }
 
             is TradingAccountEvent.OnNominee1CityChange -> updateData {
                 it.copy(
-                    nominee_1_city = event.value.trim().toUpperCase(Locale.current)
+                    nominee_1_city = event.value.toUpperCase(Locale.current)
                 )
             }
 
@@ -727,7 +735,7 @@ class TradingAccountViewModel(
 
             is TradingAccountEvent.OnNominee1GuardianChange -> updateData {
                 it.copy(
-                    nominee_1_guardian = event.value.trim().toUpperCase(Locale.current)
+                    nominee_1_guardian = event.value.toUpperCase(Locale.current)
                 )
             }
 
@@ -1134,10 +1142,33 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnSourceWealthChange -> updateData {
-                it.copy(
-                    srce_wealt = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnSourceWealthChange -> {
+                val value = event.value.trim()
+                val occType = when (value) {
+                    SourceOfWealth.SALARY.code ->
+                        FatcaOccupationType.SERVICE.code
+
+                    SourceOfWealth.BUSINESS_INCOME.code ->
+                        FatcaOccupationType.BUSINESS.code
+
+                    SourceOfWealth.GIFT.code,
+                    SourceOfWealth.ANCESTRAL_PROPERTY.code,
+                    SourceOfWealth.RENTAL_INCOME.code,
+                    SourceOfWealth.PRIZE_MONEY.code,
+                    SourceOfWealth.ROYALTY.code,
+                    SourceOfWealth.OTHER.code ->
+                        FatcaOccupationType.OTHERS.code
+
+                    else ->
+                        FatcaOccupationType.NOT_CATEGORIZED.code
+                }
+
+                updateData {
+                    it.copy(
+                        srce_wealt = value,
+                        occ_type = occType
+                    )
+                }
             }
 
             is TradingAccountEvent.OnForeignAddress1Change -> updateData {
@@ -1326,89 +1357,214 @@ class TradingAccountViewModel(
 
     private fun getUserData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(formState = UiState.Loading) }
-            // TODO()
-//            getUserDataUseCase()
-//                .onSuccess { response ->
-//                    _uiState.update { it.copy(formState = UiState.Success(TradingAccountFormDomain(data = Data()))) }
-//                    val userData = response.data
-//                    updateData {
-//                        it.copy(
-//                            primary_holder_first_name = userData.full_name,
-//                            email = userData.email,
-//                            primary_holder_dob_incorporation = DateTimeUtils.isoUtcToSlashDate(userData.dob),
-//                            indian_mobile_no = userData.phone_no,
-//                        )
-//                    }
-//                    _uiState.update { it.copy(isMinor = isMinor(userData.dob)) }
-//                    if (isMinor(userData.dob)){
-//                        handleEvent(TradingAccountEvent.OnGuardianPanExemptChange("N"))
-//                        handleEvent(TradingAccountEvent.OnPrimaryPanExemptChange("Y"))
-//                    }
-//                }
-//                .onError {
-//                    _uiState.update { it.copy(formState = UiState.Error(it.message)) }
-//                    SnackBarController.showError("Failed to load data.")
-//                }
-        }
-    }
 
-    private fun submitForm(onSuccessfulSubmit: () -> Unit) {
-        viewModelScope.launch {
-            val previousState = _uiState.value.formState
-            val successState = previousState as? UiState.Success ?: return@launch
+            _uiState.update {
+                it.copy(formState = UiState.Loading)
+            }
 
-            _uiState.update { it.copy(formState = UiState.Loading) }
-            // TODO()
-//            submitTradingAccountFormUseCase(successState.data)
-//                .onSuccess { response ->
-//                    _uiState.update { it.copy(formState = previousState, launchedBrowser = true) }
-//                    openBrowserLauncher.launchBrowser(response)
-//                }
-//                .onError { error ->
-//                    _uiState.update { it.copy(formState = previousState) }
-//                    SnackBarController.showError(error.message.ifBlank { "Failed to submit trading account form" })
-//                }
-        }
-    }
+            getTradingAccountPrefilledDataUseCase()
+                .onSuccess { userData ->
+                    _uiState.update {
+                        it.copy(
+                            formState = UiState.Success(
+                                TradingAccountFormDomain(
+                                    data = Data()
+                                )
+                            )
+                        )
+                    }
+                    updateData {
+                        it.copy(
+                            primary_holder_first_name = userData.fullName,
+                            email = userData.email,
+                            primary_holder_dob_incorporation = DateTimeUtils.isoUtcToSlashDate(
+                                userData.dob
+                            ),
+                            indian_mobile_no = userData.phoneNo,
+                            gender = userData.gender
+                                .toUpperCase(Locale.current)
+                                .take(1),
+                            primary_holder_pan = userData.panNo,
+                            po_bir_inc = userData.placeOfBirth,
+                            address_1 = userData.fullAddress,
+                            pincode = userData.pinCode,
+                            city = userData.city,
+                            state = StateCode.fromDisplayName(
+                                userData.state
+                            )?.code.orEmpty(),
+                            country = userData.country,
+                        )
+                    }
 
-    private fun confirmAccount(onSuccessfulSubmit: () -> Unit) {
-        viewModelScope.launch {
-            val previousState = _uiState.value.formState
-            _uiState.update { it.copy(launchedBrowser = false) }
-            val successState = previousState as? UiState.Success ?: return@launch
+                    val minor = isMinor(userData.dob)
 
-            _uiState.update { it.copy(formState = UiState.Loading) }
-            //TODO()
-//            tradingAccountConfirmationUseCase()
-//                .onSuccess { response ->
-//                    _uiState.update { it.copy(formState = previousState) }
-//                    SnackBarController.showSuccess("Account Created Successfully")
-//                    AppEventsController.sendHomeRefreshEvent()
-//                    onSuccessfulSubmit()
-//                }
-//                .onError { error ->
-//                    _uiState.update { it.copy(formState = previousState) }
-//                    SnackBarController.showError(error.message.ifBlank { "Failed to confirm trading account" })
-//                }
+                    _uiState.update {
+                        it.copy(
+                            isMinor = minor
+                        )
+                    }
+
+                    if (minor) {
+                        handleEvent(
+                            TradingAccountEvent.OnGuardianPanExemptChange("N")
+                        )
+
+                        handleEvent(
+                            TradingAccountEvent.OnPrimaryPanExemptChange("Y")
+                        )
+                    }
+                }
+                .onError { error ->
+                    _uiState.update {
+                        it.copy(
+                            formState = UiState.Error(error.message)
+                        )
+                    }
+                    SnackBarController.showError("Failed to load data.")
+                }
         }
     }
 
     private fun verifyPan(pan: String) {
         viewModelScope.launch {
             val previousState = _uiState.value.formState
-            if (previousState !is UiState.Success) return@launch
-            _uiState.update { it.copy(formState = UiState.Loading) }
-            //TODO()
-//            verifyPANUseCase(pan)
-//                .onSuccess { response ->
-//                    _uiState.update { it.copy(formState = previousState, panVerified = response.status, verifiedPanNumber = pan) }
-//                    SnackBarController.showInfo(response.message)
-//                }
-//                .onError { error ->
-//                    _uiState.update { it.copy(formState = previousState) }
-//                    SnackBarController.showError(error.message)
-//                }
+            if (previousState !is UiState.Success) {
+                return@launch
+            }
+
+            _uiState.update {
+                it.copy(
+                    formState = UiState.Loading
+                )
+            }
+
+            verifyPANUseCase(pan)
+                .onSuccess { response ->
+                    _uiState.update {
+                        it.copy(
+                            formState = previousState,
+                            panVerified = response.status,
+                            verifiedPanNumber = pan
+                        )
+                    }
+                    SnackBarController.showInfo(response.message)
+                }
+                .onError { error ->
+                    _uiState.update {
+                        it.copy(
+                            formState = previousState
+                        )
+                    }
+                    SnackBarController.showError(error.message)
+                }
+        }
+    }
+
+    private fun submitForm(onSuccessfulSubmit: () -> Unit) {
+        viewModelScope.launch {
+
+            val previousState = _uiState.value.formState
+            val successState = previousState as? UiState.Success ?: return@launch
+
+            _uiState.update {
+                it.copy(
+                    formState = UiState.Loading
+                )
+            }
+
+            submitTradingAccountFormUseCase(successState.data)
+                .onSuccess { response ->
+                    _uiState.update {
+                        it.copy(
+                            formState = previousState,
+                            launchedBrowser = true
+                        )
+                    }
+
+                    openBrowserLauncher.launchBrowser(response)
+                }
+                .onError { error ->
+
+                    _uiState.update {
+                        it.copy(
+                            formState = previousState
+                        )
+                    }
+                    SnackBarController.showError(
+                        error.message.ifBlank {
+                            "Failed to submit trading account form"
+                        }
+                    )
+                }
+        }
+    }
+
+    private fun confirmAccount(
+        onSuccessfulSubmit: () -> Unit
+    ) {
+        viewModelScope.launch {
+
+            val previousState = _uiState.value.formState
+
+            _uiState.update {
+                it.copy(
+                    launchedBrowser = false
+                )
+            }
+
+            val successState = previousState as? UiState.Success
+                ?: return@launch
+
+            _uiState.update {
+                it.copy(
+                    formState = UiState.Loading
+                )
+            }
+
+            tradingAccountConfirmationUseCase(
+                taxStatus = successState.data.data.tax_status,
+                holdingNature = successState.data.data.holding_nature,
+                jointHolderName1 =
+                successState.data.data.second_holder_first_name +
+                        " " +
+                        successState.data.data.second_holder_last_name,
+                jointHolderName2 =
+                successState.data.data.third_holder_first_name +
+                        " " +
+                        successState.data.data.third_holder_last_name,
+                guardianName =
+                successState.data.data.guardian_first_name +
+                        " " +
+                        successState.data.data.guardian_last_name,
+                isMinor = _uiState.value.isMinor
+            )
+                .onSuccess {
+
+                    _uiState.update {
+                        it.copy(
+                            formState = previousState
+                        )
+                    }
+
+                    SnackBarController.showSuccess("Account Created Successfully")
+                    AppEventsController.sendHomeRefreshEvent()
+
+                    onSuccessfulSubmit()
+                }
+                .onError { error ->
+
+                    _uiState.update {
+                        it.copy(
+                            formState = previousState
+                        )
+                    }
+
+                    SnackBarController.showError(
+                        error.message.ifBlank {
+                            "Failed to confirm trading account"
+                        }
+                    )
+                }
         }
     }
 
@@ -1528,23 +1684,48 @@ class TradingAccountViewModel(
 
     // Helper functions for bank accounts (still used in bank screen probably)
     fun getAccountType(index: Int, data: Data): String = when (index) {
-        1 -> data.account_type_1; 2 -> data.account_type_2; 3 -> data.account_type_3; 4 -> data.account_type_4; 5 -> data.account_type_5; else -> ""
+        1 -> data.account_type_1
+        2 -> data.account_type_2
+        3 -> data.account_type_3
+        4 -> data.account_type_4
+        5 -> data.account_type_5
+        else -> ""
     }
 
     fun getAccountNumber(index: Int, data: Data): String = when (index) {
-        1 -> data.account_no_1; 2 -> data.account_no_2; 3 -> data.account_no_3; 4 -> data.account_no_4; 5 -> data.account_no_5; else -> ""
+        1 -> data.account_no_1
+        2 -> data.account_no_2
+        3 -> data.account_no_3
+        4 -> data.account_no_4
+        5 -> data.account_no_5
+        else -> ""
     }
 
     fun getIfsc(index: Int, data: Data): String = when (index) {
-        1 -> data.ifsc_code_1; 2 -> data.ifsc_code_2; 3 -> data.ifsc_code_3; 4 -> data.ifsc_code_4; 5 -> data.ifsc_code_5; else -> ""
+        1 -> data.ifsc_code_1
+        2 -> data.ifsc_code_2
+        3 -> data.ifsc_code_3
+        4 -> data.ifsc_code_4
+        5 -> data.ifsc_code_5
+        else -> ""
     }
 
     fun getMicr(index: Int, data: Data): String = when (index) {
-        1 -> data.micr_no_1; 2 -> data.micr_no_2; 3 -> data.micr_no_3; 4 -> data.micr_no_4; 5 -> data.micr_no_5; else -> ""
+        1 -> data.micr_no_1
+        2 -> data.micr_no_2
+        3 -> data.micr_no_3
+        4 -> data.micr_no_4
+        5 -> data.micr_no_5
+        else -> ""
     }
 
     fun getDefaultBank(index: Int, data: Data): String = when (index) {
-        1 -> data.default_bank_flag_1; 2 -> data.default_bank_flag_2; 3 -> data.default_bank_flag_3; 4 -> data.default_bank_flag_4; 5 -> data.default_bank_flag_5; else -> ""
+        1 -> data.default_bank_flag_1
+        2 -> data.default_bank_flag_2
+        3 -> data.default_bank_flag_3
+        4 -> data.default_bank_flag_4
+        5 -> data.default_bank_flag_5
+        else -> ""
     }
 }
 

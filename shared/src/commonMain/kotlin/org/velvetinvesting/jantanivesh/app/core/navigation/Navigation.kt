@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.koinInject
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountSuccess
 
 @Composable
 fun AppNavigation() {
@@ -37,6 +38,7 @@ fun AppNavigation() {
             )
         }
 
+        //Onboarding Graph
         composable<Route.OnboardingGraph> { 
             OnboardingNavigation(
                 onCompleted = {
@@ -45,12 +47,36 @@ fun AppNavigation() {
             )
         }
 
+        //KYC Graph
         composable<Route.KycGraph> {
             KycNavigation(
                 onBackNavigation = {navController.popBackStack()},
-                onCompleted = {
+            )
+        }
 
+        //Trading Account Graph
+        composable<Route.TradingAccountNavigation> {
+            TradingAccountNavigation(
+                onBackClick = {navController.popBackStack()},
+                onCompletion = {
+                    navController.navigate(Route.TradingAccountSuccess) {
+                        popUpTo<Route.TradingAccountNavigation> {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
+            )
+        }
+        composable<Route.TradingAccountSuccess> {
+            TradingAccountSuccess(
+                onButtonClick = {
+                    //TODO: Add navigation to mutual fund type selection screen
+//                    navController.navigate(Route.MutualFundTypeSelectionScreen){
+//                        launchSingleTop= true
+//                    }
+                },
+                buttonText = "Start Investing"
             )
         }
     }

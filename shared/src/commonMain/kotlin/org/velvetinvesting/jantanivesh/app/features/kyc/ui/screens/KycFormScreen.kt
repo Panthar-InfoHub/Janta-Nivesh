@@ -113,7 +113,7 @@ private fun FormContent(
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
-        contentPadding = PaddingValues(vertical = Spacing.dp16)
+        contentPadding = PaddingValues(vertical = Spacing.dp12)
     ) {
         item {
             Column(
@@ -124,7 +124,7 @@ private fun FormContent(
                         elevation = Spacing.dp12,
                         shape = RoundedCornerShape(Spacing.dp24),
                         ambientColor = SelectedBoxBorder,
-                        spotColor = Color.Black
+                        spotColor = Color.Black.copy(alpha = 0.7f)
                     )
                     .clip(RoundedCornerShape(Spacing.dp24))
                     .background(White)
