@@ -117,6 +117,27 @@
     <string name="kyc_success_title">KYC Completed Successfully!</string>
     <string name="kyc_success_subtitle">Your account is now ready. You can start investing in mutual funds.</string>
 
+    <!-- Home Screen -->
+    <string name="home_good_morning">Good Morning,</string>
+    <string name="home_notifications_desc">Janta Nivesh Notifications</string>
+    <string name="home_portfolio_value">PORTFOLIO VALUE</string>
+    <string name="home_fixed_deposits">Fixed Deposits</string>
+    <string name="home_mutual_funds">Mutual Funds</string>
+    <string name="home_pnl_trend_suffix"> % this month</string>
+    <string name="home_invest_in_fd">Invest in FD</string>
+    <string name="home_invest_in_mf">Invest in MF</string>
+    <string name="home_create_goal">Create Goal</string>
+    <string name="home_insurance">Insurance</string>
+    <string name="home_kyc_desc">Complete your KYC to start investing</string>
+    <string name="home_kyc_title">Complete KYC to start investing</string>
+    <string name="home_kyc_time">Takes about 2 minutes</string>
+    <string name="home_verify_button">Verify</string>
+    <string name="home_your_goals">Your Goals</string>
+    <string name="home_go_to_goals_desc">Go to your goals</string>
+    <string name="home_create_custom_goal_desc">Create Custom Goal</string>
+    <string name="home_custom_goal_title">Custom Goal</string>
+    <string name="home_custom_goal_subtitle">Create your own personalized goal</string>
+
     <!-- Trading Account Feature -->
     <string name="guardian_pan_number">Guardian PAN Number</string>
     <string name="address_line_1">Address Line 1</string>

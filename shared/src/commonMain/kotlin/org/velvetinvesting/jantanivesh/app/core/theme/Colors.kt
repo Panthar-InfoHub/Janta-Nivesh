@@ -37,6 +37,13 @@ val UploadBoxBorder = Color(0xffDDE1FF)
 val ShadowColor = Color(0xffDEE2F6).copy(alpha = 0.75f)
 val GrayBackGround = Color(0xffEFEDF3)
 
+// Home Screen Colors
+val FdIconBg = Color(0xffDDE1FF)
+val MutualFundIconBg = Color(0xffC6E7FF)
+val CreateGoalIconBg = Color(0xffFFDCC6)
+val InsuranceIconBg = Color(0xffE4E1E7)
+val GoalIconBg = Color(0xFFF5F2FB)
+
 // TradingDetailsScreen
 val HolderNatureTextColor = Color(0xff44464F)
 
