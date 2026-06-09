@@ -24,9 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
@@ -50,7 +49,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels
 fun TradingAccountBasicDetailsPreview() {
     JantaNiveshTheme {
         TradingAccountBasicDetailsScreen(
-            pv = PaddingValues(16.dp),
+            pv = PaddingValues(0.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.SINGLE
@@ -70,13 +69,13 @@ fun TradingAccountBasicDetailsScreen(
     onClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(pv)) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
             stepCount = 1,
-            totalSteps = 7,
+            totalSteps = uiState.totalSteps,
             onBack = onBackClick,
-            modifier = Modifier.padding(pv)
+            modifier = Modifier
         )
 
         UiStateContainer(
@@ -101,11 +100,11 @@ fun TradingAccountBasicDetailsScreen(
                         ) {
                             Text(
                                 "Basic Details",
-                                style = MaterialTheme.typography.headlineLarge,
+                                style = MaterialTheme.typography.headlineMedium,
                             )
                             Text(
                                 "Let's start with your basic information",
-                                fontSize = 14.sp,
+                                style = MaterialTheme.typography.labelSmall,
                                 color = Color(0xff4A5565)
                             )
                         }
@@ -199,7 +198,7 @@ fun TradingAccountBasicDetailsScreen(
                                 value = data.primary_holder_dob_incorporation,
                                 placeholder = "DD/MM/YYYY",
                                 mandatory = true,
-                                onClick = { /* TODO implement calendar logic if needed */ },
+                                onClick = {  },
                             )
                         }
                     }

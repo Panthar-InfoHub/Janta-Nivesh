@@ -23,7 +23,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination =startDestination
+        startDestination = Route.TradingAccountNavigation
     ) {
 
         //Login Graph

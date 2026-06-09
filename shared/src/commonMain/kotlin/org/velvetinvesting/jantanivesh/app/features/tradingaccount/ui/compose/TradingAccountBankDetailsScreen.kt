@@ -5,24 +5,19 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -34,19 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.account_number
-import jantanivesh.shared.generated.resources.account_type
-import jantanivesh.shared.generated.resources.info_icon
-import jantanivesh.shared.generated.resources.micro_number
 import jantanivesh.shared.generated.resources.payment_mode
 import jantanivesh.shared.generated.resources.secure_icon
 import org.jetbrains.compose.resources.painterResource
@@ -58,7 +46,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
@@ -102,8 +89,8 @@ fun TradingAccountBankDetailsScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
-            stepCount = 4,
-            totalSteps = 5,
+            stepCount = if (uiState.isMinor) 6 else 5,
+            totalSteps = uiState.totalSteps,
             onBack = onBackClick,
             modifier = Modifier.padding(pv)
         )
@@ -121,79 +108,51 @@ fun TradingAccountBankDetailsScreen(
                         .weight(1f)
                         .fillMaxSize()
                         .padding(horizontal = Spacing.dp16),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                    contentPadding = PaddingValues(top = Spacing.dp12)
                 ) {
 
                     item { SecureNote() }
 
-                    item{
+                    item {
                         DropDownSelector(
-                            title = "Account Type/ " + "(" + stringResource(Res.string.account_type) + ")",
+                            title = "Payment Mode/ (${stringResource(Res.string.payment_mode)})",
                             value = DividendPayMode.getDisplayName(data.div_pay_mode),
                             onValueChange = {
                                 handleEvent(
-                                    TradingAccountEvent.OnDivPayModeChange(
-                                        it.code
-                                    )
-                                )
-                            },
-                            placeholder = "Select account type",
-                            modifier = Modifier.fillMaxWidth(),
-                            list = DividendPayMode.entries,
-                            textConvertor = { it.displayName }
-                        )
-                    }
-                    item{
-                        TitledAppTextField(
-                            title = "Account Number/ " + "(" + stringResource(Res.string.account_number) + ")",
-                            value = data.primary_holder_pan,
-                            placeholder = "Enter account number",
-                            onValueChange = {
-                                handleEvent(
-                                    TradingAccountEvent.OnPanChange(
-                                        it.uppercase()
-                                    )
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        )
-                    }
-                    item{
-                        TitledAppTextField(
-                            title = "Micro Number/ " + "(" + stringResource(Res.string.micro_number) + ")",
-                            value = data.primary_holder_pan,
-                            placeholder = "Enter Micro number",
-                            onValueChange = {
-                                handleEvent(
-                                    TradingAccountEvent.OnPanChange(
-                                        it.uppercase()
-                                    )
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        )
-                    }
-                    item{
-                        DropDownSelector(
-                            title = "Payment Mode/ " + "(" + stringResource(Res.string.payment_mode) + ")",
-                            value = DividendPayMode.getDisplayName(data.div_pay_mode),
-                            onValueChange = {
-                                handleEvent(
-                                    TradingAccountEvent.OnDivPayModeChange(
-                                        it.code
-                                    )
+                                    TradingAccountEvent.OnDivPayModeChange(it.code)
                                 )
                             },
                             placeholder = "Payment Mode",
+                            mandatory = true,
                             modifier = Modifier.fillMaxWidth(),
                             list = DividendPayMode.entries,
                             textConvertor = { it.displayName }
                         )
                     }
+
+                    items(uiState.visibleBankAccounts) { index ->
+                        BankAccountSection(
+                            index = index,
+                            data = data,
+                            removable = index != 1,
+                            onRemove = {
+                                handleEvent(
+                                    TradingAccountEvent.RemoveBankAccount(index)
+                                )
+                            },
+                            handleEvent = handleEvent
+                        )
+                    }
+
                     if (uiState.visibleBankAccounts.size < 5) {
                         item {
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    handleEvent(
+                                        TradingAccountEvent.AddBankAccount
+                                    )
+                                },
                                 shape = RoundedCornerShape(Spacing.dp8),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.Transparent,
@@ -232,9 +191,10 @@ fun SecureNote() {
     Row(
         horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
         modifier = Modifier
-            .genericDropShadow(RoundedCornerShape(Spacing.dp16))
+            .genericDropShadow(RoundedCornerShape(Spacing.dp8))
             .clip(RoundedCornerShape(Spacing.dp8))
-            .background(Color(0xffEFEDF3))
+            .background(Color(0xffEFF4FF))
+            .border(1.dp, Color(0xffD3E4FE), RoundedCornerShape(Spacing.dp8))
             .padding(Spacing.dp20),
     ) {
         Icon(
@@ -366,20 +326,13 @@ private fun AccountHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(5.dp)
-                    .clip(CircleShape)
-                    .background(Secondary, CircleShape)
-            )
 
             Text(
                 text = heading,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 color = Primary,
                 modifier = Modifier
-                    .weight(1f)
                     .fillMaxWidth()
             )
 

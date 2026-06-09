@@ -2,6 +2,8 @@ package org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,19 +18,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.address_line_1
 import jantanivesh.shared.generated.resources.address_line_2_optional
@@ -45,8 +45,6 @@ import jantanivesh.shared.generated.resources.foreign_phone_optional
 import jantanivesh.shared.generated.resources.info_icon
 import jantanivesh.shared.generated.resources.investor_onboarding
 import jantanivesh.shared.generated.resources.kyc_type
-import jantanivesh.shared.generated.resources.lei_number_optional
-import jantanivesh.shared.generated.resources.lei_validity
 import jantanivesh.shared.generated.resources.mobile_optional
 import jantanivesh.shared.generated.resources.office_fax_optional
 import jantanivesh.shared.generated.resources.office_number
@@ -61,7 +59,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.OnBoardingDateField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
@@ -103,8 +100,8 @@ fun TradingAccountAddressScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
-            stepCount = 5,
-            totalSteps = 5,
+            stepCount = if (uiState.isMinor) 7 else 6,
+            totalSteps = uiState.totalSteps,
             onBack = onBackClick,
             modifier = Modifier.padding(pv)
         )
@@ -176,12 +173,10 @@ fun TradingAccountAddressScreen(
                             )
                             TitledAppTextField(
                                 title = "Address Line 3 (Optional)/ " + "(" + stringResource(Res.string.address_line_3_optional) + ")",
-                                value = data.city,
+                                value = data.address_3,
                                 onValueChange = {
                                     handleEvent(
-                                        TradingAccountEvent.OnCityChange(
-                                            it
-                                        )
+                                        TradingAccountEvent.OnAddress3Change(it)
                                     )
                                 },
                                 placeholder = "Landmark",
@@ -192,29 +187,31 @@ fun TradingAccountAddressScreen(
                             ) {
                                 TitledAppTextField(
                                     title = "City/ " + "(" + stringResource(Res.string.city) + ")",
-                                    value = data.pincode,
+                                    value = data.city,
                                     modifier = Modifier.weight(1f),
                                     onValueChange = {
                                         handleEvent(
-                                            TradingAccountEvent.OnPincodeChange(
-                                                it
-                                            )
+                                            TradingAccountEvent.OnCityChange(it)
                                         )
                                     },
                                     placeholder = "City",
                                     mandatory = true,
-                                    keyboardType = KeyboardType.Number
                                 )
-                                DropDownSelector(
-                                    title = "State/ " + "(" + stringResource(Res.string.state) + ")",
+                                TitledAppTextField(
+                                    title = "State/ (${stringResource(Res.string.state)})",
                                     value = StateCode.getDisplayName(data.state),
-                                    placeholder = "Select State",
                                     onValueChange = {},
-                                    modifier = Modifier.weight(1f),
-                                    list = StateCode.entries,
-                                    textConvertor = {
-                                        it.displayName
-                                    }
+                                    placeholder = "Select State",
+                                    mandatory = true,
+                                    enabled = false,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable(
+                                            indication = null,
+                                            interactionSource = remember { MutableInteractionSource() }
+                                        ) {
+                                            handleEvent(TradingAccountEvent.ShowStateDialog)
+                                        }
                                 )
                             }
                             Row(
@@ -236,16 +233,20 @@ fun TradingAccountAddressScreen(
                                     modifier = Modifier.weight(1f),
                                     keyboardType = KeyboardType.Number
                                 )
-                                DropDownSelector(
-                                    title = "Country/ " + "(" + stringResource(Res.string.country) + ")",
-                                    value = StateCode.getDisplayName(data.country),
-                                    placeholder = "India",
-                                    onValueChange = {},
-                                    modifier = Modifier.weight(1f),
-                                    list = Country.entries,
-                                    textConvertor = {
-                                        it.displayName
-                                    }
+                                TitledAppTextField(
+                                    title = "Country/ (${stringResource(Res.string.country)})",
+                                    value = data.country,
+                                    onValueChange = {
+                                        handleEvent(
+                                            TradingAccountEvent.OnCountryChange(it)
+                                        )
+                                    },
+                                    placeholder = "Select Country",
+                                    mandatory = true,
+                                    enabled = true,
+                                    modifier = Modifier
+                                        .weight(1f)
+
                                 )
                             }
                         }
@@ -270,9 +271,7 @@ fun TradingAccountAddressScreen(
                                 value = data.email,
                                 onValueChange = {
                                     handleEvent(
-                                        TradingAccountEvent.OnCityChange(
-                                            it
-                                        )
+                                        TradingAccountEvent.OnEmailChange(it)
                                     )
                                 },
                                 placeholder = "email@example.com",
@@ -283,35 +282,37 @@ fun TradingAccountAddressScreen(
                             ) {
                                 TitledAppTextField(
                                     title = "Mobile (Optional)/ " + "(" + stringResource(Res.string.mobile_optional) + ")",
-                                    value = "",
-                                    modifier = Modifier.weight(1f),
+                                    value = data.resi_phone,
                                     onValueChange = {
-                                        TODO()
+                                        handleEvent(
+                                            TradingAccountEvent.OnResiPhoneChange(it)
+                                        )
                                     },
-                                    placeholder = "City",
-                                    keyboardType = KeyboardType.Number
-                                )
-                                TitledAppTextField(
-                                    title = "Fax Number (Optional)/ " + "(" + stringResource(Res.string.fax_number_optional) + ")",
-                                    value = "",
-                                    modifier = Modifier.weight(1f),
-                                    onValueChange = {
-                                        TODO()
-                                    },
-                                    placeholder = "Fax",
-                                    keyboardType = KeyboardType.Number
+                                    placeholder = "Phone Number",
+                                    keyboardType = KeyboardType.Phone
                                 )
                             }
+                            TitledAppTextField(
+                                title = "Fax Number (Optional)/ " + "(" + stringResource(Res.string.fax_number_optional) + ")",
+                                value = data.resi_fax,
+                                onValueChange = {
+                                    handleEvent(
+                                        TradingAccountEvent.OnResiFaxChange(it)
+                                    )
+                                },
+                                placeholder = "Residential Fax",
+                                keyboardType = KeyboardType.Number
+                            )
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
                                 TitledAppTextField(
                                     title = "Office Number/ " + "(" + stringResource(Res.string.office_number) + ")",
-                                    value = data.pincode,
+                                    value = data.office_phone,
                                     onValueChange = {
                                         handleEvent(
-                                            TradingAccountEvent.OnPincodeChange(
+                                            TradingAccountEvent.OnOfficePhoneChange(
                                                 it
                                             )
                                         )
@@ -322,30 +323,17 @@ fun TradingAccountAddressScreen(
                                 )
                                 TitledAppTextField(
                                     title = "Office Fax (Optional)/ " + "(" + stringResource(Res.string.office_fax_optional) + ")",
-                                    value = "",
+                                    value = data.office_fax,
                                     modifier = Modifier.weight(1f),
                                     onValueChange = {
-                                        TODO()
+                                        handleEvent(
+                                            TradingAccountEvent.OnOfficeFaxChange(it)
+                                        )
                                     },
                                     placeholder = "Work Fax",
                                     keyboardType = KeyboardType.Number
                                 )
                             }
-                        }
-                    }
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                "Foreign Address",
-                                style = MaterialTheme.typography.headlineSmall
-                            )
-                            Switch(
-                                checked = showForeignAddress,
-                                onCheckedChange = { TODO() }) //TODO create a custom switch
                         }
                     }
                     item {
@@ -358,6 +346,10 @@ fun TradingAccountAddressScreen(
                                     .padding(Spacing.dp16),
                                 verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                             ) {
+                                Text(
+                                    "Foreign Address",
+                                    style = MaterialTheme.typography.headlineSmall
+                                )
                                 Row(
                                     modifier = Modifier.fillMaxWidth()
                                         .clip(RoundedCornerShape(Spacing.dp8))
@@ -379,55 +371,114 @@ fun TradingAccountAddressScreen(
                                     )
                                 }
                                 TitledAppTextField(
-                                    title = "Foreign Address Line 1/ " + "(" + stringResource(Res.string.foreign_address_line_1) + ")",
-                                    value = data.email,
+                                    title = "Foreign Address Line 1/ (${stringResource(Res.string.foreign_address_line_1)})",
+                                    value = data.foreign_address_1,
                                     onValueChange = {
                                         handleEvent(
-                                            TradingAccountEvent.OnCityChange(
-                                                it
-                                            )
+                                            TradingAccountEvent.OnForeignAddress1Change(it)
                                         )
                                     },
                                     placeholder = "House/ Apt Number",
                                     mandatory = true
                                 )
+                                TitledAppTextField(
+                                    title = "Foreign Address Line 2 (Optional)",
+                                    value = data.foreign_address_2,
+                                    onValueChange = {
+                                        handleEvent(
+                                            TradingAccountEvent.OnForeignAddress2Change(it)
+                                        )
+                                    },
+                                    placeholder = "Apartment, Suite, Unit"
+                                )
+                                TitledAppTextField(
+                                    title = "Foreign Address Line 3 (Optional)",
+                                    value = data.foreign_address_3,
+                                    onValueChange = {
+                                        handleEvent(
+                                            TradingAccountEvent.OnForeignAddress3Change(it)
+                                        )
+                                    },
+                                    placeholder = "Additional Address Information"
+                                )
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                                 ) {
+
                                     TitledAppTextField(
-                                        title = "City/ " + "(" + stringResource(Res.string.foreign_city) + ")",
-                                        value = "",
+                                        title = "City/ (${stringResource(Res.string.foreign_city)})",
+                                        value = data.foreign_address_city,
                                         modifier = Modifier.weight(1f),
                                         onValueChange = {
-                                            TODO()
+                                            handleEvent(
+                                                TradingAccountEvent.OnForeignCityChange(it)
+                                            )
                                         },
                                         placeholder = "City",
-                                        keyboardType = KeyboardType.Number,
                                         mandatory = true
                                     )
-                                    DropDownSelector(
-                                        title = "Country/ " + "(" + stringResource(Res.string.foreign_country) + ")",
-                                        value = StateCode.getDisplayName(data.country),
-                                        placeholder = "Select Country",
-                                        onValueChange = {},
+
+                                    TitledAppTextField(
+                                        title = "State / Province",
+                                        value = data.foreign_address_state,
                                         modifier = Modifier.weight(1f),
-                                        list = Country.entries,
-                                        textConvertor = {
-                                            it.displayName
-                                        }
+                                        onValueChange = {
+                                            handleEvent(
+                                                TradingAccountEvent.OnForeignStateChange(it)
+                                            )
+                                        },
+                                        placeholder = "State",
+                                        mandatory = true
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+                                ) {
+
+                                    TitledAppTextField(
+                                        title = "Postal Code",
+                                        value = data.foreign_address_pincode,
+                                        modifier = Modifier.weight(1f),
+                                        onValueChange = {
+                                            handleEvent(
+                                                TradingAccountEvent.OnForeignPincodeChange(it)
+                                            )
+                                        },
+                                        placeholder = "Postal Code",
+                                        mandatory = true
+                                    )
+
+                                    TitledAppTextField(
+                                        title = "Country/ (${stringResource(Res.string.foreign_country)})",
+                                        value = Country.getDisplayNameFromCode(data.foreign_address_country) ?: "",
+                                        onValueChange = {},
+                                        placeholder = "Select Country",
+                                        mandatory = true,
+                                        enabled = false,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clickable(
+                                                indication = null,
+                                                interactionSource = remember { MutableInteractionSource() }
+                                            ) {
+                                                handleEvent(
+                                                    TradingAccountEvent.ShowForeignCountryDialog
+                                                )
+                                            }
                                     )
                                 }
                                 TitledAppTextField(
-                                    title = "Foreign Phone (Optional)/ " + "(" + stringResource(Res.string.foreign_phone_optional) + ")",
-                                    value = "",
-                                    modifier = Modifier.weight(1f),
+                                    title = "Foreign Phone (Optional)/ (${stringResource(Res.string.foreign_phone_optional)})",
+                                    value = data.foreign_address_resi_phone,
                                     onValueChange = {
-                                        TODO()
+                                        handleEvent(
+                                            TradingAccountEvent.OnForeignPhoneChange(it)
+                                        )
                                     },
                                     placeholder = "+ (Country Code)",
-                                    keyboardType = KeyboardType.Number,
-                                    mandatory = true
+                                    keyboardType = KeyboardType.Phone
                                 )
                             }
                         }
@@ -448,11 +499,18 @@ fun TradingAccountAddressScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
                             ) {
+
                                 DropDownSelector(
-                                    title = "KYC Type/ " + "(" + stringResource(Res.string.kyc_type) + ")",
+                                    title = "KYC Type/ (${stringResource(Res.string.kyc_type)})",
                                     value = KycType.getDisplayName(data.primary_holder_kyc_type),
-                                    placeholder = "Normal",
-                                    onValueChange = {},
+                                    placeholder = "KYC Type",
+                                    onValueChange = {
+                                        handleEvent(
+                                            TradingAccountEvent.OnPrimaryKycTypeChange(
+                                                it.code
+                                            )
+                                        )
+                                    },
                                     modifier = Modifier.weight(1f),
                                     list = KycType.entries,
                                     textConvertor = {
@@ -460,59 +518,42 @@ fun TradingAccountAddressScreen(
                                     },
                                     mandatory = true
                                 )
-                                TitledAppTextField(
-                                    title = "CKYC No./ " + "(" + stringResource(Res.string.ckyc_no) + ")",
-                                    value = "",
-                                    modifier = Modifier.weight(1f),
-                                    onValueChange = {
-                                        TODO()
-                                    },
-                                    placeholder = "14-digit No.",
-                                    keyboardType = KeyboardType.Number,
-                                    mandatory = true
-                                )
+
+                                if (data.primary_holder_kyc_type == KycType.CKYC_COMPLIANT.code) {
+                                    TitledAppTextField(
+                                        title = "CKYC No./ (${stringResource(Res.string.ckyc_no)})",
+                                        value = data.primary_holder_ckyc_number,
+                                        modifier = Modifier.weight(1f),
+                                        onValueChange = {
+                                            handleEvent(
+                                                TradingAccountEvent.OnPrimaryCkycChange(
+                                                    it
+                                                )
+                                            )
+                                        },
+                                        placeholder = "14-digit No.",
+                                        keyboardType = KeyboardType.Number,
+                                        mandatory = true
+                                    )
+                                }
                             }
-                            CheckBoxComp(
-                                heading = "PAN EXEMPT",
-                                checked = true,
-                                onCheckedChange = { TODO() }
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
-                            ) {
-                                DropDownSelector(
-                                    title = "Investor Onboarding/ " + "(" + stringResource(Res.string.investor_onboarding) + ")",
-                                    value = InvestorOnboarding.getDisplayName(""), //TODO implement this
-                                    placeholder = "Direct",
-                                    onValueChange = {},
-                                    modifier = Modifier.weight(1f),
-                                    list = InvestorOnboarding.entries,
-                                    textConvertor = {
-                                        it.displayName
-                                    },
-                                    mandatory = true
-                                )
-                                OnBoardingDateField(
-                                    value = "", //TODO implement this
-                                    placeholder = "mm/dd/yyyy",
-                                    label = "Lei Validity/ " + "(" + stringResource(Res.string.lei_validity) + ")",
-                                    mandatory = true,
-                                    onClick = {},
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                            TitledAppTextField(
-                                title = "Lei Number (Optional)/ " + "(" + stringResource(Res.string.lei_number_optional) + ")",
-                                value = "",
-                                modifier = Modifier.weight(1f),
+
+                            DropDownSelector(
+                                title = "Investor Onboarding/ (${stringResource(Res.string.investor_onboarding)})",
+                                value = InvestorOnboarding.getDisplayName(data.paperless_flag),
+                                placeholder = "Investor Onboarding",
                                 onValueChange = {
-                                    TODO()
+                                    handleEvent(
+                                        TradingAccountEvent.OnPaperlessFlagChange(it.code)
+                                    )
                                 },
-                                placeholder = "Enter LEI",
-                                keyboardType = KeyboardType.Number,
+                                list = InvestorOnboarding.entries,
+                                textConvertor = {
+                                    it.displayName
+                                },
                                 mandatory = true
                             )
+
                         }
                     }
                     item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
@@ -523,6 +564,35 @@ fun TradingAccountAddressScreen(
                     pv = pv,
                     value = "Continue →",
                     enabled = uiState.addressScreenButtonEnabled
+                )
+            }
+            if (uiState.showStateDialog) {
+                StatePickerDialog(
+                    showDialog = true,
+                    selectedState = data.state,
+                    onDismiss = {
+                        handleEvent(TradingAccountEvent.HideStateDialog)
+                    },
+                    onStateSelected = {
+                        handleEvent(
+                            TradingAccountEvent.OnStateChange(it.code)
+                        )
+                    }
+                )
+            }
+
+            if (uiState.showForeignCountryDialog) {
+                CountrySelectorDialog(
+                    showDialog = true,
+                    selectedCode = data.foreign_address_country,
+                    onDismiss = {
+                        handleEvent(TradingAccountEvent.HideForeignCountryDialog)
+                    },
+                    onCountrySelected = {
+                        handleEvent(
+                            TradingAccountEvent.OnForeignCountryChange(it.code)
+                        )
+                    }
                 )
             }
         }

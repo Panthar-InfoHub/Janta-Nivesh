@@ -86,7 +86,9 @@ fun TitledAppTextField(
             suffix = suffix,
             supportingText = supportingText,
             isError = isError,
-            keyboardOptions = keyboardOptions,
+            keyboardOptions = keyboardOptions.copy(
+                keyboardType = keyboardType
+            ),
             interactionSource = interactionSource ?: remember { MutableInteractionSource() },
             shape = style.shape,
             colors = style.colors

@@ -54,6 +54,10 @@ data class TradingAccountUiState(
     val financeScreenButtonEnabled: Boolean = false,
     val addressScreenButtonEnabled: Boolean = false,
     val guardianScreenButtonEnabled: Boolean = false,
+    val totalSteps: Int = 0,
+    val showStateDialog: Boolean = false,
+    val showCountryDialog: Boolean = false,
+    val showForeignCountryDialog: Boolean = false,
 )
 
 sealed interface TradingAccountEvent {
@@ -238,6 +242,15 @@ sealed interface TradingAccountEvent {
     data class OnResiFaxChange(val value: String) : TradingAccountEvent
     data class OnOfficePhoneChange(val value: String) : TradingAccountEvent
     data class OnOfficeFaxChange(val value: String) : TradingAccountEvent
+
+    object ShowStateDialog : TradingAccountEvent
+    object HideStateDialog : TradingAccountEvent
+
+    object ShowCountryDialog : TradingAccountEvent
+    object HideCountryDialog : TradingAccountEvent
+
+    object ShowForeignCountryDialog : TradingAccountEvent
+    object HideForeignCountryDialog : TradingAccountEvent
 }
 
 sealed interface TradingAccountEffect {
@@ -323,10 +336,14 @@ class TradingAccountViewModel(
             }
 
             is TradingAccountEvent.OnEmailChange -> updateData { it.copy(email = event.value.trim()) }
-            is TradingAccountEvent.OnPhoneChange -> updateData {
-                it.copy(
-                    indian_mobile_no = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnPhoneChange -> {
+                if (event.value.length > 10) return
+
+                updateData {
+                    it.copy(
+                        indian_mobile_no = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnTaxStatusChange -> updateData {
@@ -442,10 +459,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnSecondMobileChange -> updateData {
-                it.copy(
-                    second_holder_mobile = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnSecondMobileChange -> {
+                if (event.value.length > 10) return
+
+                updateData {
+                    it.copy(
+                        second_holder_mobile = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnSecondCkycChange -> updateData {
@@ -521,10 +542,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnThirdMobileChange -> updateData {
-                it.copy(
-                    third_holder_mobile = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnThirdMobileChange -> {
+                if (event.value.length > 10) return
+
+                updateData {
+                    it.copy(
+                        third_holder_mobile = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnThirdCkycChange -> updateData {
@@ -673,10 +698,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnNominee1MobileChange -> updateData {
-                it.copy(
-                    nominee_1_mobile = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnNominee1MobileChange -> {
+                if (event.value.length > 10) return
+
+                updateData {
+                    it.copy(
+                        nominee_1_mobile = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnNominee1IdentityTypeChange -> updateData {
@@ -715,10 +744,15 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnNominee1PincodeChange -> updateData {
-                it.copy(
-                    nominee_1_pin = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnNominee1PincodeChange -> {
+
+                if (event.value.length > 6) return
+
+                updateData {
+                    it.copy(
+                        nominee_1_pin = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnNominee1CountryChange -> updateData {
@@ -758,11 +792,20 @@ class TradingAccountViewModel(
             }
 
             TradingAccountEvent.AddBankAccount -> {
-                val current = _uiState.value.visibleBankAccounts
-                if (current.size >= 5) return
-                val next = (1..5).firstOrNull { it !in current } ?: return
-                _uiState.update { it.copy(visibleBankAccounts = current + next) }
+            val current = _uiState.value.visibleBankAccounts
+
+            if (current.size >= 5) return
+
+            val next = (1..5).firstOrNull { it !in current } ?: return
+
+            _uiState.update {
+                calculateDerivedState(
+                    it.copy(
+                        visibleBankAccounts = current + next
+                    )
+                )
             }
+        }
 
             is TradingAccountEvent.RemoveBankAccount -> {
                 if (event.index == 1) return
@@ -1000,10 +1043,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnPincodeChange -> updateData {
-                it.copy(
-                    pincode = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnPincodeChange -> {
+                if (event.value.length > 6) return
+
+                updateData {
+                    it.copy(
+                        pincode = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnCountryChange -> updateData {
@@ -1201,10 +1248,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnForeignPincodeChange -> updateData {
-                it.copy(
-                    foreign_address_pincode = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnForeignPincodeChange -> {
+                if (event.value.length > 6) return
+
+                updateData {
+                    it.copy(
+                        foreign_address_pincode = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnForeignCountryChange -> updateData {
@@ -1213,10 +1264,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnForeignPhoneChange -> updateData {
-                it.copy(
-                    foreign_address_resi_phone = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnForeignPhoneChange -> {
+                if (event.value.length > 10) return
+
+                updateData {
+                    it.copy(
+                        foreign_address_resi_phone = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnForeignFaxChange -> updateData {
@@ -1225,10 +1280,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnForeignOfficePhoneChange -> updateData {
-                it.copy(
-                    foreign_address_off_phone = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnForeignOfficePhoneChange -> {
+                if (event.value.length > 10) return
+
+                updateData {
+                    it.copy(
+                        foreign_address_off_phone = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnForeignOfficeFaxChange -> updateData {
@@ -1237,10 +1296,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnResiPhoneChange -> updateData {
-                it.copy(
-                    resi_phone = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnResiPhoneChange -> {
+                if (event.value.length > 10) return
+
+                updateData {
+                    it.copy(
+                        resi_phone = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnResiFaxChange -> updateData {
@@ -1249,10 +1312,14 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnOfficePhoneChange -> updateData {
-                it.copy(
-                    office_phone = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnOfficePhoneChange -> {
+                if (event.value.length > 10) return
+
+                updateData {
+                    it.copy(
+                        office_phone = event.value.trim().toUpperCase(Locale.current)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnOfficeFaxChange -> updateData {
@@ -1260,6 +1327,23 @@ class TradingAccountViewModel(
                     office_fax = event.value.trim().toUpperCase(Locale.current)
                 )
             }
+            TradingAccountEvent.ShowStateDialog ->
+                _uiState.update { it.copy(showStateDialog = true) }
+
+            TradingAccountEvent.HideStateDialog ->
+                _uiState.update { it.copy(showStateDialog = false) }
+
+            TradingAccountEvent.ShowCountryDialog ->
+                _uiState.update { it.copy(showCountryDialog = true) }
+
+            TradingAccountEvent.HideCountryDialog ->
+                _uiState.update { it.copy(showCountryDialog = false) }
+
+            TradingAccountEvent.ShowForeignCountryDialog ->
+                _uiState.update { it.copy(showForeignCountryDialog = true) }
+
+            TradingAccountEvent.HideForeignCountryDialog ->
+                _uiState.update { it.copy(showForeignCountryDialog = false) }
         }
     }
 
@@ -1400,7 +1484,8 @@ class TradingAccountViewModel(
 
                     _uiState.update {
                         it.copy(
-                            isMinor = minor
+                            isMinor = minor,
+                            totalSteps = if (minor) 7 else 6
                         )
                     }
 

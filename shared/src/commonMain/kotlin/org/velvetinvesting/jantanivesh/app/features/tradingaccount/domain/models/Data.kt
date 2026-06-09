@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.model
 import kotlinx.serialization.Serializable
 import org.sharad.velvetinvestment.utils.tradingaccount.AccountType
 import org.sharad.velvetinvestment.utils.tradingaccount.DividendPayMode
+import org.sharad.velvetinvestment.utils.tradingaccount.InvestorOnboarding
 import org.sharad.velvetinvestment.utils.tradingaccount.YesNo
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.ClientType
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
@@ -140,7 +141,7 @@ data class Data(
     val occupation_code: String = "",
     val office_fax: String = "",
     val office_phone: String = "",
-    val paperless_flag: String = "",
+    val paperless_flag: String = InvestorOnboarding.PAPERLESS.code,
     val pincode: String = "",
     val pms: String = "",
     val po_bir_inc: String = "",

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,9 +21,16 @@ fun NextButtonFooter(onClick: () -> Unit, pv: PaddingValues, value: String = "Ne
             .shadow(elevation = 28.dp)
             .background(Color.White),
         contentAlignment = Alignment.Center
-    ){
+    ) {
         AppButton(
-            modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 16.dp+pv.calculateBottomPadding()),
+            modifier = Modifier.fillMaxWidth()
+                .imePadding()
+                .padding(
+                start = 24.dp,
+                end = 24.dp,
+                top = 20.dp,
+                bottom = 16.dp + pv.calculateBottomPadding()
+            ),
             onClick = onClick,
             enabled = enabled,
             text = value,

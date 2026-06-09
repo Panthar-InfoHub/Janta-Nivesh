@@ -53,8 +53,8 @@ fun LoaderScreen(){
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ){
 
-            VelvetLoader()
-
+//            VelvetLoader()
+            CircularProgressIndicator()
             Text(
                 text = quote,
                 color = Primary,

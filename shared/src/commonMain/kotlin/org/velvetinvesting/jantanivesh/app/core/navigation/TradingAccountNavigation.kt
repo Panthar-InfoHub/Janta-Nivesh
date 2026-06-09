@@ -20,6 +20,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.Tr
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountBasicDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountClientInfoScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountFinancialDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountGuardianDetailScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountGuardianPanScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountPANDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
@@ -165,7 +166,7 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
             }
 
             composable<Route.TradingAccountGuardiansPANDetails> {
-                TradingAccountPANDetailsScreen(
+                TradingAccountGuardianDetailScreen(
                     pv = pv,
                     onClick = {
                         navController.navigate(Route.TradingAccountFinancialDetails){

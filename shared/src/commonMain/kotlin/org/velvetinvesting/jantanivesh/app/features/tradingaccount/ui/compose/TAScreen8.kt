@@ -16,52 +16,40 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.checkbadge_icon
 import jantanivesh.shared.generated.resources.guardian_icon
 import jantanivesh.shared.generated.resources.guardian_pan_number
-import jantanivesh.shared.generated.resources.lock_outlined_icon
-import jantanivesh.shared.generated.resources.receipt_icon
-import jantanivesh.shared.generated.resources.secure_icon
 import jantanivesh.shared.generated.resources.securetick_icon
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.dashedBorder
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.Data
@@ -97,8 +85,8 @@ fun TradingAccountGuardianPanScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
-            stepCount = 1,
-            totalSteps = 6,
+            stepCount = 2,
+            totalSteps = uiState.totalSteps,
             onBack = onBackClick,
             modifier = Modifier.padding(pv)
         )
