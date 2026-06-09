@@ -1,77 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Janta Nivesh</string>
+    <string name="app_name">ஜனதா நிவேஷ்</string>
 
-    <string name="email_add_text">புதுப்பிப்புகளுக்காக உங்கள் மின்னஞ்சலை சேர்க்கவும்</string>
+    <string name="email_add_text">புதுப்பிப்புகளுக்கு உங்கள் மின்னஞ்சலைச் சேர்க்கவும்</string>
 
-    <string name="choose_languages">மொழிகளை தேர்ந்தெடுக்கவும்</string>
-    <string name="choose_languages_subtitle">ஆங்கிலம் உங்கள் இயல்புநிலை முதன்மை மொழியாகும். தயவுசெய்து இரண்டாம் மொழியை தேர்ந்தெடுக்கவும்.</string>
+    <!-- OnboardingChooseLanguage -->
+    <string name="choose_languages">மொழிகளைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="choose_languages_subtitle">ஆங்கிலம் உங்கள் இயல்புநிலை முதன்மை மொழியாகும். தயவுசெய்து இரண்டாவது மொழியைத் தேர்ந்தெடுக்கவும்.</string>
     <string name="primary_language">முதன்மை மொழி</string>
     <string name="english">ஆங்கிலம்</string>
-    <string name="default_system_language">இயல்புநிலை அமைப்பு மொழி</string>
+    <string name="default_system_language">இயல்புநிலை கணினி மொழி</string>
     <string name="lock_icon_desc">பூட்டு ஐகான்</string>
-    <string name="secondary_language">இரண்டாம் மொழி</string>
+    <string name="secondary_language">இரண்டாவது மொழி</string>
     <string name="continue_text">தொடரவும்</string>
-    <string name="janta_nivesh_logo_desc">ஜந்தா நிவேஷ் லோகோ</string>
+    <string name="janta_nivesh_logo_desc">ஜனதா நிவேஷ் லோகோ</string>
     <string name="tick_icon_desc">டிக் ஐகான்</string>
 
-    <string name="rupee_symbol_desc">ரூபாய் சின்னம்</string>
+    <string name="rupee_symbol_desc">ரூபாய் குறியீடு</string>
     <string name="security_lock_desc">பாதுகாப்பு பூட்டு</string>
     <string name="selected_desc">தேர்ந்தெடுக்கப்பட்டது</string>
-    <string name="calendar_icon_desc">காலண்டர் ஐகான்</string>
+    <string name="calendar_icon_desc">நாள்காட்டி ஐகான்</string>
 
-    <string name="login_mobile_number">உங்கள் மொபைல் எண்ணுடன் உள்நுழைக</string>
-    <string name="otp_verify_identity">உங்கள் அடையாளத்தை சரிபார்க்க 4 இலக்க OTP அனுப்பப்படும்</string>
+    <!-- LogInWithPhoneNumberScreen -->
+    <string name="login_mobile_number">உங்கள் மொபைல் எண்ணுடன் உள்நுழையவும்</string>
+    <string name="otp_verify_identity">உங்கள் அடையாளத்தைச் சரிபார்க்க 4 இலக்க OTP ஐ அனுப்புவோம்</string>
     <string name="india_code">+91</string>
     <string name="verify">சரிபார்க்கவும்</string>
 
+    <!-- EnterOtpScreen -->
     <string name="enter_code">குறியீட்டை உள்ளிடவும்</string>
-    <string name="verification_code_sent">சரிபார்ப்பு குறியீடு அனுப்பப்பட்டுள்ளது</string>
-    <string name="resend_code_timer">%1$d விநாடிகளில் மீண்டும் OTP அனுப்பலாம்</string>
+    <string name="verification_code_sent">சரிபார்ப்புக் குறியீடு அனுப்பப்பட்டுள்ளது</string>
+    <string name="resend_code_timer">நீங்கள் %1$d வினாடிகளில் குறியீட்டை மீண்டும் அனுப்பலாம்</string>
     <string name="next">அடுத்து</string>
-    <string name="otp_input_desc">விசைப்பலகை மூலம் OTP உள்ளிடவும்</string>
+    <string name="otp_input_desc">விசைப்பலகை மூலம் OTP ஐ உள்ளிடவும்</string>
 
-    <string name="pan_full_name">PAN படி உங்கள் முழுப்பெயர்</string>
-    <string name="as_on_pan">உங்கள் PAN கார்டில் இருப்பதுபோல்</string>
-    <string name="full_name_placeholder">முழுப்பெயர்</string>
+    <!-- EnterNameFromPanScreen -->
+    <string name="pan_full_name">பான் (PAN) படி உங்கள் முழுப் பெயர்</string>
+    <string name="as_on_pan">உங்கள் பான் கார்டில் உள்ளவாறு</string>
+    <string name="full_name_placeholder">முழு பெயர்</string>
 
+    <!-- EnterYourDOBScreen -->
     <string name="enter_dob">உங்கள் பிறந்த தேதியை உள்ளிடவும்</string>
-    <string name="dob_identity_verification">அடையாள சரிபார்ப்பிற்காக உங்கள் பிறந்த தேதியை வழங்கவும்.</string>
-    <string name="select_dob_placeholder">உங்கள் DOB ஐ தேர்ந்தெடுக்கவும்</string>
-    <string name="select_date_desc">தேதி தேர்ந்தெடுக்கவும்</string>
+    <string name="dob_identity_verification">அடையாளச் சரிபார்ப்புக்கு உங்கள் பிறந்த தேதியை வழங்கவும்.</string>
+    <string name="select_dob_placeholder">உங்கள் பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="select_date_desc">தேதியைத் தேர்ந்தெடுக்கவும்</string>
 
-    <string name="skip">தவிர்க்கவும்</string>
-    <string name="transaction_updates">பரிவர்த்தனை புதுப்பிப்புகளை இங்கே அனுப்புவோம்</string>
+    <!-- AddYourEmailScreen -->
+    <string name="skip">தவிர்</string>
+    <string name="transaction_updates">பரிவர்த்தனை புதுப்பிப்புகளை இங்கு அனுப்புவோம்</string>
     <string name="email_placeholder">@gmail.com</string>
 
     <!-- KYC Intro Screen -->
-    <string name="kyc_intro_button_text">உங்கள் KYC-ஐ முடிக்கவும் →</string>
+    <string name="kyc_intro_button_text">உங்கள் KYC ஐ முடிக்கவும் →</string>
     <string name="kyc_intro_header_title">KYC</string>
-    <string name="kyc_intro_title">உங்கள் KYC-ஐ முடிக்கவும்</string>
-    <string name="kyc_intro_subtitle">நிவேஷ் சன்சாருடன் உங்கள் முதலீட்டு பயணத்தைத் தொடங்க சில படிகள் மட்டுமே.</string>
-    <string name="kyc_intro_account_opening_fee">₹ 0 கணக்கு தொடக்கக் கட்டணம்</string>
-    <string name="kyc_intro_account_opening_fee_subtitle">ஆரம்பச் செலவு ஏதுமின்றி முதலீடு செய்யத் தொடங்குங்கள்.</string>
-    <string name="kyc_intro_maintenance_charges">₹ 0 பராமரிப்புக் கட்டணம்</string>
-    <string name="kyc_intro_maintenance_charges_subtitle">மறைமுகக் கட்டணங்கள் ஏதுமில்லை, நீங்கள் ஈட்டுவதை உங்களிடமே வைத்திருங்கள்.</string>
-    <string name="kyc_intro_encrypted_data_title">உங்கள் தரவு குறியாக்கம் செய்யப்பட்டு பாதுகாப்பாக உள்ளது</string>
-    <string name="kyc_intro_encrypted_data_subtitle">உங்கள் தனிப்பட்ட தகவல்கள் முற்றிலும் ரகசியமாக இருப்பதை உறுதி செய்ய வங்கி அளவிலான குறியாக்கத்தைப் பயன்படுத்துகிறோம்.</string>
+    <string name="kyc_intro_title">உங்கள் KYC ஐ முடிக்கவும்</string>
+    <string name="kyc_intro_subtitle">நிவேஷ் சன்சார் உடன் உங்கள் முதலீட்டுப் பயணத்தைத் தொடங்க சில படிகள் மட்டுமே.</string>
+    <string name="kyc_intro_account_opening_fee">₹ 0 கணக்கு திறப்பு கட்டணம்</string>
+    <string name="kyc_intro_account_opening_fee_subtitle">எந்தவித ஆரம்பச் செலவும் இல்லாமல் முதலீடு செய்யத் தொடங்குங்கள்.</string>
+    <string name="kyc_intro_maintenance_charges">₹ 0 பராமரிப்பு கட்டணம்</string>
+    <string name="kyc_intro_maintenance_charges_subtitle">மறைமுகக் கட்டணங்கள் இல்லை, நீங்கள் சம்பாதிப்பதை நீங்களே வைத்துக் கொள்ளுங்கள்.</string>
+    <string name="kyc_intro_encrypted_data_title">உங்கள் தரவு என்க்ரிப்ட் செய்யப்பட்டு பாதுகாக்கப்பட்டுள்ளது</string>
+    <string name="kyc_intro_encrypted_data_subtitle">உங்கள் தனிப்பட்ட தகவல்கள் முற்றிலும் ரகசியமாக இருப்பதை உறுதிசெய்ய வங்கி அளவிலான என்க்ரிப்ஷனைப் பயன்படுத்துகிறோம்.</string>
 
     <!-- KYC Contract Screen -->
-    <string name="kyc_contract_complete_button">KYC-ஐ முடிக்கவும்</string>
+    <string name="kyc_contract_complete_button">KYC ஐ முடிக்கவும்</string>
     <string name="kyc_contract_header_title">KYC உறுதிப்படுத்தல்</string>
-    <string name="kyc_contract_view_doc_title">KYC ஆவணத்தைப் பார்க்கவும்</string>
-    <string name="kyc_contract_view_doc_subtitle">உங்கள் KYC சரிபார்ப்பு ஆவணத்தை முன்னோட்டமிட தட்டவும் மற்றும் அனைத்து தகவல்களும் சரியாக இருப்பதை உறுதி செய்யவும்.</string>
-    <string name="kyc_contract_preview_button">ஆவணத்தை முன்னோட்டமிடுங்கள்</string>
-    <string name="kyc_contract_consent_text">நான் KYC ஆவணத்தைப் படித்துப் புரிந்து கொண்டேன், வழங்கப்பட்ட விவரங்கள் துல்லியமானவை என்று உறுதிப்படுத்துகிறேன்.</string>
+    <string name="kyc_contract_view_doc_title">KYC ஆவணத்தைக் காண்க</string>
+    <string name="kyc_contract_view_doc_subtitle">உங்கள் KYC சரிபார்ப்பு ஆவணத்தை முன்னோட்டமிட தட்டவும் மற்றும் அனைத்து தகவல்களும் சரியானதா என்பதை உறுதிப்படுத்தவும்.</string>
+    <string name="kyc_contract_preview_button">ஆவணத்தை முன்னோட்டமிடு</string>
+    <string name="kyc_contract_consent_text">நான் KYC ஆவணத்தைப் படித்துப் புரிந்துகொண்டேன், மேலும் வழங்கப்பட்ட விவரங்கள் துல்லியமானவை என்பதை உறுதிப்படுத்துகிறேன்.</string>
 
     <!-- KYC Image Upload Screen -->
     <string name="kyc_image_upload_save_button">சேமித்து தொடரவும் →</string>
     <string name="kyc_image_upload_header_title">சரிபார்ப்பு விவரங்கள்</string>
     <string name="kyc_image_upload_title">ஆவணங்களைப் பதிவேற்றவும்</string>
-    <string name="kyc_image_upload_subtitle">அடையாள சரிபார்ப்பிற்காக உங்கள் கையொப்பம் மற்றும் புகைப்படத்தின் தெளிவான படங்களை வழங்கவும்.</string>
+    <string name="kyc_image_upload_subtitle">அடையாளச் சரிபார்ப்புக்கு உங்கள் கையொப்பம் மற்றும் புகைப்படத்தின் தெளிவான படங்களை வழங்கவும்.</string>
     <string name="kyc_image_upload_signature_title">கையொப்பத்தைப் பதிவேற்றவும்</string>
-    <string name="kyc_image_upload_signature_instruction">கையொப்பத்தைப் பதிவேற்ற கிளிக் செய்க</string>
+    <string name="kyc_image_upload_signature_instruction">கையொப்பத்தைப் பதிவேற்ற கிளிக் செய்யவும்</string>
     <string name="kyc_image_upload_photo_title">புகைப்படத்தைப் பதிவேற்றவும்</string>
-    <string name="kyc_image_upload_photo_instruction">புகைப்படத்தைப் பதிவேற்ற கிளிக் செய்க</string>
+    <string name="kyc_image_upload_photo_instruction">புகைப்படத்தைப் பதிவேற்ற கிளிக் செய்யவும்</string>
     <string name="kyc_image_upload_doc_selected">ஆவணம் தேர்ந்தெடுக்கப்பட்டது</string>
     <string name="kyc_image_upload_file_format_info">JPEG, PNG 5 MB வரை</string>
     <string name="kyc_image_upload_file_size_error">கோப்பு 5MB வரம்பை மீறுகிறது</string>
@@ -79,18 +86,18 @@
     <!-- KYC Form Screen -->
     <string name="kyc_form_continue_button">தொடரவும்</string>
     <string name="kyc_form_header_title">KYC படிவம்</string>
-    <string name="kyc_form_basic_info_title">அடிப்படை தகவல்கள்</string>
+    <string name="kyc_form_basic_info_title">அடிப்படைத் தகவல்</string>
     <string name="kyc_form_full_name_label">முழு பெயர்</string>
-    <string name="kyc_form_full_name_placeholder">உங்கள் முழு பெயரை உள்ளிடவும்</string>
+    <string name="kyc_form_full_name_placeholder">உங்கள் முழுப் பெயரை உள்ளிடவும்</string>
     <string name="kyc_form_dob_label">பிறந்த தேதி</string>
-    <string name="kyc_form_dob_placeholder">மாதம்/தேதி/ஆண்டு</string>
+    <string name="kyc_form_dob_placeholder">நாள்/மாதம்/ஆண்டு</string>
     <string name="kyc_form_place_of_birth_label">பிறந்த இடம்</string>
     <string name="kyc_form_place_of_birth_placeholder">பிறந்த நகரம்</string>
     <string name="kyc_form_mobile_number_label">மொபைல் எண்</string>
-    <string name="kyc_form_email_address_label">மின்னஞ்சல்</string>
+    <string name="kyc_form_email_address_label">மின்னஞ்சல் முகவரி</string>
     <string name="kyc_form_email_address_placeholder">name@example.com</string>
     <string name="kyc_form_identity_details_title">அடையாள விவரங்கள்</string>
-    <string name="kyc_form_pan_number_label">PAN எண்</string>
+    <string name="kyc_form_pan_number_label">பான் (PAN) எண்</string>
     <string name="kyc_form_pan_number_placeholder">ABCDE1234F</string>
     <string name="kyc_form_aadhaar_number_label">ஆதார் எண்</string>
     <string name="kyc_form_aadhaar_number_placeholder">XXXX XXXX XXXX</string>
@@ -107,8 +114,53 @@
     <string name="kyc_form_occupation_placeholder">தொழிலைத் தேர்ந்தெடுக்கவும்</string>
 
     <!-- KYC Success Screen -->
-    <string name="kyc_success_button">தொடங்கவும்</string>
+    <string name="kyc_success_button">தொடங்குங்கள்</string>
     <string name="kyc_success_title">KYC வெற்றிகரமாக முடிந்தது!</string>
     <string name="kyc_success_subtitle">உங்கள் கணக்கு இப்போது தயாராக உள்ளது. நீங்கள் மியூச்சுவல் ஃபண்டுகளில் முதலீடு செய்யத் தொடங்கலாம்.</string>
 
+    <!-- Trading Account Feature -->
+    <string name="guardian_pan_number">பாதுகாவலரின் பான் (PAN) எண்</string>
+    <string name="address_line_1">முகவரி வரி 1</string>
+    <string name="address_line_2_optional">முகவரி வரி 2 (விருப்பத்திற்குரியது)</string>
+    <string name="address_line_3_optional">முகவரி வரி 3 (விருப்பத்திற்குரியது)</string>
+    <string name="city">நகரம்</string>
+    <string name="state">மாநிலம்</string>
+    <string name="pincode">பின்கோடு</string>
+    <string name="country">நாடு</string>
+    <string name="email">மின்னஞ்சல்</string>
+    <string name="mobile_optional">மொபைல் (விருப்பத்திற்குரியது)</string>
+    <string name="fax_number_optional">தொலைநகல் எண் (விருப்பத்திற்குரியது)</string>
+    <string name="office_number">அலுவலக எண்</string>
+    <string name="office_fax_optional">அலுவலக தொலைநகல் (விருப்பத்திற்குரியது)</string>
+    <string name="foreign_address_line_1">வெளிநாட்டு முகவரி வரி 1</string>
+    <string name="foreign_city">நகரம்</string>
+    <string name="foreign_country">நாடு</string>
+    <string name="foreign_phone_optional">வெளிநாட்டு தொலைபேசி (விருப்பத்திற்குரியது)</string>
+    <string name="kyc_type">KYC வகை</string>
+    <string name="ckyc_no">CKYC எண்.</string>
+    <string name="investor_onboarding">முதலீட்டாளர் ஆன்போர்டிங்</string>
+    <string name="lei_validity">LEI செல்லுபடியாகும் காலம்</string>
+    <string name="lei_number_optional">LEI எண் (விருப்பத்திற்குரியது)</string>
+    <string name="account_type">கணக்கு வகை</string>
+    <string name="account_number">கணக்கு எண்</string>
+    <string name="micro_number">MICR எண்</string>
+    <string name="payment_mode">கட்டண முறை</string>
+    <string name="default_dp">இயல்புநிலை டெபாசிட்டரி பார்ட்டிசிபண்ட் (DP)</string>
+    <string name="occupation">தொழில்</string>
+    <string name="nominee_1">நாமினி 1</string>
+    <string name="relation">உறவு</string>
+    <string name="date_of_birth">பிறந்த தேதி</string>
+    <string name="identity_type">அடையாள வகை</string>
+    <string name="nominee_address">நாமினி முகவரி</string>
+    <string name="holder_nature">ஹோல்டரின் தன்மை</string>
+    <string name="full_name_as_per_pan">முழு பெயர் (பான் படி)</string>
+    <string name="pan_number">பான் (PAN) எண்</string>
+    <string name="email_address">மின்னஞ்சல் முகவரி</string>
+    <string name="mobile_number">மொபைல் எண்</string>
+    <string name="percentage_of_holding">பங்குகளின் சதவீதம் (%)</string>
+    <string name="address_line_1_details">முகவரி வரி 1 (பிளாட்/வீட்டு எண்., கட்டிடம்)</string>
+    <string name="address_line_2_details">முகவரி வரி 2 (தெரு, செக்டார், பகுதி)</string>
+    <string name="address_line_3_details">முகவரி வரி 3 (அடையாளம்)</string>
+    <string name="add_more_joint_holder">மேலும் கூட்டு கணக்குதாரரைச் சேர்க்கவும்</string>
+    <string name="nomination_subheading">என் மரணத்திற்குப் பிறகு என் கணக்கிற்கு ஒருவரை நியமிக்க விரும்புகிறேன்.</string>
 </resources>

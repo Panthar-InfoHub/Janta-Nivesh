@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Janta Nivesh</string>
+    <string name="app_name">জনতা নিবেশ</string>
 
-    <string name="email_add_text">আপডেটের জন্য আপনার ইমেল যোগ করুন</string>
+    <string name="email_add_text">আপডেটের জন্য আপনার ইমেইল যোগ করুন</string>
 
-    <string name="choose_languages">ভাষা নির্বাচন করুন</string>
+    <!-- OnboardingChooseLanguage -->
+    <string name="choose_languages">ভাষা বেছে নিন</string>
     <string name="choose_languages_subtitle">ইংরেজি আপনার ডিফল্ট প্রাথমিক ভাষা। অনুগ্রহ করে একটি দ্বিতীয় ভাষা নির্বাচন করুন।</string>
     <string name="primary_language">প্রাথমিক ভাষা</string>
     <string name="english">ইংরেজি</string>
@@ -14,83 +16,88 @@
     <string name="janta_nivesh_logo_desc">জনতা নিবেশ লোগো</string>
     <string name="tick_icon_desc">টিক আইকন</string>
 
-    <string name="rupee_symbol_desc">টাকার প্রতীক</string>
-    <string name="security_lock_desc">সিকিউরিটি লক</string>
+    <string name="rupee_symbol_desc">টাকা প্রতীক</string>
+    <string name="security_lock_desc">নিরাপত্তা লক</string>
     <string name="selected_desc">নির্বাচিত</string>
     <string name="calendar_icon_desc">ক্যালেন্ডার আইকন</string>
 
+    <!-- LogInWithPhoneNumberScreen -->
     <string name="login_mobile_number">আপনার মোবাইল নম্বর দিয়ে লগ ইন করুন</string>
-    <string name="otp_verify_identity">আপনার পরিচয় যাচাই করতে আমরা 4 সংখ্যার OTP পাঠাব</string>
+    <string name="otp_verify_identity">আপনার পরিচয় যাচাই করতে আমরা একটি 4 অঙ্কের OTP পাঠাব</string>
     <string name="india_code">+91</string>
     <string name="verify">যাচাই করুন</string>
 
+    <!-- EnterOtpScreen -->
     <string name="enter_code">কোড লিখুন</string>
     <string name="verification_code_sent">একটি যাচাইকরণ কোড পাঠানো হয়েছে</string>
-    <string name="resend_code_timer">%1$d সেকেন্ড পরে আবার কোড পাঠাতে পারবেন</string>
+    <string name="resend_code_timer">আপনি %1$d সেকেন্ডের মধ্যে কোডটি পুনরায় পাঠাতে পারেন</string>
     <string name="next">পরবর্তী</string>
-    <string name="otp_input_desc">কীবোর্ডের মাধ্যমে OTP লিখুন</string>
+    <string name="otp_input_desc">কীবোর্ডের মাধ্যমে ওটিপি লিখুন</string>
 
-    <string name="pan_full_name">PAN অনুযায়ী আপনার পুরো নাম</string>
-    <string name="as_on_pan">যেমনটি আপনার PAN কার্ডে রয়েছে</string>
+    <!-- EnterNameFromPanScreen -->
+    <string name="pan_full_name">প্যান অনুযায়ী আপনার পুরো নাম</string>
+    <string name="as_on_pan">আপনার প্যান কার্ডে যেমন দেখা যাচ্ছে</string>
     <string name="full_name_placeholder">পুরো নাম</string>
 
-    <string name="enter_dob">আপনার জন্মতারিখ লিখুন</string>
-    <string name="dob_identity_verification">পরিচয় যাচাইয়ের জন্য অনুগ্রহ করে আপনার জন্মতারিখ দিন।</string>
-    <string name="select_dob_placeholder">আপনার DOB নির্বাচন করুন</string>
+    <!-- EnterYourDOBScreen -->
+    <string name="enter_dob">আপনার জন্ম তারিখ লিখুন</string>
+    <string name="dob_identity_verification">পরিচয় যাচাইয়ের জন্য অনুগ্রহ করে আপনার জন্ম তারিখ প্রদান করুন।</string>
+    <string name="select_dob_placeholder">আপনার জন্ম তারিখ নির্বাচন করুন</string>
     <string name="select_date_desc">তারিখ নির্বাচন করুন</string>
 
+    <!-- AddYourEmailScreen -->
     <string name="skip">এড়িয়ে যান</string>
-    <string name="transaction_updates">আমরা এখানে লেনদেন আপডেট পাঠাব</string>
+    <string name="transaction_updates">আমরা এখানে লেনদেনের আপডেট পাঠাব</string>
     <string name="email_placeholder">@gmail.com</string>
 
     <!-- KYC Intro Screen -->
-    <string name="kyc_intro_button_text">আপনার KYC সম্পন্ন করুন →</string>
-    <string name="kyc_intro_header_title">KYC</string>
-    <string name="kyc_intro_title">আপনার KYC সম্পন্ন করুন</string>
-    <string name="kyc_intro_subtitle">নিভেশ সংসারের সাথে আপনার বিনিয়োগের যাত্রা শুরু করতে মাত্র কয়েকটি ধাপ।</string>
-    <string name="kyc_intro_account_opening_fee">₹ ০ অ্যাকাউন্ট খোলার ফি</string>
-    <string name="kyc_intro_account_opening_fee_subtitle">কোনো প্রাথমিক খরচ ছাড়াই বিনিয়োগ শুরু করুন।</string>
-    <string name="kyc_intro_maintenance_charges">₹ ০ রক্ষণাবেক্ষণ চার্জ</string>
-    <string name="kyc_intro_maintenance_charges_subtitle">কোনো লুকানো ফি নেই, আপনি যা উপার্জন করেন তা নিজের কাছে রাখুন।</string>
-    <string name="kyc_intro_encrypted_data_title">আপনার ডাটা এনক্রিপ্ট করা এবং সুরক্ষিত</string>
-    <string name="kyc_intro_encrypted_data_subtitle">আপনার ব্যক্তিগত তথ্য সম্পূর্ণ গোপনীয় থাকে তা নিশ্চিত করতে আমরা ব্যাঙ্ক-স্তরের এনক্রিপশন ব্যবহার করি।</string>
+    <string name="kyc_intro_button_text">আপনার কেওয়াইসি (KYC) সম্পূর্ণ করুন →</string>
+    <string name="kyc_intro_header_title">কেওয়াইসি (KYC)</string>
+    <string name="kyc_intro_title">আপনার কেওয়াইসি সম্পূর্ণ করুন</string>
+    <string name="kyc_intro_subtitle">নিবেশ সংসারের সাথে আপনার বিনিয়োগ যাত্রা আনলক করার জন্য মাত্র কয়েকটি ধাপ।</string>
+    <string name="kyc_intro_account_opening_fee">₹ 0 অ্যাকাউন্ট খোলার ফি</string>
+    <string name="kyc_intro_account_opening_fee_subtitle">কোন প্রাথমিক খরচ ছাড়াই বিনিয়োগ শুরু করুন।</string>
+    <string name="kyc_intro_maintenance_charges">₹ 0 রক্ষণাবেক্ষণ চার্জ</string>
+    <string name="kyc_intro_maintenance_charges_subtitle">কোন লুকানো ফি নেই, আপনি যা উপার্জন করেন তা রাখুন।</string>
+    <string name="kyc_intro_encrypted_data_title">আপনার ডেটা এনক্রিপ্ট করা এবং সুরক্ষিত</string>
+    <string name="kyc_intro_encrypted_data_subtitle">আপনার ব্যক্তিগত তথ্য সম্পূর্ণ গোপন থাকে তা নিশ্চিত করতে আমরা ব্যাংক-স্তরের এনক্রিপশন ব্যবহার করি।</string>
 
     <!-- KYC Contract Screen -->
-    <string name="kyc_contract_complete_button">KYC সম্পন্ন করুন</string>
-    <string name="kyc_contract_header_title">KYC নিশ্চিতকরণ</string>
-    <string name="kyc_contract_view_doc_title">KYC নথি দেখুন</string>
-    <string name="kyc_contract_view_doc_subtitle">আপনার KYC যাচাইকরণ নথিটি প্রিভিউ করতে ট্যাপ করুন এবং নিশ্চিত করুন যে সমস্ত তথ্য সঠিক আছে।</string>
-    <string name="kyc_contract_preview_button">নথিটি প্রিভিউ করুন</string>
-    <string name="kyc_contract_consent_text">আমি KYC নথিটি পড়েছি এবং বুঝেছি এবং নিশ্চিত করছি যে প্রদান করা বিবরণ সঠিক।</string>
+    <string name="kyc_contract_complete_button">কেওয়াইসি সম্পূর্ণ করুন</string>
+    <string name="kyc_contract_header_title">কেওয়াইসি নিশ্চিতকরণ</string>
+    <string name="kyc_contract_view_doc_title">কেওয়াইসি নথি দেখুন</string>
+    <string name="kyc_contract_view_doc_subtitle">আপনার কেওয়াইসি যাচাইকরণ নথির পূর্বরূপ দেখতে ট্যাপ করুন এবং নিশ্চিত করুন যে সমস্ত তথ্য সঠিক।</string>
+    <string name="kyc_contract_preview_button">নথির পূর্বরূপ দেখুন</string>
+    <string name="kyc_contract_consent_text">আমি কেওয়াইসি নথিটি পড়েছি এবং বুঝেছি এবং নিশ্চিত করছি যে প্রদত্ত বিবরণ সঠিক।</string>
 
     <!-- KYC Image Upload Screen -->
     <string name="kyc_image_upload_save_button">সংরক্ষণ করুন এবং চালিয়ে যান →</string>
     <string name="kyc_image_upload_header_title">যাচাইকরণের বিবরণ</string>
     <string name="kyc_image_upload_title">নথি আপলোড করুন</string>
-    <string name="kyc_image_upload_subtitle">পরিচয় যাচাইয়ের জন্য অনুগ্রহ করে আপনার স্বাক্ষর এবং ফটোর স্পষ্ট ছবি প্রদান করুন।</string>
+    <string name="kyc_image_upload_subtitle">পরিচয় যাচাইয়ের জন্য অনুগ্রহ করে আপনার স্বাক্ষর এবং ছবির পরিষ্কার ছবি প্রদান করুন।</string>
     <string name="kyc_image_upload_signature_title">স্বাক্ষর আপলোড করুন</string>
     <string name="kyc_image_upload_signature_instruction">স্বাক্ষর আপলোড করতে ক্লিক করুন</string>
-    <string name="kyc_image_upload_photo_title">ফটো আপলোড করুন</string>
-    <string name="kyc_image_upload_photo_instruction">ফটো আপলোড করতে ক্লিক করুন</string>
-    <string name="kyc_image_upload_doc_selected">নথি নির্বাচিত হয়েছে</string>
-    <string name="kyc_image_upload_file_format_info">JPEG, PNG ৫ MB পর্যন্ত</string>
-    <string name="kyc_image_upload_file_size_error">ফাইলটি ৫MB এর সীমা অতিক্রম করেছে</string>
+    <string name="kyc_image_upload_photo_title">ছবি আপলোড করুন</string>
+    <string name="kyc_image_upload_photo_instruction">ছবি আপলোড করতে ক্লিক করুন</string>
+    <string name="kyc_image_upload_doc_selected">নথি নির্বাচিত</string>
+    <string name="kyc_image_upload_file_format_info">JPEG, PNG ৫ এমবি পর্যন্ত</string>
+    <string name="kyc_image_upload_file_size_error">ফাইল ৫ এমবি সীমা অতিক্রম করেছে</string>
 
     <!-- KYC Form Screen -->
     <string name="kyc_form_continue_button">চালিয়ে যান</string>
-    <string name="kyc_form_header_title">KYC ফর্ম</string>
-    <string name="kyc_form_basic_info_title">মৌলিক তথ্য</string>
+    <string name="kyc_form_header_title">কেওয়াইসি ফর্ম</string>
+    <string name="kyc_form_basic_info_title">প্রাথমিক তথ্য</string>
     <string name="kyc_form_full_name_label">পুরো নাম</string>
     <string name="kyc_form_full_name_placeholder">আপনার পুরো নাম লিখুন</string>
     <string name="kyc_form_dob_label">জন্ম তারিখ</string>
-    <string name="kyc_form_dob_placeholder">মাস/দিন/বছর</string>
-    <string name="kyc_form_place_of_birth_label">জন্ম স্থান</string>
+    <string name="kyc_form_dob_placeholder">দিন/মাস/বছর</string>
+    <string name="kyc_form_place_of_birth_label">জন্মস্থান</string>
     <string name="kyc_form_place_of_birth_placeholder">জন্মের শহর</string>
     <string name="kyc_form_mobile_number_label">মোবাইল নম্বর</string>
-    <string name="kyc_form_email_address_label">ই-মেল</string>
+    <string name="kyc_form_email_address_label">ইমেইল ঠিকানা</string>
     <string name="kyc_form_email_address_placeholder">name@example.com</string>
-    <string name="kyc_form_identity_details_title">পরিচয় বিবরণ</string>
-    <string name="kyc_form_pan_number_label">PAN নম্বর</string>
+    <string name="kyc_form_identity_details_title">পরিচয়ের বিবরণ</string>
+    <string name="kyc_form_pan_number_label">প্যান নম্বর</string>
     <string name="kyc_form_pan_number_placeholder">ABCDE1234F</string>
     <string name="kyc_form_aadhaar_number_label">আধার নম্বর</string>
     <string name="kyc_form_aadhaar_number_placeholder">XXXX XXXX XXXX</string>
@@ -99,7 +106,7 @@
     <string name="kyc_form_marital_status_label">বৈবাহিক অবস্থা</string>
     <string name="kyc_form_marital_status_placeholder">অবস্থা নির্বাচন করুন</string>
     <string name="kyc_form_additional_details_title">অতিরিক্ত বিবরণ</string>
-    <string name="kyc_form_father_name_label">পিতার নাম</string>
+    <string name="kyc_form_father_name_label">বাবার নাম</string>
     <string name="kyc_form_father_name_placeholder">নাম লিখুন</string>
     <string name="kyc_form_mother_name_label">মায়ের নাম</string>
     <string name="kyc_form_mother_name_placeholder">নাম লিখুন</string>
@@ -108,7 +115,52 @@
 
     <!-- KYC Success Screen -->
     <string name="kyc_success_button">শুরু করুন</string>
-    <string name="kyc_success_title">KYC সফলভাবে সম্পন্ন হয়েছে!</string>
+    <string name="kyc_success_title">কেওয়াইসি সফলভাবে সম্পন্ন হয়েছে!</string>
     <string name="kyc_success_subtitle">আপনার অ্যাকাউন্ট এখন প্রস্তুত। আপনি মিউচুয়াল ফান্ডে বিনিয়োগ শুরু করতে পারেন।</string>
 
+    <!-- Trading Account Feature -->
+    <string name="guardian_pan_number">অভিভাবকের প্যান নম্বর</string>
+    <string name="address_line_1">ঠিকানার লাইন ১</string>
+    <string name="address_line_2_optional">ঠিকানার লাইন ২ (ঐচ্ছিক)</string>
+    <string name="address_line_3_optional">ঠিকানার লাইন ৩ (ঐচ্ছিক)</string>
+    <string name="city">শহর</string>
+    <string name="state">রাজ্য</string>
+    <string name="pincode">পিনকোড</string>
+    <string name="country">দেশ</string>
+    <string name="email">ইমেইল</string>
+    <string name="mobile_optional">মোবাইল (ঐচ্ছিক)</string>
+    <string name="fax_number_optional">ফ্যাক্স নম্বর (ঐচ্ছিক)</string>
+    <string name="office_number">অফিসের নম্বর</string>
+    <string name="office_fax_optional">অফিসের ফ্যাক্স (ঐচ্ছিক)</string>
+    <string name="foreign_address_line_1">বিদেশী ঠিকানার লাইন ১</string>
+    <string name="foreign_city">শহর</string>
+    <string name="foreign_country">দেশ</string>
+    <string name="foreign_phone_optional">বিদেশী ফোন (ঐচ্ছিক)</string>
+    <string name="kyc_type">কেওয়াইসি প্রকার</string>
+    <string name="ckyc_no">সিকেওয়াইসি (CKYC) নম্বর</string>
+    <string name="investor_onboarding">বিনিয়োগকারী অনবোর্ডিং</string>
+    <string name="lei_validity">LEI বৈধতা</string>
+    <string name="lei_number_optional">LEI নম্বর (ঐচ্ছিক)</string>
+    <string name="account_type">অ্যাকাউন্টের ধরন</string>
+    <string name="account_number">অ্যাকাউন্ট নম্বর</string>
+    <string name="micro_number">মাইক্রো (MICR) নম্বর</string>
+    <string name="payment_mode">পরিশোধের পদ্ধতি</string>
+    <string name="default_dp">ডিফল্ট ডিপোজিটরি পার্টিসিপেন্ট (DP)</string>
+    <string name="occupation">পেশা</string>
+    <string name="nominee_1">মনোনীত ব্যক্তি ১</string>
+    <string name="relation">সম্পর্ক</string>
+    <string name="date_of_birth">জন্ম তারিখ</string>
+    <string name="identity_type">পরিচয়ের ধরন</string>
+    <string name="nominee_address">মনোনীত ব্যক্তির ঠিকানা</string>
+    <string name="holder_nature">হোল্ডারের প্রকৃতি</string>
+    <string name="full_name_as_per_pan">পুরো নাম (প্যান অনুযায়ী)</string>
+    <string name="pan_number">প্যান নম্বর</string>
+    <string name="email_address">ইমেইল ঠিকানা</string>
+    <string name="mobile_number">মোবাইল নম্বর</string>
+    <string name="percentage_of_holding">হোল্ডিংয়ের শতাংশ (%)</string>
+    <string name="address_line_1_details">ঠিকানার লাইন ১ (ফ্ল্যাট/বাড়ি নম্বর, বিল্ডিং)</string>
+    <string name="address_line_2_details">ঠিকানার লাইন ২ (রাস্তা, সেক্টর, এলাকা)</string>
+    <string name="address_line_3_details">ঠিকানার লাইন ৩ (ল্যান্ডমার্ক)</string>
+    <string name="add_more_joint_holder">আরও জয়েন্ট হোল্ডার যোগ করুন</string>
+    <string name="nomination_subheading">আমার মৃত্যুর ক্ষেত্রে আমি আমার অ্যাকাউন্টের জন্য একজন ব্যক্তিকে মনোনীত করতে চাই।</string>
 </resources>

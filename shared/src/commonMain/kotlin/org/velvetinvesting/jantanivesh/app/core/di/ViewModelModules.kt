@@ -10,6 +10,7 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenV
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractViewModel
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountViewModel
 
 val viewModelModule = module {
 
@@ -22,4 +23,5 @@ val viewModelModule = module {
     viewModel { KYCFormScreenViewModel(get(), get(),get()) }
     viewModel { KYCImageUploaderScreenViewModel(get(), get(), get()) }
     viewModel { KycContractViewModel(get(), get(), get()) }
+    viewModel { TradingAccountViewModel(get(), get(), get(), get(), get()) }
 }

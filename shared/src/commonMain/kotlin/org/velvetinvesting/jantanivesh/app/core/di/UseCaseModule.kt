@@ -14,6 +14,10 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKy
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginWithNumberUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.VerifyOTPUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.OnboardUserUseCase
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.GetTradingAccountPrefilledDataUseCase
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.SubmitTradingAccountFormUseCase
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.TradingAccountConfirmationUseCase
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.VerifyPANUseCase
 
 val useCaseModule = module {
     factory { LoginWithNumberUseCase(get()) }
@@ -31,4 +35,10 @@ val useCaseModule = module {
     factory { GetContractPdfUseCase(get()) }
     factory { GetESignUrlUseCase(get()) }
     factory { FinalizeKycUseCase(get()) }
+
+    //Trading Account UseCases
+    factory { GetTradingAccountPrefilledDataUseCase(get()) }
+    factory { VerifyPANUseCase(get()) }
+    factory { SubmitTradingAccountFormUseCase(get()) }
+    factory { TradingAccountConfirmationUseCase(get()) }
 }

@@ -67,13 +67,13 @@ fun rememberLessPayTypography(): Typography {
             ),
             titleMedium = TextStyle(
                 fontFamily = fontFamily,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 lineHeight = 20.sp
             ),
             titleSmall = TextStyle(
                 fontFamily = fontFamily,
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 lineHeight = 18.sp
             ),

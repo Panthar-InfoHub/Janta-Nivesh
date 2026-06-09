@@ -29,9 +29,7 @@ import androidx.compose.ui.unit.sp
 import io.github.ismoy.imagepickerkmp.domain.extensions.loadBytes
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.kyc_image_upload_file_size_error
-import jantanivesh.shared.generated.resources.kyc_image_upload_header_title
 import jantanivesh.shared.generated.resources.kyc_image_upload_photo_title
-import jantanivesh.shared.generated.resources.kyc_image_upload_save_button
 import jantanivesh.shared.generated.resources.kyc_image_upload_signature_title
 import jantanivesh.shared.generated.resources.selected_desc
 import jantanivesh.shared.generated.resources.tick_icon
@@ -156,7 +154,6 @@ fun KycImageUploadScreen(
             item {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
-                    modifier = Modifier.padding(top = Spacing.dp12)
                 ) {
                     Text(
                         text = "Upload Documents",

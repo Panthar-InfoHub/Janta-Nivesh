@@ -15,6 +15,8 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.data.remote.repos
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.repository.OnboardingRepo
 import org.velvetinvesting.jantanivesh.app.features.kyc.data.repository.MFKYCRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.repository.MFKYCRepository
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.data.repository.TradingAccountRepoImpl
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.repository.TradingAccountRepo
 
 val repositoryModule = module {
     single<LanguageRepository> { LanguageRepositoryImpl(get()) }
@@ -24,4 +26,5 @@ val repositoryModule = module {
     single<OnboardingRepo> { OnboardingRepoImpl(get(), get()) }
     single<MFKYCRepository> { MFKYCRepoImpl(get()) }
     single<UserDataRepo> { UserDataRepoImpl(get()) }
+    single<TradingAccountRepo> { TradingAccountRepoImpl(get()) }
 }

@@ -29,8 +29,6 @@ sealed interface Route {
     @Serializable
     data object EnterEmail : Route
 
-    @Serializable
-    data object MainAppFlow : Route
 
     // KYC Routes
     @Serializable
@@ -50,4 +48,26 @@ sealed interface Route {
 
     @Serializable
     data object KycSuccess : Route
+
+    @Serializable
+    data object TradingAccountNavigation: Route
+
+    @Serializable
+    data object TradingAccountBasicDetails: Route
+    @Serializable
+    data object TradingAccountPANDetails: Route
+    @Serializable
+    data object TradingAccountFinancialDetails: Route
+    @Serializable
+    data object TradingAccountClientInfo: Route
+    @Serializable
+    data object TradingAccountBankDetails: Route
+    @Serializable
+    data object TradingAccountAddressDetails: Route
+    @Serializable
+    data object TradingAccountGuardianDetails: Route
+    @Serializable
+    data object TradingAccountGuardiansPANDetails: Route
+    @Serializable
+    data object TradingAccountSuccess: Route
 }

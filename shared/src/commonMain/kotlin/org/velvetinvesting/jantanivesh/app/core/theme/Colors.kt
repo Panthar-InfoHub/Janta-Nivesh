@@ -3,7 +3,7 @@ package org.velvetinvesting.jantanivesh.app.core.theme
 import androidx.compose.ui.graphics.Color
 
 //Base Colors
-
+val appGreen=Color(0xff008E23)
 val Primary= Color(0xff23336E)
 val TextOnPrimary= Color(0xffffffff)
 val PrimaryContainer= Color(0xffd7e2ff)
@@ -13,7 +13,7 @@ val Surface= Color(0xffffffff)
 val TextOnSurface= Color(0xff191C1D)
 val Border= Color(0xffd0d1d5)
 val BorderFocused= Color(0xff23336E)
-
+val Secondary=Color(0xffD2B077)
 val PrimaryLanguageText = Color(0xff191C1D)
 val White = Color(0xffffffff)
 val GreyLock = Color(0xFF767681)
@@ -34,3 +34,6 @@ val UploadBoxBorder = Color(0xffDDE1FF)
 
 val ShadowColor = Color(0xffDEE2F6).copy(alpha = 0.75f)
 val GrayBackGround = Color(0xffEFEDF3)
+
+// TradingDetailsScreen
+val HolderNatureTextColor = Color(0xff44464F)

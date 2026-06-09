@@ -14,6 +14,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycContractScreen
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycFormScreen
+import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycImageUploadScreen
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycIntroScreen
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycSuccessScreen
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenEffect
@@ -29,10 +30,8 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContrac
 @Composable
 fun KycNavigation(
     onBackNavigation:() -> Unit,
-    onCompleted: () -> Unit
 ) {
     val navController = rememberNavController()
-    val uriHandler = LocalUriHandler.current
     val browserLauncher = rememberBrowserReturnLauncher()
 
     NavHost(
@@ -102,7 +101,7 @@ fun KycNavigation(
                 }
             }
 
-            org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.KycImageUploadScreen(
+            KycImageUploadScreen(
                 state = state,
                 onEvent = viewModel::handleEvent,
                 onBack = { navController.popBackStack() }
@@ -144,6 +143,7 @@ fun KycNavigation(
                 onBack = { navController.popBackStack() }
             )
         }
+
         composable<Route.KycSuccess> {
             AppBackHandler(enabled = true) {
                 onBackNavigation()
