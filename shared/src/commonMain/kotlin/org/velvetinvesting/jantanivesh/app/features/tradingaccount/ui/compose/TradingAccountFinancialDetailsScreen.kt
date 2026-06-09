@@ -345,11 +345,6 @@ fun TradingAccountFinancialDetailsScreen(
                                 mandatory = true,
                                 modifier = Modifier.fillMaxWidth(),
                             )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
-                                verticalAlignment = Alignment.Bottom
-                            ) {
                                 DropDownSelector(
                                     title = "Relation/ " + "(" + stringResource(Res.string.relation) + ")",
                                     value = NomineeRelationship.getDisplayNameFromCode(data.nominee_1_relationship)
@@ -363,7 +358,6 @@ fun TradingAccountFinancialDetailsScreen(
                                     },
                                     placeholder = "Relation",
                                     mandatory = true,
-                                    modifier = Modifier.weight(1f),
                                     list = NomineeRelationship.entries,
                                     textConvertor = {
                                         it.displayName
@@ -378,9 +372,7 @@ fun TradingAccountFinancialDetailsScreen(
                                     onClick = {
                                         handleEvent(TradingAccountEvent.ShowCalender)
                                     },
-                                    modifier = Modifier.weight(1f)
                                 )
-                            }
                             if (data.nominee_1_minor_flag == "Y") {
 
                                 TitledAppTextField(
