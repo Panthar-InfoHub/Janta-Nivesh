@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
@@ -73,8 +76,8 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
-import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.CreateGoalIconBg
+import org.velvetinvesting.jantanivesh.app.core.theme.DashedBorderColor
 import org.velvetinvesting.jantanivesh.app.core.theme.FdIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.GrayBackGround
@@ -96,11 +99,13 @@ import org.velvetinvesting.jantanivesh.app.features.home.ui.viewmodels.HomeScree
 @Composable
 fun HomeScreenPreview() {
     JantaNiveshTheme {
-        HomeScreen(
-            state = HomeScreenUiState(),
-            onEvent = {},
-            modifier = Modifier.padding(Spacing.dp16).fillMaxSize()
-        )
+        Scaffold(modifier = Modifier.navigationBarsPadding().statusBarsPadding()) {
+            HomeScreen(
+                state = HomeScreenUiState(),
+                onEvent = {},
+                modifier = Modifier.padding(Spacing.dp16).fillMaxSize()
+            )
+        }
     }
 }
 
@@ -120,7 +125,7 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp0)) {
                     Text(
                         stringResource(Res.string.home_good_morning),
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
@@ -148,8 +153,9 @@ fun HomeScreen(
         }
         item {
             Box(
-                modifier = Modifier.genericDropShadow().clip(RoundedCornerShape(Spacing.dp12))
-                    .background(color = Primary).fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().genericDropShadow()
+                    .clip(RoundedCornerShape(Spacing.dp12))
+                    .background(color = Primary)
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
@@ -191,7 +197,7 @@ fun HomeScreen(
                     modifier = Modifier.padding(Spacing.dp8)
                         .align(Alignment.TopEnd)
                         .clip(RoundedCornerShape(Spacing.dp58))
-                        .background(color = SelectedBoxBorder.copy(alpha = 0.1f))
+                        .background(color = SelectedBoxBorder.copy(alpha = 0.25f))
                         .padding(all = Spacing.dp12)
                 ) {
                     Icon(
@@ -255,7 +261,7 @@ fun HomeScreen(
                 VerticalDivider(
                     thickness = Spacing.dp4,
                     color = Primary,
-                    modifier = Modifier.height(88.dp)
+                    modifier = Modifier.height(88.dp).weight(0.01f)
                 )
                 Icon(
                     painterResource(Res.drawable.profile_in_frame_icon),
@@ -263,8 +269,12 @@ fun HomeScreen(
                     modifier = Modifier.size(Spacing.dp32).clip(CircleShape)
                         .background(SelectedBoxColor)
                         .padding(Spacing.dp8)
+                        .weight(0.1f)
                 )
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
+                    modifier = Modifier.weight(0.5f)
+                ) {
                     Text(
                         stringResource(Res.string.home_kyc_title),
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
@@ -281,7 +291,8 @@ fun HomeScreen(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Primary,
                         contentColor = White
-                    )
+                    ),
+                    modifier = Modifier.weight(0.3f).padding(end = Spacing.dp20)
                 ) {
                     Text(
                         stringResource(Res.string.home_verify_button),
@@ -304,19 +315,22 @@ fun HomeScreen(
                 Icon(
                     painter = painterResource(Res.drawable.front_arrow_icon),
                     contentDescription = stringResource(Res.string.home_go_to_goals_desc),
-                    modifier = Modifier.size(Spacing.dp24).clickable(onClick = { onEvent(HomeScreenEvent.OnGoToGoalsClicked) }),
+                    modifier = Modifier.size(Spacing.dp24)
+                        .clickable(onClick = { onEvent(HomeScreenEvent.OnGoToGoalsClicked) }),
                     tint = SelectedBoxBorder
                 )
             }
         }
         item {
-            for (goal in state.goals) {
-                GoalCard(
-                    name = goal.name,
-                    amount = formatPrice(goal.amount),
-                    goalProgress = goal.progress,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
+                for (goal in state.goals) {
+                    GoalCard(
+                        name = goal.name,
+                        amount = formatPrice(goal.amount),
+                        goalProgress = goal.progress,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
         item {
@@ -324,9 +338,9 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().dashedBorder(
-                    color = BoxBorder,
-                    dashLength = Spacing.dp4,
-                    gapLength = Spacing.dp4,
+                    color = DashedBorderColor,
+                    dashLength = Spacing.dp6,
+                    gapLength = Spacing.dp2,
                     strokeWidth = Spacing.dp1
                 ).padding(Spacing.dp16)
             ) {
@@ -345,10 +359,14 @@ fun HomeScreen(
                     )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
-                    Text(stringResource(Res.string.home_custom_goal_title), style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        stringResource(Res.string.home_custom_goal_title),
+                        style = MaterialTheme.typography.labelLarge
+                    )
                     Text(
                         stringResource(Res.string.home_custom_goal_subtitle),
-                        style = MaterialTheme.typography.titleSmall
+                        style = MaterialTheme.typography.titleSmall,
+                        color = GreyText
                     )
                 }
             }
@@ -391,6 +409,7 @@ private fun GoalCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .genericDropShadow()
             .background(White, RoundedCornerShape(Spacing.dp24))
             .padding(Spacing.dp16),
         verticalArrangement = Arrangement.spacedBy(Spacing.dp12)

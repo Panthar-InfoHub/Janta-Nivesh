@@ -43,6 +43,7 @@ val MutualFundIconBg = Color(0xffC6E7FF)
 val CreateGoalIconBg = Color(0xffFFDCC6)
 val InsuranceIconBg = Color(0xffE4E1E7)
 val GoalIconBg = Color(0xFFF5F2FB)
+val DashedBorderColor = Color(0xff858585)
 
 // TradingDetailsScreen
 val HolderNatureTextColor = Color(0xff44464F)
