@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.home.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.compose
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -92,8 +92,8 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.dashedBorder
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.home.ui.viewmodels.HomeScreenEvent
-import org.velvetinvesting.jantanivesh.app.features.home.ui.viewmodels.HomeScreenUiState
+import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenEvent
+import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenUiState
 
 @Preview(showBackground = true, heightDp = 2000)
 @Composable

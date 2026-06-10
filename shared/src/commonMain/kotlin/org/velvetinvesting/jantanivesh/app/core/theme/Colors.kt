@@ -53,3 +53,11 @@ val titleColor=Color(0xff5A5E60)
 val bgColor4=Color(0xff4881FF)
 val bgColor3=Color(0xffFF9D00)
 
+
+// Explore Screen Colors
+val SecondaryPrimary = Color(0xff00658D)
+val LightGrayBorder = Color(0xffF1F5F9)
+val PercentageGreenBg = Color(0x0d144F03)
+val DarkNavy = Color(0xff03144F)
+val SlateGray = Color(0xff94A3B8)
+val GradientEnd = Color(0xff1D2B64)

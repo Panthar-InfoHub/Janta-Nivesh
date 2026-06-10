@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.home.ui.viewmodels
+package org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
