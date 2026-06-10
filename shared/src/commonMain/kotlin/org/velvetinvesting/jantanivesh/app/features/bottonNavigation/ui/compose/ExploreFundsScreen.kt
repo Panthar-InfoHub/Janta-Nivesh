@@ -479,7 +479,7 @@ fun StartWealthCard(modifier: Modifier = Modifier) {
                 color = White.copy(alpha = 0.8f)
             )
         }
-        Icon(
+        Icon( // TODO add radial gradient
             painter = painterResource(Res.drawable.piggybank_icon),
             contentDescription = null,
             modifier = Modifier.size(100.dp).padding(start = Spacing.dp32),
