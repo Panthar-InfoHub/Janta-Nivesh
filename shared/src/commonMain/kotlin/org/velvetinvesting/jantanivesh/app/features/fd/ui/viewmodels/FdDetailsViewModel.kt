@@ -14,7 +14,6 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
-import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.PurchaseFDUseCase
 
 data class FdDetailsUiState(
     val details: FDDetailsDomain? = null,
@@ -33,10 +32,9 @@ enum class FDModalType {
 }
 
 sealed interface FdDetailsEvent {
-    data class LoadDetails(val id: String) : FdDetailsEvent
     data object OnBackClicked : FdDetailsEvent
     data object OnShareClicked : FdDetailsEvent
-    data class OnUpdateInvest(val amount: Long) : FdDetailsEvent
+    data class OnUpdateInvest(val amount: String) : FdDetailsEvent
     data class OnUpdatePayout(val payout: PayoutType) : FdDetailsEvent
     data class OnUpdateApplicable(val applicable: String) : FdDetailsEvent
     data object OnEditAmountClicked : FdDetailsEvent
@@ -54,6 +52,7 @@ sealed interface FdDetailsEffect {
 }
 
 class FdDetailsViewModel(
+    private val id: String,
     private val getFDDetailsUseCase: GetFDDetailsUseCase,
 ) : ViewModel() {
 
@@ -62,10 +61,12 @@ class FdDetailsViewModel(
 
     private val _effect = Channel<FdDetailsEffect>()
     val effect = _effect.receiveAsFlow()
+    init{
+        loadFdDetails()
+    }
 
     fun handleEvent(event: FdDetailsEvent) {
         when (event) {
-            is FdDetailsEvent.LoadDetails -> loadFdDetails(event.id)
             FdDetailsEvent.OnBackClicked -> sendEffect(FdDetailsEffect.NavigateBack)
             FdDetailsEvent.OnShareClicked -> {
                 _uiState.value.details?.let {
@@ -73,7 +74,7 @@ class FdDetailsViewModel(
                 }
             }
             FdDetailsEvent.OnEditAmountClicked -> {
-                _uiState.update { it.copy(isInvestmentEditable = true) }
+                _uiState.update { it.copy(activeSheet = FDModalType.INVEST) }
             }
             FdDetailsEvent.OnPayoutTypeClicked -> {
                 _uiState.update { it.copy(activeSheet = FDModalType.PAYOUT) }
@@ -81,7 +82,12 @@ class FdDetailsViewModel(
             FdDetailsEvent.OnApplicantCategoryClicked -> {
                 _uiState.update { it.copy(activeSheet = FDModalType.APPLICABLE) }
             }
-            is FdDetailsEvent.OnUpdateInvest -> updateInvest(event.amount)
+            is FdDetailsEvent.OnUpdateInvest -> {
+                val amountLong = event.amount.toLongOrNull()
+                if (amountLong != null) {
+                    updateInvest(amountLong)
+                }
+            }
             is FdDetailsEvent.OnUpdatePayout -> updateInterestPayout(event.payout)
             is FdDetailsEvent.OnUpdateApplicable -> updateApplicable(event.applicable)
             is FdDetailsEvent.OnTenureSelected -> {
@@ -125,7 +131,7 @@ class FdDetailsViewModel(
         }
     }
 
-    private fun loadFdDetails(id: String) {
+    private fun loadFdDetails() {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             getFDDetailsUseCase(id)

@@ -18,10 +18,9 @@ import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.networking.getUrl
 import org.velvetinvesting.jantanivesh.app.core.networking.safeRequest
-
 class FixedDepositRepo(
     private val client: HttpClient
-) : FixedDepositRepository {
+): FixedDepositRepository {
 
     override suspend fun getFDSearchResult(
         maxDeposit: Double?,
@@ -32,8 +31,10 @@ class FixedDepositRepo(
         page: Int?,
         search: String?
     ): NetworkResponse<PaginatedData<FixedDepositDomain>, ErrorDomain> {
-        val response = safeRequest<FixedDepositListDto> {
-            client.get(getUrl("/fd")) {
+        val response= safeRequest<FixedDepositListDto> {
+            client.get(
+                getUrl("/fd")
+            ) {
                 parameter("max_deposit", maxDeposit)
                 parameter("min_deposit", minDeposit)
                 parameter("payout_frequency", payoutFrequency)
@@ -43,31 +44,50 @@ class FixedDepositRepo(
                 parameter("search", search)
             }
         }
-        return when (response) {
-            is NetworkResponse.Error -> response
-            is NetworkResponse.Success -> NetworkResponse.Success(response.data.toDomain())
+        when(response){
+            is NetworkResponse.Error -> {
+                return response
+            }
+            is NetworkResponse.Success -> {
+                val data=response.data
+                return NetworkResponse.Success(data.toDomain())
+            }
         }
     }
 
     override suspend fun getFDDetails(id: String): NetworkResponse<FDDetailsDomain, ErrorDomain> {
-        val response = safeRequest<FDDetailsDto> {
-            client.get(getUrl("/fd/$id"))
+        val response= safeRequest<FDDetailsDto> {
+            client.get(
+                getUrl("/fd/$id")
+            )
         }
-        return when (response) {
-            is NetworkResponse.Error -> response
-            is NetworkResponse.Success -> NetworkResponse.Success(response.data.toDomain())
+        when (response) {
+            is NetworkResponse.Error -> {
+                return response
+            }
+            is NetworkResponse.Success -> {
+                val data = response.data
+                return NetworkResponse.Success(data.toDomain())
+            }
         }
     }
 
     override suspend fun purchaseFD(data: PurchaseFDBodyDto): NetworkResponse<String, ErrorDomain> {
-        val response = safeRequest<PurchaseFDDto> {
-            client.post(getUrl("/fd/purchase-url")) {
+        val response= safeRequest<PurchaseFDDto> {
+            client.post (
+                getUrl("/fd/purchase-url")
+            ){
                 setBody(data)
             }
         }
-        return when (response) {
-            is NetworkResponse.Error -> response
-            is NetworkResponse.Success -> NetworkResponse.Success(response.data.data)
+        when (response) {
+            is NetworkResponse.Error -> {
+                return response
+            }
+            is NetworkResponse.Success -> {
+                val data = response.data
+                return NetworkResponse.Success(data.data)
+            }
         }
     }
 }

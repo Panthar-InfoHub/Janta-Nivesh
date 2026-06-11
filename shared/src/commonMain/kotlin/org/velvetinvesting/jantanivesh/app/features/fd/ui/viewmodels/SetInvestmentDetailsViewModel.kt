@@ -11,17 +11,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
-import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.core.utils.BrowserLauncher
 import org.velvetinvesting.jantanivesh.app.features.fd.data.models.dto.PurchaseFDBodyDto
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDTenureDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.PurchaseFDUseCase
-
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.calculateMaturity
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimTo
-import kotlin.collections.copy
 
 data class SetInvestmentDetailsUiState(
     val details: FDDetailsDomain? = null,
@@ -44,7 +42,7 @@ data class SetInvestmentDetailsUiState(
 )
 
 sealed interface SetInvestmentDetailsEvent {
-    data class LoadDetails(val id: String) : SetInvestmentDetailsEvent
+    data object LoadDetails : SetInvestmentDetailsEvent
     data class OnAmountChanged(val amount: String) : SetInvestmentDetailsEvent
     data class OnTenureChanged(val tenure: FDTenureDomain) : SetInvestmentDetailsEvent
     data class OnPayoutModeChanged(val payout: PayoutType) : SetInvestmentDetailsEvent
@@ -58,8 +56,10 @@ sealed interface SetInvestmentDetailsEffect {
 }
 
 class SetInvestmentDetailsViewModel(
+    private val id: String,
     private val getFDDetailsUseCase: GetFDDetailsUseCase,
-    private val purchaseFDUseCase: PurchaseFDUseCase
+    private val purchaseFDUseCase: PurchaseFDUseCase,
+    private val browserLaunchUseCase: BrowserLauncher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SetInvestmentDetailsUiState())
@@ -70,7 +70,7 @@ class SetInvestmentDetailsViewModel(
 
     fun handleEvent(event: SetInvestmentDetailsEvent) {
         when (event) {
-            is SetInvestmentDetailsEvent.LoadDetails -> loadFdDetails(event.id)
+            is SetInvestmentDetailsEvent.LoadDetails -> loadFdDetails()
             is SetInvestmentDetailsEvent.OnAmountChanged -> {
                 updateAmount(event.amount)
             }
@@ -94,13 +94,16 @@ class SetInvestmentDetailsViewModel(
             }
         }
     }
-
-    private fun loadFdDetails(id: String) {
+    init{
+        loadFdDetails()
+    }
+    private fun loadFdDetails() {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             getFDDetailsUseCase(id)
                 .onSuccess { data ->
-                    val defaultPayout = data.selectedPayout ?: PayoutType.defaultSelection(data.payoutOptions)
+                    val defaultPayout =
+                        data.selectedPayout ?: PayoutType.defaultSelection(data.payoutOptions)
                     val availableTenures = if (defaultPayout != null) {
                         data.interestRates.filter { it.payoutFrequency == defaultPayout }
                     } else data.interestRates
@@ -131,6 +134,7 @@ class SetInvestmentDetailsViewModel(
                 }
         }
     }
+
     private fun updateAmount(input: String) {
         _uiState.update { state ->
             val parsedAmount = input.toLongOrNull()
@@ -215,7 +219,7 @@ class SetInvestmentDetailsViewModel(
                     amount != null &&
                     amount >= state.minAmount &&
                     !state.showError
-            
+
             state.copy(isButtonEnabled = isEnabled)
         }
     }

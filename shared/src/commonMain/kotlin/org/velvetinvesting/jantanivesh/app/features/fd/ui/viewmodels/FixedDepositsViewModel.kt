@@ -43,6 +43,7 @@ sealed interface FixedDepositsEffect {
 }
 
 class FixedDepositsViewModel(
+    private val id: String,
     private val getTopPickFDUseCase: GetTopPickFDUseCase
 ) : ViewModel() {
 

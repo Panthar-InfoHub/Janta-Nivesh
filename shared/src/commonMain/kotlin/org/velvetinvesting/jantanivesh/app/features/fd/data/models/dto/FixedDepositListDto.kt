@@ -17,32 +17,32 @@ data class FdListData(
 
 @Serializable
 data class FdProductDto(
-    val id: String,
-    val issuer: IssuerDto,
-    val interest_rates: List<InterestRateDto>,
-    val min_deposit: String,
-    val tags: List<TagDto>
+    val id: String = "",
+    val issuer: IssuerDto = IssuerDto(),
+    val interest_rates: List<InterestRateDto> = emptyList(),
+    val min_deposit: String = "0",
+    val tags: List<TagDto> = emptyList()
 )
 
 @Serializable
 data class IssuerDto(
-    val id: String,
-    val full_name: String,
-    val display_name: String,
-    val logo_url: String,
+    val id: String = "",
+    val full_name: String = "",
+    val display_name: String = "",
+    val logo_url: String = "",
     val rating_text: String? = null,
     val about_description: String = ""
 )
 
 @Serializable
 data class InterestRateDto(
-    val id: String,
-    val tenure_label: String,
-    val tenure_days: Int,
-    val interest_rate: String,
+    val id: String = "",
+    val tenure_label: String = "",
+    val tenure_days: Int = 0,
+    val interest_rate: String = "0",
     val annualized_yield: String = "",
     val is_default_selection: Boolean = false,
-    val payout_frequency: String,
+    val payout_frequency: String = "",
     val customer_type: String = ""
 )
 

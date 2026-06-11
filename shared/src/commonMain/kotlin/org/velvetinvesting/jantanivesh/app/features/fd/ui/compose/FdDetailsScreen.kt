@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,18 +57,17 @@ import jantanivesh.shared.generated.resources.max_return
 import jantanivesh.shared.generated.resources.min_amt
 import jantanivesh.shared.generated.resources.per_annum
 import jantanivesh.shared.generated.resources.popular
-import jantanivesh.shared.generated.resources.select
 import jantanivesh.shared.generated.resources.select_desc
 import jantanivesh.shared.generated.resources.share_icon
 import jantanivesh.shared.generated.resources.share_icon_desc
 import jantanivesh.shared.generated.resources.something_went_wrong
 import jantanivesh.shared.generated.resources.tenure
 import jantanivesh.shared.generated.resources.tenure_options
-import jantanivesh.shared.generated.resources.yield
 import jantanivesh.shared.generated.resources.you_receive_with_asterisk
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.*
+import org.velvetinvesting.jantanivesh.app.core.utils.math.simpleInterestEarned
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
@@ -145,6 +141,7 @@ fun FdDetailsScreen(
                 )
 
                 TenureOptionsCard(
+                    investAmount = details.invest,
                     options = details.interestRates,
                     onOptionSelected = { onEvent(FdDetailsEvent.OnTenureSelected(it)) }
                 )
@@ -379,10 +376,11 @@ private fun InvestmentConfigCard(
                         color = GreyText
                     )
                     AppTextField(
-                        value = "₹ ${data.details?.invest}",
-                        onValueChange = {onEvent(FdDetailsEvent.OnUpdateInvest(it.toLong())) },
-                        readOnly = data.activeSheet == FDModalType.INVEST,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        value = "${data.details?.invest}",
+                        onValueChange = {onEvent(FdDetailsEvent.OnUpdateInvest(it)) },
+                        readOnly = (data.activeSheet != FDModalType.INVEST),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        prefix = { Text("₹ ", style =MaterialTheme.typography.headlineSmall) }
                     )
                 }
                 Box(
@@ -485,6 +483,7 @@ private fun InvestmentConfigCard(
 
 @Composable
 private fun TenureOptionsCard(
+    investAmount: Long,
     options: List<FDTenureDomain>,
     onOptionSelected: (String) -> Unit
 ) {
@@ -583,7 +582,7 @@ private fun TenureOptionsCard(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "₹ ${option.annualYield.toInt()}",
+                        text = "₹ ${investAmount.simpleInterestEarned(option.annualYield, option.tenureDays)}", // TODO turn percentage to return amount
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = if (option.isDefault) FontWeight.Bold else FontWeight.Normal
                         ),
