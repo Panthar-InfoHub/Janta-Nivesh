@@ -26,6 +26,7 @@ data class FixedDepositsUiState(
 )
 
 sealed interface FixedDepositsEvent {
+    data object NavigateToFdStatus: FixedDepositsEvent
     data class OnSearchQueryChanged(val query: String) : FixedDepositsEvent
     data class OnFdItemClicked(val fdItem: FixedDepositDomain) : FixedDepositsEvent
     data object OnBackClicked : FixedDepositsEvent
@@ -34,6 +35,8 @@ sealed interface FixedDepositsEvent {
 }
 
 sealed interface FixedDepositsEffect {
+    data object NavigateToFdStatus : FixedDepositsEffect
+    data object NavigateToFilters: FixedDepositsEffect
     data object NavigateBack : FixedDepositsEffect
     data class NavigateToFdDetails(val id: String) : FixedDepositsEffect
     data object NavigateToExploreFds : FixedDepositsEffect
@@ -65,10 +68,13 @@ class FixedDepositsViewModel(
                 sendEffect(FixedDepositsEffect.NavigateBack)
             }
             FixedDepositsEvent.OnFilterMenuClicked -> {
-                TODO("Handle filter menu")
+                sendEffect(FixedDepositsEffect.NavigateToFilters)
             }
             FixedDepositsEvent.OnExploreFdsArrowClicked -> {
                 sendEffect(FixedDepositsEffect.NavigateToExploreFds)
+            }
+            FixedDepositsEvent.NavigateToFdStatus -> {
+                sendEffect(FixedDepositsEffect.NavigateToFdStatus)
             }
         }
     }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.fd.data.models.dto.PurchaseFDBodyDto
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDTenureDomain
@@ -18,18 +19,28 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.PurchaseFDUseCase
 
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.calculateMaturity
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimTo
+import kotlin.collections.copy
+
 data class SetInvestmentDetailsUiState(
     val details: FDDetailsDomain? = null,
     val amount: String = "",
     val selectedTenure: FDTenureDomain? = null,
     val selectedPayoutMode: PayoutType? = null,
+    val frequencies: List<PayoutType> = emptyList(),
+    val availableTenures: List<FDTenureDomain> = emptyList(),
     val maturityAmount: String = "₹0",
     val totalInterest: String = "₹0",
     val interestRate: String = "0% p.a.",
     val maturityDate: String = "N/A",
     val isLoading: Boolean = false,
     val isPurchasing: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val showError: Boolean = false,
+    val errorText: String = "",
+    val minAmount: Long = 0,
+    val isButtonEnabled: Boolean = false
 )
 
 sealed interface SetInvestmentDetailsEvent {
@@ -61,18 +72,17 @@ class SetInvestmentDetailsViewModel(
         when (event) {
             is SetInvestmentDetailsEvent.LoadDetails -> loadFdDetails(event.id)
             is SetInvestmentDetailsEvent.OnAmountChanged -> {
-                _uiState.update { it.copy(amount = event.amount) }
-                calculateReturns()
+                updateAmount(event.amount)
             }
 
             is SetInvestmentDetailsEvent.OnTenureChanged -> {
                 _uiState.update { it.copy(selectedTenure = event.tenure) }
                 calculateReturns()
+                updateButtonState()
             }
 
             is SetInvestmentDetailsEvent.OnPayoutModeChanged -> {
-                _uiState.update { it.copy(selectedPayoutMode = event.payout) }
-                TODO("filter tenures by payout frequency if needed")
+                updatePayoutMode(event.payout)
             }
 
             SetInvestmentDetailsEvent.OnBackClicked -> {
@@ -90,18 +100,26 @@ class SetInvestmentDetailsViewModel(
         viewModelScope.launch {
             getFDDetailsUseCase(id)
                 .onSuccess { data ->
+                    val defaultPayout = data.selectedPayout ?: PayoutType.defaultSelection(data.payoutOptions)
+                    val availableTenures = if (defaultPayout != null) {
+                        data.interestRates.filter { it.payoutFrequency == defaultPayout }
+                    } else data.interestRates
+
                     _uiState.update {
                         it.copy(
                             details = data,
                             amount = data.minDeposit.toString(),
-                            selectedTenure = data.interestRates.find { it.isDefault }
-                                ?: data.interestRates.firstOrNull(),
-                            selectedPayoutMode = data.selectedPayout,
+                            minAmount = data.minDeposit,
+                            selectedPayoutMode = defaultPayout,
+                            availableTenures = availableTenures,
+                            selectedTenure = availableTenures.find { it.isDefault }
+                                ?: availableTenures.firstOrNull(),
                             isLoading = false,
                             errorMessage = null
                         )
                     }
                     calculateReturns()
+                    updateButtonState()
                 }
                 .onError { error ->
                     _uiState.update {
@@ -113,19 +131,92 @@ class SetInvestmentDetailsViewModel(
                 }
         }
     }
+    private fun updateAmount(input: String) {
+        _uiState.update { state ->
+            val parsedAmount = input.toLongOrNull()
+
+            val hasInvalidNumber = input.isNotBlank() && parsedAmount == null
+            val isBelowMinAmount = parsedAmount != null && parsedAmount < state.minAmount
+
+            val errorText = when {
+                hasInvalidNumber -> "Please enter a valid amount"
+                isBelowMinAmount -> "Minimum amount is ₹${state.minAmount}"
+                else -> ""
+            }
+
+            state.copy(
+                amount = input,
+                showError = hasInvalidNumber || isBelowMinAmount,
+                errorText = errorText
+            )
+        }
+        calculateReturns()
+        updateButtonState()
+    }
+
+    private fun updatePayoutMode(payout: PayoutType) {
+        _uiState.update { state ->
+            val filteredTenures = state.details?.interestRates?.filter {
+                it.payoutFrequency == payout
+            } ?: emptyList()
+
+            state.copy(
+                selectedPayoutMode = payout,
+                availableTenures = filteredTenures,
+                selectedTenure = null // Reset tenure when payout changes as per temp logic
+            )
+        }
+        calculateReturns()
+        updateButtonState()
+    }
 
     private fun calculateReturns() {
         val state = _uiState.value
         val principal = state.amount.toLongOrNull() ?: 0L
-        val tenure = state.selectedTenure ?: return
+        val tenure = state.selectedTenure
+        val payout = state.selectedPayoutMode
+
+        if (tenure == null || payout == null || principal == 0L) {
+            _uiState.update {
+                it.copy(
+                    maturityAmount = "₹0",
+                    totalInterest = "₹0",
+                    interestRate = tenure?.let { "${it.interestRate}% p.a." } ?: "0% p.a.",
+                    maturityDate = "N/A"
+                )
+            }
+            return
+        }
+
+        val maturityValue = calculateMaturity(
+            principal = principal,
+            rate = tenure.interestRate,
+            days = tenure.tenureDays,
+            frequency = payout
+        )
+
+        val totalInterest = maturityValue - principal
 
         _uiState.update {
             it.copy(
-                maturityAmount = "₹${principal + (principal * tenure.interestRate / 100).toLong()}",
-                totalInterest = "₹${(principal * tenure.interestRate / 100).toLong()}",
+                maturityAmount = "₹${maturityValue.trimTo(2)}",
+                totalInterest = "₹${totalInterest.trimTo(2)}",
                 interestRate = "${tenure.interestRate}% p.a.",
                 maturityDate = "Calculated"
             )
+        }
+    }
+
+    private fun updateButtonState() {
+        _uiState.update { state ->
+            val amount = state.amount.toLongOrNull()
+            val isEnabled = state.selectedTenure != null &&
+                    state.selectedPayoutMode != null &&
+                    amount != null &&
+                    amount >= state.minAmount &&
+                    !state.showError
+            
+            state.copy(isButtonEnabled = isEnabled)
         }
     }
 

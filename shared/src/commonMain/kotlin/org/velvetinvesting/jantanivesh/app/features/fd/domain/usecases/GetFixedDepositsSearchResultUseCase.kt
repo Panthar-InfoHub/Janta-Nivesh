@@ -7,8 +7,9 @@ import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 
 class GetFixedDepositsSearchResultUseCase(
-    private val repository: FixedDepositRepository
+    private val repository: FixedDepositRepository,
 ) {
+
     suspend operator fun invoke(
         page: Int? = 1,
         limit: Int? = 30,
@@ -18,6 +19,7 @@ class GetFixedDepositsSearchResultUseCase(
         maxDeposit: Double? = null,
         search: String? = null
     ): NetworkResponse<PaginatedData<FixedDepositDomain>, ErrorDomain> {
+
         return repository.getFDSearchResult(
             page = page,
             limit = limit,

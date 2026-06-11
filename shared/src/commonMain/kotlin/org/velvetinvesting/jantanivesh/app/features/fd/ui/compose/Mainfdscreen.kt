@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,8 +20,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,11 +31,13 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.active_count
+import jantanivesh.shared.generated.resources.arrow_front_icon
 import jantanivesh.shared.generated.resources.bank_logo_desc
 import jantanivesh.shared.generated.resources.best_rate
 import jantanivesh.shared.generated.resources.explore_fds
 import jantanivesh.shared.generated.resources.explore_more_desc
 import jantanivesh.shared.generated.resources.fd_completion_icon
+import jantanivesh.shared.generated.resources.filter_icon
 import jantanivesh.shared.generated.resources.filter_icon_desc
 import jantanivesh.shared.generated.resources.fixed_deposits
 import jantanivesh.shared.generated.resources.go_back_desc
@@ -49,12 +48,10 @@ import jantanivesh.shared.generated.resources.min_with_value
 import jantanivesh.shared.generated.resources.not_available
 import jantanivesh.shared.generated.resources.per_annum
 import jantanivesh.shared.generated.resources.search_fds
+import jantanivesh.shared.generated.resources.search_icon
 import jantanivesh.shared.generated.resources.search_icon_desc
 import jantanivesh.shared.generated.resources.tenure
 import jantanivesh.shared.generated.resources.your_fds
-import jantanivesh.shared.generated.resources.arrow_front_icon
-import jantanivesh.shared.generated.resources.filter_icon
-import jantanivesh.shared.generated.resources.search_icon
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
@@ -67,10 +64,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextFieldDefaults
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextFieldStyle
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldStyle
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FixedDepositsEvent
@@ -254,7 +251,7 @@ fun TopAppBar(onEvent: (FixedDepositsEvent) -> Unit){
         )
 
         IconButton(
-            onClick = { TODO() },
+            onClick = { onEvent(FixedDepositsEvent.NavigateToFdStatus)},
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = Color.Transparent,
             )

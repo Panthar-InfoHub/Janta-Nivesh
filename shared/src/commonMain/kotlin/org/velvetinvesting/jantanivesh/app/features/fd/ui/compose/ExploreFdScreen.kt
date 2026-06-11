@@ -40,6 +40,7 @@ import jantanivesh.shared.generated.resources.load_more_funds
 import jantanivesh.shared.generated.resources.loading
 import jantanivesh.shared.generated.resources.loading_more
 import jantanivesh.shared.generated.resources.nbfc
+import jantanivesh.shared.generated.resources.not_available
 import jantanivesh.shared.generated.resources.per_annum
 import jantanivesh.shared.generated.resources.private_bank
 import jantanivesh.shared.generated.resources.public_bank
@@ -52,7 +53,6 @@ import jantanivesh.shared.generated.resources.top_funds
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
-import org.velvetinvesting.jantanivesh.app.core.theme.Border
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
@@ -63,14 +63,15 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.PreviewBackground
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextFieldDefaults
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextFieldStyle
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldStyle
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDLabel
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdUiState
-import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FixedDepositsEvent
 
 @Composable
 fun SearchFundsScreen(
@@ -124,17 +125,17 @@ fun SearchFundsScreen(
             FilterChip(
                 text = stringResource(Res.string.public_bank),
                 isSelected = state.selectedFilter == "Public Bank",
-                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked("Public Bank")) }
+                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked(FDLabel.PublicBank)) }
             )
             FilterChip(
                 text = stringResource(Res.string.nbfc),
                 isSelected = state.selectedFilter == "NBFC",
-                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked("NBFC")) }
+                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked(FDLabel.NBFC)) }
             )
             FilterChip(
                 text = stringResource(Res.string.private_bank),
                 isSelected = state.selectedFilter == "Private Bank",
-                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked("Private Bank")) }
+                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked(FDLabel.PrivateBank)) }
             )
         }
 
@@ -143,7 +144,7 @@ fun SearchFundsScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),  modifier = Modifier.weight(0.3f)) {
                 Text(
                     text = stringResource(Res.string.top_funds),
                     style = MaterialTheme.typography.labelLarge,
@@ -156,23 +157,14 @@ fun SearchFundsScreen(
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Spacing.dp4),
-                modifier = Modifier.clickable { onEvent(ExploreFdEvent.OnSortDropdownClicked) }
-            ) {
-                Text(
-                    text = state.sortOption,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = SelectedBoxBorder
-                )
-                Icon(
-                    painter = painterResource(Res.drawable.dropdown_icon),
-                    contentDescription = stringResource(Res.string.sort_options_desc),
-                    tint = SelectedBoxBorder,
-                    modifier = Modifier.size(Spacing.dp8).clickable(onClick = {/*TODO implement dropdown menu*/})
-                )
-            }
+            DropDownSelector(
+                value = state.sortOptions.firstOrNull()?.displayName ?: "",
+                onValueChange = { onEvent(ExploreFdEvent.OnSortOptionClicked(it)) },
+                placeholder = state.sortOptions.firstOrNull()?.displayName ?: "",
+                list = state.sortOptions,
+                textConvertor = { it.displayName },
+                modifier = Modifier.weight(0.2f)
+            )
         }
 
         if (state.isLoading) {
@@ -317,7 +309,7 @@ private fun FundListItem(
                     color = Primary
                 )
                 Text(
-                    text = stringResource(Res.string.per_annum), //TODO Implement return duration display
+                    text = item.tenures.firstOrNull()?.tenureDays?.toString() ?: stringResource(Res.string.not_available), //TODO need to contact senior for changing this
                     style = MaterialTheme.typography.titleSmall,
                     color = GreyText
                 )

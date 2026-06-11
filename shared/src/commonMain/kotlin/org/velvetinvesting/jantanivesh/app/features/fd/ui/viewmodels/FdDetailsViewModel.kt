@@ -18,19 +18,33 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.PurchaseF
 
 data class FdDetailsUiState(
     val details: FDDetailsDomain? = null,
+    val selectedPayoutMode: PayoutType? = null,
+    val frequencies: List<PayoutType> = emptyList(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val activeSheet: FDModalType? = null,
+    val isInvestmentEditable: Boolean = false
 )
+
+enum class FDModalType {
+    PAYOUT,
+    APPLICABLE,
+    INVEST
+}
 
 sealed interface FdDetailsEvent {
     data class LoadDetails(val id: String) : FdDetailsEvent
     data object OnBackClicked : FdDetailsEvent
     data object OnShareClicked : FdDetailsEvent
+    data class OnUpdateInvest(val amount: Long) : FdDetailsEvent
+    data class OnUpdatePayout(val payout: PayoutType) : FdDetailsEvent
+    data class OnUpdateApplicable(val applicable: String) : FdDetailsEvent
     data object OnEditAmountClicked : FdDetailsEvent
     data object OnPayoutTypeClicked : FdDetailsEvent
     data object OnApplicantCategoryClicked : FdDetailsEvent
     data class OnTenureSelected(val tenureId: String) : FdDetailsEvent
     data object OnInvestNowClicked : FdDetailsEvent
+    data object OnCloseSheet : FdDetailsEvent
 }
 
 sealed interface FdDetailsEffect {
@@ -41,7 +55,6 @@ sealed interface FdDetailsEffect {
 
 class FdDetailsViewModel(
     private val getFDDetailsUseCase: GetFDDetailsUseCase,
-    private val purchaseFDUseCase: PurchaseFDUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FdDetailsUiState())
@@ -60,22 +73,55 @@ class FdDetailsViewModel(
                 }
             }
             FdDetailsEvent.OnEditAmountClicked -> {
-                TODO("Handle edit amount")
+                _uiState.update { it.copy(isInvestmentEditable = true) }
             }
             FdDetailsEvent.OnPayoutTypeClicked -> {
-                TODO("Handle payout type selection")
+                _uiState.update { it.copy(activeSheet = FDModalType.PAYOUT) }
             }
             FdDetailsEvent.OnApplicantCategoryClicked -> {
-                TODO("Handle applicant category selection")
+                _uiState.update { it.copy(activeSheet = FDModalType.APPLICABLE) }
             }
+            is FdDetailsEvent.OnUpdateInvest -> updateInvest(event.amount)
+            is FdDetailsEvent.OnUpdatePayout -> updateInterestPayout(event.payout)
+            is FdDetailsEvent.OnUpdateApplicable -> updateApplicable(event.applicable)
             is FdDetailsEvent.OnTenureSelected -> {
-                TODO("Update selected tenure logic")
+                // Update selected tenure logic if needed in domain model or state
             }
             FdDetailsEvent.OnInvestNowClicked -> {
                 _uiState.value.details?.let {
                     sendEffect(FdDetailsEffect.NavigateToSetInvestmentDetails(it.id))
                 }
             }
+            FdDetailsEvent.OnCloseSheet -> {
+                _uiState.update { it.copy(activeSheet = null) }
+            }
+        }
+    }
+
+    private fun updateInvest(amount: Long) {
+        _uiState.update { state ->
+            state.copy(
+                details = state.details?.copy(invest = amount),
+                activeSheet = null
+            )
+        }
+    }
+
+    private fun updateInterestPayout(payout: PayoutType) {
+        _uiState.update { state ->
+            state.copy(
+                details = state.details?.copy(selectedPayout = payout),
+                activeSheet = null
+            )
+        }
+    }
+
+    private fun updateApplicable(applicable: String) {
+        _uiState.update { state ->
+            state.copy(
+                details = state.details?.copy(applicable = applicable),
+                activeSheet = null
+            )
         }
     }
 

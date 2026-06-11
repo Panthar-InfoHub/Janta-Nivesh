@@ -8,7 +8,9 @@ import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 class GetFDDetailsUseCase(
     private val repository: FixedDepositRepository
 ) {
-    suspend operator fun invoke(id: String): NetworkResponse<FDDetailsDomain, ErrorDomain> {
+    suspend operator fun invoke(
+        id: String
+    ): NetworkResponse<FDDetailsDomain, ErrorDomain> {
         return repository.getFDDetails(id)
     }
 }

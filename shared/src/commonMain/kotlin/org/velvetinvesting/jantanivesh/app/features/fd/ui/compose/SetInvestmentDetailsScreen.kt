@@ -73,9 +73,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedTenureChipColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextField
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppTextFieldDefaults
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsUiState
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
@@ -133,9 +134,8 @@ fun SetInvestmentDetailsScreen(
         )
 
         InterestPayoutCard(
-            selectedPayoutMode = state.selectedPayoutMode?.displayName
-                ?: stringResource(Res.string.select),
-            onPayoutModeChange = { /* Handle payout mode click */ TODO() }
+            data = state,
+            onPayoutModeChange = { SetInvestmentDetailsEvent.OnPayoutModeChanged(it) }
         )
 
         ProjectedReturnsCard(
@@ -418,8 +418,8 @@ fun TenureChip(
 
 @Composable
 fun InterestPayoutCard(
-    selectedPayoutMode: String,
-    onPayoutModeChange: (String) -> Unit
+    data: SetInvestmentDetailsUiState,
+    onPayoutModeChange: (PayoutType) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -435,24 +435,16 @@ fun InterestPayoutCard(
                 text = stringResource(Res.string.interest_payout_mode),
                 style = MaterialTheme.typography.labelLarge
             )
-            AppTextField(
-                value = selectedPayoutMode,
-                onValueChange = { TODO() },
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onPayoutModeChange(selectedPayoutMode) },
-                trailingIcon = {
-                    Icon(
-                        painter = painterResource(Res.drawable.dropdown_outlined_icon),
-                        contentDescription = stringResource(Res.string.dropdown_icon_desc),
-                        tint = GreyText
-                    )
-                },
-                style = AppTextFieldDefaults.style(
-                    unfocusedBorderColor = SelectedBoxBorder,
-                    shape = RoundedCornerShape(Spacing.dp4)
-                )
+            DropDownSelector(
+                value = data.selectedPayoutMode?.displayName ?: "",
+                onValueChange = onPayoutModeChange,
+                placeholder = "Select Payout Mode",
+                mandatory = false,
+                modifier = Modifier.fillMaxWidth(),
+                list = data.frequencies,
+                textConvertor = {
+                    it.displayName
+                }
             )
         }
     }

@@ -14,23 +14,36 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFixedDepositsSearchResultUseCase
 
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.InvestmentFilter
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.LabelFilter
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.ReturnYears
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.FDFilterIds
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.createInitialFDFilters
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.getActiveFilterLabel
+
 data class ExploreFdUiState(
     val searchQuery: String = "",
     val totalFundsCount: String = "0",
     val selectedFilter: String = "Public Bank",
-    val sortOption: String = "Returns (3Y)",
+    val sortOptions: List<ReturnYears> = listOf(ReturnYears.Year1, ReturnYears.Year2, ReturnYears.Year3, ReturnYears.Year4, ReturnYears.Year5),
     val fundsList: List<FixedDepositDomain> = emptyList(),
     val isLoading: Boolean = false,
     val isLoadingNext: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val filterState: InvestmentFilter = createInitialFDFilters(),
+    val selectedFilterLabel: String = "All FDs",
+    val showFilterScreen: Boolean = false
 )
 
 sealed interface ExploreFdEvent {
+    data class OnSortOptionClicked(val sortOption: ReturnYears) : ExploreFdEvent
     data class OnSearchQueryChanged(val query: String) : ExploreFdEvent
-    data class OnFilterChipClicked(val filter: String) : ExploreFdEvent
+    data class OnFilterChipClicked(val filter: LabelFilter) : ExploreFdEvent
+    data class OnApplyFilter(val filter: InvestmentFilter) : ExploreFdEvent
+    data object OnClearFilter : ExploreFdEvent
     data class OnFundItemClicked(val fundItem: FixedDepositDomain) : ExploreFdEvent
     data object OnFilterMenuClicked : ExploreFdEvent
-    data object OnSortDropdownClicked : ExploreFdEvent
+    data class OnSortDropdownClicked(val option: ReturnYears) : ExploreFdEvent
     data object OnLoadMoreClicked : ExploreFdEvent
     data object OnBackClicked : ExploreFdEvent
 }
@@ -64,17 +77,27 @@ class ExploreFdViewModel(
                 loadFunds() // Reload on search
             }
             is ExploreFdEvent.OnFilterChipClicked -> {
-                _uiState.update { it.copy(selectedFilter = event.filter) }
+                // Simplified chip logic from temp
+                _uiState.update { it.copy(selectedFilter = event.filter.title) }
                 loadFunds()
+            }
+            is ExploreFdEvent.OnApplyFilter -> {
+                applyFilter(event.filter)
+            }
+            ExploreFdEvent.OnClearFilter -> {
+                clearFilter()
             }
             is ExploreFdEvent.OnFundItemClicked -> {
                 sendEffect(ExploreFdEffect.NavigateToFdDetails(event.fundItem.id))
             }
-            ExploreFdEvent.OnFilterMenuClicked -> {
-                TODO("Handle filter menu")
+            is ExploreFdEvent.OnSortOptionClicked -> {
+                sortByReturnDuration(event.sortOption)
             }
-            ExploreFdEvent.OnSortDropdownClicked -> {
-                TODO("Handle sort dropdown")
+            is ExploreFdEvent.OnSortDropdownClicked -> {
+                sortByReturnDuration(event.option)
+            }
+            ExploreFdEvent.OnFilterMenuClicked -> {
+                _uiState.update { it.copy(showFilterScreen = !it.showFilterScreen) }
             }
             ExploreFdEvent.OnLoadMoreClicked -> {
                 loadNext()
@@ -85,12 +108,42 @@ class ExploreFdViewModel(
         }
     }
 
+    private fun applyFilter(newFilter: InvestmentFilter) {
+        _uiState.update { 
+            it.copy(
+                filterState = newFilter,
+                selectedFilterLabel = newFilter.getActiveFilterLabel()
+            )
+        }
+        currentPage = 1
+        hasNextPage = true
+        loadFunds()
+    }
+
+    private fun clearFilter() {
+        _uiState.update { 
+            it.copy(
+                filterState = createInitialFDFilters(),
+                selectedFilterLabel = "All FDs"
+            )
+        }
+        currentPage = 1
+        hasNextPage = true
+        loadFunds()
+    }
+
+    private fun sortByReturnDuration(sortOption: ReturnYears){
+        TODO("Handle sort by return duration")
+    }
     private fun loadFunds() {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
+            val (tenure, payout) = getSelectedFilters()
             getFDSearchResult(
                 page = 1,
                 limit = 30,
+                tenure = tenure,
+                payoutFrequency = payout,
                 search = _uiState.value.searchQuery
             )
                 .onSuccess { data ->
@@ -122,9 +175,12 @@ class ExploreFdViewModel(
         _uiState.update { it.copy(isLoadingNext = true) }
         viewModelScope.launch {
             val nextPage = currentPage + 1
+            val (tenure, payout) = getSelectedFilters()
             getFDSearchResult(
                 page = nextPage,
                 limit = 30,
+                tenure = tenure,
+                payoutFrequency = payout,
                 search = _uiState.value.searchQuery
             )
                 .onSuccess { data ->
@@ -141,6 +197,24 @@ class ExploreFdViewModel(
                     _uiState.update { it.copy(isLoadingNext = false, errorMessage = error.message) }
                 }
         }
+    }
+
+    private fun getSelectedFilters(): Pair<String?, String?> {
+        val groups = _uiState.value.filterState.groups
+
+        val tenure = groups
+            .find { it.id == FDFilterIds.TENURE }
+            ?.options
+            ?.firstOrNull { it.isSelected }
+            ?.id
+
+        val payout = groups
+            .find { it.id == FDFilterIds.PAYOUT_FREQUENCY }
+            ?.options
+            ?.firstOrNull { it.isSelected }
+            ?.id
+
+        return tenure to payout
     }
 
     private fun sendEffect(effect: ExploreFdEffect) {

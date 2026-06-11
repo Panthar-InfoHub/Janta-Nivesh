@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,9 +72,12 @@ import jantanivesh.shared.generated.resources.you_receive_with_asterisk
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.*
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.*
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FDModalType
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsUiState
 
@@ -129,7 +134,7 @@ fun FdDetailsScreen(
             HeaderCard(details = details)
 
             // Investment Config Card
-            InvestmentConfigCard(details = details, onEvent = onEvent)
+            InvestmentConfigCard(data = state, onEvent = onEvent)
 
             // Tenure Options Section
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
@@ -346,7 +351,7 @@ private fun MetricBox(
 
 @Composable
 private fun InvestmentConfigCard(
-    details: FDDetailsDomain,
+    data: FdDetailsUiState,
     onEvent: (FdDetailsEvent) -> Unit
 ) {
     Box(
@@ -373,10 +378,11 @@ private fun InvestmentConfigCard(
                         ),
                         color = GreyText
                     )
-                    Text(
-                        text = "₹ ${details.invest}",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = Primary
+                    AppTextField(
+                        value = "₹ ${data.details?.invest}",
+                        onValueChange = {onEvent(FdDetailsEvent.OnUpdateInvest(it.toLong())) },
+                        readOnly = data.activeSheet == FDModalType.INVEST,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                 }
                 Box(
@@ -416,10 +422,18 @@ private fun InvestmentConfigCard(
                         ),
                         color = GreyText
                     )
-                    Text(
-                        text = details.selectedPayout?.displayName
-                            ?: stringResource(Res.string.select),
-                        style = MaterialTheme.typography.titleMedium,
+                    DropDownSelector(
+                        value = data.details?.selectedPayout?.displayName ?: "",
+                        onValueChange = {
+                            onEvent(FdDetailsEvent.OnUpdatePayout(it))
+                        },
+                        placeholder = data.details?.selectedPayout?.displayName ?: "UNAVAILABLE",
+                        mandatory = false,
+                        modifier = Modifier.fillMaxWidth(),
+                        list = data.frequencies,
+                        textConvertor = {
+                            it.displayName
+                        }
                     )
                 }
                 Icon(
@@ -450,22 +464,20 @@ private fun InvestmentConfigCard(
                         ),
                         color = GreyText
                     )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
-                    ) {
-                        Text(
-                            text = details.applicable,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
+                    DropDownSelector(
+                        value = data.details?.applicable ?: "UNAVAILABLE",
+                        onValueChange = {
+                            onEvent(FdDetailsEvent.OnUpdateApplicable(it))
+                        },
+                        placeholder = data.details?.applicable ?: "UNAVAILABLE",
+                        mandatory = false,
+                        modifier = Modifier.fillMaxWidth(),
+                        list = data.details?.applicableFor ?: emptyList(),
+                        textConvertor = {
+                            it
+                        }
+                    )
                 }
-                Icon(
-                    painter = painterResource(Res.drawable.dropdown_outlined_icon),
-                    contentDescription = stringResource(Res.string.select_desc),
-                    tint = GreyText,
-                    modifier = Modifier.size(Spacing.dp12)
-                )
             }
         }
     }

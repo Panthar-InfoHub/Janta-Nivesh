@@ -8,7 +8,9 @@ import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 class PurchaseFDUseCase(
     private val repository: FixedDepositRepository
 ) {
-    suspend operator fun invoke(data: PurchaseFDBodyDto): NetworkResponse<String, ErrorDomain> {
+    suspend operator fun invoke(
+        data: PurchaseFDBodyDto
+    ): NetworkResponse<String, ErrorDomain> {
         return repository.purchaseFD(data)
     }
 }
