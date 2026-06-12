@@ -1,10 +1,10 @@
 package org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 
 import kotlinx.serialization.Serializable
-import org.sharad.velvetinvestment.utils.tradingaccount.AccountType
-import org.sharad.velvetinvestment.utils.tradingaccount.DividendPayMode
-import org.sharad.velvetinvestment.utils.tradingaccount.InvestorOnboarding
-import org.sharad.velvetinvestment.utils.tradingaccount.YesNo
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.AccountType
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.DividendPayMode
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.InvestorOnboarding
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.YesNo
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.ClientType
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.TaxStatus

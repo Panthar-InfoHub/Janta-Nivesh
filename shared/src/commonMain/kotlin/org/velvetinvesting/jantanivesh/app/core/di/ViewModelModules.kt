@@ -10,6 +10,12 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenV
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractViewModel
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.AllBundlesViewModel
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.BundleResultViewModel
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CartScreenViewModel
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CategoryMutualFundViewModel
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundSearchResultViewModel
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountViewModel
 
 val viewModelModule = module {
@@ -24,4 +30,13 @@ val viewModelModule = module {
     viewModel { KYCImageUploaderScreenViewModel(get(), get(), get()) }
     viewModel { KycContractViewModel(get(), get(), get()) }
     viewModel { TradingAccountViewModel(get(), get(), get(), get(), get()) }
+
+    viewModel { AllBundlesViewModel(get()) }
+    viewModel { (bundleKey: String) -> BundleResultViewModel(bundleKey, get(), get(), get()) }
+    viewModel { CartScreenViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { CategoryMutualFundViewModel(get()) }
+    viewModel { (id: String) -> MutualFundDetailsScreenViewModel(id, get(), get(), get(), get(), get()) }
+    viewModel { (search: String?, fundCategory: String?) ->
+        MutualFundSearchResultViewModel(search, fundCategory, get())
+    }
 }

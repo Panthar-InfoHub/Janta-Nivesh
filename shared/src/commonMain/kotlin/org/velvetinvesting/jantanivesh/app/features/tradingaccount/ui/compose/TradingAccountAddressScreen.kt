@@ -52,7 +52,7 @@ import jantanivesh.shared.generated.resources.pincode
 import jantanivesh.shared.generated.resources.state
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.sharad.velvetinvestment.utils.tradingaccount.InvestorOnboarding
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.InvestorOnboarding
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing

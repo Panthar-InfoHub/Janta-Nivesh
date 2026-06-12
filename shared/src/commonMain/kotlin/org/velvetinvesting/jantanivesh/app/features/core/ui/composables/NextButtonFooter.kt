@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun NextButtonFooter(onClick: () -> Unit, pv: PaddingValues, value: String = "Next", enabled: Boolean=true, loading: Boolean=false) {
+fun NextButtonFooter(onClick: () -> Unit, pv: PaddingValues = PaddingValues(), value: String = "Next", enabled: Boolean=true, loading: Boolean=false) {
     Box(
         modifier = Modifier.fillMaxWidth()
             .shadow(elevation = 28.dp)

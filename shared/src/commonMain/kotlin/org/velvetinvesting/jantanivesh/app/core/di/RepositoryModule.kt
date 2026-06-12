@@ -15,6 +15,8 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.data.remote.repos
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.repository.OnboardingRepo
 import org.velvetinvesting.jantanivesh.app.features.kyc.data.repository.MFKYCRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.repository.MFKYCRepository
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.repository.MutualFundRepo
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.repository.MutualFundRepository
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.data.repository.TradingAccountRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.repository.TradingAccountRepo
 
@@ -27,4 +29,5 @@ val repositoryModule = module {
     single<MFKYCRepository> { MFKYCRepoImpl(get()) }
     single<UserDataRepo> { UserDataRepoImpl(get()) }
     single<TradingAccountRepo> { TradingAccountRepoImpl(get()) }
+    single<MutualFundRepository> { MutualFundRepo(get()) }
 }

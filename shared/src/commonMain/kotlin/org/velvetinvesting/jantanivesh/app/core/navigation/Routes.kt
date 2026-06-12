@@ -70,4 +70,58 @@ sealed interface Route {
     data object TradingAccountGuardiansPANDetails: Route
     @Serializable
     data object TradingAccountSuccess: Route
+
+    @Serializable
+    data object CategoryMutualFund : Route
+
+    @Serializable
+    data class MutualFundSearchResult(val search: String = "", val fundCategory: String? = null) : Route
+
+    @Serializable
+    data class MutualFundDetails(val id: String, val folioId: String? = null) : Route
+
+    @Serializable
+    data object CartScreen : Route
+
+    @Serializable
+    data object MutualFundTypeSelectionScreen : Route
+
+    @Serializable
+    data class BundleResultScreen(val bundleKey: String) : Route
+
+    @Serializable
+    data object AllBundleScreen : Route
+
+    @Serializable
+    data object ExistingFundScreen : Route
+
+    @Serializable
+    data object ExistingFundLumpSumScreen : Route
+
+    @Serializable
+    data class FolioFundScreen(val folioId: String) : Route
+
+    @Serializable
+    data class SIPPortfolioDetails(
+        val id: Int,
+        val title: String,
+        val category: String,
+        val amount: Double,
+        val isSip: Boolean,
+        val startDate: String,
+        val returnPercentage: String,
+        val returnAmount: Int,
+        val xirr: String,
+        val currentNav: Double,
+        val avgNav: Double,
+        val folio: String,
+        val balanceUnits: Double,
+        val img_url: String? = ""
+    ) : Route
+
+    @Serializable
+    data class SIPCancellationScreen(val id: String) : Route
+
+    @Serializable
+    data class CancelSIPReason(val id: String) : Route
 }

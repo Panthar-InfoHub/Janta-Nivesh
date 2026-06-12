@@ -39,7 +39,7 @@ import jantanivesh.shared.generated.resources.info_filled_icon
 import jantanivesh.shared.generated.resources.info_icon
 import jantanivesh.shared.generated.resources.receipt_icon
 import org.jetbrains.compose.resources.painterResource
-import org.sharad.velvetinvestment.utils.tradingaccount.GuardianRelation
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.GuardianRelation
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
