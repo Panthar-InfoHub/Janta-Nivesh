@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels
+package org.velvetinvesting.jantanivesh.app.features.fd.ui.unused
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

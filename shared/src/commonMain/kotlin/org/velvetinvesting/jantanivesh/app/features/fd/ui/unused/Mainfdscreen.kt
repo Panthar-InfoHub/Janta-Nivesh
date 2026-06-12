@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.fd.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.fd.ui.unused
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,8 +51,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextF
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldStyle
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
-import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FixedDepositsEvent
-import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FixedDepositsUiState
 
 @Composable
 fun FixedDepositsScreen(
