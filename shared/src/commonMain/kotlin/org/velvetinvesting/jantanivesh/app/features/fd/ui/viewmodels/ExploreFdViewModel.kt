@@ -32,7 +32,8 @@ data class ExploreFdUiState(
     val errorMessage: String? = null,
     val filterState: InvestmentFilter = createInitialFDFilters(),
     val selectedFilterLabel: String = "All FDs",
-    val showFilterScreen: Boolean = false
+    val showFilterScreen: Boolean = false,
+    val hasNextPage: Boolean = false,
 )
 
 sealed interface ExploreFdEvent {
@@ -64,7 +65,6 @@ class ExploreFdViewModel(
     val effect = _effect.receiveAsFlow()
 
     private var currentPage = 1
-    private var hasNextPage = true
 
     init {
         loadFunds()
@@ -116,7 +116,6 @@ class ExploreFdViewModel(
             )
         }
         currentPage = 1
-        hasNextPage = true
         loadFunds()
     }
 
@@ -128,7 +127,6 @@ class ExploreFdViewModel(
             )
         }
         currentPage = 1
-        hasNextPage = true
         loadFunds()
     }
 
@@ -148,13 +146,13 @@ class ExploreFdViewModel(
             )
                 .onSuccess { data ->
                     currentPage = data.page
-                    hasNextPage = data.hasNextPage
                     _uiState.update { 
                         it.copy(
                             fundsList = data.items,
                             totalFundsCount = data.totalItems.toString(),
                             isLoading = false,
-                            errorMessage = null
+                            errorMessage = null,
+                            hasNextPage = data.hasNextPage
                         ) 
                     }
                 }
@@ -170,7 +168,7 @@ class ExploreFdViewModel(
     }
 
     private fun loadNext() {
-        if (!hasNextPage || _uiState.value.isLoadingNext) return
+        if (!_uiState.value.hasNextPage || _uiState.value.isLoadingNext) return
 
         _uiState.update { it.copy(isLoadingNext = true) }
         viewModelScope.launch {
@@ -185,11 +183,11 @@ class ExploreFdViewModel(
             )
                 .onSuccess { data ->
                     currentPage = data.page
-                    hasNextPage = data.hasNextPage
-                    _uiState.update { 
+                    _uiState.update {
                         it.copy(
                             fundsList = it.fundsList + data.items,
-                            isLoadingNext = false
+                            isLoadingNext = false,
+                            hasNextPage = data.hasNextPage
                         ) 
                     }
                 }

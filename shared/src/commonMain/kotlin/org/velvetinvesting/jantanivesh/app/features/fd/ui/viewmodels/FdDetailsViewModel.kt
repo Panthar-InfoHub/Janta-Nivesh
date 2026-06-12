@@ -14,15 +14,28 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.calculateMaturity
+
+data class FDTenureUiModel(
+    val id: String,
+    val tenureLabel: String,
+    val tenureDays: Int,
+    val interestRate: Double,
+    val annualYield: Double,
+    val isDefault: Boolean,
+    val payoutFrequency: PayoutType,
+    val maturityAmount: Long
+)
 
 data class FdDetailsUiState(
     val details: FDDetailsDomain? = null,
+    val calculatedTenures: List<FDTenureUiModel> = emptyList(),
     val selectedPayoutMode: PayoutType? = null,
     val frequencies: List<PayoutType> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val activeSheet: FDModalType? = null,
-    val isInvestmentEditable: Boolean = false
+    val investInput: String = "",
 )
 
 enum class FDModalType {
@@ -74,18 +87,22 @@ class FdDetailsViewModel(
                 }
             }
             FdDetailsEvent.OnEditAmountClicked -> {
-                _uiState.update { it.copy(activeSheet = FDModalType.INVEST) }
+//                _uiState.update { it.copy(activeSheet = FDModalType.INVEST) }
             }
             FdDetailsEvent.OnPayoutTypeClicked -> {
-                _uiState.update { it.copy(activeSheet = FDModalType.PAYOUT) }
+//                _uiState.update { it.copy(activeSheet = FDModalType.PAYOUT) }
             }
             FdDetailsEvent.OnApplicantCategoryClicked -> {
-                _uiState.update { it.copy(activeSheet = FDModalType.APPLICABLE) }
+//                _uiState.update { it.copy(activeSheet = FDModalType.APPLICABLE) }
             }
             is FdDetailsEvent.OnUpdateInvest -> {
-                val amountLong = event.amount.toLongOrNull()
+                val cleanAmount = event.amount.filter { it.isDigit() }
+                _uiState.update { it.copy(investInput = cleanAmount) }
+                val amountLong = cleanAmount.toLongOrNull()
                 if (amountLong != null) {
                     updateInvest(amountLong)
+                } else if (cleanAmount.isEmpty()) {
+                    updateInvest(0L)
                 }
             }
             is FdDetailsEvent.OnUpdatePayout -> updateInterestPayout(event.payout)
@@ -106,18 +123,21 @@ class FdDetailsViewModel(
 
     private fun updateInvest(amount: Long) {
         _uiState.update { state ->
+            val updatedDetails = state.details?.copy(invest = amount)
             state.copy(
-                details = state.details?.copy(invest = amount),
-                activeSheet = null
+                details = updatedDetails,
+                calculatedTenures = calculateTenureReturns(updatedDetails, state.selectedPayoutMode)
             )
         }
     }
 
     private fun updateInterestPayout(payout: PayoutType) {
         _uiState.update { state ->
+            val updatedDetails = state.details?.copy(selectedPayout = payout)
             state.copy(
-                details = state.details?.copy(selectedPayout = payout),
-                activeSheet = null
+                details = updatedDetails,
+                selectedPayoutMode = payout,
+                calculatedTenures = calculateTenureReturns(updatedDetails, payout)
             )
         }
     }
@@ -126,7 +146,33 @@ class FdDetailsViewModel(
         _uiState.update { state ->
             state.copy(
                 details = state.details?.copy(applicable = applicable),
-                activeSheet = null
+            )
+        }
+    }
+
+    private fun calculateTenureReturns(
+        details: FDDetailsDomain?,
+        payoutType: PayoutType?
+    ): List<FDTenureUiModel> {
+        if (details == null) return emptyList()
+        val currentPayout = payoutType ?: details.selectedPayout ?: PayoutType.Cumulative
+
+        return details.interestRates.map { tenure ->
+            val maturity = calculateMaturity(
+                principal = details.invest,
+                rate = tenure.interestRate,
+                days = tenure.tenureDays,
+                frequency = currentPayout
+            )
+            FDTenureUiModel(
+                id = tenure.id,
+                tenureLabel = tenure.tenureLabel,
+                tenureDays = tenure.tenureDays,
+                interestRate = tenure.interestRate,
+                annualYield = tenure.annualYield,
+                isDefault = tenure.isDefault,
+                payoutFrequency = tenure.payoutFrequency,
+                maturityAmount = maturity.toLong()
             )
         }
     }
@@ -139,6 +185,10 @@ class FdDetailsViewModel(
                     _uiState.update {
                         it.copy(
                             details = data,
+                            calculatedTenures = calculateTenureReturns(data, data.selectedPayout),
+                            selectedPayoutMode = data.selectedPayout,
+                            frequencies = data.payoutOptions,
+                            investInput = data.invest.toString(),
                             isLoading = false,
                             errorMessage = null
                         )

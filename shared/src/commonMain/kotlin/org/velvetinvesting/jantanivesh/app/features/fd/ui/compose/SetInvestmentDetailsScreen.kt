@@ -48,10 +48,14 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedTenureChipColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.core.utils.filterDigits
+import org.velvetinvesting.jantanivesh.app.core.utils.math.toMonthsFormatKmp
+import org.velvetinvesting.jantanivesh.app.core.utils.math.toYearsFormatKmp
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsUiState
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
@@ -92,8 +96,7 @@ fun SetInvestmentDetailsScreen(
         BankNameCard(
             bankName = details.bankName,
             bankLogoUrl = details.bankLogo,
-            invType = "Fixed Deposit",
-            insuredText = "DICGC INSURED",
+            insuredText = details.keyFeatures.firstOrNull()?.title ?: "",
             tags = details.tags
         )
 
@@ -143,12 +146,13 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 private fun BankNameCard(
     bankName: String,
     bankLogoUrl: String,
-    invType: String,
+    invType: String = "Fixed Deposit",
     insuredText: String,
     tags: List<String>
 ) {
     Box(
         modifier = Modifier
+            .genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .fillMaxWidth()
             .clip(RoundedCornerShape(Spacing.dp12))
             .background(White)
@@ -230,6 +234,7 @@ private fun BankNameCard(
 fun InvestmentCard(amount: String, onAmountChange: (String) -> Unit) {
     Box(
         modifier = Modifier
+            .genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .fillMaxWidth()
             .clip(RoundedCornerShape(Spacing.dp12))
             .background(White)
@@ -237,19 +242,19 @@ fun InvestmentCard(amount: String, onAmountChange: (String) -> Unit) {
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp16)) {
             Text(
-                "Invest",
+                "Investment Amount",
                 style = MaterialTheme.typography.labelLarge
             )
 
             AppTextField(
                 value = amount,
-                onValueChange = onAmountChange,
+                onValueChange = { onAmountChange(it.filterDigits()) },
                 modifier = Modifier.fillMaxWidth(),
                 style = AppTextFieldDefaults.style(
                     textStyle = MaterialTheme.typography.headlineMedium,
                     unfocusedBorderColor = SelectedBoxBorder
                 ),
-                leadingIcon = {
+                prefix = {
                     Text(
                         "₹ ",
                         style = MaterialTheme.typography.headlineMedium
@@ -259,24 +264,25 @@ fun InvestmentCard(amount: String, onAmountChange: (String) -> Unit) {
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
+                modifier = Modifier.horizontalScroll(rememberScrollState())
             ) {
                 AmountChip(
-                    amount = "10K",
+                    amount = "10,000",
                     onClick = {
                         onAmountChange(
                             (amount.toLongOrNull() ?: 0L).plus(10000).toString()
                         )
                     })
                 AmountChip(
-                    amount = "50K",
+                    amount = "50,000",
                     onClick = {
                         onAmountChange(
                             (amount.toLongOrNull() ?: 0L).plus(50000).toString()
                         )
                     })
                 AmountChip(
-                    amount = "1L",
+                    amount = "1,00,000",
                     onClick = {
                         onAmountChange(
                             (amount.toLongOrNull() ?: 0L).plus(100000).toString()
@@ -317,6 +323,7 @@ fun TenureCard(
 ) {
     Box(
         modifier = Modifier
+            .genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .fillMaxWidth()
             .clip(RoundedCornerShape(Spacing.dp12))
             .background(SelectTenureCardColor)
@@ -325,13 +332,13 @@ fun TenureCard(
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp4), verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Tenure options",
+                    text = "Select Tenure",
                     style = MaterialTheme.typography.labelLarge
                 )
                 Text(
-                    text = "Days",
+                    text = "(Months)",
                     style = MaterialTheme.typography.labelSmall,
                     color = GreyText
                 )
@@ -343,7 +350,7 @@ fun TenureCard(
             ) {
                 tenures.forEach { tenure ->
                     TenureChip(
-                        months = tenure.tenureLabel,
+                        months = tenure.tenureDays.toMonthsFormatKmp(),
                         interestRate = "${tenure.interestRate}%",
                         isSelected = selectedTenure?.id == tenure.id
                     ) { onTenureChange(tenure) }
@@ -398,6 +405,7 @@ fun InterestPayoutCard(
 ) {
     Box(
         modifier = Modifier
+            .genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .fillMaxWidth()
             .clip(RoundedCornerShape(Spacing.dp12))
             .background(White)
@@ -407,7 +415,7 @@ fun InterestPayoutCard(
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
         ) {
             Text(
-                text = "Interest payout",
+                text = "Interest Payout Mode",
                 style = MaterialTheme.typography.labelLarge
             )
             DropDownSelector(
@@ -443,7 +451,7 @@ fun ProjectedReturnsCard(
             verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
         ) {
             Text(
-                text = "Your return",
+                text = "Projected Returns",
                 style = MaterialTheme.typography.labelLarge,
             )
 

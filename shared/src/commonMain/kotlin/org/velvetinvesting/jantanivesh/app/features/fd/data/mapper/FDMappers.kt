@@ -64,7 +64,7 @@ fun FDDetailsDto.toDomain(): FDDetailsDomain {
         id = `data`.id,
         invest = `data`.min_deposit.toLongOrNull() ?: 1000,
         selectedPayout = selectedPayout,
-        applicable = `data`.interest_rates.firstOrNull()?.customer_type ?: "",
+        applicable = `data`.interest_rates.firstOrNull()?.customer_type?.toReadableCustomerType() ?: "",
 
         // Header
         bankName = `data`.issuer.display_name,
@@ -111,7 +111,7 @@ fun FDDetailsDto.toDomain(): FDDetailsDomain {
             KeyFeatureDomain(
                 title = it.title,
                 description = it.description,
-                iconUrl = it.icon_url
+                iconUrl = it.icon
             )
         },
 

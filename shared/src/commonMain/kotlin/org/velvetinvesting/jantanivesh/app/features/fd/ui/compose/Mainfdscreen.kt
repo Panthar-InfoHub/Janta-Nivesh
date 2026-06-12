@@ -30,30 +30,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.active_count
 import jantanivesh.shared.generated.resources.arrow_front_icon
-import jantanivesh.shared.generated.resources.bank_logo_desc
-import jantanivesh.shared.generated.resources.best_rate
-import jantanivesh.shared.generated.resources.explore_fds
-import jantanivesh.shared.generated.resources.explore_more_desc
 import jantanivesh.shared.generated.resources.fd_completion_icon
 import jantanivesh.shared.generated.resources.filter_icon
-import jantanivesh.shared.generated.resources.filter_icon_desc
-import jantanivesh.shared.generated.resources.fixed_deposits
-import jantanivesh.shared.generated.resources.go_back_desc
-import jantanivesh.shared.generated.resources.interest_rate
-import jantanivesh.shared.generated.resources.invested
-import jantanivesh.shared.generated.resources.loading
-import jantanivesh.shared.generated.resources.min_with_value
-import jantanivesh.shared.generated.resources.not_available
-import jantanivesh.shared.generated.resources.per_annum
-import jantanivesh.shared.generated.resources.search_fds
 import jantanivesh.shared.generated.resources.search_icon
-import jantanivesh.shared.generated.resources.search_icon_desc
-import jantanivesh.shared.generated.resources.tenure
-import jantanivesh.shared.generated.resources.your_fds
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -89,11 +70,11 @@ fun FixedDepositsScreen(
             value = state.searchQuery,
             onValueChange = { onEvent(FixedDepositsEvent.OnSearchQueryChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(Res.string.search_fds), style = MaterialTheme.typography.labelMedium) },
+            placeholder = { Text("Search FDs...", style = MaterialTheme.typography.labelMedium) },
             leadingIcon = {
                 Icon(
                     painterResource(Res.drawable.search_icon),
-                    contentDescription = stringResource(Res.string.search_icon_desc),
+                    contentDescription = "Search",
                     modifier = Modifier.size(Spacing.dp16),
                     tint = GreyText
                 )
@@ -101,7 +82,7 @@ fun FixedDepositsScreen(
             trailingIcon = {
                 Icon(
                     painterResource(Res.drawable.filter_icon),
-                    contentDescription = stringResource(Res.string.filter_icon_desc),
+                    contentDescription = "Filter",
                     modifier = Modifier.clickable(onClick = { onEvent(FixedDepositsEvent.OnFilterMenuClicked) }),
                     tint = Primary
 
@@ -132,7 +113,7 @@ fun FixedDepositsScreen(
                     .padding(Spacing.dp16)
             ) {
                 Text(
-                    text = stringResource(Res.string.best_rate),
+                    text = "BEST RATE",
                     style = MaterialTheme.typography.titleSmall,
                     color = GreyText
                 )
@@ -145,7 +126,7 @@ fun FixedDepositsScreen(
                         color = SelectedBoxBorder
                     )
                     Text(
-                        text = " " + stringResource(Res.string.per_annum),
+                        text = " p.a.",
                         style = MaterialTheme.typography.titleSmall,
                         color = GreyText,
                     )
@@ -166,7 +147,7 @@ fun FixedDepositsScreen(
                     .padding(Spacing.dp14)
             ) {
                 Text(
-                    text = stringResource(Res.string.your_fds),
+                    text = "YOUR FDS",
                     style = MaterialTheme.typography.titleSmall,
                     color = GreyText
                 )
@@ -179,13 +160,13 @@ fun FixedDepositsScreen(
                         color = Primary
                     )
                     Text(
-                        text = " " + stringResource(Res.string.active_count),
+                        text = " Active",
                         style = MaterialTheme.typography.titleSmall,
                         color = GreyText,
                     )
                 }
                 Text(
-                    text = "${state.totalInvested} " + stringResource(Res.string.invested),
+                    text = "${state.totalInvested} Invested",
                     style = MaterialTheme.typography.titleMedium,
                     color = GreyText
                 )
@@ -199,12 +180,12 @@ fun FixedDepositsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(Res.string.explore_fds),
+                text = "Explore FDs",
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             )
             Icon(
                 painter = painterResource(Res.drawable.arrow_front_icon),
-                contentDescription = stringResource(Res.string.explore_more_desc),
+                contentDescription = "Explore More",
                 tint = SelectedBoxBorder,
                 modifier = Modifier
                     .padding(end = Spacing.dp8) // Couldn't figure out an easier way
@@ -216,7 +197,7 @@ fun FixedDepositsScreen(
 
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text(stringResource(Res.string.loading))
+                Text("Loading...")
             }
         }
 
@@ -245,7 +226,7 @@ fun TopAppBar(onEvent: (FixedDepositsEvent) -> Unit){
         AppBackButton(onClick = { onEvent(FixedDepositsEvent.OnBackClicked) })
 
         Text(
-            text = stringResource(Res.string.fixed_deposits),
+            text = "Fixed Deposits",
             style = MaterialTheme.typography.headlineMedium,
             color = Primary
         )
@@ -258,7 +239,7 @@ fun TopAppBar(onEvent: (FixedDepositsEvent) -> Unit){
         ) {
             Icon(
                 painter = painterResource(Res.drawable.fd_completion_icon),
-                contentDescription = stringResource(Res.string.go_back_desc),
+                contentDescription = "Go Back",
                 tint = SelectedBoxBorder,
                 modifier = Modifier.size(Spacing.dp20)
             )
@@ -293,7 +274,7 @@ private fun FdListItem(
                 ) {
                     if (item.bankLogoUrl.isNotEmpty()) {
                         AsyncImage(
-                            model = item.bankLogoUrl, contentDescription = stringResource(Res.string.bank_logo_desc),
+                            model = item.bankLogoUrl, contentDescription = "Bank Logo",
                             modifier = Modifier
                                 .size(Spacing.dp40)
                                 .clip(RoundedCornerShape(Spacing.dp58))
@@ -314,7 +295,7 @@ private fun FdListItem(
                         style = MaterialTheme.typography.labelLarge,
                     )
                     Text(
-                        text = stringResource(Res.string.min_with_value, item.minDeposit),
+                        text = "Min ₹${item.minDeposit}",
                         style = MaterialTheme.typography.titleSmall,
                         color = GreyText
                     )
@@ -328,7 +309,7 @@ private fun FdListItem(
             ) {
                 Column {
                     Text(
-                        text = stringResource(Res.string.interest_rate),
+                        text = "Interest",
                         style = MaterialTheme.typography.titleSmall,
                         color = GreyText
                     )
@@ -339,7 +320,7 @@ private fun FdListItem(
                             color = SelectedBoxBorder
                         )
                         Text(
-                            text = " " + stringResource(Res.string.per_annum),
+                            text = " p.a.",
                             style = MaterialTheme.typography.labelSmall,
                             color = GreyText,
                         )
@@ -348,12 +329,12 @@ private fun FdListItem(
 
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = stringResource(Res.string.tenure),
+                        text = "Tenure",
                         style = MaterialTheme.typography.titleSmall,
                         color = GreyText
                     )
                     Text(
-                        text = item.tenures.firstOrNull()?.tenureDays?.toString() ?: stringResource(Res.string.not_available),
+                        text = item.tenures.firstOrNull()?.tenureDays?.toString() ?: "N/A",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     )
                 }

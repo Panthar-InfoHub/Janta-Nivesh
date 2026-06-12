@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,10 +29,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -37,43 +46,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.annualized_disclaimer
-import jantanivesh.shared.generated.resources.applicable_for
-import jantanivesh.shared.generated.resources.bank_logo_desc
 import jantanivesh.shared.generated.resources.dropdown_outlined_icon
-import jantanivesh.shared.generated.resources.edit_amount_desc
 import jantanivesh.shared.generated.resources.edit_icon
-import jantanivesh.shared.generated.resources.faqs
 import jantanivesh.shared.generated.resources.ic_feature_compounding
-import jantanivesh.shared.generated.resources.interest_payout
-import jantanivesh.shared.generated.resources.interest_rate
-import jantanivesh.shared.generated.resources.interest_with_asterisk
-import jantanivesh.shared.generated.resources.invest_amount_label
-import jantanivesh.shared.generated.resources.invest_now
-import jantanivesh.shared.generated.resources.key_features
-import jantanivesh.shared.generated.resources.loading
-import jantanivesh.shared.generated.resources.maturity_payout_disclaimer
-import jantanivesh.shared.generated.resources.max_return
-import jantanivesh.shared.generated.resources.min_amt
-import jantanivesh.shared.generated.resources.per_annum
-import jantanivesh.shared.generated.resources.popular
-import jantanivesh.shared.generated.resources.select_desc
 import jantanivesh.shared.generated.resources.share_icon
-import jantanivesh.shared.generated.resources.share_icon_desc
-import jantanivesh.shared.generated.resources.something_went_wrong
-import jantanivesh.shared.generated.resources.tenure
-import jantanivesh.shared.generated.resources.tenure_options
-import jantanivesh.shared.generated.resources.you_receive_with_asterisk
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.*
-import org.velvetinvesting.jantanivesh.app.core.utils.math.simpleInterestEarned
+import org.velvetinvesting.jantanivesh.app.core.utils.filterDigits
+import org.velvetinvesting.jantanivesh.app.core.utils.math.toYearsFormatKmp
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.*
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FDModalType
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FDTenureUiModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsUiState
 
@@ -87,9 +75,9 @@ fun FdDetailsScreen(
     if (details == null) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             if (state.isLoading) {
-                Text(stringResource(Res.string.loading))
+                Text("Loading")
             } else {
-                Text(state.errorMessage ?: stringResource(Res.string.something_went_wrong))
+                Text(state.errorMessage ?: "Something went wrong")
             }
         }
         return
@@ -106,7 +94,7 @@ fun FdDetailsScreen(
                     .padding(Spacing.dp16)
             ) {
                 AppButton(
-                    text = stringResource(Res.string.invest_now),
+                    text = "Invest Now",
                     onClick = { onEvent(FdDetailsEvent.OnInvestNowClicked) },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -135,21 +123,20 @@ fun FdDetailsScreen(
             // Tenure Options Section
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                 Text(
-                    text = stringResource(Res.string.tenure_options),
+                    text = "Tenure options",
                     style = MaterialTheme.typography.headlineSmall.copy(fontSize = 16.sp),
                     color = Primary
                 )
 
                 TenureOptionsCard(
-                    investAmount = details.invest,
-                    options = details.interestRates,
+                    options = state.calculatedTenures,
                     onOptionSelected = { onEvent(FdDetailsEvent.OnTenureSelected(it)) }
                 )
 
                 // Disclaimers
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
-                        text = stringResource(Res.string.annualized_disclaimer),
+                        text = "* Interest rates are annualized.",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 10.sp,
                             lineHeight = 15.sp
@@ -157,7 +144,7 @@ fun FdDetailsScreen(
                         color = GreyText
                     )
                     Text(
-                        text = stringResource(Res.string.maturity_payout_disclaimer),
+                        text = "** Calculated based on '${state.selectedPayoutMode?.displayName}' payout selection.",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 10.sp,
                             lineHeight = 15.sp
@@ -171,7 +158,7 @@ fun FdDetailsScreen(
             if (details.keyFeatures.isNotEmpty()) {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                     Text(
-                        text = stringResource(Res.string.key_features),
+                        text = "Key Features",
                         style = MaterialTheme.typography.labelLarge,
                         color = Primary
                     )
@@ -182,11 +169,11 @@ fun FdDetailsScreen(
                 }
             }
 
-            // FAQs Section
+            // FAQs Section TODO can be removed
             if (details.faqs.isNotEmpty()) {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                     Text(
-                        text = stringResource(Res.string.faqs),
+                        text = "FAQs",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = Primary
                     )
@@ -195,6 +182,7 @@ fun FdDetailsScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(Spacing.dp16))
         }
     }
 }
@@ -214,7 +202,7 @@ private fun TopBar(onBack: () -> Unit, onShare: () -> Unit) {
         ) {
             Icon(
                 painter = painterResource(Res.drawable.share_icon),
-                contentDescription = stringResource(Res.string.share_icon_desc),
+                contentDescription = "Share",
                 tint = SelectedBoxBorder,
                 modifier = Modifier.size(Spacing.dp20)
             )
@@ -246,10 +234,11 @@ private fun HeaderCard(details: FDDetailsDomain) {
                 ) {
                     if (details.bankLogo.isNotEmpty()) {
                         AsyncImage(
-                            model = details.bankLogo, contentDescription = stringResource(Res.string.bank_logo_desc),
+                            model = details.bankLogo,
+                            contentDescription = "Bank Logo",
                             modifier = Modifier
                                 .size(Spacing.dp40)
-                                .clip(RoundedCornerShape(Spacing.dp58))
+                                .clip(CircleShape)
                                 .background(SelectTenureCardColor)
                         )
                     } else {
@@ -261,23 +250,20 @@ private fun HeaderCard(details: FDDetailsDomain) {
                         )
                     }
                 }
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
                         text = details.bankName,
                         style = MaterialTheme.typography.labelLarge,
                         color = Black
                     )
-                    Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
-                        TagChip(
-                            text = stringResource(Res.string.popular),
-                            bgColor = TagPopularBg,
-                            textColor = Black
-                        )
-                        TagChip(
-                            text = details.riskLabel.label,
-                            bgColor = SelectedBoxColor,
-                            textColor = Primary
-                        )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+                        items(details.tags) { tag ->
+                            TagChip(
+                                text = tag,
+                                bgColor = TagPopularBg,
+                                textColor = Black
+                            )
+                        }
                     }
                 }
             }
@@ -288,21 +274,22 @@ private fun HeaderCard(details: FDDetailsDomain) {
                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
             ) {
                 MetricBox(
-                    title = stringResource(Res.string.interest_rate).uppercase(),
+                    title = "INTEREST",
                     value = "${details.maxInterestRate}%",
-                    suffix = " " + stringResource(Res.string.per_annum),
+                    suffix = " p.a.",
                     modifier = Modifier.weight(1f),
                     valueColor = SelectedBoxBorder
                 )
                 val defaultTenure =
-                    details.interestRates.firstOrNull { it.isDefault }?.tenureLabel ?: "3Y"
+                    details.interestRates.firstOrNull { it.isDefault }?.tenureDays?.toYearsFormatKmp()
+                        .toString()
                 MetricBox(
-                    title = stringResource(Res.string.tenure).uppercase(),
+                    title = "TENURE",
                     value = defaultTenure,
                     modifier = Modifier.weight(1f)
                 )
                 MetricBox(
-                    title = stringResource(Res.string.min_amt).uppercase(),
+                    title = "MIN. AMT",
                     value = "₹${details.minDeposit}",
                     modifier = Modifier.weight(1f)
                 )
@@ -359,48 +346,59 @@ private fun InvestmentConfigCard(
     ) {
         Column {
             // Invest Amount
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Spacing.dp16),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
-                    Text(
-                        text = stringResource(Res.string.invest_amount_label),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontSize = 11.sp,
-                            lineHeight = 14.sp
-                        ),
-                        color = GreyText
-                    )
-                    AppTextField(
-                        value = "${data.details?.invest}",
-                        onValueChange = {onEvent(FdDetailsEvent.OnUpdateInvest(it)) },
-                        readOnly = (data.activeSheet != FDModalType.INVEST),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        prefix = { Text("₹ ", style =MaterialTheme.typography.headlineSmall) }
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .size(Spacing.dp32)
-                        .clip(CircleShape)
-                        .background(HighlightRowBg)
-                        .clickable { onEvent(FdDetailsEvent.OnEditAmountClicked) },
-                    contentAlignment = Alignment.Center
+                Text(
+                    text = "Invest",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 11.sp,
+                        lineHeight = 14.sp
+                    ),
+                    color = GreyText
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.edit_icon),
-                        contentDescription = stringResource(Res.string.edit_amount_desc),
-                        tint = Primary,
-                        modifier = Modifier.size(Spacing.dp14)
+                    val focusRequester = remember { FocusRequester() }
+                    val keyboardController = LocalSoftwareKeyboardController.current
+                    AppTextField(
+                        value = data.investInput,
+                        onValueChange = { onEvent(FdDetailsEvent.OnUpdateInvest(it.filterDigits())) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        prefix = { Text("₹ ", style = MaterialTheme.typography.headlineSmall) },
+                        trailingIcon = {
+                            Box(
+                                modifier = Modifier
+                                    .size(Spacing.dp32)
+                                    .clip(CircleShape)
+                                    .background(HighlightRowBg)
+                                    .clickable {
+                                        focusRequester.requestFocus()
+                                        keyboardController?.show()
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.edit_icon),
+                                    contentDescription = "Edit Amount",
+                                    tint = Primary,
+                                    modifier = Modifier.size(Spacing.dp14)
+                                )
+                            }
+                        },
+                        modifier = Modifier.weight(1f).focusRequester(focusRequester),
+                        style = AppTextFieldDefaults.style(textStyle = MaterialTheme.typography.headlineSmall)
                     )
+
                 }
             }
 
-            HorizontalDivider(color = GreyBoxDivider)
+            HorizontalDivider(color = GreyBoxDivider, modifier = Modifier.padding(horizontal = Spacing.dp16))
 
             // Interest Payout
             Row(
@@ -413,7 +411,7 @@ private fun InvestmentConfigCard(
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
-                        text = stringResource(Res.string.interest_payout),
+                        text = "Interest payout",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 11.sp,
                             lineHeight = 14.sp
@@ -436,13 +434,13 @@ private fun InvestmentConfigCard(
                 }
                 Icon(
                     painter = painterResource(Res.drawable.dropdown_outlined_icon),
-                    contentDescription = stringResource(Res.string.select_desc),
+                    contentDescription = "Select",
                     tint = GreyText,
                     modifier = Modifier.size(Spacing.dp12)
                 )
             }
 
-            HorizontalDivider(color = GreyBoxDivider)
+            HorizontalDivider(color = GreyBoxDivider, modifier = Modifier.padding(horizontal = Spacing.dp16))
 
             // Applicable For
             Row(
@@ -455,7 +453,7 @@ private fun InvestmentConfigCard(
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                     Text(
-                        text = stringResource(Res.string.applicable_for),
+                        text = "Applicable for",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 11.sp,
                             lineHeight = 14.sp
@@ -483,8 +481,7 @@ private fun InvestmentConfigCard(
 
 @Composable
 private fun TenureOptionsCard(
-    investAmount: Long,
-    options: List<FDTenureDomain>,
+    options: List<FDTenureUiModel>,
     onOptionSelected: (String) -> Unit
 ) {
     Box(
@@ -497,10 +494,11 @@ private fun TenureOptionsCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(Color(0x80F4FFef))
                     .padding(horizontal = Spacing.dp16, vertical = Spacing.dp16),
             ) {
                 Text(
-                    text = stringResource(Res.string.tenure),
+                    text = "Tenure",
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 11.sp,
                         lineHeight = 14.sp
@@ -509,7 +507,7 @@ private fun TenureOptionsCard(
                     modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = stringResource(Res.string.interest_with_asterisk),
+                    text = "Interest*",
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 11.sp,
                         lineHeight = 14.sp
@@ -519,7 +517,7 @@ private fun TenureOptionsCard(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = stringResource(Res.string.you_receive_with_asterisk),
+                    text = "You receive**",
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 11.sp,
                         lineHeight = 14.sp
@@ -566,7 +564,7 @@ private fun TenureOptionsCard(
                         )
                         if (option.isDefault) {
                             TagChip(
-                                text = stringResource(Res.string.max_return),
+                                text = "MAX RETURN",
                                 bgColor = TagMaxReturnBg,
                                 textColor = TagMaxReturnText
                             )
@@ -582,7 +580,7 @@ private fun TenureOptionsCard(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "₹ ${investAmount.simpleInterestEarned(option.annualYield, option.tenureDays)}", // TODO turn percentage to return amount
+                        text = "₹ ${option.maturityAmount}",
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = if (option.isDefault) FontWeight.Bold else FontWeight.Normal
                         ),
@@ -615,16 +613,18 @@ private fun FeatureCard(feature: KeyFeatureDomain) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(Spacing.dp32)
-                    .clip(RoundedCornerShape(Spacing.dp8))
+                    .size(Spacing.dp40)
+                    .clip(CircleShape)
                     .background(BackgroundFill),
                 contentAlignment = Alignment.Center
             ) {
                 if (!feature.iconUrl.isNullOrEmpty()) {
                     AsyncImage(
                         model = feature.iconUrl,
-                        contentDescription = feature.title,
-                        modifier = Modifier.size(Spacing.dp20)
+                        contentDescription = "Bank Logo",
+                        modifier = Modifier
+                            .size(Spacing.dp40),
+                        contentScale = ContentScale.Crop
                     )
                 } else {
                     Icon(
@@ -700,7 +700,7 @@ private fun TagChip(
 }
 
 // --- PREVIEW ---
-@Preview(showBackground = true, heightDp = 1500)
+@Preview(showBackground = true, heightDp = 1500, widthDp = 360)
 @Composable
 fun FdDetailsScreenPreview() {
     JantaNiveshTheme {

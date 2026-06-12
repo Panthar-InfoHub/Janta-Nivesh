@@ -18,6 +18,8 @@ import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.networking.getUrl
 import org.velvetinvesting.jantanivesh.app.core.networking.safeRequest
+import org.velvetinvesting.jantanivesh.app.core.platform.Log
+
 class FixedDepositRepo(
     private val client: HttpClient
 ): FixedDepositRepository {

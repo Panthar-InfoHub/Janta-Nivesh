@@ -40,5 +40,5 @@ data class FaqDto(
 data class UspDto(
     val title: String = "",
     val description: String = "",
-    val icon_url: String? = null
+    val icon: String? = null
 )

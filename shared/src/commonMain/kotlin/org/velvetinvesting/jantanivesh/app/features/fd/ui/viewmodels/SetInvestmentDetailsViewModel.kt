@@ -20,6 +20,14 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDeta
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.PurchaseFDUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.calculateMaturity
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimTo
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.Padding
+import kotlinx.datetime.format.char
+import kotlinx.datetime.plus
+import kotlinx.datetime.todayIn
 
 data class SetInvestmentDetailsUiState(
     val details: FDDetailsDomain? = null,
@@ -185,7 +193,7 @@ class SetInvestmentDetailsViewModel(
                 it.copy(
                     maturityAmount = "₹0",
                     totalInterest = "₹0",
-                    interestRate = tenure?.let { "${it.interestRate}% p.a." } ?: "0% p.a.",
+                    interestRate = tenure?.let { rate -> "${rate.interestRate}% p.a." } ?: "0% p.a.",
                     maturityDate = "N/A"
                 )
             }
@@ -200,15 +208,25 @@ class SetInvestmentDetailsViewModel(
         )
 
         val totalInterest = maturityValue - principal
+        val today = kotlin.time.Clock.System.todayIn(TimeZone.currentSystemDefault())
+        val maturityDateObj = today.plus(tenure.tenureDays, DateTimeUnit.DAY)
+        val formattedDate = dateFormatter.format(maturityDateObj)
 
         _uiState.update {
             it.copy(
                 maturityAmount = "₹${maturityValue.trimTo(2)}",
                 totalInterest = "₹${totalInterest.trimTo(2)}",
                 interestRate = "${tenure.interestRate}% p.a.",
-                maturityDate = "Calculated"
+                maturityDate = formattedDate
             )
         }
+    }
+    private val dateFormatter = LocalDate.Format {
+        this@Format.day(padding = Padding.ZERO)
+        char(' ')
+        monthName(MonthNames.ENGLISH_ABBREVIATED) // e.g., "Jan", "Oct"
+        char(' ')
+        year()
     }
 
     private fun updateButtonState() {
