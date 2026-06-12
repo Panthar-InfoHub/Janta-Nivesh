@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ErrorScreen(
     errorMessage: String,
-    modifier: Modifier= Modifier,
     onRetryClick: () -> Unit,
+    modifier: Modifier= Modifier,
 ) {
     Column(
         modifier = modifier

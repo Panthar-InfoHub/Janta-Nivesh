@@ -63,9 +63,9 @@ import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.sharad.velvetinvestment.utils.tradingaccount.NominationAuthentication
-import org.sharad.velvetinvestment.utils.tradingaccount.NomineeIdentityType
-import org.sharad.velvetinvestment.utils.tradingaccount.NomineeRelationship
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.NominationAuthentication
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.NomineeIdentityType
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.NomineeRelationship
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText

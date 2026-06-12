@@ -388,3 +388,24 @@ fun formatMillisDateParts(millis: Long?, timeZone: TimeZone = TimeZone.currentSy
     val formattedDate = localDate.format(dateFormatter)
     return year to formattedDate
 }
+
+fun String.toReadableDate(): String {
+    val instant = Instant.parse(this)
+    val date = instant.toLocalDateTime(TimeZone.UTC).date
+
+    val day = date.day
+    val month = date.month.name.lowercase().replaceFirstChar { it.uppercase() }.take(3)
+    val year = date.year
+
+    return "${day.withSuffix()} $month $year"
+}
+
+fun Int.withSuffix(): String {
+    return when {
+        this % 100 in 11..13 -> "${this}th"
+        this % 10 == 1 -> "${this}st"
+        this % 10 == 2 -> "${this}nd"
+        this % 10 == 3 -> "${this}rd"
+        else -> "${this}th"
+    }
+}

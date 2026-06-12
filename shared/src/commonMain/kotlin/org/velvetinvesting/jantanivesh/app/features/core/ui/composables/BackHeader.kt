@@ -22,7 +22,7 @@ fun BackHeader(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = Spacing.dp16)
+            .padding(vertical = Spacing.dp8)
             .background(Color.White),
         contentAlignment = Alignment.CenterStart
     ) {

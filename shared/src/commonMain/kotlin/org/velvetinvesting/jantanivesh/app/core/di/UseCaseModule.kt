@@ -13,6 +13,27 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKy
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycSignatureUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginWithNumberUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.VerifyOTPUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddBundleToCartLumpsumUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddBundleToCartSipUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartLumpsumUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartSipUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.CheckSipPurchaseStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.ClearCartUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.DeleteCartItemUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetAllBundledFundsUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetBundleFundsUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetCategoryMutualFundsUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetCombinedCategoryMutualFundsUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundDetailsUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundGraphUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundSearchResultUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundTopPicksUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetUserCartUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.InitiateSipPurchaseUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.PurchaseLumpsumFundUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.PurchaseSipFundUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemFullFundUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemPartialFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.OnboardUserUseCase
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.GetTradingAccountPrefilledDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.SubmitTradingAccountFormUseCase
@@ -41,4 +62,27 @@ val useCaseModule = module {
     factory { VerifyPANUseCase(get()) }
     factory { SubmitTradingAccountFormUseCase(get()) }
     factory { TradingAccountConfirmationUseCase(get()) }
+
+    // Mutual Fund UseCases
+    factory { AddToCartSipUseCase(get()) }
+    factory { AddToCartLumpsumUseCase(get()) }
+    factory { AddBundleToCartSipUseCase(get()) }
+    factory { AddBundleToCartLumpsumUseCase(get()) }
+    factory { CheckSipPurchaseStatusUseCase(get()) }
+    factory { ClearCartUseCase(get()) }
+    factory { DeleteCartItemUseCase(get()) }
+    factory { GetAllBundledFundsUseCase(get()) }
+    factory { GetBundleFundsUseCase(get()) }
+    factory { GetCategoryMutualFundsUseCase(get()) }
+    factory { GetCombinedCategoryMutualFundsUseCase(get()) }
+    factory { GetMutualFundDetailsUseCase(get()) }
+    factory { GetMutualFundGraphUseCase(get()) }
+    factory { GetMutualFundSearchResultUseCase(get()) }
+    factory { GetMutualFundTopPicksUseCase(get()) }
+    factory { GetUserCartUseCase(get()) }
+    factory { InitiateSipPurchaseUseCase(get()) }
+    factory { PurchaseLumpsumFundUseCase(get()) }
+    factory { PurchaseSipFundUseCase(get()) }
+    factory { RedeemFullFundUseCase(get()) }
+    factory { RedeemPartialFundUseCase(get()) }
 }

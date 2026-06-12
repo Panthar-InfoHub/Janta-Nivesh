@@ -1,4 +1,4 @@
-package org.sharad.velvetinvestment.utils.tradingaccount
+package org.velvetinvesting.jantanivesh.app.utils.tradingaccount
 
 enum class YesNo(
     val code: String,

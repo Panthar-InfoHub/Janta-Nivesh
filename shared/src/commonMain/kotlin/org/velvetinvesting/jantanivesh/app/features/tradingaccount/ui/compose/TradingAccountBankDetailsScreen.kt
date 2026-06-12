@@ -39,9 +39,9 @@ import jantanivesh.shared.generated.resources.payment_mode
 import jantanivesh.shared.generated.resources.secure_icon
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.sharad.velvetinvestment.utils.tradingaccount.AccountType
-import org.sharad.velvetinvestment.utils.tradingaccount.DividendPayMode
-import org.sharad.velvetinvestment.utils.tradingaccount.YesNo
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.AccountType
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.DividendPayMode
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.YesNo
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme

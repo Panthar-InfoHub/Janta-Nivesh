@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.core.theme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -61,7 +62,7 @@ fun rememberLessPayTypography(): Typography {
             ),
             titleLarge = TextStyle(
                 fontFamily = fontFamily,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 lineHeight = 24.sp
             ),
@@ -118,3 +119,37 @@ fun rememberLessPayTypography(): Typography {
         )
     }
 }
+
+val largeTextStyle @Composable get() = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 40.sp
+)
+val titlesStyle @Composable get() = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp
+)
+val subHeadingMedium @Composable get() = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.Medium,
+    fontSize = 18.sp
+)
+val subHeading @Composable get() = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 14.sp
+)
+val tinyLabel @Composable get() = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 12.sp,
+    lineHeight = 14.sp,
+    color = Color(0xff94A3B8)
+)
+
+val buttonTextStyle @Composable get() = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp,
+)
