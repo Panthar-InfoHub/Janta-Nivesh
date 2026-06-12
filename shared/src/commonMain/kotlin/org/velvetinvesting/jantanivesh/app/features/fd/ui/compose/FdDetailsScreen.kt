@@ -5,16 +5,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,7 +54,21 @@ import jantanivesh.shared.generated.resources.edit_icon
 import jantanivesh.shared.generated.resources.ic_feature_compounding
 import jantanivesh.shared.generated.resources.share_icon
 import org.jetbrains.compose.resources.painterResource
-import org.velvetinvesting.jantanivesh.app.core.theme.*
+import org.velvetinvesting.jantanivesh.app.core.theme.BackgroundFill
+import org.velvetinvesting.jantanivesh.app.core.theme.Black
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyBoxDivider
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.HighlightRowBg
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectTenureCardColor
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.TagMaxReturnBg
+import org.velvetinvesting.jantanivesh.app.core.theme.TagMaxReturnText
+import org.velvetinvesting.jantanivesh.app.core.theme.TagPopularBg
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.filterDigits
 import org.velvetinvesting.jantanivesh.app.core.utils.math.toYearsFormatKmp
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
@@ -59,20 +76,25 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
-import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.*
-import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FDModalType
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDFaqDomain
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDTenureDomain
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.KeyFeatureDomain
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FDTenureUiModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsUiState
 
 @Composable
 fun FdDetailsScreen(
+    pv: PaddingValues,
     state: FdDetailsUiState,
     onEvent: (FdDetailsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val details = state.details
-    if (details == null) {
+    if (state.details == null) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             if (state.isLoading) {
                 Text("Loading")
@@ -82,115 +104,112 @@ fun FdDetailsScreen(
         }
         return
     }
-
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = BackgroundFill,
-        bottomBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(White)
-                    .padding(Spacing.dp16)
-            ) {
-                AppButton(
-                    text = "Invest Now",
-                    onClick = { onEvent(FdDetailsEvent.OnInvestNowClicked) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-    ) { paddingValues ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize().statusBarsPadding().padding(top = Spacing.dp8).padding(pv)
+            .padding(horizontal = Spacing.dp16),
+    ) {
+        TopBar(
+            onBack = { onEvent(FdDetailsEvent.OnBackClicked) },
+            onShare = { onEvent(FdDetailsEvent.OnShareClicked) },
+        )
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = Spacing.dp16)
-                .verticalScroll(rememberScrollState()),
+                .weight(1f),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
         ) {
-            // Top Bar
-            TopBar(
-                onBack = { onEvent(FdDetailsEvent.OnBackClicked) },
-                onShare = { onEvent(FdDetailsEvent.OnShareClicked) })
-
             // Header Card
-            HeaderCard(details = details)
-
+            item {
+                HeaderCard(details = state.details)
+            }
             // Investment Config Card
-            InvestmentConfigCard(data = state, onEvent = onEvent)
-
+            item {
+                InvestmentConfigCard(data = state, onEvent = onEvent)
+            }
             // Tenure Options Section
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
-                Text(
-                    text = "Tenure options",
-                    style = MaterialTheme.typography.headlineSmall.copy(fontSize = 16.sp),
-                    color = Primary
-                )
-
-                TenureOptionsCard(
-                    options = state.calculatedTenures,
-                    onOptionSelected = { onEvent(FdDetailsEvent.OnTenureSelected(it)) }
-                )
-
-                // Disclaimers
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                     Text(
-                        text = "* Interest rates are annualized.",
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontSize = 10.sp,
-                            lineHeight = 15.sp
-                        ),
-                        color = GreyText
+                        text = "Tenure options",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontSize = 16.sp),
+                        color = Primary
                     )
-                    Text(
-                        text = "** Calculated based on '${state.selectedPayoutMode?.displayName}' payout selection.",
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontSize = 10.sp,
-                            lineHeight = 15.sp
-                        ),
-                        color = GreyText
+
+                    TenureOptionsCard(
+                        options = state.calculatedTenures,
+                        onOptionSelected = { onEvent(FdDetailsEvent.OnTenureSelected(it)) }
                     )
+
+                    // Disclaimers
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
+                        Text(
+                            text = "* Interest rates are annualized.",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 10.sp,
+                                lineHeight = 15.sp
+                            ),
+                            color = GreyText
+                        )
+                        Text(
+                            text = "** Calculated based on '${state.selectedPayoutMode?.displayName}' payout selection.",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 10.sp,
+                                lineHeight = 15.sp
+                            ),
+                            color = GreyText
+                        )
+                    }
                 }
             }
-
             // Key Features Section
-            if (details.keyFeatures.isNotEmpty()) {
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
-                    Text(
-                        text = "Key Features",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Primary
-                    )
+            item {
+                if (state.details.keyFeatures.isNotEmpty()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
+                        Text(
+                            text = "Key Features",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = Primary
+                        )
 
-                    for (feature in details.keyFeatures) {
-                        FeatureCard(feature = feature)
+                        for (feature in state.details.keyFeatures) {
+                            FeatureCard(feature = feature)
+                        }
                     }
                 }
             }
-
-            // FAQs Section TODO can be removed
-            if (details.faqs.isNotEmpty()) {
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
-                    Text(
-                        text = "FAQs",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = Primary
-                    )
-                    for (faq in details.faqs) {
-                        FaqCard(faq = faq)
-                    }
-                }
+        // FAQs Section
+//            item {
+//                if (state.details.faqs.isNotEmpty()) {
+//                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
+//                        Text(
+//                            text = "FAQs",
+//                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+//                            color = Primary
+//                        )
+//                        for (faq in state.details.faqs) {
+//                            FaqCard(faq = faq)
+//                        }
+//                    }
+//                }
+//            }
+            item{
+                Spacer(modifier = Modifier.height(Spacing.dp16).fillMaxWidth())
             }
-            Spacer(modifier = Modifier.height(Spacing.dp16))
         }
+        AppButton(
+            text = "Invest Now",
+            onClick = { onEvent(FdDetailsEvent.OnInvestNowClicked) },
+            modifier = Modifier.fillMaxWidth().navigationBarsPadding()
+        )
     }
 }
 
+
 @Composable
-private fun TopBar(onBack: () -> Unit, onShare: () -> Unit) {
+private fun TopBar(onBack: () -> Unit, onShare: () -> Unit, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -214,7 +233,7 @@ private fun TopBar(onBack: () -> Unit, onShare: () -> Unit) {
 private fun HeaderCard(details: FDDetailsDomain) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .clip(RoundedCornerShape(Spacing.dp8))
             .background(White)
             .padding(Spacing.dp16)
@@ -340,7 +359,7 @@ private fun InvestmentConfigCard(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .clip(RoundedCornerShape(Spacing.dp12))
             .background(White)
     ) {
@@ -398,7 +417,10 @@ private fun InvestmentConfigCard(
                 }
             }
 
-            HorizontalDivider(color = GreyBoxDivider, modifier = Modifier.padding(horizontal = Spacing.dp16))
+            HorizontalDivider(
+                color = GreyBoxDivider,
+                modifier = Modifier.padding(horizontal = Spacing.dp16)
+            )
 
             // Interest Payout
             Row(
@@ -440,7 +462,10 @@ private fun InvestmentConfigCard(
                 )
             }
 
-            HorizontalDivider(color = GreyBoxDivider, modifier = Modifier.padding(horizontal = Spacing.dp16))
+            HorizontalDivider(
+                color = GreyBoxDivider,
+                modifier = Modifier.padding(horizontal = Spacing.dp16)
+            )
 
             // Applicable For
             Row(
@@ -486,7 +511,7 @@ private fun TenureOptionsCard(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .clip(RoundedCornerShape(Spacing.dp12))
             .background(White)
     ) {
@@ -602,7 +627,7 @@ private fun TenureOptionsCard(
 private fun FeatureCard(feature: KeyFeatureDomain) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .clip(RoundedCornerShape(Spacing.dp8))
             .background(White)
             .padding(Spacing.dp16)
@@ -656,7 +681,7 @@ private fun FeatureCard(feature: KeyFeatureDomain) {
 private fun FaqCard(faq: FDFaqDomain) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .clip(RoundedCornerShape(Spacing.dp16))
             .background(White)
             .padding(Spacing.dp16)
@@ -751,6 +776,7 @@ fun FdDetailsScreenPreview() {
         )
 
         FdDetailsScreen(
+            pv = PaddingValues(vertical = Spacing.dp16),
             state = FdDetailsUiState(
                 details = dummyDetails
             ),

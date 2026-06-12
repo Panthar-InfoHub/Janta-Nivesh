@@ -6,17 +6,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,13 +56,14 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdUi
 
 @Composable
 fun ExploreFdScreen(
+    pv: PaddingValues,
     state: ExploreFdUiState,
     onEvent: (ExploreFdEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize().statusBarsPadding().padding(top = Spacing.dp8).padding(pv)
             .padding(horizontal = Spacing.dp16),
         verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
     ) {
@@ -86,119 +90,60 @@ fun ExploreFdScreen(
                 textStyle = AppTextFieldDefaults.style().textStyle,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = FilterChipUnselected,
+                    focusedContainerColor = FilterChipUnselected,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 )
             )
-//            trailingIcon = {
-//                Icon(
-//                    painterResource(Res.drawable.filter_icon),
-//                    contentDescription = "Filter",
-//                    modifier = Modifier.size(Spacing.dp16)
-//                        .clickable(onClick = { onEvent(ExploreFdEvent.OnFilterMenuClicked) }),
-//                    tint = Primary
-//
-//                )
-//            },
         )
-
-//        Row(
-//            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-//            horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
-//        ) {
-//            FilterChip(
-//                text = "Public Bank",
-//                isSelected = state.selectedFilter == "Public Bank",
-//                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked(FDLabel.PublicBank)) }
-//            )
-//            FilterChip(
-//                text = "NBFC",
-//                isSelected = state.selectedFilter == "NBFC",
-//                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked(FDLabel.NBFC)) }
-//            )
-//            FilterChip(
-//                text = "Private Bank",
-//                isSelected = state.selectedFilter == "Private Bank",
-//                onClick = { onEvent(ExploreFdEvent.OnFilterChipClicked(FDLabel.PrivateBank)) }
-//            )
-//        }
-
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
-//                modifier = Modifier.weight(0.3f)
-//            ) {
-//                Text(
-//                    text = "Top Funds",
-//                    style = MaterialTheme.typography.labelLarge,
-//                    color = Primary
-//                )
-//                Text(
-//                    text = "(${state.totalFundsCount})",
-//                    style = MaterialTheme.typography.labelSmall,
-//                    color = GreyText
-//                )
-//            }
-//
-//            DropDownSelector(
-//                value = state.sortOptions.firstOrNull()?.displayName ?: "",
-//                onValueChange = { onEvent(ExploreFdEvent.OnSortOptionClicked(it)) },
-//                placeholder = state.sortOptions.firstOrNull()?.displayName ?: "",
-//                list = state.sortOptions,
-//                textConvertor = { it.displayName },
-//                modifier = Modifier.weight(0.2f)
-//            )
-//        }
 
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text("Loading...")
             }
-        }
-
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
-        ) {
-            items(state.fundsList) { fundItem ->
-                FundListItem(
-                    item = fundItem,
-                    onClick = { onEvent(ExploreFdEvent.OnFundItemClicked(fundItem)) }
-                )
-            }
-            if (state.isLoadingNext) {
-                item {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        Text("Loading more...")
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+            ) {
+                items(state.fundsList) { fundItem ->
+                    FundListItem(
+                        item = fundItem,
+                        onClick = { onEvent(ExploreFdEvent.OnFundItemClicked(fundItem)) }
+                    )
+                }
+                if (state.isLoadingNext) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Loading more...")
+                        }
                     }
                 }
-            }
-            if(state.hasNextPage){
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = Spacing.dp24),
-                        contentAlignment = Alignment.Center
-                    ) {
+                if (state.hasNextPage) {
+                    item {
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(Spacing.dp24))
-                                .background(color = White)
-                                .border(1.dp, BoxBorder, RoundedCornerShape(Spacing.dp24))
-                                .clickable { onEvent(ExploreFdEvent.OnLoadMoreClicked) }
-                                .padding(horizontal = Spacing.dp24, vertical = Spacing.dp10)
+                                .fillMaxWidth()
+                                .padding(vertical = Spacing.dp24),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "Load More Funds",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = Primary
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(Spacing.dp24))
+                                    .background(color = White)
+                                    .border(1.dp, BoxBorder, RoundedCornerShape(Spacing.dp24))
+                                    .clickable { onEvent(ExploreFdEvent.OnLoadMoreClicked) }
+                                    .padding(horizontal = Spacing.dp24, vertical = Spacing.dp10)
+                            ) {
+                                Text(
+                                    text = "Load More Funds",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Primary
+                                )
+                            }
                         }
                     }
                 }
@@ -235,7 +180,6 @@ private fun FundListItem(
     item: FixedDepositDomain,
     onClick: () -> Unit
 ) {
-
     Row(
         modifier = Modifier
             .genericDropShadow(RoundedCornerShape(Spacing.dp24))
@@ -305,8 +249,7 @@ private fun FundListItem(
                 color = Primary
             )
             Text(
-                text = (item.tenures.firstOrNull()?.tenureDays?.toYearsFormatKmp() + " Return")
-                ,
+                text = (item.tenures.firstOrNull()?.tenureDays?.toYearsFormatKmp() + " Return"),
                 style = MaterialTheme.typography.titleSmall,
                 color = GreyText
             )
@@ -333,12 +276,12 @@ fun ExploreFdScreenPreview() {
             )
         )
         ExploreFdScreen(
+            pv = PaddingValues(vertical = Spacing.dp16),
             state = ExploreFdUiState(
                 fundsList = dummyData
             ),
             onEvent = {},
             modifier = Modifier.background(PreviewBackground)
         )
-
     }
 }

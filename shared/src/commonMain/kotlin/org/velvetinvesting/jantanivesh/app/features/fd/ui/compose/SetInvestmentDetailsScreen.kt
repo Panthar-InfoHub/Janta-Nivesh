@@ -7,13 +7,17 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -52,6 +56,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.filterDigits
 import org.velvetinvesting.jantanivesh.app.core.utils.math.toMonthsFormatKmp
 import org.velvetinvesting.jantanivesh.app.core.utils.math.toYearsFormatKmp
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
@@ -62,15 +67,16 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDom
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDTenureDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEvent
 
 @Composable
 fun SetInvestmentDetailsScreen(
+    pv: PaddingValues,
     state: SetInvestmentDetailsUiState,
     onEvent: (SetInvestmentDetailsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val details = state.details
-    if (details == null) {
+    if (state.details == null) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             if (state.isLoading) {
                 Text("Loading...")
@@ -80,50 +86,67 @@ fun SetInvestmentDetailsScreen(
         }
         return
     }
-
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(
-                vertical = Spacing.dp8,
-                horizontal = Spacing.dp20
-            )
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
+            .fillMaxSize().statusBarsPadding().padding(top = Spacing.dp8).padding(pv)
+            .padding(horizontal = Spacing.dp16),
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
     ) {
         TopAppBar(onNavigateBack = { onEvent(SetInvestmentDetailsEvent.OnBackClicked) })
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+        ) {
+            item {
+                BankNameCard(
+                    bankName = state.details.bankName,
+                    bankLogoUrl = state.details.bankLogo,
+                    insuredText = state.details.keyFeatures.firstOrNull()?.title ?: "",
+                    tags = state.details.tags
+                )
+            }
 
-        BankNameCard(
-            bankName = details.bankName,
-            bankLogoUrl = details.bankLogo,
-            insuredText = details.keyFeatures.firstOrNull()?.title ?: "",
-            tags = details.tags
+            item {
+                InvestmentCard(
+                    amount = state.amount,
+                    onAmountChange = { onEvent(SetInvestmentDetailsEvent.OnAmountChanged(it)) }
+                )
+            }
+
+            item {
+                TenureCard(
+                    selectedTenure = state.selectedTenure,
+                    tenures = state.details.interestRates,
+                    onTenureChange = { onEvent(SetInvestmentDetailsEvent.OnTenureChanged(it)) }
+                )
+            }
+
+            item {
+                InterestPayoutCard(
+                    data = state,
+                    onPayoutModeChange = { SetInvestmentDetailsEvent.OnPayoutModeChanged(it) }
+                )
+            }
+
+            item {
+                ProjectedReturnsCard(
+                    maturityAmount = state.maturityAmount,
+                    totalInterest = state.totalInterest,
+                    interestRate = state.interestRate,
+                    maturityDate = state.maturityDate
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(Spacing.dp8))
+            }
+        }
+        AppButton(
+            text = "Invest Now",
+            onClick = { onEvent(SetInvestmentDetailsEvent.OnContinueClicked) },
+            modifier = Modifier.fillMaxWidth().navigationBarsPadding()
         )
-
-        InvestmentCard(
-            amount = state.amount,
-            onAmountChange = { onEvent(SetInvestmentDetailsEvent.OnAmountChanged(it)) }
-        )
-
-        TenureCard(
-            selectedTenure = state.selectedTenure,
-            tenures = details.interestRates,
-            onTenureChange = { onEvent(SetInvestmentDetailsEvent.OnTenureChanged(it)) }
-        )
-
-        InterestPayoutCard(
-            data = state,
-            onPayoutModeChange = { SetInvestmentDetailsEvent.OnPayoutModeChanged(it) }
-        )
-
-        ProjectedReturnsCard(
-            maturityAmount = state.maturityAmount,
-            totalInterest = state.totalInterest,
-            interestRate = state.interestRate,
-            maturityDate = state.maturityDate
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.dp8))
     }
 }
 
@@ -224,7 +247,7 @@ private fun BankNameCard(
                     modifier = Modifier.size(Spacing.dp16),
                     tint = SelectedBoxBorder
                 )
-                Text(insuredText, style = MaterialTheme.typography.labelSmall, color = GreyText) //TODO fetch text dynamically
+                Text(insuredText, style = MaterialTheme.typography.labelSmall, color = GreyText)
             }
         }
     }
@@ -332,7 +355,10 @@ fun TenureCard(
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp4), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Spacing.dp4),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "Select Tenure",
                     style = MaterialTheme.typography.labelLarge
@@ -568,6 +594,7 @@ fun SetInvestmentDetailsScreenPreview() {
         )
 
         SetInvestmentDetailsScreen(
+            pv = PaddingValues(vertical = Spacing.dp0),
             state = SetInvestmentDetailsUiState(
                 details = dummyDetails,
                 amount = "100000",
