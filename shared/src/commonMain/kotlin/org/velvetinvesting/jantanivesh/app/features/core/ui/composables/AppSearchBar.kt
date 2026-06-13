@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.core.ui.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -16,7 +17,9 @@ import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.search_icon
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 
 @Composable
@@ -42,18 +45,24 @@ fun AppSearchBar(
             Text(
                 text = placeholder,
                 style = baseStyle.textStyle.copy(fontSize = 14.sp),
-                color = titleColor
+                color = titleColor,
+                modifier= Modifier.padding(start = Spacing.dp8)
             )
         },
         colors = baseStyle.colors,
-        leadingIcon = {
+        trailingIcon = {
             Icon(
                 painter = painterResource(Res.drawable.search_icon),
                 contentDescription = null,
-                tint = Primary,
+                tint = if (value.isBlank()) GreyText else Primary,
                 modifier = Modifier
-                    .padding(start = 4.dp)
+                    .padding(end = 4.dp)
                     .height(22.dp)
+                    .clickable {
+                        if (value.isNotBlank()) {
+                            onSearchClick()
+                        }
+                    }
             )
         },
         keyboardOptions = KeyboardOptions(

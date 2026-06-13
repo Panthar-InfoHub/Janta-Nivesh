@@ -563,7 +563,7 @@ fun TradingAccountAddressScreen(
                     onClick = onClick,
                     pv = pv,
                     value = "Continue →",
-                    enabled = uiState.addressScreenButtonEnabled
+                    enabled = uiState.addressScreenButtonEnabled,
                 )
             }
             if (uiState.showStateDialog) {

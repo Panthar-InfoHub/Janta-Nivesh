@@ -178,8 +178,7 @@ fun TradingAccountBankDetailsScreen(
                 NextButtonFooter(
                     onClick = onClick,
                     pv = pv,
-                    value = "Next",
-                    enabled = uiState.bankScreenButtonEnabled
+                    enabled = uiState.bankScreenButtonEnabled,
                 )
             }
         }

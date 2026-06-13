@@ -71,6 +71,7 @@ import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.mode
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.MutualFundTopPicksUiModel
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsEvent
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsUiState
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
@@ -114,109 +115,119 @@ fun ExploreFundsContent(
     handleEvent: (ExploreFundsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
-        modifier = modifier,
-        contentPadding = PaddingValues(bottom = Spacing.dp8, top = Spacing.dp12)
-    ) {
-        item {
-            Text(
-                "Want to invest", style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                modifier= Modifier.padding(horizontal = Spacing.dp16)
-            )
-        }
-        item {
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp24),
-                modifier= Modifier.padding(horizontal = Spacing.dp20)) {
-                IconButtonCard(
-                    onClick = { handleEvent(ExploreFundsEvent.OnMutualFundsCategoryClick) },
-                    title = "Mutual Funds",
-                    icon = Res.drawable.mutual_funds_icon,
-                    iconBackground = FdIconBg,
-                    iconColor = Primary,
-                    modifier = Modifier.weight(1f)
-                )
-                IconButtonCard(
-                    onClick = { handleEvent(ExploreFundsEvent.OnFixedDepositCategoryClick) },
-                    title = "Fixed Deposit",
-                    icon = Res.drawable.monument_icon,
-                    iconBackground = MutualFundIconBg,
-                    iconColor = SecondaryPrimary,
-                    modifier = Modifier.weight(1f)
+    Column(
+        modifier = modifier
+    ){
+        BackHeader(
+            title = "Explore Funds",
+            onBack = {},
+            showBack = false,
+        )
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
+            contentPadding = PaddingValues(bottom = Spacing.dp8, top = Spacing.dp12)
+        ) {
+            item {
+                Text(
+                    "Want to invest", style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = Spacing.dp16)
                 )
             }
-        }
-        if (uiState.mutualFundList.isNotEmpty()){
             item {
                 Row(
-                    modifier = Modifier.padding(
-                        vertical = Spacing.dp8,
-                        horizontal = Spacing.dp16
-                    )
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp24),
+                    modifier = Modifier.padding(horizontal = Spacing.dp20)
                 ) {
-                    Text(
-                        "Top Picks ", style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                    IconButtonCard(
+                        onClick = { handleEvent(ExploreFundsEvent.OnMutualFundsCategoryClick) },
+                        title = "Mutual Funds",
+                        icon = Res.drawable.mutual_funds_icon,
+                        iconBackground = FdIconBg,
+                        iconColor = Primary,
+                        modifier = Modifier.weight(1f)
                     )
-                    Text(
-                        "Mutual Funds", style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = SelectedBoxBorder
+                    IconButtonCard(
+                        onClick = { handleEvent(ExploreFundsEvent.OnFixedDepositCategoryClick) },
+                        title = "Fixed Deposit",
+                        icon = Res.drawable.monument_icon,
+                        iconBackground = MutualFundIconBg,
+                        iconColor = SecondaryPrimary,
+                        modifier = Modifier.weight(1f)
                     )
                 }
             }
-            item {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
-                    contentPadding = PaddingValues(horizontal = Spacing.dp16)
-                ) {
-                    items(uiState.mutualFundList) { fund ->
-                        TopPicksMfCard(
-                            fund = fund,
-                            onInvestClick = {
-                                handleEvent(
-                                    ExploreFundsEvent.OnMutualFundInvestClick(
-                                        fund.id
-                                    )
-                                )
-                            }
+            if (uiState.mutualFundList.isNotEmpty()) {
+                item {
+                    Row(
+                        modifier = Modifier.padding(
+                            vertical = Spacing.dp8,
+                            horizontal = Spacing.dp16
+                        )
+                    ) {
+                        Text(
+                            "Top Picks ", style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Mutual Funds", style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = SelectedBoxBorder
                         )
                     }
                 }
+                item {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                        contentPadding = PaddingValues(horizontal = Spacing.dp16),
+                    ) {
+                        items(uiState.mutualFundList) { fund ->
+                            TopPicksMfCard(
+                                fund = fund,
+                                onInvestClick = {
+                                    handleEvent(
+                                        ExploreFundsEvent.OnMutualFundInvestClick(
+                                            fund.id
+                                        )
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
             }
-        }
-        if (uiState.fixedDepositList.isNotEmpty()){
-            item {
-                Row(
-                    modifier = Modifier.padding(
-                        vertical = Spacing.dp8,
-                        horizontal = Spacing.dp16
-                    )
-                ) {
-                    Text(
-                        "Top Picks ", style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        "Fixed Deposit", style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = SelectedBoxBorder
+            if (uiState.fixedDepositList.isNotEmpty()) {
+                item {
+                    Row(
+                        modifier = Modifier.padding(
+                            vertical = Spacing.dp8,
+                            horizontal = Spacing.dp16
+                        )
+                    ) {
+                        Text(
+                            "Top Picks ", style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Fixed Deposit", style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = SelectedBoxBorder
+                        )
+                    }
+                }
+                items(uiState.fixedDepositList) { fd ->
+                    TopPicksFixedDepositCard(
+                        fund = fd,
+                        onClick = { handleEvent(ExploreFundsEvent.OnFixedDepositClick(fd.id)) },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp16)
                     )
                 }
             }
-            items(uiState.fixedDepositList) { fd ->
-                TopPicksFixedDepositCard(
-                    fund = fd,
-                    onClick = { handleEvent(ExploreFundsEvent.OnFixedDepositClick(fd.id)) },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp16)
+            item {
+                StartWealthCard(
+                    modifier = Modifier.padding(horizontal = Spacing.dp16, vertical = Spacing.dp24)
                 )
             }
-        }
-        item {
-            StartWealthCard(
-                modifier = Modifier.padding(horizontal = Spacing.dp16, vertical = Spacing.dp24)
-            )
         }
     }
 }
@@ -327,7 +338,8 @@ fun TopPicksMfCard(
             Text(
                 fund.metadata,
                 style = MaterialTheme.typography.labelSmall,
-                color = GreyText
+                color = GreyText,
+                maxLines = 1
             )
         }
         Row(

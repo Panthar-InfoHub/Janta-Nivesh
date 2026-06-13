@@ -576,7 +576,6 @@ fun TradingAccountFinancialDetailsScreen(
                 NextButtonFooter(
                     onClick = onClick,
                     pv = pv,
-                    value = "Next",
                     enabled = uiState.financeScreenButtonEnabled,
                 )
             }

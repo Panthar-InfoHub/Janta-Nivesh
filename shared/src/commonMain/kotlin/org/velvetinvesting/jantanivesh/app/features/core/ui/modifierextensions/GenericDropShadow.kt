@@ -13,7 +13,7 @@ fun Modifier.genericDropShadow(
 ): Modifier = this.then(
     Modifier.dropShadow(
         shadow = Shadow(
-            radius = 20.dp,
+            radius = 16.dp,
             color = ShadowColor
         ),
         shape = shape

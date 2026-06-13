@@ -311,7 +311,7 @@ fun TradingAccountClientInfoScreen(
                     onClick = onClick,
                     pv = pv,
                     value = "Continue →",
-                    enabled = uiState.clientScreenButtonEnabled
+                    enabled = uiState.clientScreenButtonEnabled,
                 )
             }
         }

@@ -209,8 +209,7 @@ fun TradingAccountBasicDetailsScreen(
                 NextButtonFooter(
                     onClick = onClick,
                     pv = pv,
-                    value = "Next",
-                    enabled = uiState.basicDetailsNextEnabled
+                    enabled = uiState.basicDetailsNextEnabled,
                 )
             }
         }

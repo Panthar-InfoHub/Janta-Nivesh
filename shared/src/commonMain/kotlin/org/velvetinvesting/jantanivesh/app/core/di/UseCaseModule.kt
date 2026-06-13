@@ -35,6 +35,10 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.P
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemFullFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemPartialFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.OnboardUserUseCase
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFixedDepositsSearchResultUseCase
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPickFDUseCase
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.PurchaseFDUseCase
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.GetTradingAccountPrefilledDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.SubmitTradingAccountFormUseCase
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.TradingAccountConfirmationUseCase
@@ -44,6 +48,11 @@ val useCaseModule = module {
     factory { LoginWithNumberUseCase(get()) }
     factory { VerifyOTPUseCase(get()) }
     factory { OnboardUserUseCase(get()) }
+
+    factory { GetFDDetailsUseCase(get()) }
+    factory { GetFixedDepositsSearchResultUseCase(get()) }
+    factory { PurchaseFDUseCase(get()) }
+    factory { GetTopPickFDUseCase(get()) }
     factory { GetUserDataUseCase(get()) }
 
     // KYC UseCases
