@@ -2,7 +2,7 @@ package org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases
 
 import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.AddCartSipRequest
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddsip.AddCartSipRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.repository.MutualFundRepository
 
 class AddToCartSipUseCase(

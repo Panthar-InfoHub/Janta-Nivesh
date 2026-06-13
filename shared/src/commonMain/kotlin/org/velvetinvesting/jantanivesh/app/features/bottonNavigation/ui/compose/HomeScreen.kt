@@ -1,14 +1,12 @@
 package org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.compose
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,8 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.bell_icon
 import jantanivesh.shared.generated.resources.create_goal_icon
-import jantanivesh.shared.generated.resources.flag_icon
+import jantanivesh.shared.generated.resources.education_icon
 import jantanivesh.shared.generated.resources.front_arrow_icon
 import jantanivesh.shared.generated.resources.home_create_custom_goal_desc
 import jantanivesh.shared.generated.resources.home_create_goal
@@ -57,8 +53,6 @@ import jantanivesh.shared.generated.resources.home_good_morning
 import jantanivesh.shared.generated.resources.home_insurance
 import jantanivesh.shared.generated.resources.home_invest_in_fd
 import jantanivesh.shared.generated.resources.home_invest_in_mf
-import jantanivesh.shared.generated.resources.home_kyc_desc
-import jantanivesh.shared.generated.resources.home_kyc_time
 import jantanivesh.shared.generated.resources.home_kyc_title
 import jantanivesh.shared.generated.resources.home_mutual_funds
 import jantanivesh.shared.generated.resources.home_notifications_desc
@@ -66,12 +60,15 @@ import jantanivesh.shared.generated.resources.home_pnl_trend_suffix
 import jantanivesh.shared.generated.resources.home_portfolio_value
 import jantanivesh.shared.generated.resources.home_verify_button
 import jantanivesh.shared.generated.resources.home_your_goals
+import jantanivesh.shared.generated.resources.icon_callender
 import jantanivesh.shared.generated.resources.insurance_sharp_shield_icon
 import jantanivesh.shared.generated.resources.invesy_in_mf_icon
 import jantanivesh.shared.generated.resources.monument_icon
 import jantanivesh.shared.generated.resources.plus_icon
 import jantanivesh.shared.generated.resources.profile_in_frame_icon
 import jantanivesh.shared.generated.resources.progress_icon
+import jantanivesh.shared.generated.resources.ring_icon
+import jantanivesh.shared.generated.resources.ruppee_circle
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -84,16 +81,25 @@ import org.velvetinvesting.jantanivesh.app.core.theme.GrayBackGround
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.InsuranceIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.MutualFundIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.dashedBorder
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyWithUnits
+import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
+import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.GoalsSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.progressPercent
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenUiState
+import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.dashedBorder
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 
 @Preview(showBackground = true, heightDp = 2000)
 @Composable
@@ -103,7 +109,7 @@ fun HomeScreenPreview() {
             HomeScreen(
                 state = HomeScreenUiState(),
                 onEvent = {},
-                modifier = Modifier.padding(Spacing.dp16).fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             )
         }
     }
@@ -115,9 +121,39 @@ fun HomeScreen(
     onEvent: (HomeScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    when {
+        state.isLoading -> {
+            LoaderScreen(
+                modifier = modifier.fillMaxSize()
+            )
+        }
+
+        state.showError -> {
+            ErrorScreen(
+                modifier = modifier.fillMaxSize(),
+                errorMessage = state.error,
+                onRetryClick = { onEvent(HomeScreenEvent.LoadData) }
+            )
+        }
+        else -> {
+            HomeScreenContent(
+                state = state,
+                onEvent = onEvent,
+                modifier = modifier
+            )
+        }
+    }
+}
+@Composable
+fun HomeScreenContent(
+    state: HomeScreenUiState,
+    onEvent: (HomeScreenEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
-        modifier = modifier
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
+        modifier = modifier.padding(horizontal = Spacing.dp16),
+        contentPadding = PaddingValues(top = Spacing.dp8, bottom = Spacing.dp16)
     ) {
         item {
             Row(
@@ -162,7 +198,7 @@ fun HomeScreen(
                     modifier = Modifier.padding(Spacing.dp24)
                 ) {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
                     ) {
                         Text(
                             stringResource(Res.string.home_portfolio_value),
@@ -170,8 +206,8 @@ fun HomeScreen(
                             color = White
                         )
                         Text(
-                            "₹${formatPrice(state.portfolioValue)}",
-                            style = MaterialTheme.typography.headlineLarge,
+                            "₹${state.portfolioValue}".withInterRupee(),
+                            style = MaterialTheme.typography.displayMedium,
                             color = White
                         )
                     }
@@ -181,12 +217,12 @@ fun HomeScreen(
                     ) {
                         AmountCard(
                             title = stringResource(Res.string.home_fixed_deposits),
-                            amount = formatPrice(state.fixedDepositsAmount),
+                            amount = state.fixedDepositsAmount,
                             modifier = Modifier.weight(1f)
                         )
                         AmountCard(
                             title = stringResource(Res.string.home_mutual_funds),
-                            amount = formatPrice(state.mutualFundsAmount),
+                            amount = state.mutualFundsAmount,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -194,11 +230,11 @@ fun HomeScreen(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(Spacing.dp4),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(Spacing.dp8)
+                    modifier = Modifier.padding(Spacing.dp16)
                         .align(Alignment.TopEnd)
-                        .clip(RoundedCornerShape(Spacing.dp58))
+                        .clip(LocalShapes.current.circle)
                         .background(color = SelectedBoxBorder.copy(alpha = 0.25f))
-                        .padding(all = Spacing.dp12)
+                        .padding(horizontal = Spacing.dp12, vertical = Spacing.dp8)
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.progress_icon),
@@ -250,57 +286,28 @@ fun HomeScreen(
                 }
             }
         }
-        item {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().genericDropShadow()
-                    .clip(RoundedCornerShape(Spacing.dp12))
-                    .background(White)
-            ) {
-                VerticalDivider(
-                    thickness = Spacing.dp4,
-                    color = Primary,
-                    modifier = Modifier.height(88.dp).weight(0.01f)
+        if (!state.kycVerified){
+            item {
+                KycCard(
+                    title = stringResource(Res.string.home_kyc_title),
+                    buttonText = stringResource(Res.string.home_verify_button),
+                    onClick = {
+                        onEvent(HomeScreenEvent.OnVerifyKycClicked)
+                    }
                 )
-                Icon(
-                    painterResource(Res.drawable.profile_in_frame_icon),
-                    contentDescription = stringResource(Res.string.home_kyc_desc),
-                    modifier = Modifier.size(Spacing.dp32).clip(CircleShape)
-                        .background(SelectedBoxColor)
-                        .padding(Spacing.dp8)
-                        .weight(0.1f)
-                )
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
-                    modifier = Modifier.weight(0.5f)
-                ) {
-                    Text(
-                        stringResource(Res.string.home_kyc_title),
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Text(
-                        stringResource(Res.string.home_kyc_time),
-                        style = MaterialTheme.typography.titleSmall,
-                        color = GreyText
-                    )
-                }
-                TextButton(
-                    onClick = { onEvent(HomeScreenEvent.OnVerifyKycClicked) },
-                    shape = RoundedCornerShape(Spacing.dp8),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Primary,
-                        contentColor = White
-                    ),
-                    modifier = Modifier.weight(0.3f).padding(end = Spacing.dp20)
-                ) {
-                    Text(
-                        stringResource(Res.string.home_verify_button),
-                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                        modifier = Modifier.padding(horizontal = Spacing.dp8)
-                    )
-                }
             }
+        }
+        else{
+            if (!state.tradingAccountVerified) {
+                item {
+                    KycCard(
+                        title = stringResource(Res.string.home_kyc_title),
+                        buttonText = stringResource(Res.string.home_verify_button),
+                        onClick = {
+                            onEvent(HomeScreenEvent.OnVerifyKycClicked)
+                        }
+                    )
+                } }
         }
         item {
             Row(
@@ -325,9 +332,7 @@ fun HomeScreen(
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                 for (goal in state.goals) {
                     GoalCard(
-                        name = goal.name,
-                        amount = formatPrice(goal.amount),
-                        goalProgress = goal.progress,
+                        goal=goal,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -342,7 +347,9 @@ fun HomeScreen(
                     dashLength = Spacing.dp6,
                     gapLength = Spacing.dp2,
                     strokeWidth = Spacing.dp1
-                ).padding(Spacing.dp16)
+                )
+                    .clickable(onClick = { onEvent(HomeScreenEvent.OnCreateCustomGoalClicked) })
+                    .padding(Spacing.dp12)
             ) {
                 IconButton(
                     onClick = { onEvent(HomeScreenEvent.OnCreateCustomGoalClicked) },
@@ -358,7 +365,7 @@ fun HomeScreen(
                         modifier = Modifier.size(Spacing.dp20)
                     )
                 }
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp2)) {
                     Text(
                         stringResource(Res.string.home_custom_goal_title),
                         style = MaterialTheme.typography.labelLarge
@@ -375,9 +382,77 @@ fun HomeScreen(
 }
 
 @Composable
+private fun KycCard(
+    title: String,
+    buttonText: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .genericDropShadow()
+            .clip(RoundedCornerShape(Spacing.dp12))
+            .background(White)
+    ) {
+        VerticalDivider(
+            thickness = Spacing.dp4,
+            color = Primary,
+            modifier = Modifier
+                .height(88.dp)
+                .weight(0.01f)
+        )
+
+        Icon(
+            painter = painterResource(Res.drawable.profile_in_frame_icon),
+            contentDescription = null,
+            modifier = Modifier
+                .size(Spacing.dp32)
+                .clip(CircleShape)
+                .background(SelectedBoxColor)
+                .padding(Spacing.dp8)
+                .weight(0.1f)
+        )
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
+            modifier = Modifier.weight(0.5f)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+
+        TextButton(
+            onClick = onClick,
+            shape = RoundedCornerShape(Spacing.dp8),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Primary,
+                contentColor = White
+            ),
+            modifier = Modifier
+                .weight(0.3f)
+                .padding(end = Spacing.dp20)
+        ) {
+            Text(
+                text = buttonText,
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(horizontal = Spacing.dp8)
+            )
+        }
+    }
+}
+@Composable
 private fun AmountCard(title: String, amount: String, modifier: Modifier = Modifier) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
         modifier = modifier
             .clip(RoundedCornerShape(Spacing.dp8))
             .background(color = White.copy(alpha = 0.1f))
@@ -387,75 +462,88 @@ private fun AmountCard(title: String, amount: String, modifier: Modifier = Modif
             ).padding(Spacing.dp12)
     ) {
         Text(title, style = MaterialTheme.typography.titleSmall, color = White)
-        Text("₹$amount", style = MaterialTheme.typography.labelLarge, color = White)
+        Text("₹$amount".withInterRupee(), style = MaterialTheme.typography.labelLarge, color = White)
     }
 }
 
 @Composable
 private fun GoalCard(
-    name: String,
-    amount: String,
-    goalProgress: Float,
+    goal: GoalsSummaryDomain,
     modifier: Modifier = Modifier
 ) {
-    val animatedProgress = remember { Animatable(0f) }
-
-    LaunchedEffect(goalProgress) {
-        animatedProgress.animateTo(
-            targetValue = goalProgress,
-            animationSpec = tween(1000, easing = FastOutSlowInEasing)
-        )
+    val icon = when (goal.goalTypes.type) {
+        GoalType.ChildEducation -> Res.drawable.education_icon
+        GoalType.ChildMarriage -> Res.drawable.ring_icon
+        GoalType.Retirement -> Res.drawable.icon_callender
+        GoalType.WealthBuilding -> Res.drawable.ruppee_circle
     }
+
+    val progress = goal.progressPercent() / 100f
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .genericDropShadow()
-            .background(White, RoundedCornerShape(Spacing.dp24))
+            .clip(RoundedCornerShape(Spacing.dp12))
+            .background(
+                White,
+                LocalShapes.current.roundedDp16
+            )
             .padding(Spacing.dp16),
         verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
     ) {
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
         ) {
+
             Icon(
-                painter = painterResource(Res.drawable.flag_icon),
+                painter = painterResource(icon),
                 contentDescription = null,
-                tint = Black,
+                tint = Primary,
                 modifier = Modifier
-                    .background(GoalIconBg, CircleShape)
+                    .background(
+                        GoalIconBg,
+                        CircleShape
+                    )
                     .padding(Spacing.dp12)
                     .size(Spacing.dp17)
             )
+
             Text(
-                text = name,
+                text = goal.goalTypes.title,
                 style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
 
         Text(
-            text = "₹$amount",
+            text = "₹${formatMoneyAfterL(goal.amount)}/${formatMoneyWithUnits(goal.targetAmount)}"
+                .withInterRupee(),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
 
-        LinearProgressIndicator(
-            progress = { animatedProgress.value },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(Spacing.dp4)
-                .clip(RoundedCornerShape(Spacing.dp6)),
-            color = Primary,
-            trackColor = SelectedBoxBorder,
-            strokeCap = StrokeCap.Round
-        )
-        Text(
-            text = "${(animatedProgress.value * 100).toInt()}%",
-            modifier = Modifier.align(Alignment.End),
-            fontSize = 10.sp,
-            color = GreyText
-        )
+        Column {
+
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Spacing.dp4)
+                    .clip(RoundedCornerShape(Spacing.dp6)),
+                color = Primary,
+                trackColor = SelectedBoxBorder,
+                strokeCap = StrokeCap.Round
+            )
+
+            Text(
+                text = "${goal.progressPercent()}%",
+                modifier = Modifier.align(Alignment.End),
+                fontSize = 10.sp,
+            )
+        }
     }
 }
 
@@ -472,7 +560,7 @@ private fun IconButtonCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .clip(
-                RoundedCornerShape(Spacing.dp24)
+                LocalShapes.current.roundedDp12
             )
             .background(color = White)
             .clickable(onClick = onClick)
@@ -492,17 +580,4 @@ private fun IconButtonCard(
         )
 
     }
-}
-
-fun formatPrice(price: String): String {
-    val cleanPrice = price.filter { it.isDigit() }
-    if (cleanPrice.length <= 3) return cleanPrice
-    val lastThree = cleanPrice.takeLast(3)
-    val remaining = cleanPrice.dropLast(3)
-    val formattedRemaining = remaining
-        .reversed()
-        .chunked(2)
-        .joinToString(",")
-        .reversed()
-    return "$formattedRemaining,$lastThree"
 }

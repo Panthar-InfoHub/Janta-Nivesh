@@ -24,7 +24,7 @@ import org.koin.compose.koinInject
 import org.velvetinvesting.jantanivesh.app.core.localization.LocalAppLanguageLocale
 import org.velvetinvesting.jantanivesh.app.core.localization.model.AppLanguage
 import org.velvetinvesting.jantanivesh.app.core.localization.repository.LanguageRepository
-import org.velvetinvesting.jantanivesh.app.core.navigation.AppNavigation
+import org.velvetinvesting.jantanivesh.app.core.navigation.BaseNavigation
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarType
@@ -89,7 +89,7 @@ fun App() {
                     }
                 }
             ) {
-                AppNavigation()
+                BaseNavigation()
             }
         }
     }

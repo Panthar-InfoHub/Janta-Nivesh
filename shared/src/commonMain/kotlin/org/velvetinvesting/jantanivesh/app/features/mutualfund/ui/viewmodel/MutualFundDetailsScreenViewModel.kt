@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartLumpsumUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartSipUseCase
 import org.velvetinvesting.jantanivesh.app.core.networking.ErrorType
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
@@ -31,6 +29,8 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Mut
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundScreenState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.StableMetricUi
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.toSipRequest
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartLumpsumUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartSipUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundGraphUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetUserCartUseCase
@@ -58,7 +58,7 @@ class MutualFundDetailsScreenViewModel(
     private val _selectedYear = MutableStateFlow(GraphDurationSelection.ThreeYears)
     val selectedYear= _selectedYear.asStateFlow()
 
-     val navChangePercent = combine(graphState,detailsState,selectedYear){ graphState,detailsState, selectedYear->
+    val navChangePercent = combine(graphState,detailsState,selectedYear){ graphState,detailsState, selectedYear->
         if (selectedYear == GraphDurationSelection.All){
             when(detailsState){
                 is DetailsState.Error -> "n/a"
@@ -66,16 +66,16 @@ class MutualFundDetailsScreenViewModel(
                 is DetailsState.Success -> detailsState.data.metrics.nav_change_pct?.trimTo(2)?:"n/a"
             }
         }
-         else{
-             when(graphState){
-                 is GraphState.Error -> "n/a"
-                 GraphState.Loading -> "--"
-                 is GraphState.Success -> {
-                     val first = graphState.data.graphPoints.firstOrNull()?.navValue?:0.0
-                     val last = graphState.data.graphPoints.lastOrNull()?.navValue?:0.0
-                     ((last - first) / first * 100).trimTo(2)
-                 }
-             }
+        else{
+            when(graphState){
+                is GraphState.Error -> "n/a"
+                GraphState.Loading -> "--"
+                is GraphState.Success -> {
+                    val first = graphState.data.graphPoints.firstOrNull()?.navValue?:0.0
+                    val last = graphState.data.graphPoints.lastOrNull()?.navValue?:0.0
+                    ((last - first) / first * 100).trimTo(2)
+                }
+            }
         }
     }.stateIn(
         scope = viewModelScope,
@@ -167,7 +167,7 @@ class MutualFundDetailsScreenViewModel(
         MutualFundScreenState(
             detailsState = detailsState,
             graphState = graphState,
-            chartPoints = chartData
+            chartPoints=chartData
         )
     }.stateIn(
         scope = viewModelScope,
@@ -177,18 +177,18 @@ class MutualFundDetailsScreenViewModel(
 
     val stableMetric: StateFlow<StableMetricUi?> = combine(_detailsState) { detailsStateArray ->
         val detail=detailsStateArray[0]
-                when (detail) {
-                    is DetailsState.Success -> {
-                        detail.data.metrics.getBestMetric()
-                    }
-                    else -> null
-                }
+        when (detail) {
+            is DetailsState.Success -> {
+                detail.data.metrics.getBestMetric()
             }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = null
-            )
+            else -> null
+        }
+    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null
+        )
 
     init {
         loadInitial()
@@ -265,6 +265,11 @@ class MutualFundDetailsScreenViewModel(
                             showKYCBottomSheet()
                             return@onError
                         }
+
+                        if (it.type == ErrorType.MF_TRADING_ACCOUNT_REQUIRED){
+                            showTradingAccountBottomSheet()
+                            return@onError
+                        }
                         hideBottomSheet()
                         SnackBarController.showError(it.message)
                     }
@@ -287,6 +292,11 @@ class MutualFundDetailsScreenViewModel(
                         stopCartSheetLoading()
                         if (it.type == ErrorType.MF_KYC_REQUIRED){
                             showKYCBottomSheet()
+                            return@onError
+                        }
+
+                        if (it.type == ErrorType.MF_TRADING_ACCOUNT_REQUIRED){
+                            showTradingAccountBottomSheet()
                             return@onError
                         }
                         hideBottomSheet()

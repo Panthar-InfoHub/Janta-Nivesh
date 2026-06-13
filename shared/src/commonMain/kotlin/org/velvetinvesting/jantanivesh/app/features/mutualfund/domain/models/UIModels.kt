@@ -5,7 +5,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.serialization.Serializable
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddsip.AddCartSipRequest
 import kotlin.time.Clock
 
 data class CategoryMutualFundDomain(
@@ -84,8 +84,9 @@ fun CartBottomSheetState.toSipRequest(
 ): AddCartSipRequest? {
 
     val amount = amount ?: return null
-    val frequency = selectedFrequency ?: return null
-    val duration = selectedDuration ?: return null
+//    val frequency = selectedFrequency ?: return null
+//    val duration = selectedDuration ?: return null
+    val duration = Duration.PERPETUAL
     val day = selectedSIPDate?.toIntOrNull() ?: return null
 
     if (amount < minSipAmount) return null
@@ -114,21 +115,9 @@ fun CartBottomSheetState.toSipRequest(
         mf_product_id = productId,
         sip_st_date = startDate.toString(),
         sip_en_date = endDate.toString(),
-        sip_freq = frequency.code,
+//        sip_freq = frequency.code,
         sip_day = day,
         sip_amt = amount,
-        folio = folioId?:""
+        folio = folioId ?: ""
     )
 }
-
-@Serializable
-data class AddCartSipRequest(
-    val amount: Long,
-    val mf_product_id: String,
-    val sip_st_date: String,
-    val sip_en_date: String,
-    val sip_freq: String,
-    val sip_day: Int,
-    val sip_amt: Long,
-    val folio:String = ""
-)

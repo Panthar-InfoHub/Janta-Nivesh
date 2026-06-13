@@ -14,7 +14,6 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundledfunds.BundledFundsDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddlumpsum.AddCartLumpSumRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddlumpsum.AddCartLumpSumResponseDto
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.AddCartSipRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddsip.AddCartSipRequest as AddCartSipRequestDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddsip.AddCartSipResponseDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartpurchase.CartPurchaseLumpSumDto
@@ -219,7 +218,7 @@ class MutualFundRepo(
         }
     }
 
-    override suspend fun addToCartSipFund(request: AddCartSipRequest): NetworkResponse<Unit, ErrorDomain> {
+    override suspend fun addToCartSipFund(request: AddCartSipRequestDto): NetworkResponse<Unit, ErrorDomain> {
         val response= safeRequest<AddCartSipResponseDto> {
             client.post(getUrl("/mf/sip-cart")){
                 setBody(

@@ -6,12 +6,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -24,7 +28,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,8 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
@@ -70,42 +71,9 @@ import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.mode
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.MutualFundTopPicksUiModel
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsEvent
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsUiState
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsViewModel
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-
-@Preview(heightDp = 1500)
-@Composable
-fun ExploreFundsScreenPreview() {
-    JantaNiveshTheme {
-        Scaffold { paddingValues ->
-            ExploreFundsScreen(
-                uiState = ExploreFundsUiState(
-                    mutualFundList = listOf(
-                        MutualFundTopPicksUiModel(
-                            icon = "",
-                            name = "SBI Gold Fund",
-                            metadata = "Equity, Sectoral/Thematic, High Risk",
-                            returnYears = 3,
-                            percentage = 18.5,
-                            id = "1"
-                        )
-                    ),
-                    fixedDepositList = listOf(
-                        FixedTopPicksUiModel(
-                            icon = "",
-                            name = "SBI Bank",
-                            metadata = "LOW RISK",
-                            percentage = 7.25,
-                            id = "2"
-                        )
-                    )
-                ),
-                handleEvent = {},
-                modifier = Modifier.padding(paddingValues).padding(Spacing.dp16)
-            )
-        }
-    }
-}
 
 @Composable
 fun ExploreFundsScreen(
@@ -113,15 +81,54 @@ fun ExploreFundsScreen(
     handleEvent: (ExploreFundsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(Spacing.dp24), modifier = modifier) {
+    when {
+        uiState.isLoading -> {
+            LoaderScreen(
+                modifier = modifier.fillMaxSize()
+            )
+        }
+
+        uiState.showError -> {
+            ErrorScreen(
+                modifier = modifier.fillMaxSize(),
+                errorMessage = uiState.error,
+                onRetryClick = {
+                    handleEvent(ExploreFundsEvent.LoadInitialData)
+                }
+            )
+        }
+
+        else -> {
+            ExploreFundsContent(
+                uiState = uiState,
+                handleEvent = handleEvent,
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+fun ExploreFundsContent(
+    uiState: ExploreFundsUiState,
+    handleEvent: (ExploreFundsEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
+        modifier = modifier,
+        contentPadding = PaddingValues(bottom = Spacing.dp8, top = Spacing.dp12)
+    ) {
         item {
             Text(
-                "Want to invest", style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                "Want to invest", style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier= Modifier.padding(horizontal = Spacing.dp16)
             )
         }
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp24)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp24),
+                modifier= Modifier.padding(horizontal = Spacing.dp20)) {
                 IconButtonCard(
                     onClick = { handleEvent(ExploreFundsEvent.OnMutualFundsCategoryClick) },
                     title = "Mutual Funds",
@@ -140,51 +147,76 @@ fun ExploreFundsScreen(
                 )
             }
         }
-        item {
-            Row(modifier = Modifier.padding(vertical = Spacing.dp24)) {
-                Text(
-                    "Top Picks ", style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    "Mutual Funds", style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = SelectedBoxBorder
-                )
-            }
-        }
-        item {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
-                items(uiState.mutualFundList) { fund ->
-                    TopPicksMfCard( // TODO adjust Sizing of composable
-                        fund = fund,
-                        onInvestClick = { handleEvent(ExploreFundsEvent.OnMutualFundInvestClick(fund.id)) }
+        if (uiState.mutualFundList.isNotEmpty()){
+            item {
+                Row(
+                    modifier = Modifier.padding(
+                        vertical = Spacing.dp8,
+                        horizontal = Spacing.dp16
+                    )
+                ) {
+                    Text(
+                        "Top Picks ", style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        "Mutual Funds", style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = SelectedBoxBorder
                     )
                 }
             }
+            item {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                    contentPadding = PaddingValues(horizontal = Spacing.dp16)
+                ) {
+                    items(uiState.mutualFundList) { fund ->
+                        TopPicksMfCard(
+                            fund = fund,
+                            onInvestClick = {
+                                handleEvent(
+                                    ExploreFundsEvent.OnMutualFundInvestClick(
+                                        fund.id
+                                    )
+                                )
+                            }
+                        )
+                    }
+                }
+            }
         }
-        item {
-            Row(modifier = Modifier.padding(vertical = Spacing.dp24)) {
-                Text(
-                    "Top Picks ", style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    "Fixed Deposit", style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = SelectedBoxBorder
+        if (uiState.fixedDepositList.isNotEmpty()){
+            item {
+                Row(
+                    modifier = Modifier.padding(
+                        vertical = Spacing.dp8,
+                        horizontal = Spacing.dp16
+                    )
+                ) {
+                    Text(
+                        "Top Picks ", style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        "Fixed Deposit", style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = SelectedBoxBorder
+                    )
+                }
+            }
+            items(uiState.fixedDepositList) { fd ->
+                TopPicksFixedDepositCard(
+                    fund = fd,
+                    onClick = { handleEvent(ExploreFundsEvent.OnFixedDepositClick(fd.id)) },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp16)
                 )
             }
         }
-        items(uiState.fixedDepositList) { fd ->
-            TopPicksFixedDepositCard(
-                fund = fd,
-                onClick = { handleEvent(ExploreFundsEvent.OnFixedDepositClick(fd.id)) },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
         item {
-            StartWealthCard()
+            StartWealthCard(
+                modifier = Modifier.padding(horizontal = Spacing.dp16, vertical = Spacing.dp24)
+            )
         }
     }
 }
@@ -199,15 +231,16 @@ private fun IconButtonCard(
     modifier: Modifier = Modifier
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.genericDropShadow(RoundedCornerShape(Spacing.dp24))
+        modifier = modifier
+            .aspectRatio(1f)
+            .genericDropShadow(RoundedCornerShape(Spacing.dp24))
             .clip(
                 RoundedCornerShape(Spacing.dp24)
             )
             .background(color = White)
             .clickable(onClick = onClick)
-            .padding(vertical = Spacing.dp24)
     ) {
         Icon(
             painterResource(icon),
@@ -220,7 +253,8 @@ private fun IconButtonCard(
         Text(
             title,
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-            color = Black
+            color = Black,
+            modifier= Modifier.padding(top = Spacing.dp16)
         )
     }
 }
@@ -232,8 +266,8 @@ fun TopPicksMfCard(
     modifier: Modifier = Modifier
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
-        modifier = modifier.fillMaxWidth()
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
+        modifier = modifier.width(IntrinsicSize.Min)
             .genericDropShadow(RoundedCornerShape(Spacing.dp24))
             .clip(RoundedCornerShape(Spacing.dp24))
             .border(width = Spacing.dp1, color = LightGrayBorder).background(White)
@@ -266,28 +300,29 @@ fun TopPicksMfCard(
                     SubcomposeAsyncImageContent()
                 }
             )
-            if (fund.metadata.contains("High Risk")) {
+            if (fund.metadata.contains("High Risk", ignoreCase = true)) {
                 Text(
                     "HIGH RISK",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.clip(RoundedCornerShape(Spacing.dp8))
                         .background(color = MaterialTheme.colorScheme.errorContainer)
                         .padding(horizontal = Spacing.dp8, vertical = Spacing.dp4)
                 )
-            } else if (fund.metadata.contains("Low Risk")) {
+            } else if (fund.metadata.contains("Low Risk", ignoreCase = true)) {
                 Text(
                     "LOW RISK",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
         }
-        Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
             Text(
                 fund.name,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2
             )
             Text(
                 fund.metadata,
@@ -301,9 +336,10 @@ fun TopPicksMfCard(
                 width = Spacing.dp1,
                 color = LightGrayBorder,
                 shape = RoundedCornerShape(Spacing.dp12)
-            ).padding(Spacing.dp16)
+            ).padding(Spacing.dp16),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     "${fund.returnYears}Y RETURNS",
                     style = MaterialTheme.typography.labelSmall,
@@ -312,7 +348,7 @@ fun TopPicksMfCard(
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
                         "${fund.percentage}%",
-                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                         color = SelectedBoxBorder
                     )
                     Text(
@@ -325,7 +361,7 @@ fun TopPicksMfCard(
             Icon(
                 painter = painterResource(Res.drawable.upward_trend_icon),
                 contentDescription = null,
-                modifier = Modifier.height(Spacing.dp64),
+                modifier = Modifier.fillMaxHeight(),
                 tint = SecondaryPrimary
             )
         }
@@ -336,7 +372,7 @@ fun TopPicksMfCard(
                 containerColor = Primary,
                 contentColor = White
             ),
-            modifier = Modifier.fillMaxWidth().padding(Spacing.dp16)
+            modifier = Modifier.width(250.dp)
         ) {
             Text(
                 "Invest Now →",
@@ -511,5 +547,47 @@ fun MutualFundIcon(
             style = MaterialTheme.typography.headlineSmall,
             color = textColor
         )
+    }
+}
+
+@Preview(heightDp = 1500)
+@Composable
+fun ExploreFundsScreenPreview() {
+    JantaNiveshTheme {
+        Scaffold { paddingValues ->
+            ExploreFundsScreen(
+                uiState = ExploreFundsUiState(
+                    mutualFundList = listOf(
+                        MutualFundTopPicksUiModel(
+                            icon = "",
+                            name = "SBI Gold Fund",
+                            metadata = "Equity, Sectoral/Thematic, High Risk",
+                            returnYears = 3,
+                            percentage = 18.5,
+                            id = "1"
+                        ),
+                        MutualFundTopPicksUiModel(
+                            icon = "",
+                            name = "SBI Gold Fund",
+                            metadata = "Equity, Sectoral/Thematic, High Risk",
+                            returnYears = 3,
+                            percentage = 18.5,
+                            id = "2"
+                        )
+                    ),
+                    fixedDepositList = listOf(
+                        FixedTopPicksUiModel(
+                            icon = "",
+                            name = "SBI Bank",
+                            metadata = "LOW RISK",
+                            percentage = 7.25,
+                            id = "2"
+                        )
+                    )
+                ),
+                handleEvent = {},
+                modifier = Modifier
+            )
+        }
     }
 }

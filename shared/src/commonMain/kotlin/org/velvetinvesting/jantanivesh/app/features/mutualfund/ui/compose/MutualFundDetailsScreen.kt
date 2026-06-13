@@ -241,13 +241,13 @@ fun MutualFundDetailsScreenContent(
                                         FundTypeSelector.updateFundTypeToLumpSum()
                                         onShowBottomSheet()
                                     },
-                                    pv = pv,
+                                    pv = PaddingValues(),
                                     enabled = true
                                 )
                             } else {
                                 NextButtonFooter(
                                     onClick = onShowBottomSheet,
-                                    pv = pv,
+                                    pv = PaddingValues(),
                                     value = "Add to Cart"
                                 )
                             }
@@ -269,7 +269,9 @@ fun MutualFundDetailsScreenContent(
 
                         if (cartState.dayDropDownExpanded) {
                             AppDialogList(
-                                items = data.sipAllowedDated,
+                                items = data.sipAllowedDated.ifEmpty {
+                                    (1..30).toList()
+                                },
                                 textFormatter = {
                                     it.toString()
                                 },

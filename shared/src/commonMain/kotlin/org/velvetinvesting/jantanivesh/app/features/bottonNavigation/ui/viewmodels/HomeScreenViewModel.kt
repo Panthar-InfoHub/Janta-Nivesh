@@ -7,16 +7,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.GoalsSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 
 sealed interface HomeScreenEvent {
+
+    data object LoadData : HomeScreenEvent
     data object OnNotificationClicked : HomeScreenEvent
     data object OnInvestInFdClicked : HomeScreenEvent
     data object OnInvestInMfClicked : HomeScreenEvent
     data object OnCreateGoalClicked : HomeScreenEvent
     data object OnInsuranceClicked : HomeScreenEvent
     data object OnVerifyKycClicked : HomeScreenEvent
+    data object OnTradingSetupClick : HomeScreenEvent
     data object OnGoToGoalsClicked : HomeScreenEvent
+    data class OnGoalClicked(val goalId: String) : HomeScreenEvent
     data object OnCreateCustomGoalClicked : HomeScreenEvent
 }
 
@@ -27,16 +35,23 @@ sealed interface HomeScreenSideEffect {
     data object NavigateToCreateGoal : HomeScreenSideEffect
     data object NavigateToInsurance : HomeScreenSideEffect
     data object NavigateToKycVerification : HomeScreenSideEffect
+    data object NavigateToTradingVerification : HomeScreenSideEffect
     data object NavigateToGoals : HomeScreenSideEffect
-    data object NavigateToCustomGoal : HomeScreenSideEffect
+    data class NavigateToSpecificGoal(val goalId: String) : HomeScreenSideEffect
 }
 
-class HomeViewModel : ViewModel() {
+class HomeScreenViewModel(
+    private val getUserDataUseCase: GetUserDataUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
 
     private val _sideEffect = Channel<HomeScreenSideEffect>()
     val sideEffect = _sideEffect.receiveAsFlow()
+
+    init {
+        loadData()
+    }
 
     fun onEvent(event: HomeScreenEvent) {
         viewModelScope.launch {
@@ -48,31 +63,49 @@ class HomeViewModel : ViewModel() {
                 HomeScreenEvent.OnInsuranceClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToInsurance)
                 HomeScreenEvent.OnVerifyKycClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToKycVerification)
                 HomeScreenEvent.OnGoToGoalsClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToGoals)
-                HomeScreenEvent.OnCreateCustomGoalClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToCustomGoal)
+                HomeScreenEvent.OnCreateCustomGoalClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToCreateGoal)
+                HomeScreenEvent.LoadData -> loadData()
+                is HomeScreenEvent.OnGoalClicked ->{
+                    _sideEffect.send(HomeScreenSideEffect.NavigateToSpecificGoal(event.goalId))
+                }
+                HomeScreenEvent.OnTradingSetupClick -> _sideEffect.send(HomeScreenSideEffect.NavigateToTradingVerification)
             }
+        }
+    }
+
+    private fun loadData() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(isLoading = true, showError = false, error = "")
+            }
+
+            getUserDataUseCase()
+                .onSuccess { userData ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            username = userData.name,
+                            goals = userData.goals,
+                            kycVerified = userData.kycVerified,
+                            tradingAccountVerified = userData.tradingAccountVerified
+                        )
+                    }
+                }
+
         }
     }
 }
 
 data class HomeScreenUiState(
-    val username: String = "Aham",
-    val timeOfDay: String = "",
-    val portfolioValue: String = "245680",
-    val fixedDepositsAmount: String = "150000",
-    val mutualFundsAmount: String = "95680",
-    val pnlTrend: String = "+5.3",
-    val goals: List<Goal> = listOf(
-        Goal(
-            name = "New Car", amount = "175000", progress = 0.35f
-        ),
-        Goal(
-            name = "Emergency", amount = "175000", progress = 0.35f
-        )
-    )
-)
-
-data class Goal(
-    val name: String,
-    val amount: String,
-    val progress: Float,
+    val isLoading: Boolean = false,
+    val showError: Boolean = false,
+    val error: String = "",
+    val username: String = "",
+    val portfolioValue: String = "",
+    val fixedDepositsAmount: String = "",
+    val mutualFundsAmount: String = "",
+    val pnlTrend: String = "",
+    val goals: List<GoalsSummaryDomain> = emptyList(),
+    val kycVerified: Boolean = false,
+    val tradingAccountVerified: Boolean = false
 )

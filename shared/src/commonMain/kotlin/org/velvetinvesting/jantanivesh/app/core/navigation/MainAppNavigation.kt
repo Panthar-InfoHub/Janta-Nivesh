@@ -1,0 +1,341 @@
+package org.velvetinvesting.jantanivesh.app.core.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.AllBundlesScreen
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.BundleResultScreenRoot
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.CategoryMutualFundScreenRoot
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.InvestmentMethodScreen
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundDetailsScreenRoot
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundSearchScreenRoot
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartScreen
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountSuccess
+import androidx.navigation.toRoute
+
+@Composable
+fun MainAppNavigation(
+    onSignOut: () -> Unit
+) {
+
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = Route.BottomNav
+    ) {
+
+        //KYC Graph
+        composable<Route.KycGraph> {
+            KycNavigation(
+                onBackNavigation = {navController.popBackStack()},
+            )
+        }
+
+        //Trading Account Graph
+        composable<Route.TradingAccountNavigation> {
+            TradingAccountNavigation(
+                onBackClick = {navController.popBackStack()},
+                onCompletion = {
+                    navController.navigate(Route.TradingAccountSuccess) {
+                        popUpTo<Route.TradingAccountNavigation> {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+        composable<Route.TradingAccountSuccess> {
+            TradingAccountSuccess(
+                onButtonClick = {
+                    navController.navigate(Route.MutualFundTypeSelectionScreen){
+                        launchSingleTop= true
+                    }
+                },
+                buttonText = "Start Investing"
+            )
+        }
+
+
+
+        composable<Route.MutualFundTypeSelectionScreen> {
+            InvestmentMethodScreen(
+                onStartSipClick = {
+                    FundTypeSelector.updateFundTypeToSIP()
+                    navController.navigate(Route.CategoryMutualFund) {
+                        launchSingleTop = true
+                    }
+                },
+                onLumpsumClick = {
+                    FundTypeSelector.updateFundTypeToLumpSum()
+                    navController.navigate(Route.CategoryMutualFund) {
+                        launchSingleTop = true
+                    }
+                },
+                onExistingSIPFundClick = {
+                    navController.navigate(Route.ExistingFundScreen)
+                },
+                onExistingLumpSumFundClick = {
+                    navController.navigate(Route.ExistingFundLumpSumScreen)
+                },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+
+        composable<Route.CategoryMutualFund> {
+            CategoryMutualFundScreenRoot(
+                onBackClick = { navController.popBackStack() },
+                onIconClick = {
+                    navController.navigate(Route.CartScreen) {
+                        launchSingleTop = true
+                    }
+                },
+                onFundClick = { id: String ->
+                    navController.navigate(Route.MutualFundDetails(id)) {
+                        launchSingleTop = true
+                    }
+                },
+                onSearchClick = { search: String ->
+                    navController.navigate(Route.MutualFundSearchResult(search)) {
+                        launchSingleTop = true
+                    }
+                },
+                onCategoryClick = { id: String ->
+                    navController.navigate(Route.MutualFundSearchResult(fundCategory = id)) {
+                        launchSingleTop = true
+                    }
+                },
+                onBundledFundClick = { bundleKey: String ->
+                    navController.navigate(Route.BundleResultScreen(bundleKey))
+                },
+                onBundleClick = {
+                    navController.navigate(Route.AllBundleScreen)
+                }
+            )
+        }
+
+        composable<Route.MutualFundSearchResult> {
+            val route = it.toRoute<Route.MutualFundSearchResult>()
+            MutualFundSearchScreenRoot(
+                onBackClick = { navController.popBackStack() },
+                onFundClick = { id: String ->
+                    navController.navigate(Route.MutualFundDetails(id)) {
+                        launchSingleTop = true
+                    }
+                },
+                searchText = route.search,
+                category = route.fundCategory,
+                onSearchClick = { search: String ->
+                    navController.navigate(Route.MutualFundSearchResult(search = search))
+                },
+                heading = "Mutual Funds"
+            )
+        }
+
+        composable<Route.MutualFundDetails> {
+            val route = it.toRoute<Route.MutualFundDetails>()
+            MutualFundDetailsScreenRoot(
+                id = route.id,
+                folioId = route.folioId,
+                onBackClick = { navController.popBackStack() },
+                onCartClick = {
+                    navController.navigate(Route.CartScreen)
+                },
+                onKycClick = {
+                    navController.navigate(Route.KycGraph) {
+                        launchSingleTop = true
+                    }
+                },
+                onTradingAccountClick = {
+                    navController.navigate(Route.TradingAccountNavigation) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        composable<Route.CartScreen> {
+            CartScreen(
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<Route.BundleResultScreen> {
+            val route = it.toRoute<Route.BundleResultScreen>()
+            BundleResultScreenRoot(
+                bundleKey = route.bundleKey,
+                heading = "Bundle Funds",
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onCartClick = {
+                    navController.navigate(Route.CartScreen)
+                },
+                onFundClick = { id: String ->
+                    navController.navigate(Route.MutualFundDetails(id)) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        composable<Route.AllBundleScreen> {
+            AllBundlesScreen(
+                onBackClick = { navController.popBackStack() },
+                onBundleClick = { bundleKey: String ->
+                    navController.navigate(Route.BundleResultScreen(bundleKey)) {
+                        launchSingleTop = true
+                    }
+                },
+                onCartClick = {
+                    navController.navigate(Route.CartScreen)
+                }
+            )
+        }
+
+
+        //Bottom Navigation
+        composable<Route.BottomNav> {
+            BottomNavigation(
+                navigateToSIPDetailsScreen = {folio->
+                    navController.navigate(Route.FolioFundScreen(folio)) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToFDDetailsScreen = { id ->
+                    navController.navigate(Route.FixedDepositDetails(id)) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToMutualFundTypeSelectionScreen = {
+                    navController.navigate(Route.MutualFundTypeSelectionScreen) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToCategoryFDScreen = {
+                    navController.navigate(Route.FixedDepositSearchResult()) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToFireReportScreen = {
+                    navController.navigate(Route.FireReport) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToKYCScreen = {
+                    navController.navigate(Route.CheckKYC) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToGoalScreen = {
+                    navController.navigate(Route.GoalsScreen) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToNotification = {
+                    navController.navigate(Route.Notifications) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToPersonalInfo = {
+                    navController.navigate(Route.PersonalInformation) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToMutualFundDetailScreen = {
+                    navController.navigate(Route.MutualFundDetails(it)) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToHealthInsurance = {
+                    navController.navigate(Route.HealthInsurance) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToTermInsurance = {
+                    navController.navigate(Route.TermInsurance) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToOtherInsurance = {
+                    navController.navigate(Route.OtherInsurance) {
+                        launchSingleTop = true
+                    }
+
+                },
+                navigateToAddGoal={
+                    navController.navigate(Route.SingleGoadAdd){
+                        launchSingleTop=true
+                    }
+                },
+                navigateToSpecificGoalProjection={id->
+                    navController.navigate(Route.GoalProjectionFlow(id))
+                },
+                navigateToMutualFundList={
+                    navController.navigate(
+                        Route.MutualFundTypeSelectionScreen
+                    ){
+                        launchSingleTop=true
+                    }
+                },
+                navigateToTradingAccountSetup={
+                    navController.navigate(
+                        Route.TradingAccountNavigation
+                    )
+                },
+                navigateToFD={
+                    navController.navigate(
+                        Route.FixedDepositSearchResult()
+                    ){
+                        launchSingleTop=true
+                    }
+                },
+                navigateToPrivacyPolicy = {
+                    navController.navigate(Route.PrivacyPolicy) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToTermsAndConditions = {
+                    navController.navigate(Route.TermsAndConditions) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToAboutUs = {
+                    navController.navigate(Route.AboutUs) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToAboutVelvet = {
+                    navController.navigate(Route.AboutVelvet) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToAboutFire = {
+                    navController.navigate(Route.AboutFire) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToKYC = {
+                    navController.navigate(Route.CheckKYC) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToInvestmentRateScree={
+                    navController.navigate(Route.InvestmentRateScreen){
+                        launchSingleTop=true
+                    }
+                },
+                navigateToPortfolioFdDetailsScreen={id->
+                    navController.navigate(Route.FDPortfolioDetailsScreen(id)){
+                        launchSingleTop=true
+                    }
+                },
+                onSignOut = onSignOut
+            )
+        }
+    }
+}
