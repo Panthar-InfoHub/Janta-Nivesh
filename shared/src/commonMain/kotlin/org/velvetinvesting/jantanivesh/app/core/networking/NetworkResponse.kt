@@ -14,6 +14,7 @@ data class ErrorDomain(
 
 enum class ErrorType {
     MF_KYC_REQUIRED,
+    MF_TRADING_ACCOUNT_REQUIRED,
     NO_INTERNET,
     SERIALIZATION,
     UNKNOWN,

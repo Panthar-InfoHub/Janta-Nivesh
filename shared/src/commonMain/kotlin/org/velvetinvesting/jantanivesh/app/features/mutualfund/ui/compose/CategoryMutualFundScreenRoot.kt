@@ -40,6 +40,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.ShadowColor
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBar
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
@@ -164,9 +165,9 @@ fun CategoryMutualFundScreen(
 ) {
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .padding(horizontal = Spacing.dp16),
         verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(start = 16.dp)
     ) {
         item {
             AppSearchBar(

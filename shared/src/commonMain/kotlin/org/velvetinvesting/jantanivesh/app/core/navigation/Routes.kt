@@ -50,6 +50,9 @@ sealed interface Route {
     data object KycSuccess : Route
 
     @Serializable
+    data object MainAppGraph : Route
+
+    @Serializable
     data object TradingAccountNavigation: Route
 
     @Serializable
@@ -124,4 +127,79 @@ sealed interface Route {
 
     @Serializable
     data class CancelSIPReason(val id: String) : Route
+
+
+    @Serializable
+    data object BottomNav
+    @Serializable
+    data object Home
+    @Serializable
+    data object FundScreener
+    @Serializable
+    data object PortFolio
+    @Serializable
+    data object Insurance
+    @Serializable
+    data object Profile
+
+    @Serializable
+    data object HealthInsurance
+    @Serializable
+    data object TermInsurance
+    @Serializable
+    data object OtherInsurance
+
+    @Serializable
+    data class FixedDepositDetails(val id: String) : Route
+
+    @Serializable
+    data class FixedDepositSearchResult(
+        val search: String? = null
+    ) : Route
+
+    @Serializable
+    data object FireReport : Route
+
+    @Serializable
+    data object CheckKYC : Route
+
+    @Serializable
+    data object GoalsScreen : Route
+
+    @Serializable
+    data object Notifications : Route
+
+    @Serializable
+    data object PersonalInformation : Route
+
+    @Serializable
+    data object SingleGoadAdd : Route
+
+    @Serializable
+    data class GoalProjectionFlow(
+        val id: String
+    ) : Route
+
+    @Serializable
+    data object PrivacyPolicy : Route
+
+    @Serializable
+    data object TermsAndConditions : Route
+
+    @Serializable
+    data object AboutUs : Route
+
+    @Serializable
+    data object AboutVelvet : Route
+
+    @Serializable
+    data object AboutFire : Route
+
+    @Serializable
+    data object InvestmentRateScreen : Route
+
+    @Serializable
+    data class FDPortfolioDetailsScreen(
+        val id: String
+    ) : Route
 }

@@ -128,6 +128,7 @@ suspend fun parseServerError(
 fun String?.toErrorType(): ErrorType {
     return when (this) {
         "MF_KYC_REQUIRED" -> ErrorType.MF_KYC_REQUIRED
+        "TRADING_KYC_REQUIRED" -> ErrorType.MF_TRADING_ACCOUNT_REQUIRED
         else -> ErrorType.SERVER
     }
 }

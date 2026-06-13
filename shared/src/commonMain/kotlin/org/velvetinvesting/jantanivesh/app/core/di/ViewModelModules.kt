@@ -3,6 +3,8 @@ package org.velvetinvesting.jantanivesh.app.core.di
 import org.koin.dsl.module
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberViewModel
 import org.koin.core.module.dsl.viewModel
+import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsViewModel
+import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingViewModel
@@ -39,4 +41,7 @@ val viewModelModule = module {
     viewModel { (search: String?, fundCategory: String?) ->
         MutualFundSearchResultViewModel(search, fundCategory, get())
     }
+
+    viewModel { HomeScreenViewModel(get()) }
+    viewModel { ExploreFundsViewModel(get()) }
 }

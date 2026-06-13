@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,12 +34,13 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.features.core.utils.loadingQuotes
 @Composable
-fun LoaderScreen(){
+fun LoaderScreen(modifier: Modifier= Modifier) {
 
     var quote by remember{mutableStateOf(loadingQuotes.random())}
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
+            .background(Color.White)
             .clickable(
                 onClick = {
                     quote=loadingQuotes.random()
@@ -50,7 +52,7 @@ fun LoaderScreen(){
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ){
 
 //            VelvetLoader()
@@ -58,7 +60,7 @@ fun LoaderScreen(){
             Text(
                 text = quote,
                 color = Primary,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.fillMaxWidth().padding(24.dp),
                 textAlign = TextAlign.Center
             )

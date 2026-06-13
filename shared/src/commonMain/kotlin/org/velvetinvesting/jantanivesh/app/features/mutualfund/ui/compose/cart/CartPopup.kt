@@ -585,6 +585,8 @@ fun generateInvestmentChips(
     isSip: Boolean
 ): List<Long> {
 
+    val baseAmount = if (minAmount > 0) minAmount else 500L
+
     val multipliers = if (isSip) {
         listOf(1L, 2L, 5L, 10L, 20L)
     } else {
@@ -592,7 +594,7 @@ fun generateInvestmentChips(
     }
 
     return multipliers
-        .map { minAmount * it }
+        .map { baseAmount * it }
         .distinct()
 }
 
