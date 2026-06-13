@@ -300,7 +300,7 @@ fun SIPCartItem(
                 )
 
                 Text(
-                    text = "Want to Step Up SIP ?",
+                    text = "Want to Step Up SIP Anually?",
                     style = subHeading,
                     color = Primary,
                     modifier = Modifier.weight(1f)
