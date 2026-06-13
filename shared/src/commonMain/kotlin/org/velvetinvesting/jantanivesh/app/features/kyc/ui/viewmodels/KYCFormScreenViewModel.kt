@@ -1,5 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels
 
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
@@ -59,10 +61,10 @@ class KYCFormScreenViewModel(
     fun handleEvent(event: KYCFormScreenEvent) {
         when (event) {
             is KYCFormScreenEvent.OnFatherNameChanged -> _uiState.update { 
-                it.copy(formState = it.formState.copy(fatherName = event.name)) 
+                it.copy(formState = it.formState.copy(fatherName = event.name.capitalize(Locale.current)))
             }
             is KYCFormScreenEvent.OnMotherNameChanged -> _uiState.update { 
-                it.copy(formState = it.formState.copy(motherName = event.name)) 
+                it.copy(formState = it.formState.copy(motherName = event.name.capitalize(Locale.current)))
             }
             is KYCFormScreenEvent.OnOccupationChanged -> _uiState.update { 
                 it.copy(formState = it.formState.copy(occupationDescription = event.description, occupationCode = event.code)) 
@@ -74,7 +76,7 @@ class KYCFormScreenViewModel(
                 it.copy(formState = it.formState.copy(gender = event.gender))
             }
             is KYCFormScreenEvent.OnPanNumberChanged -> _uiState.update {
-                it.copy(formState = it.formState.copy(panNumber = event.pan))
+                it.copy(formState = it.formState.copy(panNumber = event.pan.capitalize(Locale.current)))
             }
             is KYCFormScreenEvent.OnPlaceOfBirthChanged -> _uiState.update {
                 it.copy(formState = it.formState.copy(placeOfBirth = event.place))

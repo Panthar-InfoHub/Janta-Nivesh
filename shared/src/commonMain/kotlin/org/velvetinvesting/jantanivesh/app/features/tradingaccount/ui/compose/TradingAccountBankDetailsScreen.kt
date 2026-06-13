@@ -61,7 +61,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
 
-@Preview(showBackground = true, locale = "hi")
+@Preview(showBackground = true, locale = "hi", heightDp = 1500)
 @Composable
 fun TradingAccountBankDetailsPreview() {
     JantaNiveshTheme {
