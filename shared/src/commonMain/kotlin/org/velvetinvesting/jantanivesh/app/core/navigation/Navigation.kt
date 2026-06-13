@@ -25,31 +25,54 @@ fun BaseNavigation() {
         startDestination = startDestination
     ) {
 
-        //Login Graph
         composable<Route.LoginGraph> {
             LoginNavigation(
                 navigateToOnboardingGraph = {
-                    navController.navigate(Route.OnboardingGraph)
+                    navController.navigate(Route.OnboardingGraph) {
+                        launchSingleTop = true
+
+                        popUpTo<Route.LoginGraph> {
+                            inclusive = true
+                        }
+                    }
                 },
                 navigateToMainAppFlow = {
-                    navController.navigate(Route.KycGraph)
+                    navController.navigate(Route.MainAppGraph) {
+                        launchSingleTop = true
+
+                        popUpTo<Route.LoginGraph> {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
 
-        //Onboarding Graph
         composable<Route.OnboardingGraph> {
             OnboardingNavigation(
                 onCompleted = {
-                    navController.navigate(Route.KycGraph)
+                    navController.navigate(Route.MainAppGraph) {
+                        launchSingleTop = true
+
+                        popUpTo<Route.OnboardingGraph> {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
 
-        //Main App Graph
         composable<Route.MainAppGraph> {
-            MainAppNavigation (
-                onSignOut={navController.navigate(Route.LoginGraph){popUpTo(0) { inclusive=true }} }
+            MainAppNavigation(
+                onSignOut = {
+                    navController.navigate(Route.LoginGraph) {
+                        launchSingleTop = true
+
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
     }
