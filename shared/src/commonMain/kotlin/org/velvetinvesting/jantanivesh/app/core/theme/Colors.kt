@@ -78,3 +78,16 @@ val PercentageGreenBg = Color(0x0d144F03)
 val DarkNavy = Color(0xff03144F)
 val SlateGray = Color(0xff94A3B8)
 val GradientEnd = Color(0xff1D2B64)
+
+//Insurance Screen Color
+val InsuranceBoxBackground=Color(0xFFE5EEFF)
+val GrayIcon =Color(0xFFC5C6D0)
+val FeatureCardText=Color(0xff0B1C30)
+
+
+//term insurance
+val LogoBackgroundColor = Color(0xffE4E1E7)
+val Gray65: Color = Color(0xff656565)
+val Gray444:Color = Color(0xff44464F)
+val tagColor:Color =Color(0xffF5F2FB)
+val placeholderColor:Color = Color(0xff757780)
