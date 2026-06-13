@@ -36,8 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.info_filled_icon
-import jantanivesh.shared.generated.resources.info_icon
-import jantanivesh.shared.generated.resources.receipt_icon
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.GuardianRelation
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
@@ -52,7 +50,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButt
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.OnBoardingDateField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.Data
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.TradingAccountFormDomain
@@ -232,7 +229,7 @@ fun TradingAccountGuardianDetailScreen(
                     onClick = onClick,
                     pv = pv,
                     value = "Continue to step 3 →",
-                    enabled = uiState.guardianScreenButtonEnabled
+                    enabled = uiState.guardianScreenButtonEnabled,
                 )
             }
 

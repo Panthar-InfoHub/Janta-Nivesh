@@ -11,33 +11,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -48,11 +46,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.dropdown_outlined_icon
 import jantanivesh.shared.generated.resources.edit_icon
 import jantanivesh.shared.generated.resources.ic_feature_compounding
-import jantanivesh.shared.generated.resources.share_icon
+import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.BackgroundFill
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
@@ -62,7 +62,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.HighlightRowBg
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectTenureCardColor
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.TagMaxReturnBg
@@ -72,10 +71,12 @@ import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.filterDigits
 import org.velvetinvesting.jantanivesh.app.core.utils.math.toYearsFormatKmp
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDFaqDomain
@@ -86,122 +87,166 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FDTenureUiModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsUiState
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundIcon
 
 @Composable
 fun FdDetailsScreen(
-    pv: PaddingValues,
+    state: FdDetailsUiState,
+    onEvent: (FdDetailsEvent) -> Unit,
+    modifier: Modifier = Modifier
+){
+    when {
+        state.isLoading -> {
+            LoaderScreen(
+                modifier = modifier.fillMaxSize()
+            )
+        }
+
+        state.errorMessage != null -> {
+            ErrorScreen(
+                modifier = modifier.fillMaxSize(),
+                errorMessage = state.errorMessage,
+                onRetryClick = {
+                    onEvent(FdDetailsEvent.LoadData)
+                }
+            )
+        }
+
+        state.details == null -> {
+            ErrorScreen(
+                modifier = modifier.fillMaxSize(),
+                errorMessage = "Unable to load FD details",
+                onRetryClick = {
+                    onEvent(FdDetailsEvent.LoadData)
+                }
+            )
+        }
+
+        else -> {
+            FdDetailsContent(
+                state = state,
+                onEvent = onEvent,
+                modifier = modifier
+            )
+        }
+    }
+}
+@Composable
+fun FdDetailsContent(
     state: FdDetailsUiState,
     onEvent: (FdDetailsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (state.details == null) {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            if (state.isLoading) {
-                Text("Loading")
-            } else {
-                Text(state.errorMessage ?: "Something went wrong")
+        ErrorScreen(
+            errorMessage = "Unable to load FD details",
+            onRetryClick = {
+                onEvent(FdDetailsEvent.LoadData)
             }
-        }
-        return
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize().statusBarsPadding().padding(top = Spacing.dp8).padding(pv)
-            .padding(horizontal = Spacing.dp16),
-    ) {
-        TopBar(
-            onBack = { onEvent(FdDetailsEvent.OnBackClicked) },
-            onShare = { onEvent(FdDetailsEvent.OnShareClicked) },
         )
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
+    }
+    else {
+        Column(
+            modifier = modifier
+                .fillMaxSize().statusBarsPadding().padding(top = Spacing.dp8),
         ) {
-            // Header Card
-            item {
-                HeaderCard(details = state.details)
-            }
-            // Investment Config Card
-            item {
-                InvestmentConfigCard(data = state, onEvent = onEvent)
-            }
-            // Tenure Options Section
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
-                    Text(
-                        text = "Tenure options",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontSize = 16.sp),
-                        color = Primary
-                    )
-
-                    TenureOptionsCard(
-                        options = state.calculatedTenures,
-                        onOptionSelected = { onEvent(FdDetailsEvent.OnTenureSelected(it)) }
-                    )
-
-                    // Disclaimers
-                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
-                        Text(
-                            text = "* Interest rates are annualized.",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                fontSize = 10.sp,
-                                lineHeight = 15.sp
-                            ),
-                            color = GreyText
-                        )
-                        Text(
-                            text = "** Calculated based on '${state.selectedPayoutMode?.displayName}' payout selection.",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                fontSize = 10.sp,
-                                lineHeight = 15.sp
-                            ),
-                            color = GreyText
-                        )
-                    }
+            TopBar(
+                onBack = { onEvent(FdDetailsEvent.OnBackClicked) },
+                onShare = { onEvent(FdDetailsEvent.OnShareClicked) },
+                modifier = Modifier.padding(horizontal = Spacing.dp16)
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = Spacing.dp16)
+                    .weight(1f),
+                contentPadding = PaddingValues(top = Spacing.dp12),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
+            ) {
+                // Header Card
+                item {
+                    HeaderCard(details = state.details)
                 }
-            }
-            // Key Features Section
-            item {
-                if (state.details.keyFeatures.isNotEmpty()) {
+                // Investment Config Card
+                item {
+                    InvestmentConfigCard(data = state, onEvent = onEvent)
+                }
+                // Tenure Options Section
+                item {
                     Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
                         Text(
-                            text = "Key Features",
-                            style = MaterialTheme.typography.labelLarge,
+                            text = "Tenure options",
+                            style = MaterialTheme.typography.headlineSmall.copy(fontSize = 16.sp),
                             color = Primary
                         )
 
-                        for (feature in state.details.keyFeatures) {
-                            FeatureCard(feature = feature)
+                        TenureOptionsCard(
+                            options = state.filteredTenures,
+                            onOptionSelected = { onEvent(FdDetailsEvent.OnTenureSelected(it)) }
+                        )
+
+                        // Disclaimers
+                        Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
+                            Text(
+                                text = "* Interest rates are annualized.",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    fontSize = 10.sp,
+                                    lineHeight = 15.sp
+                                ),
+                                color = GreyText
+                            )
+                            Text(
+                                text = "** Calculated based on '${state.selectedPayoutMode?.displayName}' payout selection.",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    fontSize = 10.sp,
+                                    lineHeight = 15.sp
+                                ),
+                                color = GreyText
+                            )
+                        }
+                    }
+                }
+                // Key Features Section
+                item {
+                    if (state.details.keyFeatures.isNotEmpty()) {
+                        Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
+                            Text(
+                                text = "Key Features",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = Primary
+                            )
+
+                            for (feature in state.details.keyFeatures) {
+                                FeatureCard(feature = feature)
+                            }
+                        }
+                    }
+                }
+                // FAQs Section
+            item {
+                if (state.details.faqs.isNotEmpty()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
+                        Text(
+                            text = "FAQs",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = Primary
+                        )
+                        for (faq in state.details.faqs) {
+                            FaqCard(faq = faq)
                         }
                     }
                 }
             }
-        // FAQs Section
-//            item {
-//                if (state.details.faqs.isNotEmpty()) {
-//                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
-//                        Text(
-//                            text = "FAQs",
-//                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-//                            color = Primary
-//                        )
-//                        for (faq in state.details.faqs) {
-//                            FaqCard(faq = faq)
-//                        }
-//                    }
-//                }
-//            }
-            item{
-                Spacer(modifier = Modifier.height(Spacing.dp16).fillMaxWidth())
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.dp16).fillMaxWidth())
+                }
             }
+            NextButtonFooter(
+                value = "Invest Now",
+                onClick = { onEvent(FdDetailsEvent.OnInvestNowClicked) },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
-        AppButton(
-            text = "Invest Now",
-            onClick = { onEvent(FdDetailsEvent.OnInvestNowClicked) },
-            modifier = Modifier.fillMaxWidth().navigationBarsPadding()
-        )
     }
 }
 
@@ -214,18 +259,6 @@ private fun TopBar(onBack: () -> Unit, onShare: () -> Unit, modifier: Modifier =
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AppBackButton(onClick = onBack)
-
-        IconButton(
-            onClick = onShare,
-            colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent)
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.share_icon),
-                contentDescription = "Share",
-                tint = SelectedBoxBorder,
-                modifier = Modifier.size(Spacing.dp20)
-            )
-        }
     }
 }
 
@@ -244,31 +277,35 @@ private fun HeaderCard(details: FDDetailsDomain) {
                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(Spacing.dp40)
-                        .clip(CircleShape)
-                        .background(GreyBox),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (details.bankLogo.isNotEmpty()) {
-                        AsyncImage(
-                            model = details.bankLogo,
-                            contentDescription = "Bank Logo",
-                            modifier = Modifier
-                                .size(Spacing.dp40)
-                                .clip(CircleShape)
-                                .background(SelectTenureCardColor)
+                SubcomposeAsyncImage(
+                    model = details.bankLogo,
+                    contentDescription = "Bank Logo",
+                    modifier = Modifier.size(Spacing.dp48),
+
+                    loading = {
+                        MutualFundIcon(
+                            schemeName = details.bankName,
+                            size = Spacing.dp40,
+                            cornerRadius = Spacing.dp40,
+                            backgroundColor = GreyBox,
+                            textColor = Primary
                         )
-                    } else {
-                        Text(
-                            text = details.bankName.take(1) + details.bankName.substringAfter(" ")
-                                .take(1),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                            color = Primary
+                    },
+
+                    error = {
+                        MutualFundIcon(
+                            schemeName = details.bankName,
+                            size = Spacing.dp40,
+                            cornerRadius = Spacing.dp40,
+                            backgroundColor = GreyBox,
+                            textColor = Primary
                         )
+                    },
+
+                    success = {
+                        SubcomposeAsyncImageContent()
                     }
-                }
+                )
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
                         text = details.bankName,
@@ -357,6 +394,9 @@ private fun InvestmentConfigCard(
     data: FdDetailsUiState,
     onEvent: (FdDetailsEvent) -> Unit
 ) {
+    var isFocused by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Box(
         modifier = Modifier
             .fillMaxWidth().genericDropShadow(RoundedCornerShape(Spacing.dp12))
@@ -383,8 +423,7 @@ private fun InvestmentConfigCard(
                     horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val focusRequester = remember { FocusRequester() }
-                    val keyboardController = LocalSoftwareKeyboardController.current
+
                     AppTextField(
                         value = data.investInput,
                         onValueChange = { onEvent(FdDetailsEvent.OnUpdateInvest(it.filterDigits())) },
@@ -397,20 +436,36 @@ private fun InvestmentConfigCard(
                                     .clip(CircleShape)
                                     .background(HighlightRowBg)
                                     .clickable {
-                                        focusRequester.requestFocus()
-                                        keyboardController?.show()
+                                        if (!isFocused) {
+                                            focusRequester.requestFocus()
+                                            keyboardController?.show()
+                                        } else {
+                                            keyboardController?.hide()
+                                            focusRequester.freeFocus()
+                                        }
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
-                                    painter = painterResource(Res.drawable.edit_icon),
-                                    contentDescription = "Edit Amount",
+                                    painter = painterResource(
+                                        if (isFocused) {
+                                            Res.drawable.tick_icon
+                                        } else {
+                                            Res.drawable.edit_icon
+                                        }
+                                    ),
+                                    contentDescription = null,
                                     tint = Primary,
                                     modifier = Modifier.size(Spacing.dp14)
                                 )
                             }
                         },
-                        modifier = Modifier.weight(1f).focusRequester(focusRequester),
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequester)
+                            .onFocusChanged {
+                                isFocused = it.isFocused
+                            },
                         style = AppTextFieldDefaults.style(textStyle = MaterialTheme.typography.headlineSmall)
                     )
 
@@ -776,7 +831,6 @@ fun FdDetailsScreenPreview() {
         )
 
         FdDetailsScreen(
-            pv = PaddingValues(vertical = Spacing.dp16),
             state = FdDetailsUiState(
                 details = dummyDetails
             ),

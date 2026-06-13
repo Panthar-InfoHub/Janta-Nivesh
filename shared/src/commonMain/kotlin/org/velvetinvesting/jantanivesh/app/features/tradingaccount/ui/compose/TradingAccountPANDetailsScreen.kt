@@ -230,8 +230,7 @@ fun TradingAccountPANDetailsScreen(
                 NextButtonFooter(
                     onClick = onClick,
                     pv = pv,
-                    value = "Next",
-                    enabled = uiState.panVerified && uiState.verifiedPanNumber == data.primary_holder_pan
+                    enabled = uiState.panVerified && uiState.verifiedPanNumber == data.primary_holder_pan,
                 )
             }
         }

@@ -17,6 +17,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 fun BackHeader(
     title: String,
     onBack: () -> Unit,
+    showBack: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -26,7 +27,7 @@ fun BackHeader(
             .background(Color.White),
         contentAlignment = Alignment.CenterStart
     ) {
-        AppBackButton(onClick = onBack)
+        if (showBack){ AppBackButton(onClick = onBack) }
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,

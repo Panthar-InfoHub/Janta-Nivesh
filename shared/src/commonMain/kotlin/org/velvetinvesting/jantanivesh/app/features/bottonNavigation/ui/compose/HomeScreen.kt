@@ -301,10 +301,10 @@ fun HomeScreenContent(
             if (!state.tradingAccountVerified) {
                 item {
                     KycCard(
-                        title = stringResource(Res.string.home_kyc_title),
+                        title = "Setup Trading Account to Start Investing",
                         buttonText = stringResource(Res.string.home_verify_button),
                         onClick = {
-                            onEvent(HomeScreenEvent.OnVerifyKycClicked)
+                            onEvent(HomeScreenEvent.OnTradingSetupClick)
                         }
                     )
                 } }

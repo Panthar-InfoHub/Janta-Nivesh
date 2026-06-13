@@ -158,6 +158,10 @@ sealed interface Route {
     ) : Route
 
     @Serializable
+    data class PurchaseFixedDeposit(val id:String)
+
+
+    @Serializable
     data object FireReport : Route
 
     @Serializable

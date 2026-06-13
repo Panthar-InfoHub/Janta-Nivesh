@@ -20,6 +20,7 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.ReturnYears
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.FDFilterIds
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.createInitialFDFilters
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.getActiveFilterLabel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdEffect.*
 
 data class ExploreFdUiState(
     val searchQuery: String = "",
@@ -39,6 +40,8 @@ data class ExploreFdUiState(
 sealed interface ExploreFdEvent {
     data class OnSortOptionClicked(val sortOption: ReturnYears) : ExploreFdEvent
     data class OnSearchQueryChanged(val query: String) : ExploreFdEvent
+
+    data object OnSearchClick: ExploreFdEvent
     data class OnFilterChipClicked(val filter: LabelFilter) : ExploreFdEvent
     data class OnApplyFilter(val filter: InvestmentFilter) : ExploreFdEvent
     data object OnClearFilter : ExploreFdEvent
@@ -74,7 +77,6 @@ class ExploreFdViewModel(
         when (event) {
             is ExploreFdEvent.OnSearchQueryChanged -> {
                 _uiState.update { it.copy(searchQuery = event.query) }
-                loadFunds() // Reload on search
             }
             is ExploreFdEvent.OnFilterChipClicked -> {
                 // Simplified chip logic from temp
@@ -88,7 +90,7 @@ class ExploreFdViewModel(
                 clearFilter()
             }
             is ExploreFdEvent.OnFundItemClicked -> {
-                sendEffect(ExploreFdEffect.NavigateToFdDetails(event.fundItem.id))
+                sendEffect(NavigateToFdDetails(event.fundItem.id))
             }
             is ExploreFdEvent.OnSortOptionClicked -> {
                 sortByReturnDuration(event.sortOption)
@@ -104,6 +106,10 @@ class ExploreFdViewModel(
             }
             ExploreFdEvent.OnBackClicked -> {
                 sendEffect(ExploreFdEffect.NavigateBack)
+            }
+
+            ExploreFdEvent.OnSearchClick -> {
+                loadFunds()
             }
         }
     }
@@ -131,7 +137,7 @@ class ExploreFdViewModel(
     }
 
     private fun sortByReturnDuration(sortOption: ReturnYears){
-        TODO("Handle sort by return duration")
+      //  TODO("Handle sort by return duration")
     }
     private fun loadFunds() {
         _uiState.update { it.copy(isLoading = true) }

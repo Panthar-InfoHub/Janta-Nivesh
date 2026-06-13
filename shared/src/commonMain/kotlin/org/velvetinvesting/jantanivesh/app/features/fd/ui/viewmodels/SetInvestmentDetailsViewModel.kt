@@ -60,7 +60,6 @@ sealed interface SetInvestmentDetailsEvent {
 
 sealed interface SetInvestmentDetailsEffect {
     data object NavigateBack : SetInvestmentDetailsEffect
-    data class NavigateToPurchaseUrl(val url: String) : SetInvestmentDetailsEffect
 }
 
 class SetInvestmentDetailsViewModel(
@@ -83,11 +82,7 @@ class SetInvestmentDetailsViewModel(
                 updateAmount(event.amount)
             }
 
-            is SetInvestmentDetailsEvent.OnTenureChanged -> {
-                _uiState.update { it.copy(selectedTenure = event.tenure) }
-                calculateReturns()
-                updateButtonState()
-            }
+            is SetInvestmentDetailsEvent.OnTenureChanged -> updateTenure(event.tenure)
 
             is SetInvestmentDetailsEvent.OnPayoutModeChanged -> {
                 updatePayoutMode(event.payout)
@@ -110,26 +105,24 @@ class SetInvestmentDetailsViewModel(
         viewModelScope.launch {
             getFDDetailsUseCase(id)
                 .onSuccess { data ->
-                    val defaultPayout =
-                        data.selectedPayout ?: PayoutType.defaultSelection(data.payoutOptions)
-                    val availableTenures = if (defaultPayout != null) {
-                        data.interestRates.filter { it.payoutFrequency == defaultPayout }
-                    } else data.interestRates
-
                     _uiState.update {
                         it.copy(
                             details = data,
                             amount = data.minDeposit.toString(),
                             minAmount = data.minDeposit,
-                            selectedPayoutMode = defaultPayout,
-                            availableTenures = availableTenures,
-                            selectedTenure = availableTenures.find { it.isDefault }
-                                ?: availableTenures.firstOrNull(),
+
+                            frequencies = data.payoutOptions,
+
+                            selectedPayoutMode = null,
+                            selectedTenure = null,
+
+                            availableTenures = emptyList(),
+
                             isLoading = false,
                             errorMessage = null
                         )
                     }
-                    calculateReturns()
+
                     updateButtonState()
                 }
                 .onError { error ->
@@ -166,18 +159,32 @@ class SetInvestmentDetailsViewModel(
         updateButtonState()
     }
 
+    private fun updateTenure(tenure: FDTenureDomain) {
+        _uiState.update {
+            it.copy(
+                selectedTenure = tenure
+            )
+        }
+
+        calculateReturns()
+        updateButtonState()
+    }
+
     private fun updatePayoutMode(payout: PayoutType) {
         _uiState.update { state ->
-            val filteredTenures = state.details?.interestRates?.filter {
-                it.payoutFrequency == payout
-            } ?: emptyList()
+
+            val filteredTenures = state.details
+                ?.interestRates
+                ?.filter { it.payoutFrequency == payout }
+                ?: emptyList()
 
             state.copy(
                 selectedPayoutMode = payout,
                 availableTenures = filteredTenures,
-                selectedTenure = null // Reset tenure when payout changes as per temp logic
+                selectedTenure = null
             )
         }
+
         calculateReturns()
         updateButtonState()
     }
@@ -232,13 +239,15 @@ class SetInvestmentDetailsViewModel(
     private fun updateButtonState() {
         _uiState.update { state ->
             val amount = state.amount.toLongOrNull()
-            val isEnabled = state.selectedTenure != null &&
-                    state.selectedPayoutMode != null &&
-                    amount != null &&
-                    amount >= state.minAmount &&
-                    !state.showError
 
-            state.copy(isButtonEnabled = isEnabled)
+            state.copy(
+                isButtonEnabled =
+                    state.selectedTenure != null &&
+                            amount != null &&
+                            amount > 0 &&
+                            amount >= state.minAmount &&
+                            !state.showError
+            )
         }
     }
 
@@ -261,7 +270,8 @@ class SetInvestmentDetailsViewModel(
             purchaseFDUseCase(body)
                 .onSuccess { url ->
                     _uiState.update { it.copy(isPurchasing = false) }
-                    sendEffect(SetInvestmentDetailsEffect.NavigateToPurchaseUrl(url))
+                    browserLaunchUseCase.launchBrowser(url)
+                    sendEffect(SetInvestmentDetailsEffect.NavigateBack)
                 }
                 .onError { error ->
                     _uiState.update {

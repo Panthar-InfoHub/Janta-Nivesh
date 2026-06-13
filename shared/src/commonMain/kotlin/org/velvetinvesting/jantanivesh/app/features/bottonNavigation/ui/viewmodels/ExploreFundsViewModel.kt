@@ -14,6 +14,7 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.FixedTopPicksUiModel
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.MutualFundTopPicksUiModel
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPickFDUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundTopPicksUseCase
 
 data class ExploreFundsUiState(
@@ -46,7 +47,7 @@ sealed interface ExploreFundsEffect {
 }
 class ExploreFundsViewModel(
     private val getMutualFundTopPicksUseCase: GetMutualFundTopPicksUseCase,
-//    private val getFixedDepositTopPicksUseCase: GetTopPickFDUseCase
+    private val getFixedDepositTopPicksUseCase: GetTopPickFDUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExploreFundsUiState())
@@ -119,7 +120,7 @@ class ExploreFundsViewModel(
             }
 
             val fdDeferred = async {
-//                getFixedDepositTopPicksUseCase()
+                getFixedDepositTopPicksUseCase()
             }
 
             val mutualResponse = mutualDeferred.await()
@@ -153,24 +154,24 @@ class ExploreFundsViewModel(
                     errorMessage = it.message
                 }
 
-//            fdResponse
-//                .onSuccess { data ->
-//
-//                    hasAnySuccess = true
-//
-//                    fixedDeposits = data.map { fd ->
-//                        FixedTopPicksUiModel(
-//                            id = fd.id,
-//                            icon = fd.bankLogo,
-//                            name = fd.bankName,
-//                            metadata = fd.riskType,
-//                            percentage = fd.interestRate
-//                        )
-//                    }
-//                }
-//                .onError {
-//                    errorMessage = it.message
-//                }
+            fdResponse
+                .onSuccess { data ->
+
+                    hasAnySuccess = true
+
+                    fixedDeposits = data.map { fd ->
+                        FixedTopPicksUiModel(
+                            id = fd.id,
+                            icon = fd.bankLogoUrl,
+                            name = fd.bankName,
+                            metadata = fd.riskLevel.label,
+                            percentage = fd.baseInterest
+                        )
+                    }
+                }
+                .onError {
+                    errorMessage = it.message
+                }
 
             if (hasAnySuccess) {
 

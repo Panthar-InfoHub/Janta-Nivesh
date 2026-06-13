@@ -188,7 +188,7 @@ fun BundleResultScreenContent(
                     NextButtonFooter(
                         onClick = onShowCartSheet,
                         pv = PaddingValues(0.dp),
-                        value = "Add To Cart"
+                        value = "Add To Cart",
                     )
                 },
                 containerColor = Color.White

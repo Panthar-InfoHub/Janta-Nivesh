@@ -16,95 +16,78 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.search_icon
-import org.jetbrains.compose.resources.painterResource
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
-import org.velvetinvesting.jantanivesh.app.core.theme.PreviewBackground
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.core.utils.math.toYearsFormatKmp
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldStyle
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBar
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdUiState
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundIcon
 
 @Composable
 fun ExploreFdScreen(
-    pv: PaddingValues,
     state: ExploreFdUiState,
     onEvent: (ExploreFdEvent) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier
-            .fillMaxSize().statusBarsPadding().padding(top = Spacing.dp8).padding(pv)
+            .fillMaxSize()
+            .background(Color.White).statusBarsPadding()
             .padding(horizontal = Spacing.dp16),
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
     ) {
-        AppTextField(
+        BackHeader(
+            title = "Fixed Deposits",
+            onBack = { onEvent(ExploreFdEvent.OnBackClicked) }
+        )
+        AppSearchBar(
             value = state.searchQuery,
-            onValueChange = { onEvent(ExploreFdEvent.OnSearchQueryChanged(it)) },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = {
-                Text(
-                    "Search FDs...",
-                    style = MaterialTheme.typography.labelMedium
+            onTextChange = {
+                onEvent(
+                    ExploreFdEvent.OnSearchQueryChanged(it)
                 )
             },
-            leadingIcon = {
-                Icon(
-                    painterResource(Res.drawable.search_icon),
-                    contentDescription = "Search",
-                    modifier = Modifier.size(Spacing.dp18),
-                    tint = GreyText
-                )
-            },
-            style = AppTextFieldStyle(
-                shape = AppTextFieldDefaults.style().shape,
-                textStyle = AppTextFieldDefaults.style().textStyle,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = FilterChipUnselected,
-                    focusedContainerColor = FilterChipUnselected,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
-                )
-            )
+            placeholder = "Search FDs...",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = Spacing.dp16),
+            onSearchClick = {
+                if (state.searchQuery.isNotBlank()) {
+                    onEvent(ExploreFdEvent.OnSearchClick)
+                }
+            }
         )
 
         if (state.isLoading) {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text("Loading...")
-            }
+            LoaderScreen()
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().weight(1f),
-                verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                contentPadding = PaddingValues(vertical = Spacing.dp12)
             ) {
                 items(state.fundsList) { fundItem ->
                     FundListItem(
@@ -182,9 +165,9 @@ private fun FundListItem(
 ) {
     Row(
         modifier = Modifier
-            .genericDropShadow(RoundedCornerShape(Spacing.dp24))
+            .genericDropShadow(LocalShapes.current.roundedDp12)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp24))
+            .clip(LocalShapes.current.roundedDp12)
             .background(White)
             .clickable { onClick() }
             .padding(horizontal = Spacing.dp16, vertical = Spacing.dp20),
@@ -196,27 +179,31 @@ private fun FundListItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(Spacing.dp40)
-                    .clip(RoundedCornerShape(Spacing.dp8))
-                    .background(GreyBox),
-                contentAlignment = Alignment.Center
-            ) {
-                if (item.bankLogoUrl.isNotEmpty()) {
-                    AsyncImage(
-                        model = item.bankLogoUrl,
-                        contentDescription = "Bank Logo",
-                        contentScale = ContentScale.FillBounds
+            SubcomposeAsyncImage(
+                model = item.bankLogoUrl,
+                contentDescription = "Bank Logo",
+                modifier = Modifier.size(Spacing.dp40),
+
+                loading = {
+                    MutualFundIcon(
+                        schemeName = item.bankName,
+                        size = Spacing.dp40,
+                        cornerRadius = Spacing.dp8
                     )
-                } else {
-                    Text(
-                        text = item.bankName.take(1),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Primary
+                },
+
+                error = {
+                    MutualFundIcon(
+                        schemeName = item.bankName,
+                        size = Spacing.dp40,
+                        cornerRadius = Spacing.dp8
                     )
+                },
+
+                success = {
+                    SubcomposeAsyncImageContent()
                 }
-            }
+            )
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     text = item.bankName,
@@ -249,7 +236,7 @@ private fun FundListItem(
                 color = Primary
             )
             Text(
-                text = (item.tenures.firstOrNull()?.tenureDays?.toYearsFormatKmp() + " Return"),
+                text =  "3Y Return",
                 style = MaterialTheme.typography.titleSmall,
                 color = GreyText
             )
@@ -276,12 +263,10 @@ fun ExploreFdScreenPreview() {
             )
         )
         ExploreFdScreen(
-            pv = PaddingValues(vertical = Spacing.dp16),
             state = ExploreFdUiState(
                 fundsList = dummyData
             ),
             onEvent = {},
-            modifier = Modifier.background(PreviewBackground)
         )
     }
 }

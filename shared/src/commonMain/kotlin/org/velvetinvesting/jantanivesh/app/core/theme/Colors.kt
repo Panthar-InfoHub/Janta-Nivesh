@@ -9,6 +9,8 @@ val appRed=Color(0xffFF0600)
 val Primary= Color(0xff23336E)
 val InterestChip = Color(0xffC6E7FF)
 val InterestChipBorder = Color(0x3382CFFF)
+
+val ShadowColor = Color(0xffDEE2F6).copy(alpha = 0.75f)
 val TextOnPrimary= Color(0xffffffff)
 val PrimaryContainer= Color(0xffd7e2ff)
 val Background= Color(0xfffbfcff)

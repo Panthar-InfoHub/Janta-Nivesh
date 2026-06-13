@@ -69,7 +69,7 @@ fun KYCPopup(
             Text(
                 text="Verify Identity (KYC)\n" +
                         "Just Few Steps",
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center,
                 color = Color.Black
             )

@@ -247,8 +247,7 @@ fun MutualFundDetailsScreenContent(
                             } else {
                                 NextButtonFooter(
                                     onClick = onShowBottomSheet,
-                                    pv = PaddingValues(),
-                                    value = "Add to Cart"
+                                    value = "Add to Cart",
                                 )
                             }
                         }
@@ -917,7 +916,7 @@ fun MutualFundIcon(
     ) {
         Text(
             text = schemeName
-                .take(2).capitalize(Locale.current),
+                .take(1).capitalize(Locale.current),
             style = MaterialTheme.typography.headlineSmall,
             color = textColor
         )

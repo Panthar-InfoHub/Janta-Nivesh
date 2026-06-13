@@ -1,9 +1,24 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.ExploreFdScreen
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.FdDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.SetInvestmentDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdEffect
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdViewModel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEffect
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEffect
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.AllBundlesScreen
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.BundleResultScreenRoot
@@ -13,7 +28,6 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.Mutual
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundSearchScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountSuccess
-import androidx.navigation.toRoute
 
 @Composable
 fun MainAppNavigation(
@@ -320,7 +334,7 @@ fun MainAppNavigation(
                     }
                 },
                 navigateToKYC = {
-                    navController.navigate(Route.CheckKYC) {
+                    navController.navigate(Route.KycGraph) {
                         launchSingleTop = true
                     }
                 },
@@ -337,5 +351,62 @@ fun MainAppNavigation(
                 onSignOut = onSignOut
             )
         }
+
+        //FD
+        composable<Route.FixedDepositSearchResult> {
+            val search= it.toRoute<Route.FixedDepositSearchResult>().search
+            val vm: ExploreFdViewModel = koinViewModel()
+            val uiState by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect){
+                vm.effect.collect { effect ->
+                    when(effect){
+                        ExploreFdEffect.NavigateBack -> navController.popBackStack()
+                        is ExploreFdEffect.NavigateToFdDetails -> navController.navigate(Route.FixedDepositDetails(effect.id))
+                    }
+                }
+            }
+            ExploreFdScreen(
+                state = uiState,
+                onEvent = vm::handleEvent
+            )
+        }
+        composable<Route.FixedDepositDetails> {
+            val id = it.toRoute<Route.FixedDepositDetails>().id
+            val vm: FdDetailsViewModel = koinViewModel(parameters = { parametersOf(id) })
+            val uiState by vm.uiState.collectAsStateWithLifecycle()
+            LaunchedEffect(vm.effect){
+                vm.effect.collect { effect ->
+                    when(effect){
+                        FdDetailsEffect.NavigateBack -> navController.popBackStack()
+                        is FdDetailsEffect.NavigateToSetInvestmentDetails -> {
+                            navController.navigate(Route.PurchaseFixedDeposit(id))
+                        }
+                    }
+                }
+            }
+            FdDetailsScreen(
+                state = uiState,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.PurchaseFixedDeposit> {
+            val id = it.toRoute<Route.PurchaseFixedDeposit>().id
+            val vm: SetInvestmentDetailsViewModel= koinViewModel(parameters = { parametersOf(id) })
+            val uiState by vm.uiState.collectAsStateWithLifecycle()
+            LaunchedEffect(vm.effect){
+                vm.effect.collect { effect ->
+                    when(effect){
+                        SetInvestmentDetailsEffect.NavigateBack -> navController.popBackStack()
+                    }
+                }
+            }
+            SetInvestmentDetailsScreen(
+                state = uiState,
+                onEvent = vm::handleEvent
+            )
+        }
+
     }
 }

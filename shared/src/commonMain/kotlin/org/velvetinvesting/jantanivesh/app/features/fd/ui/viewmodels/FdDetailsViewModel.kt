@@ -15,6 +15,7 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDom
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.calculateMaturity
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEffect.*
 
 data class FDTenureUiModel(
     val id: String,
@@ -36,7 +37,13 @@ data class FdDetailsUiState(
     val errorMessage: String? = null,
     val activeSheet: FDModalType? = null,
     val investInput: String = "",
-)
+){
+    val filteredTenures: List<FDTenureUiModel>
+        get() = calculatedTenures.filter { tenure ->
+            selectedPayoutMode == null ||
+                    tenure.payoutFrequency.id == selectedPayoutMode.id
+        }.reversed()
+}
 
 enum class FDModalType {
     PAYOUT,
@@ -46,6 +53,7 @@ enum class FDModalType {
 
 sealed interface FdDetailsEvent {
     data object OnBackClicked : FdDetailsEvent
+    data object LoadData : FdDetailsEvent
     data object OnShareClicked : FdDetailsEvent
     data class OnUpdateInvest(val amount: String) : FdDetailsEvent
     data class OnUpdatePayout(val payout: PayoutType) : FdDetailsEvent
@@ -61,7 +69,6 @@ sealed interface FdDetailsEvent {
 sealed interface FdDetailsEffect {
     object NavigateBack : FdDetailsEffect
     data class NavigateToSetInvestmentDetails(val id: String) : FdDetailsEffect
-    data class ShareFdDetails(val message: String) : FdDetailsEffect
 }
 
 class FdDetailsViewModel(
@@ -83,7 +90,7 @@ class FdDetailsViewModel(
             FdDetailsEvent.OnBackClicked -> sendEffect(FdDetailsEffect.NavigateBack)
             FdDetailsEvent.OnShareClicked -> {
                 _uiState.value.details?.let {
-                    sendEffect(FdDetailsEffect.ShareFdDetails("Check out this FD from ${it.bankName}"))
+//                    sendEffect(FdDetailsEffect.ShareFdDetails("Check out this FD from ${it.bankName}"))
                 }
             }
             FdDetailsEvent.OnEditAmountClicked -> {
@@ -112,12 +119,14 @@ class FdDetailsViewModel(
             }
             FdDetailsEvent.OnInvestNowClicked -> {
                 _uiState.value.details?.let {
-                    sendEffect(FdDetailsEffect.NavigateToSetInvestmentDetails(it.id))
+                    sendEffect(NavigateToSetInvestmentDetails(it.id))
                 }
             }
             FdDetailsEvent.OnCloseSheet -> {
                 _uiState.update { it.copy(activeSheet = null) }
             }
+
+            FdDetailsEvent.LoadData -> loadFdDetails()
         }
     }
 

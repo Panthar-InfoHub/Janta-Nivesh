@@ -50,5 +50,5 @@ val viewModelModule = module {
     }
 
     viewModel { HomeScreenViewModel(get()) }
-    viewModel { ExploreFundsViewModel(get()) }
+    viewModel { ExploreFundsViewModel(get(),get()) }
 }

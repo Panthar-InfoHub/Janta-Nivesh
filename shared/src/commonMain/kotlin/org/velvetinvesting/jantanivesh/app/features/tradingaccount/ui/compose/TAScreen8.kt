@@ -275,8 +275,7 @@ fun TradingAccountGuardianPanScreen(
                 NextButtonFooter(
                     onClick = onClick,
                     pv = pv,
-                    value = "Next",
-                    enabled = uiState.panVerified && uiState.verifiedPanNumber == data.guardian_pan
+                    enabled = uiState.panVerified && uiState.verifiedPanNumber == data.guardian_pan,
                 )
             }
         }

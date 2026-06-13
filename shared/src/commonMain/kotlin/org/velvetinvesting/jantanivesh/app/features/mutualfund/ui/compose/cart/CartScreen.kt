@@ -160,8 +160,8 @@ fun CartScreen(
                             total
                         )
                     }",
+                    enabled = isPurchaseEnabled,
                     loading = loading,
-                    enabled = isPurchaseEnabled
                 )
             }
             if (popupVisible) {
