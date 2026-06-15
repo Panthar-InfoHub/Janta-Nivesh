@@ -526,7 +526,6 @@ private fun GoalCard(
         )
 
         Column {
-
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier
