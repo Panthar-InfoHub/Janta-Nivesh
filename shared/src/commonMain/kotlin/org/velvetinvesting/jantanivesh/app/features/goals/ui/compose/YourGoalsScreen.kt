@@ -2,8 +2,8 @@ package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,8 +31,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.arrow_front_icon
 import jantanivesh.shared.generated.resources.education_icon
 import jantanivesh.shared.generated.resources.icon_callender
 import jantanivesh.shared.generated.resources.plus_icon
@@ -46,127 +49,137 @@ import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyWithUnits
-import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.GoalsSummaryDomain
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.progressPercent
-import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
-import org.velvetinvesting.jantanivesh.app.features.core.domain.models.GoalOption
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.IconButtonColors
-import androidx.compose.material3.IconButtonDefaults
-import jantanivesh.shared.generated.resources.arrow_front_icon
 import org.velvetinvesting.jantanivesh.app.core.theme.UploadBoxBackground
+import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.progressPercent
+import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
-
-data class YourGoalsScreenState(
-    val totalGoalProgressAmt: String = "35,50,000",
-    val goalTargetAmt: String = "2.35 Cr",
-    val goalPercentage: String = "75",
-    val goals: List<GoalsSummaryDomain> = listOf(
-        GoalsSummaryDomain(
-            goalTypes = GoalOption("Child Education", GoalType.ChildEducation),
-            amount = 100000,
-            targetAmount = 2000000,
-            goalId = "1"
-        )
-    )
-)
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiState
 
 @Preview(showBackground = true)
 @Composable
 fun YourGoalsScreenPreview() {
     JantaNiveshTheme {
-        YourGoalsScreen(YourGoalsScreenState())
+        YourGoalsScreen(
+            pv = PaddingValues(0.dp),
+            state = YourGoalsUiState(),
+            onBackClick = {},
+            handleEvent = {}
+        )
     }
 }
 
 @Composable
-fun YourGoalsScreen(state: YourGoalsScreenState, modifier: Modifier = Modifier) {
+fun YourGoalsScreen(
+    pv: PaddingValues,
+    state: YourGoalsUiState,
+    onBackClick: () -> Unit,
+    handleEvent: (YourGoalsEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = modifier.fillMaxSize().padding(horizontal = Spacing.dp16),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(pv)
+            .padding(horizontal = Spacing.dp16),
     ) {
         LocalBackHeader(
             title = "Your Goals",
-            onBack = { TODO() },
+            onBack = onBackClick,
+            onAddClick = { handleEvent(YourGoalsEvent.OnAddGoalClicked) },
             modifier = Modifier.statusBarsPadding()
         )
-        LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
-        ) {
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth().background(
-                        color = GoalIconBg,
-                        shape = RoundedCornerShape(Spacing.dp12)
-                    ).padding(Spacing.dp24),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
-                        modifier = Modifier.weight(1f)
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
+            ) {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = GoalIconBg,
+                                shape = RoundedCornerShape(Spacing.dp12)
+                            )
+                            .padding(Spacing.dp24),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            "Total Goal Progress",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = GreyText
-                        )
-                        Text(
-                            "₹ ${state.totalGoalProgressAmt}",
-                            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                            color = Primary
-                        )
-                    }
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
-                        horizontalAlignment = Alignment.End,
-                        modifier = Modifier.weight(0.5f)
-                    ) {
-                        Text(
-                            "Target: ₹ ${state.goalTargetAmt}",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = GreyText
-                        )
-                        Row(
-                            modifier = Modifier.background(color = FilterChipUnselected).padding(
-                                vertical = Spacing.dp4,
-                                horizontal = Spacing.dp8
-                            ),
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.dp4),
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
+                            modifier = Modifier.weight(1f)
                         ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.upward_trend_arrow),
-                                contentDescription = null,
-                                tint = SelectedBoxBorder,
-                                modifier = Modifier.size(Spacing.dp12)
+                            Text(
+                                "Total Goal Progress",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = GreyText
                             )
                             Text(
-                                "${state.goalPercentage}%",
-                                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                                "₹ ${state.totalGoalProgressAmt}",
+                                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                                 color = Primary
                             )
                         }
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier.weight(0.5f)
+                        ) {
+                            Text(
+                                "Target: ₹ ${state.goalTargetAmt}",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = GreyText
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .background(color = FilterChipUnselected)
+                                    .padding(
+                                        vertical = Spacing.dp4,
+                                        horizontal = Spacing.dp8
+                                    ),
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.dp4),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.upward_trend_arrow),
+                                    contentDescription = null,
+                                    tint = SelectedBoxBorder,
+                                    modifier = Modifier.size(Spacing.dp12)
+                                )
+                                Text(
+                                    "${state.goalPercentage}%",
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                                    color = Primary
+                                )
+                            }
+                        }
                     }
                 }
+                items(state.goals) { goal ->
+                    GoalCard(
+                        goal = goal,
+                        onClick = { handleEvent(YourGoalsEvent.OnGoalCardClicked(goal.goalId)) }
+                    )
+                }
             }
-            items(state.goals) {
-                GoalCard(it)
-            }
+
+            AppButton(
+                text = "Invest Now",
+                onClick = { handleEvent(YourGoalsEvent.OnInvestNowClicked) },
+                modifier = Modifier
+                    .genericDropShadow()
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
+                style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16))
+            )
         }
-        AppButton(
-            text = "Invest Now",
-            onClick = { TODO() },
-            modifier = Modifier.genericDropShadow().fillMaxWidth().navigationBarsPadding(),
-            style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16))
-        )
     }
 }
 
@@ -174,6 +187,7 @@ fun YourGoalsScreen(state: YourGoalsScreenState, modifier: Modifier = Modifier) 
 private fun LocalBackHeader(
     title: String,
     onBack: () -> Unit,
+    onAddClick: () -> Unit,
     showBack: Boolean = true,
     modifier: Modifier = Modifier
 ) {
@@ -193,7 +207,7 @@ private fun LocalBackHeader(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
-        IconButton(onClick = { TODO() }) {
+        IconButton(onClick = onAddClick) {
             Icon(
                 painter = painterResource(Res.drawable.plus_icon),
                 contentDescription = null,
@@ -206,6 +220,7 @@ private fun LocalBackHeader(
 @Composable
 private fun GoalCard(
     goal: GoalsSummaryDomain,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val icon = when (goal.goalTypes.type) {
@@ -260,7 +275,7 @@ private fun GoalCard(
             }
             Spacer(Modifier.weight(1f))
             IconButton(
-                onClick = { TODO() },
+                onClick = onClick,
                 shape = CircleShape,
                 colors = IconButtonDefaults.iconButtonColors(containerColor = UploadBoxBackground),
                 modifier = Modifier.size(Spacing.dp32)

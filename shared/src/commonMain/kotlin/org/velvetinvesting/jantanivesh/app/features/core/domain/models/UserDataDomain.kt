@@ -1,6 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.core.domain.models
 
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.GoalsSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 
 data class UserDataDomain (
     val name:String,

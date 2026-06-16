@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.flag_icon
 import jantanivesh.shared.generated.resources.tick_icon
@@ -49,22 +51,17 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-
-data class ProjectedImpactScreenState(
-    val todayCost: String = "1,00,000",
-    val futureValue: String = "1,00,000",
-    val targetYear: String = "2027",
-    val monthlySip: String = "1,665",
-    val feasibilityScore: Float = 0.75f,
-    val wealthBuildingStatus: String = "Increased By ₹ 5,000"
-)
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactEvent
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactUiState
 
 @Preview(showBackground = true)
 @Composable
 fun ProjectedImpactScreenPreview() {
     JantaNiveshTheme {
         ProjectedImpactScreen(
-            state = ProjectedImpactScreenState(),
+            pv = PaddingValues(0.dp),
+            state = ProjectedImpactUiState(),
+            handleEvent = {},
             modifier = Modifier.background(White)
         )
     }
@@ -72,43 +69,50 @@ fun ProjectedImpactScreenPreview() {
 
 @Composable
 fun ProjectedImpactScreen(
-    state: ProjectedImpactScreenState, // Replace with your actual state class name
+    pv: PaddingValues,
+    state: ProjectedImpactUiState,
+    handleEvent: (ProjectedImpactEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
+            .padding(pv)
             .padding(horizontal = Spacing.dp16)
     ) {
         BackHeader(
             title = "Projected Impact",
-            onBack = { TODO() },
+            onBack = { handleEvent(ProjectedImpactEvent.OnBackClicked) },
             modifier = Modifier.statusBarsPadding()
         )
 
-        GoalAnalysisCard(
-            state = state,
-            modifier = Modifier
-                .fillMaxWidth()
-                .genericDropShadow()
-                .background(White, RoundedCornerShape(Spacing.dp32))
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        AppButton(
-            text = "Invest Now",
-            onClick = { TODO() },
-            modifier = Modifier
-                .genericDropShadow()
-                .fillMaxWidth()
-                .navigationBarsPadding(),
-            style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16))
-        )
+        Column(modifier = Modifier.fillMaxSize()) {
+            GoalAnalysisCard(
+                state = state,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .genericDropShadow()
+                    .background(White, RoundedCornerShape(Spacing.dp32))
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            AppButton(
+                text = "Invest Now",
+                onClick = { handleEvent(ProjectedImpactEvent.OnInvestNowClicked) },
+                modifier = Modifier
+                    .genericDropShadow()
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
+                style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16))
+            )
+        }
     }
 }
 
 @Composable
 private fun GoalAnalysisCard(
-    state: ProjectedImpactScreenState,
+    state: ProjectedImpactUiState,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -226,7 +230,7 @@ private fun WealthBuildingStatus(
             )
         }
 
-        Spacer(modifier = Modifier.height(Spacing.dp8)) // Replaced Column arrangement with Spacer for slightly better Row scoping if needed, or keep original.
+        Spacer(modifier = Modifier.height(Spacing.dp8))
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),

@@ -3,6 +3,8 @@ package org.velvetinvesting.jantanivesh.app.core.di
 import org.koin.dsl.module
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberViewModel
 import org.koin.core.module.dsl.viewModel
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.ExploreFundsViewModel
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsViewModel
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceViewModel
@@ -24,6 +26,10 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.Cate
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundSearchResultViewModel
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.FinancialGoalViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MainGoalsViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
 
 val viewModelModule = module {
 
@@ -55,4 +61,9 @@ val viewModelModule = module {
     viewModel { ExploreFundsViewModel(get(),get()) }
     viewModel { InsuranceViewModel() }
     viewModel { RequestCallbackViewModel() }
+
+    viewModel { MainGoalsViewModel(get()) }
+    viewModel { YourGoalsViewModel(get()) }
+    viewModel { FinancialGoalViewModel(get()) }
+    viewModel { ProjectedImpactViewModel(get()) }
 }

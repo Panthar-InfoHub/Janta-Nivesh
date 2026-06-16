@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,10 +67,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.SlateGray
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.FixedTopPicksUiModel
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.MutualFundTopPicksUiModel
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsEvent
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsUiState
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.FixedTopPicksUiModel
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.MutualFundTopPicksUiModel
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.ExploreFundsEvent
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.ExploreFundsUiState
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen

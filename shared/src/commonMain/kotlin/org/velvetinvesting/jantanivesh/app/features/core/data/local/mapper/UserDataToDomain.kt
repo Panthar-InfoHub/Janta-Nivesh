@@ -1,6 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.core.data.local.mapper
 
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.GoalsSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.Data
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.UserDataDto
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.UserGoal

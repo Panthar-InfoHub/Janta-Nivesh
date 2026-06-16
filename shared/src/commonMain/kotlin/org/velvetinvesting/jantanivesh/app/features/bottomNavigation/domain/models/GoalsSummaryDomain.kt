@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models
+package org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models
 
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.GoalOption
 

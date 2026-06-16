@@ -180,7 +180,7 @@ sealed interface Route {
     data object PersonalInformation : Route
 
     @Serializable
-    data object SingleGoadAdd : Route
+    data object SingleGoalAdd : Route
 
     @Serializable
     data class GoalProjectionFlow(
