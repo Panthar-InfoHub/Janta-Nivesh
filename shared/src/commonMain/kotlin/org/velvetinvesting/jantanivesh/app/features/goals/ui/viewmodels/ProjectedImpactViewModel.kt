@@ -3,8 +3,10 @@ package org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -12,77 +14,110 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalDomain
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalSchemeDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
 import org.velvetinvesting.jantanivesh.app.features.goals.utils.GoalCalculator
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import kotlin.math.pow
 
-data class ProjectedImpactUiState(
-    val goalItemName: String = "",
-    val todayCost: String = "0",
-    val futureValue: String = "0",
-    val targetYear: String = "",
-    val monthlySip: String = "0",
-    val feasibilityScore: Float = 0.0f,
-    val wealthBuildingStatus: String = "",
-    val isLoading: Boolean = false,
-    val error: String? = null
+data class ProjectedImpactUiData(
+    val goalItemName: String,
+    val todaysCost: Long,
+    val futureValue: Double,
+    val targetYear: Int,
+    val monthlySip: Double,
+    val feasibilityScore: Float,
+    val currentSaved: Long,
+    val targetAmount: Long,
+    val increasedBy: Double,
+    val requiredMonthly: Double,
+    val schemes: List<GoalSchemeDomain>,
+    val goalId: Int,
+    val goalName: String,
+    val goalTypeId: Int?
+)
+
+data class SelectableSchemeUiModel(
+    val schemeId: Int,
+    val name: String,
+    val units: String,
+    val value: Double,
+    val isSelected: Boolean,
+    val folio: String
 )
 
 sealed interface ProjectedImpactEvent {
     data object OnBackClicked : ProjectedImpactEvent
     data object OnInvestNowClicked : ProjectedImpactEvent
-    data class LoadGoalDetails(val goalId: String) : ProjectedImpactEvent
+    data object LoadGoalDetails : ProjectedImpactEvent
+    data object OpenPortfolioSelector : ProjectedImpactEvent
+    data object ClosePortfolioSelector : ProjectedImpactEvent
+    data class ToggleSchemeSelection(val schemeId: Int) : ProjectedImpactEvent
+    data object MapSelectedSchemes : ProjectedImpactEvent
+    data class UnMapScheme(val schemeId: Int) : ProjectedImpactEvent
+    data object DeleteGoal : ProjectedImpactEvent
 }
 
 sealed interface ProjectedImpactEffect {
     data object NavigateBack : ProjectedImpactEffect
     data object NavigateToInvest : ProjectedImpactEffect
+    data object OpenPortfolioBottomSheet : ProjectedImpactEffect
+    data object ClosePortfolioBottomSheet : ProjectedImpactEffect
+    data class ShowError(val message: String) : ProjectedImpactEffect
 }
 
 class ProjectedImpactViewModel(
-    private val goalsRepository: GoalsRepository
+    val id: String,
+    private val goalsRepository: GoalsRepository,
+    private val userDataRepo: UserDataRepo
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ProjectedImpactUiState())
-    val uiState: StateFlow<ProjectedImpactUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<UiState<ProjectedImpactUiData>>(UiState.Loading)
+    val uiState: StateFlow<UiState<ProjectedImpactUiData>> = _uiState.asStateFlow()
 
     private val _effect = Channel<ProjectedImpactEffect>()
     val effect = _effect.receiveAsFlow()
+
+    private val _portfolioData = MutableStateFlow<UiState<List<SelectableSchemeUiModel>>>(UiState.Loading)
+    val portfolioData = _portfolioData.asStateFlow()
+
+    init {
+        loadGoalDetails(id)
+    }
 
     fun handleEvent(event: ProjectedImpactEvent) {
         when (event) {
             ProjectedImpactEvent.OnBackClicked -> sendEffect(ProjectedImpactEffect.NavigateBack)
             ProjectedImpactEvent.OnInvestNowClicked -> sendEffect(ProjectedImpactEffect.NavigateToInvest)
-            is ProjectedImpactEvent.LoadGoalDetails -> loadGoalDetails(event.goalId)
+            ProjectedImpactEvent.LoadGoalDetails -> loadGoalDetails(id)
+            ProjectedImpactEvent.OpenPortfolioSelector -> {
+                sendEffect(ProjectedImpactEffect.OpenPortfolioBottomSheet)
+                loadPortfolio()
+            }
+            ProjectedImpactEvent.ClosePortfolioSelector -> sendEffect(ProjectedImpactEffect.ClosePortfolioBottomSheet)
+            is ProjectedImpactEvent.ToggleSchemeSelection -> toggleSchemeSelection(event.schemeId)
+            ProjectedImpactEvent.MapSelectedSchemes -> mapSchemes()
+            is ProjectedImpactEvent.UnMapScheme -> unMapScheme(event.schemeId)
+            ProjectedImpactEvent.DeleteGoal -> deleteGoal()
         }
     }
 
     private fun loadGoalDetails(goalId: String) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            _uiState.value = UiState.Loading
             goalsRepository.getGoalById(goalId)
                 .onSuccess { goal ->
-                    val projectionData = deriveProjectionData(goal)
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            goalItemName = projectionData.goalItemName,
-                            todayCost = projectionData.todaysCost.toString(),
-                            futureValue = projectionData.futureValue.toLong().toString(),
-                            targetYear = projectionData.targetYear.toString(),
-                            monthlySip = projectionData.monthlySip.toLong().toString(),
-                            feasibilityScore = projectionData.feasibilityScore,
-                            wealthBuildingStatus = "Increased By ₹ ${(projectionData.futureValue - projectionData.todaysCost).toLong()}"
-                        )
-                    }
+                    _uiState.value = UiState.Success(deriveProjectionData(goal))
                 }
                 .onError { error ->
-                    _uiState.update { it.copy(isLoading = false, error = error.message) }
+                    _uiState.value = UiState.Error(error.message)
                 }
         }
     }
 
-    private fun deriveProjectionData(goal: GoalDomain): ProjectionImpactData {
-        val currentYear = 2024 // Placeholder, should ideally use a DateTime utility
+    private fun deriveProjectionData(goal: GoalDomain): ProjectedImpactUiData {
+        val currentYear = 2024 
 
         if (goal.goalTypeId == 3) { // Retirement
             val currentAge = goal.currentAge ?: 0
@@ -92,7 +127,7 @@ class ProjectedImpactViewModel(
             val currentMonthlyExpense = goal.currentMonthlyExpense?.toDoubleOrNull() ?: 0.0
             val inflationRate = goal.inflationRate / 100.0
             val preRetirementReturn = goal.returnRate / 100.0
-            val postRetirementReturn = goal.postRetirementReturn?.toDoubleOrNull()?.div(100.0) ?: 0.08
+            val postRetirementReturn = goal.postRetirementReturn?.toDoubleOrNull()?.div(100.0) ?: 0.06
 
             val retirementCorpus = GoalCalculator.calculateRetirementCorpus(
                 currentMonthlyExpense = currentMonthlyExpense,
@@ -114,13 +149,21 @@ class ProjectedImpactViewModel(
             val timeFactor = (yearsLeft.toDouble() / 30.0).coerceIn(0.0, 1.0)
             val feasibilityScore = (progress * 0.7 + timeFactor * 0.3).coerceIn(0.1, 1.0).toFloat()
 
-            return ProjectionImpactData(
+            return ProjectedImpactUiData(
                 goalItemName = goal.goalItemName ?: goal.goalName ?: "Retirement",
-                todaysCost = (currentMonthlyExpense * 12).toLong(),
+                goalName = goal.goalName ?: "Retirement",
+                todaysCost = currentMonthlyExpense.toLong(),
                 futureValue = retirementCorpus,
                 targetYear = currentYear + yearsLeft,
                 monthlySip = monthlySip,
-                feasibilityScore = feasibilityScore
+                feasibilityScore = feasibilityScore,
+                currentSaved = currentSaved,
+                targetAmount = targetAmount,
+                increasedBy = retirementCorpus - currentMonthlyExpense,
+                requiredMonthly = monthlySip,
+                schemes = goal.schemes,
+                goalId = goal.goalId,
+                goalTypeId = goal.goalTypeId
             )
         } else {
             val todaysCost = goal.currentGoalCost?.toLong() ?: 0L
@@ -146,14 +189,79 @@ class ProjectedImpactViewModel(
             val timeFactor = (yearsLeft.toDouble() / 30.0).coerceIn(0.0, 1.0)
             val feasibilityScore = (progress * 0.7 + timeFactor * 0.3).coerceIn(0.1, 1.0).toFloat()
 
-            return ProjectionImpactData(
+            return ProjectedImpactUiData(
                 goalItemName = goal.goalItemName ?: goal.goalName ?: "Goal",
+                goalName = goal.goalName ?: "Goal",
                 todaysCost = todaysCost,
                 futureValue = futureValue,
                 targetYear = currentYear + yearsLeft,
                 monthlySip = monthlySip,
-                feasibilityScore = feasibilityScore
+                feasibilityScore = feasibilityScore,
+                currentSaved = currentSaved,
+                targetAmount = targetAmount,
+                increasedBy = futureValue - todaysCost,
+                requiredMonthly = monthlySip,
+                schemes = goal.schemes,
+                goalId = goal.goalId,
+                goalTypeId = goal.goalTypeId
             )
+        }
+    }
+
+    private fun loadPortfolio() {
+        _portfolioData.value = UiState.Loading
+        viewModelScope.launch {
+            // Placeholder: Velvet used a dedicated endpoint /user/portfolio
+            // For now, we'll just emit an empty success state or error
+            // until we have the repository method.
+            _portfolioData.value = UiState.Success(emptyList())
+        }
+    }
+
+    private fun toggleSchemeSelection(schemeId: Int) {
+        val currentState = _portfolioData.value
+        if (currentState !is UiState.Success) return
+        _portfolioData.value = UiState.Success(
+            currentState.data.map { scheme ->
+                if (scheme.schemeId == schemeId) scheme.copy(isSelected = !scheme.isSelected) else scheme
+            }
+        )
+    }
+
+    private fun mapSchemes() {
+        val selected = (_portfolioData.value as? UiState.Success)?.data?.filter { it.isSelected }
+        if (selected.isNullOrEmpty()) return
+        
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            // Placeholder: goalsRepository.mapGoal(...) 
+            loadGoalDetails(id)
+            AppEventsController.sendGoalRefreshEvent()
+        }
+    }
+
+    private fun unMapScheme(schemeId: Int) {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            // Placeholder: goalsRepository.unMapGoal(...)
+            loadGoalDetails(id)
+            AppEventsController.sendGoalRefreshEvent()
+        }
+    }
+
+    private fun deleteGoal() {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            goalsRepository.deleteGoal(id)
+                .onSuccess {
+                    AppEventsController.sendGoalRefreshEvent()
+                    sendEffect(ProjectedImpactEffect.NavigateBack)
+                }
+                .onError { error ->
+                    // Re-derive the data to restore state
+                    loadGoalDetails(id) 
+                    sendEffect(ProjectedImpactEffect.ShowError(error.message))
+                }
         }
     }
 
@@ -163,12 +271,3 @@ class ProjectedImpactViewModel(
         }
     }
 }
-
-private data class ProjectionImpactData(
-    val goalItemName: String,
-    val todaysCost: Long,
-    val futureValue: Double,
-    val targetYear: Int,
-    val monthlySip: Double,
-    val feasibilityScore: Float
-)

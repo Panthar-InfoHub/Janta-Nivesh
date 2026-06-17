@@ -1,19 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -28,91 +16,70 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.flag_icon
 import jantanivesh.shared.generated.resources.tick_icon
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import org.jetbrains.compose.resources.painterResource
-import org.velvetinvesting.jantanivesh.app.core.theme.Black
-import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
-import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
-import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
-import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
-import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.SecondaryPrimary
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectTenureCardColor
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedTenureChipColor
-import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.core.theme.*
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.*
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactEvent
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactUiState
-
-@Preview(showBackground = true)
-@Composable
-fun ProjectedImpactScreenPreview() {
-    JantaNiveshTheme {
-        ProjectedImpactScreen(
-            pv = PaddingValues(0.dp),
-            state = ProjectedImpactUiState(),
-            handleEvent = {},
-            modifier = Modifier.background(White)
-        )
-    }
-}
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactUiData
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 
 @Composable
 fun ProjectedImpactScreen(
     pv: PaddingValues,
-    state: ProjectedImpactUiState,
+    state: UiState<ProjectedImpactUiData>,
     handleEvent: (ProjectedImpactEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(pv)
-            .padding(horizontal = Spacing.dp16)
-    ) {
-        BackHeader(
-            title = "Projected Impact",
-            onBack = { handleEvent(ProjectedImpactEvent.OnBackClicked) },
-            modifier = Modifier.statusBarsPadding()
-        )
-
-        Column(modifier = Modifier.fillMaxSize()) {
-            GoalAnalysisCard(
-                state = state,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .genericDropShadow()
-                    .background(White, RoundedCornerShape(Spacing.dp32))
+    UiStateContainer(
+        uiState = state,
+        onRetry = { handleEvent(ProjectedImpactEvent.LoadGoalDetails) }
+    ) { data ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(pv)
+                .padding(horizontal = Spacing.dp16)
+        ) {
+            BackHeader(
+                title = "Projected Impact",
+                onBack = { handleEvent(ProjectedImpactEvent.OnBackClicked) },
+                modifier = Modifier.statusBarsPadding()
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Column(modifier = Modifier.fillMaxSize()) {
+                GoalAnalysisCard(
+                    data = data,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .genericDropShadow()
+                        .background(White, RoundedCornerShape(Spacing.dp32))
+                )
 
-            AppButton(
-                text = "Invest Now",
-                onClick = { handleEvent(ProjectedImpactEvent.OnInvestNowClicked) },
-                modifier = Modifier
-                    .genericDropShadow()
-                    .fillMaxWidth()
-                    .navigationBarsPadding(),
-                style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16))
-            )
+                Spacer(modifier = Modifier.weight(1f))
+
+                AppButton(
+                    text = "Invest Now",
+                    onClick = { handleEvent(ProjectedImpactEvent.OnInvestNowClicked) },
+                    modifier = Modifier
+                        .genericDropShadow()
+                        .fillMaxWidth()
+                        .navigationBarsPadding(),
+                    style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16))
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun GoalAnalysisCard(
-    state: ProjectedImpactUiState,
+    data: ProjectedImpactUiData,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -124,22 +91,22 @@ private fun GoalAnalysisCard(
             modifier = Modifier.padding(Spacing.dp24),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
         ) {
-            GoalAnalysisHeader()
+            GoalAnalysisHeader(goalName = data.goalName)
 
             ProjectedImpactCard(
-                todayCost = "₹ ${state.todayCost}",
-                futureValue = "₹ ${state.futureValue}",
-                timeHorizon = state.targetYear,
-                requiredSip = "₹ ${state.monthlySip}"
+                todayCost = "₹ ${data.todaysCost}",
+                futureValue = "₹ ${data.futureValue.toLong()}",
+                timeHorizon = data.targetYear.toString(),
+                requiredSip = "₹ ${data.monthlySip.toLong()}"
             )
 
-            FeasibilitySection(feasibilityScore = state.feasibilityScore)
+            FeasibilitySection(feasibilityScore = data.feasibilityScore)
         }
 
         // Highlighted Status Strip Area
         WealthBuildingStatus(
-            status = state.wealthBuildingStatus,
-            monthlySip = state.monthlySip
+            increasedBy = data.increasedBy,
+            monthlySip = data.monthlySip.toLong().toString()
         )
 
         Spacer(modifier = Modifier.height(Spacing.dp20))
@@ -147,7 +114,7 @@ private fun GoalAnalysisCard(
 }
 
 @Composable
-private fun GoalAnalysisHeader(modifier: Modifier = Modifier) {
+private fun GoalAnalysisHeader(goalName: String, modifier: Modifier = Modifier) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
         verticalAlignment = Alignment.CenterVertically,
@@ -168,7 +135,7 @@ private fun GoalAnalysisHeader(modifier: Modifier = Modifier) {
                 color = GreyText
             )
             Text(
-                text = "Wealth Building",
+                text = goalName,
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
             )
         }
@@ -206,7 +173,7 @@ private fun FeasibilitySection(
 
 @Composable
 private fun WealthBuildingStatus(
-    status: String,
+    increasedBy: Double,
     monthlySip: String,
     modifier: Modifier = Modifier
 ) {
@@ -224,7 +191,7 @@ private fun WealthBuildingStatus(
                 modifier = Modifier.size(Spacing.dp20)
             )
             Text(
-                text = status,
+                text = "Increased By ₹ ${increasedBy.toLong()}",
                 style = MaterialTheme.typography.labelSmall,
                 color = Color(0xff4F2400)
             )

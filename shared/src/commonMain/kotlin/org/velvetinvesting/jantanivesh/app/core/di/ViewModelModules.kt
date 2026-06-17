@@ -26,8 +26,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.Cate
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundSearchResultViewModel
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountViewModel
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.FinancialGoalViewModel
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MainGoalsViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
 
@@ -62,8 +61,7 @@ val viewModelModule = module {
     viewModel { InsuranceViewModel() }
     viewModel { RequestCallbackViewModel() }
 
-    viewModel { MainGoalsViewModel(get()) }
     viewModel { YourGoalsViewModel(get()) }
-    viewModel { FinancialGoalViewModel(get()) }
-    viewModel { ProjectedImpactViewModel(get()) }
+    viewModel { AddGoalViewModel(get(), get()) }
+    viewModel { (id: String) -> ProjectedImpactViewModel(id, get(), get()) }
 }

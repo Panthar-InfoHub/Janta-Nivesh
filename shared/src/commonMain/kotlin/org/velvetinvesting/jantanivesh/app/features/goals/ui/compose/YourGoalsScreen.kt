@@ -60,7 +60,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiState
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
 
 @Preview(showBackground = true)
 @Composable
@@ -68,8 +68,7 @@ fun YourGoalsScreenPreview() {
     JantaNiveshTheme {
         YourGoalsScreen(
             pv = PaddingValues(0.dp),
-            state = YourGoalsUiState(),
-            onBackClick = {},
+            state = YourGoalsUiData(),
             handleEvent = {}
         )
     }
@@ -78,8 +77,7 @@ fun YourGoalsScreenPreview() {
 @Composable
 fun YourGoalsScreen(
     pv: PaddingValues,
-    state: YourGoalsUiState,
-    onBackClick: () -> Unit,
+    state: YourGoalsUiData,
     handleEvent: (YourGoalsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -91,7 +89,7 @@ fun YourGoalsScreen(
     ) {
         LocalBackHeader(
             title = "Your Goals",
-            onBack = onBackClick,
+            onBack = { handleEvent(YourGoalsEvent.OnBackClicked) },
             onAddClick = { handleEvent(YourGoalsEvent.OnAddGoalClicked) },
             modifier = Modifier.statusBarsPadding()
         )

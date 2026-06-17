@@ -29,7 +29,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MainGoalsEvent
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
 
 @Preview(showBackground = true)
 @Composable
@@ -47,7 +47,7 @@ fun MainGoalsScreenPreview() {
 fun MainGoalsScreen(
     pv: PaddingValues,
     onBackClick: () -> Unit,
-    handleEvent: (MainGoalsEvent) -> Unit,
+    handleEvent: (YourGoalsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -90,7 +90,7 @@ fun MainGoalsScreen(
 
         AppButton(
             text = "Set a Goal",
-            onClick = { handleEvent(MainGoalsEvent.OnSetGoalClicked) },
+            onClick = { handleEvent(YourGoalsEvent.OnAddGoalClicked) },
             modifier = Modifier
                 .genericDropShadow()
                 .fillMaxWidth()

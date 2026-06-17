@@ -12,13 +12,13 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 
-data class YourGoalsUiState(
+data class YourGoalsUiData(
     val totalGoalProgressAmt: String = "0",
     val goalTargetAmt: String = "0",
     val goalPercentage: String = "0",
-    val goals: List<GoalsSummaryDomain> = emptyList(),
-    val isLoading: Boolean = false
+    val goals: List<GoalsSummaryDomain> = emptyList()
 )
 
 sealed interface YourGoalsEvent {
@@ -26,6 +26,7 @@ sealed interface YourGoalsEvent {
     data object OnAddGoalClicked : YourGoalsEvent
     data object OnInvestNowClicked : YourGoalsEvent
     data class OnGoalCardClicked(val goalId: String) : YourGoalsEvent
+    data object LoadGoals : YourGoalsEvent
 }
 
 sealed interface YourGoalsEffect {
@@ -33,13 +34,14 @@ sealed interface YourGoalsEffect {
     data object NavigateToAddGoal : YourGoalsEffect
     data object NavigateToInvest : YourGoalsEffect
     data class NavigateToGoalDetails(val goalId: String) : YourGoalsEffect
+    data object NavigateToYourGoals : YourGoalsEffect
 }
 
 class YourGoalsViewModel(
     private val userDataRepo: UserDataRepo
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(YourGoalsUiState())
-    val uiState: StateFlow<YourGoalsUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<UiState<YourGoalsUiData>>(UiState.Loading)
+    val uiState: StateFlow<UiState<YourGoalsUiData>> = _uiState.asStateFlow()
 
     private val _effect = Channel<YourGoalsEffect>()
     val effect = _effect.receiveAsFlow()
@@ -50,9 +52,8 @@ class YourGoalsViewModel(
 
     private fun loadGoals() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.value = UiState.Loading
             val response = userDataRepo.getUserData()
-            _uiState.update { it.copy(isLoading = false) }
 
             if (response is NetworkResponse.Success) {
                 val goals = response.data.goals
@@ -60,14 +61,20 @@ class YourGoalsViewModel(
                 val totalTarget = goals.sumOf { it.targetAmount }
                 val percentage = if (totalTarget > 0) (totalProgress.toDouble() / totalTarget * 100).toInt() else 0
 
-                _uiState.update {
-                    it.copy(
-                        goals = goals,
-                        totalGoalProgressAmt = totalProgress.toString(),
-                        goalTargetAmt = totalTarget.toString(),
-                        goalPercentage = percentage.toString()
-                    )
+                val data = YourGoalsUiData(
+                    goals = goals,
+                    totalGoalProgressAmt = totalProgress.toString(),
+                    goalTargetAmt = totalTarget.toString(),
+                    goalPercentage = percentage.toString()
+                )
+                
+                _uiState.value = UiState.Success(data)
+                
+                if (goals.isNotEmpty()) {
+                    sendEffect(YourGoalsEffect.NavigateToYourGoals)
                 }
+            } else if (response is NetworkResponse.Error) {
+                _uiState.value = UiState.Error(response.error.message)
             }
         }
     }
@@ -78,6 +85,7 @@ class YourGoalsViewModel(
             YourGoalsEvent.OnAddGoalClicked -> sendEffect(YourGoalsEffect.NavigateToAddGoal)
             YourGoalsEvent.OnInvestNowClicked -> sendEffect(YourGoalsEffect.NavigateToInvest)
             is YourGoalsEvent.OnGoalCardClicked -> sendEffect(YourGoalsEffect.NavigateToGoalDetails(event.goalId))
+            YourGoalsEvent.LoadGoals -> loadGoals()
         }
     }
 
