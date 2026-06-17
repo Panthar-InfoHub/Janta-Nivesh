@@ -183,6 +183,8 @@ sealed interface Route {
 
     @Serializable
     data object SingleGoalAdd : Route
+    @Serializable
+    data object ViewYourGoals: Route
 
     @Serializable
     data class GoalProjectionFlow(
