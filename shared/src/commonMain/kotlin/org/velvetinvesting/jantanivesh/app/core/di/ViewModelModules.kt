@@ -23,6 +23,9 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.Cart
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CategoryMutualFundViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundSearchResultViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileViewModel
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
@@ -56,6 +59,9 @@ val viewModelModule = module {
 
     viewModel { HomeScreenViewModel(get()) }
     viewModel { ExploreFundsViewModel(get(),get()) }
+    viewModel { ProfileLanguageViewModel() }
+    viewModel { ProfileSettingViewModel() }
+    viewModel { ProfileViewModel(get()) }
     viewModel { InsuranceViewModel() }
     viewModel { RequestCallbackViewModel() }
 
