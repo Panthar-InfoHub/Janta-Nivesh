@@ -150,6 +150,9 @@ sealed interface Route {
     data object OtherInsurance
 
     @Serializable
+    data object RequestCallBack : Route
+
+    @Serializable
     data class FixedDepositDetails(val id: String) : Route
 
     @Serializable

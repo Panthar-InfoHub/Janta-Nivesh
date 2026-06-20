@@ -19,6 +19,11 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEf
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEffect
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.GeneralInsuranceScreen
+import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.HealthInsuranceScreen
+import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.RequestCallbackScreen
+import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.TermInsuranceScreen
+import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.AllBundlesScreen
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.BundleResultScreenRoot
@@ -348,6 +353,11 @@ fun MainAppNavigation(
                         launchSingleTop=true
                     }
                 },
+                navigateToRequestCallBack={
+                    navController.navigate(Route.RequestCallBack){
+                        launchSingleTop=true
+                    }
+                },
                 onSignOut = onSignOut
             )
         }
@@ -404,6 +414,48 @@ fun MainAppNavigation(
             }
             SetInvestmentDetailsScreen(
                 state = uiState,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        //Insurance
+
+        composable<Route.HealthInsurance> {
+            HealthInsuranceScreen(
+                onBack={navController.popBackStack()},
+                onRequestCallBackClick={
+                    navController.navigate(Route.RequestCallBack){
+                        launchSingleTop=true
+                    }
+                }
+            )
+        }
+        composable<Route.TermInsurance> {
+            TermInsuranceScreen(
+                onBack={navController.popBackStack()},
+                onRequestCallBackClick={
+                    navController.navigate(Route.RequestCallBack){
+                        launchSingleTop=true
+                    }
+                }
+            )
+        }
+        composable<Route.OtherInsurance> {
+            GeneralInsuranceScreen(
+                onBack={navController.popBackStack()},
+                onRequestCallBackClick={
+                    navController.navigate(Route.RequestCallBack){
+                        launchSingleTop=true
+                    }
+                }
+            )
+        }
+        composable<Route.RequestCallBack> {
+            val vm: RequestCallbackViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+            RequestCallbackScreen(
+                onBack = { navController.popBackStack() },
+                state = state,
                 onEvent = vm::handleEvent
             )
         }

@@ -5,6 +5,8 @@ import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWit
 import org.koin.core.module.dsl.viewModel
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.ExploreFundsViewModel
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenViewModel
+import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceViewModel
+import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingViewModel
@@ -51,4 +53,6 @@ val viewModelModule = module {
 
     viewModel { HomeScreenViewModel(get()) }
     viewModel { ExploreFundsViewModel(get(),get()) }
+    viewModel { InsuranceViewModel() }
+    viewModel { RequestCallbackViewModel() }
 }
