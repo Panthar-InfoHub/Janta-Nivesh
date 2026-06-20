@@ -53,7 +53,8 @@ fun InsuranceFeatureCard(modifier: Modifier= Modifier, icon: DrawableResource, t
                 ) {
                     Icon(
                         painter = painterResource(icon),
-                        contentDescription = "high coverage icon", tint = Primary
+                        contentDescription = "high coverage icon", tint = Primary,
+                        modifier= Modifier.size(20.dp)
                     )
                 }
                 Text(

@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import jantanivesh.shared.generated.resources.ins_high_coverage
 import jantanivesh.shared.generated.resources.ins_tax_benefits
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
@@ -42,18 +44,20 @@ import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.Term
 
 @Composable
 fun TermInsuranceScreen(
-    state: InsuranceUiState,
-    onEvent: (InsuranceEvent) -> Unit,
-    modifier: Modifier = Modifier
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    onRequestCallBackClick: () -> Unit
 ) {
     Scaffold { pv ->
         Column(
-            modifier.fillMaxSize().padding(horizontal = 16.dp).padding(pv),
+            modifier.fillMaxSize()
+                .background(White).padding(horizontal = 16.dp).padding(pv),
 
         ) {
             BackHeader(
                 title = "Term Insurance",
-                onBack = { onEvent(InsuranceEvent.OnBackClickedTerm) })
+                onBack = {onBack() }
+            )
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().weight(1f),
@@ -107,27 +111,27 @@ fun TermInsuranceScreen(
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     )
                 }
-                items(
-                    state.termInsurancePlansList
-                ) { plan ->
-                    InsurancePopularPlansCard(
-                        id = plan.id,
-                        icon = plan.icon,
-                        title = plan.title,
-                        subTitle = plan.subString,
-                        tag = plan.tag,
-                        coverAmount = plan.coverAmount,
-                        premium = plan.premiumAmount,
-                        onClick = { onEvent(InsuranceEvent.OnProductClickedTerm(id = plan.id)) }
-                    )
-                }
+//                items(
+//                    state.termInsurancePlansList
+//                ) { plan ->
+//                    InsurancePopularPlansCard(
+//                        id = plan.id,
+//                        icon = plan.icon,
+//                        title = plan.title,
+//                        subTitle = plan.subString,
+//                        tag = plan.tag,
+//                        coverAmount = plan.coverAmount,
+//                        premium = plan.premiumAmount,
+//                        onClick = { onEvent(InsuranceEvent.OnProductClickedTerm(id = plan.id)) }
+//                    )
+//                }
             }
 
 
 
             AppButton(
                 "Request Callback",
-                onClick = { onEvent(InsuranceEvent.OnRequestCallbackClick) },
+                onClick = { onRequestCallBackClick() },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -137,43 +141,43 @@ fun TermInsuranceScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun InsuranceFeatureCardPreview() {
-    JantaNiveshTheme {
-        TermInsuranceScreen(
-            state = InsuranceUiState(
-                termInsurancePlansList = listOf(
-                    TermInsurancePlan(
-                        id = "1",
-                        icon = "",
-                        title = "LIC Tech Term",
-                        subString = "Life Insurance Corp.",
-                        tag = "Govt. Backed",
-                        coverAmount = "₹1 Cr",
-                        premiumAmount = "₹8,400"
-                    ),
-                    TermInsurancePlan(
-                        id = "2",
-                        icon = "",
-                        title = "Click 2 Protect",
-                        subString = "HDFC Life",
-                        tag = "Popular",
-                        coverAmount = "₹1 Cr",
-                        premiumAmount = "₹9,200"
-                    ),
-                    TermInsurancePlan(
-                        id = "3",
-                        icon = "",
-                        title = "iProtect Smart",
-                        subString = "ICICI Prudential",
-                        tag = "Best Value",
-                        coverAmount = "₹1 Cr",
-                        premiumAmount = "₹8,150"
-                    )
-                )
-            ),
-            onEvent = {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun InsuranceFeatureCardPreview() {
+//    JantaNiveshTheme {
+//        TermInsuranceScreen(
+//            state = InsuranceUiState(
+//                termInsurancePlansList = listOf(
+//                    TermInsurancePlan(
+//                        id = "1",
+//                        icon = "",
+//                        title = "LIC Tech Term",
+//                        subString = "Life Insurance Corp.",
+//                        tag = "Govt. Backed",
+//                        coverAmount = "₹1 Cr",
+//                        premiumAmount = "₹8,400"
+//                    ),
+//                    TermInsurancePlan(
+//                        id = "2",
+//                        icon = "",
+//                        title = "Click 2 Protect",
+//                        subString = "HDFC Life",
+//                        tag = "Popular",
+//                        coverAmount = "₹1 Cr",
+//                        premiumAmount = "₹9,200"
+//                    ),
+//                    TermInsurancePlan(
+//                        id = "3",
+//                        icon = "",
+//                        title = "iProtect Smart",
+//                        subString = "ICICI Prudential",
+//                        tag = "Best Value",
+//                        coverAmount = "₹1 Cr",
+//                        premiumAmount = "₹8,150"
+//                    )
+//                )
+//            ),
+//            onEvent = {}
+//        )
+//    }
+//}

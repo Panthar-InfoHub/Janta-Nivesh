@@ -16,16 +16,11 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsurancePopularPlansCard
 
 data class InsuranceUiState(
-    val loading:Boolean = false,
-    //Term Insurance Screen data class
+    val loading: Boolean = false,
     var termInsurancePlansList: List<TermInsurancePlan> = emptyList(),
- var healthInsurancePlansList: List<HealthInsurancePlan> = emptyList(),
+    var healthInsurancePlansList: List<HealthInsurancePlan> = emptyList(),
     var generalInsurancePlansList: List<GeneralInsurancePlan> = emptyList(),
-   //Request Callback Screen
-
-
-//Callback successScreen
-  val requestId:String="INS-2026-0417"
+    val requestId: String = "INS-2026-0417"
 )
 
 data class TermInsurancePlan(
@@ -213,7 +208,8 @@ init {
             is InsuranceEvent.OnRequestCallbackClick->{
                 sendEffect(
                 InsuranceEffect.RequestCallback_Navigate_to_next
-                ) }
+                )
+            }
 
            is InsuranceEvent.OnTermClicked->{
                sendEffect(InsuranceEffect.TermInsurance_Navigate_to_next)

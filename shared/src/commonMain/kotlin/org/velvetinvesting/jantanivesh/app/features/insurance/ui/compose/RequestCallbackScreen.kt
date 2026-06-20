@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,9 +44,9 @@ import org.velvetinvesting.jantanivesh.app.core.theme.placeholderColor
 import org.velvetinvesting.jantanivesh.app.core.utils.isValidEmail
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceEvent
-import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceUiState
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackEvent
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackUiState
 
@@ -56,19 +55,25 @@ fun RequestCallbackScreen(
     state: RequestCallbackUiState,
     onEvent: (RequestCallbackEvent) -> Unit,
     modifier: Modifier = Modifier,
-
-
+    onBack: () -> Unit,
     ) {
     Scaffold{pv->
         Column(
-            modifier = modifier.fillMaxWidth().padding(horizontal = Spacing.dp16)
+            modifier = modifier.fillMaxWidth()
+                .background(White)
                 .padding(pv),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
 
         ) {
+            BackHeader(
+                title = "",
+                onBack=onBack,
+                modifier= Modifier.padding(horizontal = Spacing.dp16)
+            )
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier.fillMaxWidth().weight(1f)
+                    .padding(horizontal = Spacing.dp16),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(
                     Spacing.dp24
@@ -229,8 +234,8 @@ fun RequestCallbackScreen(
                 }
             }
 
-            AppButton(
-                "Submit",
+            NextButtonFooter(
+                value="Submit",
                 enabled = (state.fullName != "" && state.mobileNumber != "" && validityCheck(email = state.email)),
                 onClick = { onEvent(RequestCallbackEvent.OnSubmitClicked) },
                 modifier = Modifier.fillMaxWidth()
@@ -261,10 +266,11 @@ fun HelpTypeBox(text: String, selected: Boolean, onClick: () -> Unit) {
 }
 
 
+@Preview
 @Composable
 fun InsuranceScreenPreview2() {
     JantaNiveshTheme {
-        RequestCallbackScreen(RequestCallbackUiState(), onEvent = {})
+        RequestCallbackScreen(RequestCallbackUiState(),{}, onBack = {})
     }
 }
 

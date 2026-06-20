@@ -32,6 +32,7 @@ import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
+import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.InsuranceIntroScreen
 
 @Composable
 fun BottomNavigation(
@@ -61,7 +62,8 @@ fun BottomNavigation(
     navigateToAboutFire: () -> Unit = {},
     navigateToKYC: () -> Unit,
     navigateToInvestmentRateScree: () -> Unit,
-    navigateToPortfolioFdDetailsScreen: (String)-> Unit
+    navigateToPortfolioFdDetailsScreen: (String) -> Unit,
+    navigateToRequestCallBack: () -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -231,6 +233,7 @@ fun BottomNavigation(
                         }
                     }
                 }
+
                 ExploreFundsScreen(
                     uiState = state,
                     handleEvent = vm::handleEvent,
@@ -264,11 +267,13 @@ fun BottomNavigation(
 //                )
             }
             composable<Route.Insurance> {
-//                InsuranceNavigationScreen(
-//                   navigateToHealthInsurance=navigateToHealthInsurance,
-//                   navigateToTermInsurance=navigateToTermInsurance,
-//                   navigateToOtherInsurance=navigateToOtherInsurance
-//                )
+                InsuranceIntroScreen(
+                    navigateToHealthInsurance = navigateToHealthInsurance,
+                    navigateToTermInsurance = navigateToTermInsurance,
+                    navigateToOtherInsurance = navigateToOtherInsurance,
+                    navigateToRequestCallBackScreen = navigateToRequestCallBack,
+                    modifier = Modifier.padding(top = pv.calculateTopPadding())
+                )
             }
 
         }

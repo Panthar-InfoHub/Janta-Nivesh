@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,13 +29,16 @@ import jantanivesh.shared.generated.resources.ins_no_claim_bonus_general
 import jantanivesh.shared.generated.resources.ins_no_claim_bonus_health
 import jantanivesh.shared.generated.resources.ins_quick_claim
 import jantanivesh.shared.generated.resources.ins_tax_saving
+import kotlinx.datetime.Month
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsuranceFeatureCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsurancePopularPlansCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsurancePopularPlansCardGeneral
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.GeneralInsurancePlan
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.HealthInsurancePlan
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceEvent
@@ -43,18 +47,21 @@ import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.Insu
 
 @Composable
 fun GeneralInsuranceScreen(
-    state: InsuranceUiState,
-    onEvent:( InsuranceEvent)-> Unit,
-    modifier: Modifier= Modifier
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    onRequestCallBackClick: () -> Unit
 ){
     Scaffold { pv ->
-        Column(modifier.fillMaxSize().padding(horizontal = 16.dp).padding(pv)) {
+        Column(modifier.fillMaxSize()
+            .background(White).padding(pv)) {
             BackHeader(
                 title = "General Insurance",
-                onBack = { onEvent(InsuranceEvent.OnBackClickedGeneral) })
+                onBack = { onBack() },
+                modifier= Modifier.padding(horizontal = 16.dp)
+            )
 
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier.fillMaxWidth().weight(1f).padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(
                     Spacing.dp16
                 ),
@@ -110,26 +117,26 @@ fun GeneralInsuranceScreen(
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     )
                 }
-                items(
-                    state.generalInsurancePlansList
-                ) { plan ->
-                    InsurancePopularPlansCardGeneral(
-                        id = plan.id,
-                        icon = plan.icon,
-                        title = plan.title,
-                        subTitle = plan.subString,
-                        coverAmount = plan.coverAmount,
-                        premium = plan.premiumAmount,
-                        onClick = { onEvent(InsuranceEvent.OnProductClickedGeneral(id = plan.id)) }
-                    )
-                }
+//                items(
+//                    state.generalInsurancePlansList
+//                ) { plan ->
+//                    InsurancePopularPlansCardGeneral(
+//                        id = plan.id,
+//                        icon = plan.icon,
+//                        title = plan.title,
+//                        subTitle = plan.subString,
+//                        coverAmount = plan.coverAmount,
+//                        premium = plan.premiumAmount,
+//                        onClick = { onEvent(InsuranceEvent.OnProductClickedGeneral(id = plan.id)) }
+//                    )
+//                }
             }
 
 
 
-            AppButton(
-                "Request Callback",
-                onClick = { onEvent(InsuranceEvent.OnRequestCallBackClickedGeneral) },
+            NextButtonFooter(
+                value = "Request Callback",
+                onClick = { onRequestCallBackClick()},
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -139,43 +146,43 @@ fun GeneralInsuranceScreen(
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun InsuranceGeneralPreview() {
-    JantaNiveshTheme {
-        GeneralInsuranceScreen(
-            state = InsuranceUiState(
-                generalInsurancePlansList = listOf(
-                    GeneralInsurancePlan(
-                        id = "1",
-                        icon = "",
-                        title = "Car Insurance",
-                        subString = "Reliance General",
-
-                        coverAmount = "₹25,000",
-                        premiumAmount = "₹45"
-                    ),
-                    GeneralInsurancePlan(
-                        id = "2",
-                        icon = "",
-                        title = "Bike Insurance",
-                        subString = "HDFC ERGO",
-
-                        coverAmount = "₹5,000",
-                        premiumAmount = "₹12"
-                    ),
-                    GeneralInsurancePlan(
-                        id = "3",
-                        icon = "",
-                        title = "Home Insurance",
-                        subString = "ICICI Lombard",
-
-                        coverAmount = "₹250,000",
-                        premiumAmount = "₹85"
-                    )
-                )
-            ),
-            onEvent = {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun InsuranceGeneralPreview() {
+//    JantaNiveshTheme {
+//        GeneralInsuranceScreen(
+//            state = InsuranceUiState(
+//                generalInsurancePlansList = listOf(
+//                    GeneralInsurancePlan(
+//                        id = "1",
+//                        icon = "",
+//                        title = "Car Insurance",
+//                        subString = "Reliance General",
+//
+//                        coverAmount = "₹25,000",
+//                        premiumAmount = "₹45"
+//                    ),
+//                    GeneralInsurancePlan(
+//                        id = "2",
+//                        icon = "",
+//                        title = "Bike Insurance",
+//                        subString = "HDFC ERGO",
+//
+//                        coverAmount = "₹5,000",
+//                        premiumAmount = "₹12"
+//                    ),
+//                    GeneralInsurancePlan(
+//                        id = "3",
+//                        icon = "",
+//                        title = "Home Insurance",
+//                        subString = "ICICI Lombard",
+//
+//                        coverAmount = "₹250,000",
+//                        premiumAmount = "₹85"
+//                    )
+//                )
+//            ),
+//            onEvent = {}
+//        )
+//    }
+//}

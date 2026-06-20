@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
@@ -39,30 +37,45 @@ import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceEvent
-import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.AddYourEmailScreen
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingUiState
 
 @Composable
 fun InsuranceIntroScreen(
-    state: InsuranceUiState,
-    onEvent: (InsuranceEvent) -> Unit,
+    navigateToHealthInsurance: () -> Unit,
+    navigateToTermInsurance: () -> Unit,
+    navigateToOtherInsurance: () -> Unit,
+    navigateToRequestCallBackScreen: () -> Unit,
     modifier: Modifier = Modifier
 
 ) {
-    Scaffold { pv ->
+    Column(
+        modifier=modifier.fillMaxSize()
+            .background(White)
+    ) {
+        BackHeader(
+            title = "Insurance",
+            onBack = {},
+            showBack = false
+        )
         LazyColumn(
-            modifier.fillMaxSize().padding(horizontal = Spacing.dp16).padding(top = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp16), contentPadding = PaddingValues(bottom =
-                Spacing.dp16)
+            modifier.fillMaxSize().padding(horizontal = Spacing.dp16)
+                .padding(top = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+            contentPadding = PaddingValues(
+                bottom =
+                    Spacing.dp16
+            )
         ) {
-           item {
-               InsuranceBanner(
-                   Modifier,
-                   onRequestCallbackClick = { onEvent(InsuranceEvent.OnRequestCallbackClick) })
-           }
+            item {
+                InsuranceBanner(
+                    Modifier,
+                    onRequestCallbackClick = {
+                        navigateToRequestCallBackScreen()
+                    }
+                )
+            }
             item {
                 Text(
                     "Explore Products",
@@ -74,28 +87,24 @@ fun InsuranceIntroScreen(
                 ExploreProductCategoryCard(
                     "Term Insurance",
                     Res.drawable.term_insurance,
-                    { onEvent(InsuranceEvent.OnTermClicked) })
+                    { navigateToTermInsurance() })
             }
             item {
                 ExploreProductCategoryCard(
                     "Health Insurance",
                     Res.drawable.health_insurance,
                     onClick = {
-                        onEvent(
-                            InsuranceEvent.OnHealthClicked
-                        )
+                        navigateToHealthInsurance()
                     })
             }
-item {
-    ExploreProductCategoryCard(
-        "General Insurance",
-        Res.drawable.general_insurance,
-        onClick = {
-            onEvent(
-                InsuranceEvent.OnGeneralClicked
-            )
-        })
-}
+            item {
+                ExploreProductCategoryCard(
+                    "General Insurance",
+                    Res.drawable.general_insurance,
+                    onClick = {
+                        navigateToOtherInsurance()
+                    })
+            }
         }
     }
 }
@@ -118,10 +127,12 @@ fun InsuranceBanner(modifier: Modifier = Modifier, onRequestCallbackClick: () ->
                 color = White
             )
             Box(
-                Modifier.clip(RoundedCornerShape(Spacing.dp8))
+                Modifier
+                    .clip(RoundedCornerShape(Spacing.dp8))
+                    .clickable { onRequestCallbackClick() }
                     .background(color = White, shape = RoundedCornerShape(Spacing.dp8)).padding(
                         horizontal = Spacing.dp16, vertical = Spacing.dp8
-                    ).clickable { onRequestCallbackClick() }
+                    )
             ) {
                 Text(
                     "Request Callback",
@@ -178,11 +189,7 @@ fun ExploreProductCategoryCard(text: String, icon: DrawableResource, onClick: ()
 @Composable
 fun InsuranceScreenPreview() {
     JantaNiveshTheme {
-        InsuranceIntroScreen(
-            state = InsuranceUiState(),
-            onEvent = {}
-        )
-
+        InsuranceIntroScreen({},{}, {}, {})
     }
 }
 
