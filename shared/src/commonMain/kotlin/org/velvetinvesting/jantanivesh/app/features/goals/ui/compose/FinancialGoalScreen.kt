@@ -25,7 +25,6 @@ import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 
 @Composable
 fun FinancialGoalScreen(
-    pv: PaddingValues,
     state: UiState<AddGoalUiState>,
     loading: Boolean,
     handleEvent: (AddGoalEvent) -> Unit,
@@ -36,7 +35,7 @@ fun FinancialGoalScreen(
         onRetry = { handleEvent(AddGoalEvent.OnBackClicked) } // Or a proper retry event
     ) { data ->
         val form = data.form
-        Column(modifier = modifier.fillMaxSize().padding(pv)) {
+        Column(modifier = modifier.fillMaxSize()) {
             BackHeader(
                 title = "Financial Goal",
                 onBack = { handleEvent(AddGoalEvent.OnBackClicked) },
@@ -55,10 +54,10 @@ fun FinancialGoalScreen(
                 ) {
                     item {
                         DropDownSelector(
-                            title = "Goal Type/ ",
-                            value = "",
+                            title = "Goal Type ",
+                            value =form.selectedOption?.title ?:"",
                             onValueChange = { handleEvent(AddGoalEvent.OnOptionSelected(it)) },
-                            placeholder = form.selectedOption?.title ?: "Select Goal Type",
+                            placeholder =  "Select Goal Type",
                             list = goalOptions,
                             textConvertor = { it.title },
                         )
@@ -85,15 +84,9 @@ fun FinancialGoalScreen(
                     }
                 }
 
-                AppButton(
-                    text = "Save Goal",
+                NextButtonFooter(
+                    value = "Save Goal",
                     onClick = { handleEvent(AddGoalEvent.OnSaveGoalClicked) },
-                    modifier = Modifier
-                        .genericDropShadow()
-                        .fillMaxWidth()
-                        .padding(horizontal = Spacing.dp16)
-                        .navigationBarsPadding(),
-                    style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16)),
                     loading = loading,
                     enabled = data.isValid
                 )
@@ -114,34 +107,34 @@ fun GoalFormSection(
         when (option.type) {
             GoalType.ChildEducation, GoalType.ChildMarriage -> {
                 TitledAppTextField(
-                    title = "Child Name/ ",
+                    title = "Child Name",
                     value = form.childName,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(childName = it) }) },
                     placeholder = "Child Name"
                 )
                 TitledAppTextField(
-                    title = "Child Age/ ",
+                    title = "Child Age ",
                     value = form.childAge,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(childAge = it) }) },
                     placeholder = "Age",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Present Goal Value/ ",
+                    title = "Present Goal Value ",
                     value = form.goalCost,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(goalCost = it) }) },
                     placeholder = "Enter Goal Cost",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Inflation Rate(%)/ ",
+                    title = "Inflation Rate(%)",
                     value = form.inflation,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(inflation = it) }) },
                     placeholder = "Inflation %",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Target Year/ ",
+                    title = "Target Year ",
                     value = form.targetYear,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(targetYear = it) }) },
                     placeholder = "Target Year For Goal",
@@ -151,35 +144,35 @@ fun GoalFormSection(
 
             GoalType.Retirement -> {
                 TitledAppTextField(
-                    title = "Inflation Rate(%)/ ",
+                    title = "Inflation Rate(%) ",
                     value = form.inflation,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(inflation = it) }) },
                     placeholder = "Inflation %",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Retirement Age/ ",
+                    title = "Retirement Age ",
                     value = form.retirementAge,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(retirementAge = it) }) },
                     placeholder = "Retirement Age",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Life Expectancy/ ",
+                    title = "Life Expectancy ",
                     value = form.lifeExpectancy,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(lifeExpectancy = it) }) },
                     placeholder = "Life Expectancy",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Monthly Expense/ ",
+                    title = "Monthly Expense ",
                     value = form.monthlyExpense,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(monthlyExpense = it) }) },
                     placeholder = "50,000",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Post Retirement Return(%)/ ",
+                    title = "Post Retirement Return(%) ",
                     value = form.postReturn,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(postReturn = it) }) },
                     placeholder = "Post Retirement Return %",
@@ -189,33 +182,33 @@ fun GoalFormSection(
 
             GoalType.WealthBuilding -> {
                 TitledAppTextField(
-                    title = "Goal Name/ ",
+                    title = "Goal Name ",
                     value = form.goalName,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(goalName = it) }) },
                     placeholder = "Goal Name"
                 )
                 TitledAppTextField(
-                    title = "Goal Category/ ",
+                    title = "Goal Category",
                     value = form.goalItemName,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(goalItemName = it) }) },
                     placeholder = "Goal Category (e.g. House, Travel)"
                 )
                 TitledAppTextField(
-                    title = "Target Amount/ ",
+                    title = "Target Amount ",
                     value = form.goalCost,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(goalCost = it) }) },
                     placeholder = "Target Amount",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Inflation Rate(%)/ ",
+                    title = "Inflation Rate(%) ",
                     value = form.inflation,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(inflation = it) }) },
                     placeholder = "Inflation %",
                     keyboardType = KeyboardType.Number
                 )
                 TitledAppTextField(
-                    title = "Target Year/ ",
+                    title = "Target Year",
                     value = form.targetYear,
                     onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(targetYear = it) }) },
                     placeholder = "Target Year For Goal",
@@ -225,7 +218,7 @@ fun GoalFormSection(
         }
 
         TitledAppTextField(
-            title = "Expected Return(%)/ ",
+            title = "Expected Return(%) ",
             value = form.returns,
             onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(returns = it) }) },
             placeholder = "10.0",

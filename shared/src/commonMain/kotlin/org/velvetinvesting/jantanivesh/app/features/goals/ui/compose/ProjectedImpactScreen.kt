@@ -31,7 +31,6 @@ import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 
 @Composable
 fun ProjectedImpactScreen(
-    pv: PaddingValues,
     state: UiState<ProjectedImpactUiData>,
     handleEvent: (ProjectedImpactEvent) -> Unit,
     modifier: Modifier = Modifier
@@ -43,7 +42,6 @@ fun ProjectedImpactScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(pv)
                 .padding(horizontal = Spacing.dp16)
         ) {
             BackHeader(

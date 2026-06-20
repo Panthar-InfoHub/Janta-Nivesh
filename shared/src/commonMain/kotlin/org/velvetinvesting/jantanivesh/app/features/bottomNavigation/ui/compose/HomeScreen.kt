@@ -333,7 +333,12 @@ fun HomeScreenContent(
                 for (goal in state.goals) {
                     GoalCard(
                         goal=goal,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            onEvent(
+                                HomeScreenEvent.OnGoalClicked(goal.goalId)
+                            )
+                        }
                     )
                 }
             }
@@ -469,7 +474,8 @@ private fun AmountCard(title: String, amount: String, modifier: Modifier = Modif
 @Composable
 private fun GoalCard(
     goal: GoalsSummaryDomain,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: ()-> Unit
 ) {
     val icon = when (goal.goalTypes.type) {
         GoalType.ChildEducation -> Res.drawable.education_icon
@@ -485,6 +491,7 @@ private fun GoalCard(
             .fillMaxWidth()
             .genericDropShadow()
             .clip(RoundedCornerShape(Spacing.dp12))
+            .clickable(onClick=onClick)
             .background(
                 White,
                 LocalShapes.current.roundedDp16

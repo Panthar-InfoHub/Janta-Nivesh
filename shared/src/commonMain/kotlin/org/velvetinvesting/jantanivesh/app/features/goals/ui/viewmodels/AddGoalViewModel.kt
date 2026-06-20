@@ -56,7 +56,6 @@ sealed interface AddGoalEvent {
 
 sealed interface AddGoalEffect {
     data object NavigateBack : AddGoalEffect
-    data object NavigateToProjectedImpact : AddGoalEffect
     data class ShowError(val message: String) : AddGoalEffect
 }
 
@@ -271,7 +270,7 @@ class AddGoalViewModel(
 
             _loading.value = false
             when (response) {
-                is NetworkResponse.Success -> sendEffect(AddGoalEffect.NavigateToProjectedImpact)
+                is NetworkResponse.Success -> sendEffect(AddGoalEffect.NavigateBack)
                 is NetworkResponse.Error -> sendEffect(AddGoalEffect.ShowError(response.error.message))
             }
         }

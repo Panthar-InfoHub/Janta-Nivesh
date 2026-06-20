@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
-import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 
 data class YourGoalsUiData(
     val totalGoalProgressAmt: String = "0",
@@ -34,7 +34,6 @@ sealed interface YourGoalsEffect {
     data object NavigateToAddGoal : YourGoalsEffect
     data object NavigateToInvest : YourGoalsEffect
     data class NavigateToGoalDetails(val goalId: String) : YourGoalsEffect
-    data object NavigateToYourGoals : YourGoalsEffect
 }
 
 class YourGoalsViewModel(
@@ -52,30 +51,44 @@ class YourGoalsViewModel(
 
     private fun loadGoals() {
         viewModelScope.launch {
+
             _uiState.value = UiState.Loading
-            val response = userDataRepo.getUserData()
 
-            if (response is NetworkResponse.Success) {
-                val goals = response.data.goals
-                val totalProgress = goals.sumOf { it.amount }
-                val totalTarget = goals.sumOf { it.targetAmount }
-                val percentage = if (totalTarget > 0) (totalProgress.toDouble() / totalTarget * 100).toInt() else 0
+            userDataRepo.getUserData()
+                .onSuccess {
 
-                val data = YourGoalsUiData(
-                    goals = goals,
-                    totalGoalProgressAmt = totalProgress.toString(),
-                    goalTargetAmt = totalTarget.toString(),
-                    goalPercentage = percentage.toString()
-                )
-                
-                _uiState.value = UiState.Success(data)
-                
-                if (goals.isNotEmpty()) {
-                    sendEffect(YourGoalsEffect.NavigateToYourGoals)
+                    val goals = it.goals
+
+                    val totalProgress = goals.sumOf { goal ->
+                        goal.amount
+                    }
+
+                    val totalTarget = goals.sumOf { goal ->
+                        goal.targetAmount
+                    }
+
+                    val percentage =
+                        if (totalTarget > 0) {
+                            ((totalProgress.toDouble() / totalTarget) * 100).toInt()
+                        } else {
+                            0
+                        }
+
+                    _uiState.value = UiState.Success(
+                        YourGoalsUiData(
+                            goals = goals,
+                            totalGoalProgressAmt = totalProgress.toString(),
+                            goalTargetAmt = totalTarget.toString(),
+                            goalPercentage = percentage.toString()
+                        )
+                    )
                 }
-            } else if (response is NetworkResponse.Error) {
-                _uiState.value = UiState.Error(response.error.message)
-            }
+                .onError {
+
+                    _uiState.value = UiState.Error(
+                        it.message
+                    )
+                }
         }
     }
 

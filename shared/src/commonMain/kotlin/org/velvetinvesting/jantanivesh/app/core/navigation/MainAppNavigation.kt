@@ -12,6 +12,7 @@ import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.ExploreFdScreen
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.FdDetailsScreen
@@ -24,7 +25,6 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestme
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.FinancialGoalScreen
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.MainGoalsScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.ProjectedImpactScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.YourGoalsScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalEffect
@@ -488,11 +488,9 @@ fun MainAppNavigation(
                 vm.effect.collect { effect ->
                     when (effect) {
                         AddGoalEffect.NavigateBack -> navController.popBackStack()
-                        AddGoalEffect.NavigateToProjectedImpact -> navController.navigate(
-                            Route.ViewYourGoals
-                        )
-
-                        is AddGoalEffect.ShowError -> { /* handle error */ }
+                        is AddGoalEffect.ShowError -> {
+                            SnackBarController.showError(effect.message)
+                        }
                     }
                 }
             }
@@ -500,7 +498,6 @@ fun MainAppNavigation(
                 state = state,
                 loading = loading,
                 handleEvent = vm::handleEvent,
-                pv = PaddingValues(Spacing.dp16)
             )
         }
         composable<Route.GoalProjectionFlow> {
@@ -511,21 +508,21 @@ fun MainAppNavigation(
                 vm.effect.collect { effect ->
                     when (effect) {
                         ProjectedImpactEffect.NavigateBack -> navController.popBackStack()
-                        ProjectedImpactEffect.NavigateToInvest -> navController.navigate(Route.ViewYourGoals)
+                        ProjectedImpactEffect.NavigateToInvest -> navController.navigate(Route.MutualFundSearchResult())
                         ProjectedImpactEffect.OpenPortfolioBottomSheet -> { /* handle */ }
                         ProjectedImpactEffect.ClosePortfolioBottomSheet -> { /* handle */ }
-                        is ProjectedImpactEffect.ShowError -> { /* handle */ }
+                        is ProjectedImpactEffect.ShowError -> {
+                            SnackBarController.showError(effect.message)
+                        }
                     }
                 }
             }
             ProjectedImpactScreen(
-                state = uiState, handleEvent = vm::handleEvent, pv = PaddingValues(
-                    Spacing.dp16
-                )
+                state = uiState, handleEvent = vm::handleEvent
             )
         }
 
-        composable<Route.ViewYourGoals> {
+        composable<Route.GoalsScreen> {
             val vm: YourGoalsViewModel = koinViewModel()
             val uiState by vm.uiState.collectAsStateWithLifecycle()
             LaunchedEffect(vm.effect) {
@@ -536,8 +533,7 @@ fun MainAppNavigation(
                         is YourGoalsEffect.NavigateToGoalDetails -> {
                             navController.navigate(Route.GoalProjectionFlow(effect.goalId))
                         }
-                        YourGoalsEffect.NavigateToInvest -> navController.navigate(Route.Home)
-                        YourGoalsEffect.NavigateToYourGoals -> { /* already here */ }
+                        YourGoalsEffect.NavigateToInvest -> navController.navigate(Route.MutualFundSearchResult())
                     }
                 }
             }
@@ -546,37 +542,9 @@ fun MainAppNavigation(
                 onRetry = { vm.handleEvent(YourGoalsEvent.LoadGoals) }
             ) { data: YourGoalsUiData ->
                 YourGoalsScreen(
-                    state = data, handleEvent = vm::handleEvent, pv = PaddingValues(
-                        Spacing.dp16
-                    )
+                    state = data,
+                    handleEvent = vm::handleEvent
                 )
-            }
-        }
-        composable<Route.GoalsScreen> {
-            val vm: YourGoalsViewModel = koinViewModel()
-            val uiState by vm.uiState.collectAsStateWithLifecycle()
-            LaunchedEffect(vm.effect) {
-                vm.effect.collect {
-                    when (it) {
-                        YourGoalsEffect.NavigateBack -> navController.popBackStack()
-                        YourGoalsEffect.NavigateToAddGoal -> navController.navigate(Route.SingleGoalAdd)
-                        YourGoalsEffect.NavigateToYourGoals -> navController.navigate(Route.ViewYourGoals)
-                        YourGoalsEffect.NavigateToInvest -> navController.navigate(Route.Home)
-                        is YourGoalsEffect.NavigateToGoalDetails -> navController.navigate(Route.GoalProjectionFlow(it.goalId))
-                    }
-                }
-            }
-            UiStateContainer(
-                uiState = uiState,
-                onRetry = { vm.handleEvent(YourGoalsEvent.LoadGoals) }
-            ) { data: YourGoalsUiData ->
-                if (data.goals.isEmpty()) {
-                    MainGoalsScreen(
-                        pv = PaddingValues(Spacing.dp16),
-                        onBackClick = { vm.handleEvent(YourGoalsEvent.OnBackClicked) },
-                        handleEvent = vm::handleEvent
-                    )
-                }
             }
         }
     }
