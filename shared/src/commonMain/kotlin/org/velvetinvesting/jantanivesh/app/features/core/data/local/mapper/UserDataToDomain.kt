@@ -1,11 +1,12 @@
 package org.velvetinvesting.jantanivesh.app.features.core.data.local.mapper
 
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.GoalsSummaryDomain
+import org.velvetinvesting.jantanivesh.app.core.theme.*
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.Data
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.UserDataDto
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.UserGoal
 import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
-import org.velvetinvesting.jantanivesh.app.features.core.domain.models.GoalOption
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalOption
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.UserDataDomain
 
 fun UserDataDto.toDomain(): UserDataDomain = UserDataDomain(
@@ -14,7 +15,9 @@ fun UserDataDto.toDomain(): UserDataDomain = UserDataDomain(
     mobile = this.data.phone_no,
     goals = this.data.user_goals?.map { it.toGoalSummary() }?: emptyList(),
     kycVerified = data.toKycCompletion(),
-    tradingAccountVerified = data.toTradingCompletion()
+    tradingAccountVerified = data.toTradingCompletion(),
+    dob = this.data.dob,
+    userFinance = this.data.user_finance
 )
 
 fun UserGoal.toGoalSummary(): GoalsSummaryDomain {
@@ -31,29 +34,34 @@ fun UserGoal.mapGoalOption(): GoalOption {
 
         1 -> GoalOption(
             title = "Child Education",
-            type = GoalType.ChildEducation
+            type = GoalType.ChildEducation,
+            color = MutualFundIconBg
         )
 
         2 -> GoalOption(
             title = "Child Marriage",
-            type = GoalType.ChildMarriage
+            type = GoalType.ChildMarriage,
+            color = bgColor3
         )
 
         3 -> GoalOption(
             title = "Retirement",
-            type = GoalType.Retirement
+            type = GoalType.Retirement,
+            color = bgColor4
         )
 
         4 -> GoalOption(
             title = goal_name?:"Wealth Building",
             type = GoalType.WealthBuilding,
             goalItemId = goal_item_id,
-            goalItemName = goal_item_name
+            goalItemName = goal_item_name,
+            color = Secondary
         )
 
         else -> GoalOption(
             title = "Unknown",
-            type = GoalType.WealthBuilding
+            type = GoalType.WealthBuilding,
+            color = Primary
         )
     }
 }

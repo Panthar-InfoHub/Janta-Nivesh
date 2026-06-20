@@ -21,6 +21,8 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.repos
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.repository.MutualFundRepository
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.data.repository.TradingAccountRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.repository.TradingAccountRepo
+import org.velvetinvesting.jantanivesh.app.features.goals.data.repository.GoalsRepositoryImpl
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
 
 val repositoryModule = module {
     single<LanguageRepository> { LanguageRepositoryImpl(get()) }
@@ -33,4 +35,5 @@ val repositoryModule = module {
     single<TradingAccountRepo> { TradingAccountRepoImpl(get()) }
     single<FixedDepositRepository> { FixedDepositRepo(get()) }
     single<MutualFundRepository> { MutualFundRepo(get()) }
+    single<GoalsRepository> { GoalsRepositoryImpl(get()) }
 }

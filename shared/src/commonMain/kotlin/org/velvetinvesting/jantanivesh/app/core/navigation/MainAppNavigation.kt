@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -10,6 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.ExploreFdScreen
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.FdDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.SetInvestmentDetailsScreen
@@ -19,6 +23,17 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEf
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEffect
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.FinancialGoalScreen
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.ProjectedImpactScreen
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.YourGoalsScreen
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalEffect
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactEffect
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEffect
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.GeneralInsuranceScreen
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.HealthInsuranceScreen
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.RequestCallbackScreen
@@ -48,14 +63,14 @@ fun MainAppNavigation(
         //KYC Graph
         composable<Route.KycGraph> {
             KycNavigation(
-                onBackNavigation = {navController.popBackStack()},
+                onBackNavigation = { navController.popBackStack() },
             )
         }
 
         //Trading Account Graph
         composable<Route.TradingAccountNavigation> {
             TradingAccountNavigation(
-                onBackClick = {navController.popBackStack()},
+                onBackClick = { navController.popBackStack() },
                 onCompletion = {
                     navController.navigate(Route.TradingAccountSuccess) {
                         popUpTo<Route.TradingAccountNavigation> {
@@ -69,8 +84,8 @@ fun MainAppNavigation(
         composable<Route.TradingAccountSuccess> {
             TradingAccountSuccess(
                 onButtonClick = {
-                    navController.navigate(Route.MutualFundTypeSelectionScreen){
-                        launchSingleTop= true
+                    navController.navigate(Route.MutualFundTypeSelectionScreen) {
+                        launchSingleTop = true
                     }
                 },
                 buttonText = "Start Investing"
@@ -220,7 +235,7 @@ fun MainAppNavigation(
         //Bottom Navigation
         composable<Route.BottomNav> {
             BottomNavigation(
-                navigateToSIPDetailsScreen = {folio->
+                navigateToSIPDetailsScreen = { folio ->
                     navController.navigate(Route.FolioFundScreen(folio)) {
                         launchSingleTop = true
                     }
@@ -286,31 +301,31 @@ fun MainAppNavigation(
                     }
 
                 },
-                navigateToAddGoal={
-                    navController.navigate(Route.SingleGoadAdd){
-                        launchSingleTop=true
+                navigateToAddGoal = {
+                    navController.navigate(Route.SingleGoalAdd) {
+                        launchSingleTop = true
                     }
                 },
-                navigateToSpecificGoalProjection={id->
+                navigateToSpecificGoalProjection = { id ->
                     navController.navigate(Route.GoalProjectionFlow(id))
                 },
-                navigateToMutualFundList={
+                navigateToMutualFundList = {
                     navController.navigate(
                         Route.MutualFundTypeSelectionScreen
-                    ){
-                        launchSingleTop=true
+                    ) {
+                        launchSingleTop = true
                     }
                 },
-                navigateToTradingAccountSetup={
+                navigateToTradingAccountSetup = {
                     navController.navigate(
                         Route.TradingAccountNavigation
                     )
                 },
-                navigateToFD={
+                navigateToFD = {
                     navController.navigate(
                         Route.FixedDepositSearchResult()
-                    ){
-                        launchSingleTop=true
+                    ) {
+                        launchSingleTop = true
                     }
                 },
                 navigateToPrivacyPolicy = {
@@ -343,9 +358,9 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
-                navigateToInvestmentRateScree={
-                    navController.navigate(Route.InvestmentRateScreen){
-                        launchSingleTop=true
+                navigateToInvestmentRateScree = {
+                    navController.navigate(Route.InvestmentRateScreen) {
+                        launchSingleTop = true
                     }
                 },
                 navigateToPortfolioFdDetailsScreen={id->
@@ -364,15 +379,19 @@ fun MainAppNavigation(
 
         //FD
         composable<Route.FixedDepositSearchResult> {
-            val search= it.toRoute<Route.FixedDepositSearchResult>().search
+            val search = it.toRoute<Route.FixedDepositSearchResult>().search
             val vm: ExploreFdViewModel = koinViewModel()
             val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-            LaunchedEffect(vm.effect){
+            LaunchedEffect(vm.effect) {
                 vm.effect.collect { effect ->
-                    when(effect){
+                    when (effect) {
                         ExploreFdEffect.NavigateBack -> navController.popBackStack()
-                        is ExploreFdEffect.NavigateToFdDetails -> navController.navigate(Route.FixedDepositDetails(effect.id))
+                        is ExploreFdEffect.NavigateToFdDetails -> navController.navigate(
+                            Route.FixedDepositDetails(
+                                effect.id
+                            )
+                        )
                     }
                 }
             }
@@ -385,9 +404,9 @@ fun MainAppNavigation(
             val id = it.toRoute<Route.FixedDepositDetails>().id
             val vm: FdDetailsViewModel = koinViewModel(parameters = { parametersOf(id) })
             val uiState by vm.uiState.collectAsStateWithLifecycle()
-            LaunchedEffect(vm.effect){
+            LaunchedEffect(vm.effect) {
                 vm.effect.collect { effect ->
-                    when(effect){
+                    when (effect) {
                         FdDetailsEffect.NavigateBack -> navController.popBackStack()
                         is FdDetailsEffect.NavigateToSetInvestmentDetails -> {
                             navController.navigate(Route.PurchaseFixedDeposit(id))
@@ -403,11 +422,11 @@ fun MainAppNavigation(
 
         composable<Route.PurchaseFixedDeposit> {
             val id = it.toRoute<Route.PurchaseFixedDeposit>().id
-            val vm: SetInvestmentDetailsViewModel= koinViewModel(parameters = { parametersOf(id) })
+            val vm: SetInvestmentDetailsViewModel = koinViewModel(parameters = { parametersOf(id) })
             val uiState by vm.uiState.collectAsStateWithLifecycle()
-            LaunchedEffect(vm.effect){
+            LaunchedEffect(vm.effect) {
                 vm.effect.collect { effect ->
-                    when(effect){
+                    when (effect) {
                         SetInvestmentDetailsEffect.NavigateBack -> navController.popBackStack()
                     }
                 }
@@ -460,5 +479,73 @@ fun MainAppNavigation(
             )
         }
 
+        //Goal
+        composable<Route.SingleGoalAdd> {
+            val vm: AddGoalViewModel = koinViewModel()
+            val state by vm.state.collectAsStateWithLifecycle()
+            val loading by vm.loading.collectAsStateWithLifecycle()
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        AddGoalEffect.NavigateBack -> navController.popBackStack()
+                        is AddGoalEffect.ShowError -> {
+                            SnackBarController.showError(effect.message)
+                        }
+                    }
+                }
+            }
+            FinancialGoalScreen(
+                state = state,
+                loading = loading,
+                handleEvent = vm::handleEvent,
+            )
+        }
+        composable<Route.GoalProjectionFlow> {
+            val route = it.toRoute<Route.GoalProjectionFlow>()
+            val vm: ProjectedImpactViewModel = koinViewModel(parameters = { parametersOf(route.id) })
+            val uiState by vm.uiState.collectAsStateWithLifecycle()
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        ProjectedImpactEffect.NavigateBack -> navController.popBackStack()
+                        ProjectedImpactEffect.NavigateToInvest -> navController.navigate(Route.MutualFundSearchResult())
+                        ProjectedImpactEffect.OpenPortfolioBottomSheet -> { /* handle */ }
+                        ProjectedImpactEffect.ClosePortfolioBottomSheet -> { /* handle */ }
+                        is ProjectedImpactEffect.ShowError -> {
+                            SnackBarController.showError(effect.message)
+                        }
+                    }
+                }
+            }
+            ProjectedImpactScreen(
+                state = uiState, handleEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.GoalsScreen> {
+            val vm: YourGoalsViewModel = koinViewModel()
+            val uiState by vm.uiState.collectAsStateWithLifecycle()
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        YourGoalsEffect.NavigateBack -> navController.popBackStack()
+                        YourGoalsEffect.NavigateToAddGoal -> navController.navigate(Route.SingleGoalAdd)
+                        is YourGoalsEffect.NavigateToGoalDetails -> {
+                            navController.navigate(Route.GoalProjectionFlow(effect.goalId))
+                        }
+                        YourGoalsEffect.NavigateToInvest -> navController.navigate(Route.MutualFundSearchResult())
+                    }
+                }
+            }
+            UiStateContainer(
+                uiState = uiState,
+                onRetry = { vm.handleEvent(YourGoalsEvent.LoadGoals) }
+            ) { data: YourGoalsUiData ->
+                YourGoalsScreen(
+                    state = data,
+                    handleEvent = vm::handleEvent
+                )
+            }
+        }
     }
 }

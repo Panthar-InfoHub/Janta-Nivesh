@@ -497,7 +497,7 @@ fun InterestPayoutCard(
 }
 
 @Composable
-fun ProjectedReturnsCard(
+private fun ProjectedReturnsCard(
     maturityAmount: String,
     totalInterest: String,
     interestRate: String,
@@ -507,7 +507,7 @@ fun ProjectedReturnsCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(Spacing.dp12))
-            .border(1.dp, BoxBorder, RoundedCornerShape(Spacing.dp12))
+            .border(Spacing.dp1, BoxBorder, RoundedCornerShape(Spacing.dp12))
             .background(White)
             .padding(Spacing.dp20)
     ) {

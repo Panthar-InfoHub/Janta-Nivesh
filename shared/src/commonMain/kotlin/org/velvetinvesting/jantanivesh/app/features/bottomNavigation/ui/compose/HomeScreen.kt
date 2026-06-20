@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -91,10 +91,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyWithUnits
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.GoalsSummaryDomain
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.progressPercent
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenEvent
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels.HomeScreenUiState
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.progressPercent
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenEvent
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenUiState
 import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
@@ -333,7 +333,12 @@ fun HomeScreenContent(
                 for (goal in state.goals) {
                     GoalCard(
                         goal=goal,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            onEvent(
+                                HomeScreenEvent.OnGoalClicked(goal.goalId)
+                            )
+                        }
                     )
                 }
             }
@@ -469,7 +474,8 @@ private fun AmountCard(title: String, amount: String, modifier: Modifier = Modif
 @Composable
 private fun GoalCard(
     goal: GoalsSummaryDomain,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: ()-> Unit
 ) {
     val icon = when (goal.goalTypes.type) {
         GoalType.ChildEducation -> Res.drawable.education_icon
@@ -485,6 +491,7 @@ private fun GoalCard(
             .fillMaxWidth()
             .genericDropShadow()
             .clip(RoundedCornerShape(Spacing.dp12))
+            .clickable(onClick=onClick)
             .background(
                 White,
                 LocalShapes.current.roundedDp16
@@ -526,7 +533,6 @@ private fun GoalCard(
         )
 
         Column {
-
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier

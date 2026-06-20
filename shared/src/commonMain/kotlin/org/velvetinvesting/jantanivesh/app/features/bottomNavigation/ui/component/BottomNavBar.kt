@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.component
+package org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

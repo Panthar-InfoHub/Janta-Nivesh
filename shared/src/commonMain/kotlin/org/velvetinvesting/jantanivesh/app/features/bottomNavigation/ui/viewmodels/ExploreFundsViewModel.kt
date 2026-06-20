@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.bottonNavigation.ui.viewmodels
+package org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.FixedTopPicksUiModel
-import org.velvetinvesting.jantanivesh.app.features.bottonNavigation.domain.models.MutualFundTopPicksUiModel
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.FixedTopPicksUiModel
+import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.MutualFundTopPicksUiModel
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPickFDUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundTopPicksUseCase
 
