@@ -46,6 +46,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackEvent
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackUiState
@@ -57,7 +58,7 @@ fun RequestCallbackScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
     ) {
-    Scaffold{pv->
+    Scaffold(modifier = modifier.clearFocusOnTap()){pv->
         Column(
             modifier = modifier.fillMaxWidth()
                 .background(White)

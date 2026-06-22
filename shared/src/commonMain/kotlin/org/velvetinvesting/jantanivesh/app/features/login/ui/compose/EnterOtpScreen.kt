@@ -51,6 +51,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpUiState
 
@@ -66,7 +67,8 @@ fun EnterOtpScreen(
         focusRequester.requestFocus()
     }
 
-    Scaffold(modifier = modifier) { paddingValues ->
+    Scaffold(modifier = modifier
+        .clearFocusOnTap()) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

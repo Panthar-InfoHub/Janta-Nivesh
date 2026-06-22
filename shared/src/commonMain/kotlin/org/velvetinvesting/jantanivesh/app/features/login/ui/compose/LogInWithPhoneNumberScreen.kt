@@ -36,6 +36,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackB
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberUiState
 
@@ -45,7 +46,8 @@ fun LoginWithPhoneNumberScreen(
     onEvent: (LoginWithPhoneNumberEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(modifier = modifier) { paddingValues ->
+    Scaffold(modifier = modifier
+        .clearFocusOnTap()) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -74,6 +74,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelect
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.SelectedFundType
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -198,7 +199,8 @@ fun BundleResultScreenContent(
                     selectedYear = selectedYear,
                     toggleRateYear = onCycleReturnRate,
                     onFundClick = onFundClick,
-                    modifier = Modifier.padding(pv)
+                    modifier = Modifier
+                        .clearFocusOnTap().padding(pv)
                 )
             }
             if (bundleCartState.frequencyDropDownExpanded) {

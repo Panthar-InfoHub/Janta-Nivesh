@@ -77,6 +77,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDown
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDFaqDomain
@@ -148,7 +149,8 @@ fun FdDetailsContent(
     else {
         Column(
             modifier = modifier
-                .fillMaxSize().statusBarsPadding().padding(top = Spacing.dp8),
+                .fillMaxSize()
+                .clearFocusOnTap().statusBarsPadding().padding(top = Spacing.dp8),
         ) {
             TopBar(
                 onBack = { onEvent(FdDetailsEvent.OnBackClicked) },

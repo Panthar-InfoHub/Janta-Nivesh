@@ -33,7 +33,7 @@ import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.InsuranceIntroScreen
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileIntroScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileIntroScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileViewModel
 

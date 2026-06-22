@@ -50,6 +50,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButt
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.OnBoardingDateField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.Data
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.TradingAccountFormDomain
@@ -83,7 +84,8 @@ fun TradingAccountGuardianDetailScreen(
 ) {
     var showDateSelector by rememberSaveable { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .clearFocusOnTap()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
             stepCount = 2,

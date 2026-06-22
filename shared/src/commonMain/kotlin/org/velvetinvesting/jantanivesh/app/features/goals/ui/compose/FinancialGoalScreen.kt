@@ -22,6 +22,7 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalU
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.GoalFormState
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.goalOptions
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 
 @Composable
 fun FinancialGoalScreen(
@@ -32,7 +33,9 @@ fun FinancialGoalScreen(
 ) {
     UiStateContainer(
         uiState = state,
-        onRetry = { handleEvent(AddGoalEvent.OnBackClicked) } // Or a proper retry event
+        onRetry = { handleEvent(AddGoalEvent.OnBackClicked) }, // Or a proper retry event
+        modifier = Modifier
+                .clearFocusOnTap()
     ) { data ->
         val form = data.form
         Column(modifier = modifier.fillMaxSize()) {
@@ -223,6 +226,32 @@ fun GoalFormSection(
             onValueChange = { handleEvent(AddGoalEvent.UpdateForm { copy(returns = it) }) },
             placeholder = "10.0",
             keyboardType = KeyboardType.Number
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FinancialGoalScreenPreview() {
+    JantaNiveshTheme {
+        FinancialGoalScreen(
+            state = UiState.Success(
+                AddGoalUiState(
+                    form = GoalFormState(
+                        selectedOption = goalOptions[0],
+                        childName = "Arav",
+                        childAge = "5",
+                        goalCost = "1000000",
+                        inflation = "8",
+                        targetYear = "2040",
+                        returns = "12"
+                    ),
+                    isValid = true,
+                    currentAge = 30
+                )
+            ),
+            loading = false,
+            handleEvent = {}
         )
     }
 }

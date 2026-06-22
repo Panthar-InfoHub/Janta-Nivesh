@@ -62,6 +62,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextF
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsUiState
@@ -468,6 +469,7 @@ fun InterestPayoutCard(
 ) {
     Box(
         modifier = Modifier
+            .clearFocusOnTap()
             .genericDropShadow(RoundedCornerShape(Spacing.dp12))
             .fillMaxWidth()
             .clip(RoundedCornerShape(Spacing.dp12))

@@ -45,8 +45,8 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.Invest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundDetailsScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundSearchScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartScreen
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileLanguageScreen
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileSettingScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileLanguageScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileSettingScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingEffect

@@ -61,6 +61,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDown
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Country
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
@@ -97,7 +98,8 @@ fun TradingAccountAddressScreen(
     onClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .clearFocusOnTap()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
             stepCount = if (uiState.isMinor) 7 else 6,

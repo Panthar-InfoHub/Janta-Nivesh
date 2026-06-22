@@ -37,6 +37,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingUiState
 
@@ -58,6 +59,7 @@ fun EnterYourDOBScreen(
     }
         Column(
             modifier = Modifier
+                .clearFocusOnTap()
                 .fillMaxSize()
                 .padding(horizontal = Spacing.dp24)
         ) {

@@ -35,6 +35,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButt
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.OnBoardingDateField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.Gender
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.Holding
@@ -69,7 +70,8 @@ fun TradingAccountBasicDetailsScreen(
     onClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(pv)) {
+    Column(modifier = Modifier
+        .clearFocusOnTap().fillMaxSize().padding(pv)) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
             stepCount = 1,

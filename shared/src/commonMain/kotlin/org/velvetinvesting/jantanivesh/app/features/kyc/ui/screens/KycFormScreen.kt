@@ -54,6 +54,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextF
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoadingScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenUiState
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.Gender
@@ -79,10 +80,11 @@ fun KycFormScreen(
                     .padding(Spacing.dp24)
             )
         },
-        containerColor = White
+        containerColor = White,
     ) { pv ->
         Column(
-            modifier = Modifier.fillMaxWidth().padding(pv)
+            modifier = Modifier
+                .clearFocusOnTap().fillMaxWidth().padding(pv)
         ){
             BackHeader(
                 title = "KYC Form",

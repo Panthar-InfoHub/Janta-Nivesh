@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.profile.ui
+package org.velvetinvesting.jantanivesh.app.features.profile.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

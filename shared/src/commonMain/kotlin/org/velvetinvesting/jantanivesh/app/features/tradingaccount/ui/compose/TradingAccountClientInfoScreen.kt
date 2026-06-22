@@ -43,6 +43,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButt
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.YesNoRadioGroup
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.ClientType
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.DefaultDp
@@ -78,7 +79,8 @@ fun TradingAccountClientInfoScreen(
     onClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()
+    Column(modifier = Modifier
+        .clearFocusOnTap().fillMaxSize()
         .background(color = Color.White)) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",

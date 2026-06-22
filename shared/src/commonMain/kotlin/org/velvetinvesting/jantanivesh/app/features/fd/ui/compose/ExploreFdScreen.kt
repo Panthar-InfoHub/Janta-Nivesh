@@ -41,6 +41,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBar
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
@@ -55,6 +56,7 @@ fun ExploreFdScreen(
 ) {
     Column(
         modifier = Modifier
+            .clearFocusOnTap()
             .fillMaxSize()
             .background(Color.White).statusBarsPadding()
             .padding(horizontal = Spacing.dp16),
