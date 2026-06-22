@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -32,16 +31,15 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHead
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageEvent
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageUiState
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileUiState
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.languageList
 
 @Composable
 fun ProfileLanguageScreen(
     state: ProfileLanguageUiState,
-    modifier: Modifier= Modifier,
     onEvent:(ProfileLanguageEvent)-> Unit
 ) {
-    Scaffold {pv->
+    Scaffold(
+        containerColor = White
+    ) {pv->
         Column(modifier = Modifier.fillMaxSize().padding(pv).padding(Spacing.dp16)) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().weight(1f),
@@ -62,7 +60,7 @@ fun ProfileLanguageScreen(
 
 
 
-                items(languageList) { lang ->
+                items(state.languages) { lang ->
                     Box(
                         modifier = Modifier.genericDropShadow(RoundedCornerShape(Spacing.dp8))
                             .fillMaxWidth().clip(RoundedCornerShape(Spacing.dp8))
@@ -71,11 +69,11 @@ fun ProfileLanguageScreen(
                         Row {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    lang.title,
+                                    lang.displayName,
                                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
                                 )
                                 Text(
-                                    lang.subTitle,
+                                    lang.englishName,
                                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Normal)
                                 )
                             }

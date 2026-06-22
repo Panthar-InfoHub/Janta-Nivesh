@@ -13,6 +13,20 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 
+data class HomeScreenUiState(
+    val isLoading: Boolean = false,
+    val showError: Boolean = false,
+    val error: String = "",
+    val userName: String = "",
+    val email: String = "",
+    val portfolioValue: String = "",
+    val fixedDepositsAmount: String = "",
+    val mutualFundsAmount: String = "",
+    val pnlTrend: String = "",
+    val goals: List<GoalsSummaryDomain> = emptyList(),
+    val kycVerified: Boolean = false,
+    val tradingAccountVerified: Boolean = false
+)
 sealed interface HomeScreenEvent {
 
     data object LoadData : HomeScreenEvent
@@ -84,10 +98,11 @@ class HomeScreenViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            username = userData.name,
+                            userName = userData.name,
                             goals = userData.goals,
                             kycVerified = userData.kycVerified,
-                            tradingAccountVerified = userData.tradingAccountVerified
+                            tradingAccountVerified = userData.tradingAccountVerified,
+                            email = userData.email
                         )
                     }
                 }
@@ -95,17 +110,3 @@ class HomeScreenViewModel(
         }
     }
 }
-
-data class HomeScreenUiState(
-    val isLoading: Boolean = false,
-    val showError: Boolean = false,
-    val error: String = "",
-    val username: String = "",
-    val portfolioValue: String = "",
-    val fixedDepositsAmount: String = "",
-    val mutualFundsAmount: String = "",
-    val pnlTrend: String = "",
-    val goals: List<GoalsSummaryDomain> = emptyList(),
-    val kycVerified: Boolean = false,
-    val tradingAccountVerified: Boolean = false
-)

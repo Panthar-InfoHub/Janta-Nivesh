@@ -20,21 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.localization.LocalAppLanguageLocale
 import org.velvetinvesting.jantanivesh.app.core.localization.model.AppLanguage
 import org.velvetinvesting.jantanivesh.app.core.localization.repository.LanguageRepository
+import org.velvetinvesting.jantanivesh.app.core.navigation.BaseNavigation
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarType
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileIntroScreen
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileLanguageScreen
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileSettingScreen
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileViewModel
 
 @Composable
 fun App() {
@@ -96,10 +89,8 @@ fun App() {
                     }
                 }
             ) {
-                val vm: ProfileViewModel = koinViewModel()
-                val state by vm.uiState.collectAsStateWithLifecycle()
-                ProfileIntroScreen(state = state, onEvent = vm::handleEvent)
-               }
+                BaseNavigation()
+            }
         }
     }
 }

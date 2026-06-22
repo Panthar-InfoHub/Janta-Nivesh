@@ -30,8 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.bell_icon
-import jantanivesh.shared.generated.resources.biometric
-import jantanivesh.shared.generated.resources.change_pin
 import jantanivesh.shared.generated.resources.delete_account
 import jantanivesh.shared.generated.resources.forward
 import jantanivesh.shared.generated.resources.privacy_policy
@@ -57,7 +55,9 @@ fun ProfileSettingScreen(
     modifier: Modifier = Modifier,
     onEvent: (ProfileSettingEvent) -> Unit
 ) {
-    Scaffold { pv ->
+    Scaffold(
+        containerColor = White
+    ) { pv ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp).padding(pv),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16),

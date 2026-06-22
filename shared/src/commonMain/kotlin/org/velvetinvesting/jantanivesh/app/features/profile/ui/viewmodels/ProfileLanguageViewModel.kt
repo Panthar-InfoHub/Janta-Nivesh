@@ -9,24 +9,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.localization.model.AppLanguage
+import org.velvetinvesting.jantanivesh.app.core.localization.repository.LanguageRepository
 
-data class LanguageItem(
-    val title:String,
-    val subTitle: String
-)
-
-val languageList = listOf(
-    LanguageItem(title = "हिंदी", subTitle = "Hindi"),
-    LanguageItem(title = "मराठी", subTitle = "Marathi"),
-    LanguageItem(title = "ગુજરાતી", subTitle = "Gujarati"),
-    LanguageItem(title = "தமிழ்", subTitle = "Tamil"),
-    LanguageItem(title = "తెలుగు", subTitle = "Telugu"),
-    LanguageItem(title = "বাংলা", subTitle = "Bengali"),
-    )
 
 data class ProfileLanguageUiState(
-    val languages: List<LanguageItem> = languageList,
-    val selectedLanguage: LanguageItem? = null,
+    val languages: List<AppLanguage> = AppLanguage.entries,
+    val selectedLanguage: AppLanguage? = null,
     val isLoading: Boolean = false,
     val isSaveEnabled: Boolean = false
 )
@@ -36,7 +25,7 @@ sealed interface ProfileLanguageEvent {
     data object OnBackClicked : ProfileLanguageEvent
 
     data class OnLanguageSelected(
-        val language: LanguageItem
+        val language: AppLanguage
     ) : ProfileLanguageEvent
 
     data object OnSaveClicked : ProfileLanguageEvent
@@ -46,7 +35,6 @@ sealed interface ProfileLanguageEffect {
 
     data object NavigateBack : ProfileLanguageEffect
 
-    data object LanguageSaved : ProfileLanguageEffect
 
     data class ShowError(
         val message: String
@@ -54,10 +42,23 @@ sealed interface ProfileLanguageEffect {
 }
 
 
-class ProfileLanguageViewModel : ViewModel() {
+class ProfileLanguageViewModel(
+    private val languageRepository: LanguageRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileLanguageUiState())
     val uiState: StateFlow<ProfileLanguageUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch{
+            val currentSecondaryLanguage = languageRepository.getLanguage()
+            _uiState.update {
+                it.copy(
+                    selectedLanguage = currentSecondaryLanguage
+                )
+            }
+        }
+    }
 
     private val _effect = Channel<ProfileLanguageEffect>()
     val effect = _effect.receiveAsFlow()
@@ -98,9 +99,9 @@ class ProfileLanguageViewModel : ViewModel() {
                 return@launch
             }
 
-            // TODO: Save selected language to DataStore/API
+            languageRepository.setLanguage(selectedLanguage)
 
-            sendEffect(ProfileLanguageEffect.LanguageSaved)
+            sendEffect(ProfileLanguageEffect.NavigateBack)
         }
     }
 

@@ -59,7 +59,7 @@ val viewModelModule = module {
 
     viewModel { HomeScreenViewModel(get()) }
     viewModel { ExploreFundsViewModel(get(),get()) }
-    viewModel { ProfileLanguageViewModel() }
+    viewModel { ProfileLanguageViewModel(get()) }
     viewModel { ProfileSettingViewModel() }
     viewModel { ProfileViewModel(get()) }
     viewModel { InsuranceViewModel() }
