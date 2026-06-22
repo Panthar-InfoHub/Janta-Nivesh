@@ -1,6 +1,5 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,7 +10,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.ExploreFdScreen
@@ -47,6 +45,12 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.Invest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundDetailsScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundSearchScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileLanguageScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileSettingScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageEffect
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingEffect
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountSuccess
 
 @Composable
@@ -373,6 +377,16 @@ fun MainAppNavigation(
                         launchSingleTop=true
                     }
                 },
+                navigateToLanguageSettings = {
+                  navController.navigate(Route.LanguageSelectionSettings){
+                      launchSingleTop=true
+                  }
+                },
+                navigateToProfileSettigns = {
+                    navController.navigate(Route.ProfileSettingsScreen){
+                        launchSingleTop=true
+                    }
+                },
                 onSignOut = onSignOut
             )
         }
@@ -546,6 +560,58 @@ fun MainAppNavigation(
                     handleEvent = vm::handleEvent
                 )
             }
+        }
+
+        //Profile
+        composable<Route.LanguageSelectionSettings> {
+            val vm: ProfileLanguageViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+            LaunchedEffect(vm.effect){
+                vm.effect.collect {
+                    when(it){
+                        ProfileLanguageEffect.NavigateBack -> {
+                            navController.popBackStack()
+                        }
+                        is ProfileLanguageEffect.ShowError -> {
+                            SnackBarController.showError(it.message)
+                        }
+                    }
+                }
+            }
+            ProfileLanguageScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.ProfileSettingsScreen> {
+            val vm: ProfileSettingViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect){
+                vm.effect.collect {
+                    when(it){
+                        ProfileSettingEffect.NavigateBack -> navController.popBackStack()
+                        ProfileSettingEffect.NavigateToDeleteAccount -> {
+
+                        }
+                        ProfileSettingEffect.NavigateToNotification -> {
+                            //TODO : Add navigation to notifications screen
+                        }
+                        ProfileSettingEffect.NavigateToPrivacyPolicy -> {
+
+                        }
+                        ProfileSettingEffect.NavigateToTermsOfService -> {
+
+                        }
+                    }
+                }
+            }
+
+            ProfileSettingScreen(
+                state = state ,
+                onEvent = vm::handleEvent
+            )
         }
     }
 }

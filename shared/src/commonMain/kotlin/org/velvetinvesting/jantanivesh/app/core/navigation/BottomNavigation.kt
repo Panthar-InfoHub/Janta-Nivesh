@@ -33,6 +33,9 @@ import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.InsuranceIntroScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.ProfileIntroScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileEffect
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileViewModel
 
 @Composable
 fun BottomNavigation(
@@ -63,7 +66,9 @@ fun BottomNavigation(
     navigateToKYC: () -> Unit,
     navigateToInvestmentRateScree: () -> Unit,
     navigateToPortfolioFdDetailsScreen: (String) -> Unit,
-    navigateToRequestCallBack: () -> Unit
+    navigateToRequestCallBack: () -> Unit,
+    navigateToLanguageSettings: () -> Unit,
+    navigateToProfileSettigns: () -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -71,6 +76,8 @@ fun BottomNavigation(
     val currentDestination = navBackStackEntry?.destination
 
     val homeViewModel: HomeScreenViewModel = koinViewModel()
+    val homeState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
 //    val portfolioViewModel: PortfolioScreenViewModel=koinViewModel()
 
     LaunchedEffect(Unit){
@@ -189,7 +196,6 @@ fun BottomNavigation(
         ){
 
             composable<Route.Home> {
-                val state by homeViewModel.uiState.collectAsStateWithLifecycle()
                 LaunchedEffect(homeViewModel.sideEffect){
                     homeViewModel.sideEffect.collect{
                         when(it){
@@ -214,7 +220,7 @@ fun BottomNavigation(
                     }
                 }
                 HomeScreen(
-                    state = state,
+                    state = homeState,
                     onEvent = homeViewModel::onEvent,
                     modifier = Modifier.padding(top = pv.calculateTopPadding())
                 )
@@ -253,18 +259,29 @@ fun BottomNavigation(
 //                )
             }
             composable<Route.Profile> {
-//                ProfileScreen(
-//                    navigateToNotification=navigateToNotification,
-//                    navigateToPersonalInfo=navigateToPersonalInfo,
-//                    navigateToKYC = navigateToKYC,
-//                    navigateToPrivacyPolicy=navigateToPrivacyPolicy,
-//                    navigateToTermsAndConditions=navigateToTermsAndConditions,
-//                    navigateToAboutUs=navigateToAboutUs,
-//                    navigateToAboutVelvet=navigateToAboutVelvet,
-//                    navigateToAboutFire=navigateToAboutFire,
-//                    onSignOut=onSignOut,
-//                    viewModel=homeViewModel
-//                )
+                val vm: ProfileViewModel = koinViewModel()
+                LaunchedEffect(vm.effect){
+                    vm.effect.collect {
+                        when (it) {
+                            ProfileEffect.NavigateToContactUs -> {
+
+                            }
+                            ProfileEffect.NavigateToHelpFaq -> {
+
+                            }
+                            ProfileEffect.NavigateToKycStatus -> navigateToKYC()
+                            ProfileEffect.NavigateToSecondaryLanguage -> navigateToLanguageSettings()
+                            ProfileEffect.NavigateToSettings -> navigateToProfileSettigns()
+                            ProfileEffect.NavigateToTradingAccountStatus -> navigateToTradingAccountSetup()
+                            ProfileEffect.ShowLogoutDialog -> onSignOut()
+                        }
+                    }
+                }
+                ProfileIntroScreen(
+                    state = homeState,
+                    onEvent = vm::handleEvent,
+                    modifier = Modifier.padding(top = pv.calculateTopPadding())
+                )
             }
             composable<Route.Insurance> {
                 InsuranceIntroScreen(

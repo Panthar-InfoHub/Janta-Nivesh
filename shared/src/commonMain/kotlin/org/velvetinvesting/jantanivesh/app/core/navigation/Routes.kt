@@ -209,4 +209,10 @@ sealed interface Route {
     data class FDPortfolioDetailsScreen(
         val id: String
     ) : Route
+
+    @Serializable
+    data object LanguageSelectionSettings
+
+    @Serializable
+    data object ProfileSettingsScreen
 }

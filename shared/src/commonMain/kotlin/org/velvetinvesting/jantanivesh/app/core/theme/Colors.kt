@@ -78,6 +78,13 @@ val PercentageGreenBg = Color(0x0d144F03)
 val DarkNavy = Color(0xff03144F)
 val SlateGray = Color(0xff94A3B8)
 val GradientEnd = Color(0xff1D2B64)
+val ProfileSecondary = Color(0xff2FBCFE)
+val Gray45 = Color(0xff454650)
+val ProfileGreen = Color(0xff008D18)
+val ProfileLightBlue = Color(0xffE5F7FD)
+val ProfileTitleColor = Color(0xff1B1B1F)
+val profileDividerColor=Color(0xffC6C5D1)
+val redColor = Color(0xffBA1A1A)
 
 //Insurance Screen Color
 val InsuranceBoxBackground=Color(0xFFE5EEFF)
