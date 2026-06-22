@@ -119,7 +119,7 @@ class ProjectedImpactViewModel(
     }
 
     private fun deriveProjectionData(goal: GoalDomain): ProjectedImpactUiData {
-        val currentYear = 2024 
+        val currentYear = 2024
 
         if (goal.goalTypeId == 3) { // Retirement
             val currentAge = goal.currentAge ?: 0
@@ -233,10 +233,10 @@ class ProjectedImpactViewModel(
     private fun mapSchemes() {
         val selected = (_portfolioData.value as? UiState.Success)?.data?.filter { it.isSelected }
         if (selected.isNullOrEmpty()) return
-        
+
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            // Placeholder: goalsRepository.mapGoal(...) 
+            // Placeholder: goalsRepository.mapGoal(...)
             loadGoalDetails(id)
             AppEventsController.sendGoalRefreshEvent()
         }
@@ -262,7 +262,7 @@ class ProjectedImpactViewModel(
                 .onError { error ->
                     SnackBarController.showError(error.message)
                     // Re-derive the data to restore state
-                    loadGoalDetails(id) 
+                    loadGoalDetails(id)
                     sendEffect(ProjectedImpactEffect.ShowError(error.message))
                 }
         }
