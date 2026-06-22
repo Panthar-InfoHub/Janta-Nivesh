@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
@@ -84,7 +85,7 @@ class YourGoalsViewModel(
                     )
                 }
                 .onError {
-
+                    SnackBarController.showError(it.message)
                     _uiState.value = UiState.Error(
                         it.message
                     )

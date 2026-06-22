@@ -92,6 +92,7 @@ class MutualFundSearchResultViewModel(
                     _loadingState.value = LoadingState.Success
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     _loadingState.value = LoadingState.Error(error.message)
                 }
         }

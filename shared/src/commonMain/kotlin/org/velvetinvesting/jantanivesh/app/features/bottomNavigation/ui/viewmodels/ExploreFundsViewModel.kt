@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.FixedTopPicksUiModel
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.MutualFundTopPicksUiModel
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPickFDUseCase
@@ -151,6 +152,7 @@ class ExploreFundsViewModel(
                     }
                 }
                 .onError {
+                    SnackBarController.showError(it.message)
                     errorMessage = it.message
                 }
 
@@ -170,6 +172,7 @@ class ExploreFundsViewModel(
                     }
                 }
                 .onError {
+                    SnackBarController.showError(it.message)
                     errorMessage = it.message
                 }
 

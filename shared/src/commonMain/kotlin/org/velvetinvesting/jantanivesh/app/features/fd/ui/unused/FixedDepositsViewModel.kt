@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPickFDUseCase
 
@@ -94,6 +95,7 @@ class FixedDepositsViewModel(
                     }
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     _uiState.update {
                         it.copy(
                             isLoading = false,

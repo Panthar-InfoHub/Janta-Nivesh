@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
@@ -204,6 +205,7 @@ class FdDetailsViewModel(
                     }
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     _uiState.update {
                         it.copy(
                             isLoading = false,

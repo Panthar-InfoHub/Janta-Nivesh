@@ -209,6 +209,7 @@ class MutualFundDetailsScreenViewModel(
                     _cartSheetState.value = _cartSheetState.value.copy(minLumpSumAmount = it.minLumpSumAmount, minSipAmount = it.minSipAmount)
                 }
                 .onError {
+                    SnackBarController.showError(it.message)
                     _detailsState.value = DetailsState.Error(it.message)
                 }
         }
@@ -223,6 +224,7 @@ class MutualFundDetailsScreenViewModel(
                     _graphState.value = GraphState.Success(it)
                 }
                 .onError {
+                    SnackBarController.showError(it.message)
                     _graphState.value = GraphState.Error(it.message)
                 }
         }

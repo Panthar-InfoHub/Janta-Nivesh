@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 
 data class ProfileUiState(
@@ -129,6 +130,7 @@ class ProfileViewModel(
                             errorMessage = error.message
                         )
                     }
+                    SnackBarController.showError(error.message)
                 }
         }
     }

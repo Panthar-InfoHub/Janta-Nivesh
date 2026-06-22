@@ -70,9 +70,9 @@ class LoginWithPhoneNumberViewModel(
                     _uiState.update { it.copy(isLoading = false) }
                     sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
                 }
-                .onError {
+                .onError { error ->
                     _uiState.update { it.copy(isLoading = false) }
-                    SnackBarController.showError(it.message)
+                    SnackBarController.showError(error.message)
                 }
         }
     }

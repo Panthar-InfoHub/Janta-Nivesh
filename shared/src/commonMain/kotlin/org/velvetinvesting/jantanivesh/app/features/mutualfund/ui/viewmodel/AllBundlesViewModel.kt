@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetAllBundledFundsUseCase
@@ -31,6 +32,7 @@ class AllBundlesViewModel(
                     _uiState.value = UiState.Success(data)
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     _uiState.value = UiState.Error(error.message)
                 }
         }

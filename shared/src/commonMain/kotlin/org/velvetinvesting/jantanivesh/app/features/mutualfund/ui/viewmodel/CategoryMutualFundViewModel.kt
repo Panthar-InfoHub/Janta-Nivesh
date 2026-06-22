@@ -10,6 +10,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.G
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CombinedFundsDomain
 
 class CategoryMutualFundViewModel(
@@ -40,6 +41,7 @@ class CategoryMutualFundViewModel(
                     _mutualFunds.value = data
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     _loadingState.value =
                         LoadingState.Error(error.message)
                 }

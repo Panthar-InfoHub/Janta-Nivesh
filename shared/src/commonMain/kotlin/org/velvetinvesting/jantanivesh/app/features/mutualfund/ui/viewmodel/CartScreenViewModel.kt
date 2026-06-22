@@ -185,6 +185,7 @@ class CartScreenViewModel(
                     )
                 }
                 .onError {
+                    SnackBarController.showError(it.message)
                     _uiState.value=UiState.Error(it.message)
                 }
         }
@@ -202,7 +203,7 @@ class CartScreenViewModel(
                     )
                 }
                 .onError {
-                    SnackBarController.showInfo(it.message)
+                    SnackBarController.showError(it.message)
                 }
         }
     }

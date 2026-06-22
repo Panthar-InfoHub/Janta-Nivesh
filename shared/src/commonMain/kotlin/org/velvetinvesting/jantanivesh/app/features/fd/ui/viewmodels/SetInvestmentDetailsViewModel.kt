@@ -28,6 +28,7 @@ import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 
 data class SetInvestmentDetailsUiState(
     val details: FDDetailsDomain? = null,
@@ -126,6 +127,7 @@ class SetInvestmentDetailsViewModel(
                     updateButtonState()
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -274,6 +276,7 @@ class SetInvestmentDetailsViewModel(
                     sendEffect(SetInvestmentDetailsEffect.NavigateBack)
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     _uiState.update {
                         it.copy(
                             isPurchasing = false,

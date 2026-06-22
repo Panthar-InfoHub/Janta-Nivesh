@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalSchemeDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
@@ -111,6 +112,7 @@ class ProjectedImpactViewModel(
                     _uiState.value = UiState.Success(deriveProjectionData(goal))
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     _uiState.value = UiState.Error(error.message)
                 }
         }
@@ -258,6 +260,7 @@ class ProjectedImpactViewModel(
                     sendEffect(ProjectedImpactEffect.NavigateBack)
                 }
                 .onError { error ->
+                    SnackBarController.showError(error.message)
                     // Re-derive the data to restore state
                     loadGoalDetails(id) 
                     sendEffect(ProjectedImpactEffect.ShowError(error.message))
