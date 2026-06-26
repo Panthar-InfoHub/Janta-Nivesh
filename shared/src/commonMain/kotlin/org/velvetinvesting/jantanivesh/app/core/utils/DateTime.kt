@@ -409,3 +409,77 @@ fun Int.withSuffix(): String {
         else -> "${this}th"
     }
 }
+
+fun String.toSlashDate(): String {
+
+    val inputFormat = LocalDate.Format {
+
+        this@Format.day(padding = Padding.ZERO)
+
+        char('-')
+
+        monthName(MonthNames.ENGLISH_ABBREVIATED)
+
+        char('-')
+
+        year()
+
+    }
+
+    val outputFormat = LocalDate.Format {
+
+        this@Format.day(padding = Padding.ZERO)
+
+        char('/')
+
+        monthNumber()
+
+        char('/')
+
+        year()
+
+    }
+
+    return LocalDate.parse(this, inputFormat).format(outputFormat)
+
+}
+
+
+
+private val slashDateFormat = LocalDate.Format {
+
+    this@Format.day(padding = Padding.ZERO)
+
+    char('/')
+
+    monthNumber()
+
+    char('/')
+
+    year()
+
+}
+
+fun String.incrementSlashDateYearYear(): String = runCatching {
+
+    LocalDate
+
+        .parse(this, slashDateFormat)
+
+        .plus(1, DateTimeUnit.YEAR)
+
+        .format(slashDateFormat)
+
+}.getOrDefault(this)
+
+fun String.decrementSlashDateYearYear(): String = runCatching {
+
+    LocalDate
+
+        .parse(this, slashDateFormat)
+
+        .minus(1, DateTimeUnit.YEAR)
+
+        .format(slashDateFormat)
+
+}.getOrDefault(this)

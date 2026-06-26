@@ -1,12 +1,9 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -23,13 +20,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.janta_nivesh_logo_desc
-import jantanivesh.shared.generated.resources.jantanivesh_logo
 import jantanivesh.shared.generated.resources.skip
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TopAppBarWithBackButtonAndStepCount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.AddYourEmailScreen
@@ -83,7 +78,7 @@ fun OnboardingNavigation(
                     navController.popBackStack()
                 }
                 is OnboardingEffect.ShowError -> {
-                    // Handle error show (e.g. snackbar)
+                    SnackBarController.showError(effect.message)
                 }
             }
         }

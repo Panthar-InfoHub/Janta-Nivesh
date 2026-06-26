@@ -45,6 +45,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray45
 import org.velvetinvesting.jantanivesh.app.core.theme.InsuranceIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.ProfileGreen
 import org.velvetinvesting.jantanivesh.app.core.theme.ProfileSecondary
@@ -356,9 +357,7 @@ fun RowItem(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().background(
-            color = White, shape = RoundedCornerShape(
-                Spacing.dp8
-            )
+            color = White, shape = LocalShapes.current.menuContainer
         ).clickable { onCLick() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically

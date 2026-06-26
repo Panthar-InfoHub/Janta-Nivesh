@@ -4,24 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
+import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalOption
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalRequest
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
-import org.velvetinvesting.jantanivesh.app.features.goals.utils.GoalCalculator
-import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import kotlin.math.max
+import kotlin.time.Instant
 
 data class AddGoalUiState(
     val form: GoalFormState = GoalFormState(),
@@ -117,7 +115,7 @@ class AddGoalViewModel(
             val birthDate = instant.toLocalDateTime(TimeZone.UTC).date
             val today = DateTimeUtils.today(TimeZone.UTC)
             var age = today.year - birthDate.year
-            if (today.monthNumber < birthDate.monthNumber || (today.monthNumber == birthDate.monthNumber && today.dayOfMonth < birthDate.dayOfMonth)) {
+            if (today.month.number < birthDate.month.number || (today.month.number == birthDate.month.number && today.day < birthDate.day)) {
                 age--
             }
             age
@@ -128,7 +126,7 @@ class AddGoalViewModel(
 
     private fun dobToEpochMillis(dob: String): Long {
         return try {
-            Instant.parse(dob).toEpochMilliseconds()
+            kotlin.time.Instant.parse(dob).toEpochMilliseconds()
         } catch (e: Exception) {
             0L
         }

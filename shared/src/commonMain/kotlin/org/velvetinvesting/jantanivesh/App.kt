@@ -40,7 +40,6 @@ fun App() {
     CompositionLocalProvider(
         LocalAppLanguageLocale provides currentLanguage.code
     ) {
-
         val snackbarHostState = remember { SnackbarHostState() }
         var currentSnackBar by remember { mutableStateOf<SnackBarType?>(null) }
         LaunchedEffect(Unit) {
