@@ -11,7 +11,8 @@ data class JantaNiveshShapes(
     val roundedDp16: Shape = RoundedCornerShape(size = Spacing.dp16),
     val circle: Shape = CircleShape,
     val roundedDp24: Shape = RoundedCornerShape(size = Spacing.dp24),
-    val menuContainer: Shape = RoundedCornerShape(8.dp)
+    val menuContainer: Shape = RoundedCornerShape(8.dp),
+    val roundedDp15: Shape = RoundedCornerShape(15.dp),
 )
 
 val LocalShapes = staticCompositionLocalOf { JantaNiveshShapes() }

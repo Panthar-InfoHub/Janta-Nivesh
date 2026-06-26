@@ -62,6 +62,10 @@ val InsuranceIconBg = Color(0xffE4E1E7)
 val GoalIconBg = Color(0xFFF5F2FB)
 val DashedBorderColor = Color(0xff858585)
 
+val PathGray = Color(0xffE4E1E7)
+val TextGray = Color(0xff6A7282)
+
+
 // TradingDetailsScreen
 val HolderNatureTextColor = Color(0xff44464F)
 
