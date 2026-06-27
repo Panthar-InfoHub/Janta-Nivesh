@@ -58,7 +58,7 @@ val viewModelModule = module {
         MutualFundSearchResultViewModel(search, fundCategory, get())
     }
 
-    viewModel { HomeScreenViewModel(get()) }
+    viewModel { HomeScreenViewModel(get(), get()) }
     viewModel { ExploreFundsViewModel(get(),get()) }
     viewModel { ProfileLanguageViewModel(get()) }
     viewModel { ProfileSettingViewModel() }

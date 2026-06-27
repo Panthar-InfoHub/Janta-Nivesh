@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,22 +41,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.ic_callended_filled
 import jantanivesh.shared.generated.resources.ic_ruppee_filled
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.bgColor4
 import org.velvetinvesting.jantanivesh.app.core.theme.buttonTextStyle
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,111 +75,155 @@ fun InvestmentMethodScreen(
     modifier: Modifier = Modifier,
     onExistingLumpSumFundClick: () -> Unit = {}
 ) {
+    val vm: PortfolioScreenViewModel = koinViewModel()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+
     var showSIPBottomSheet by remember { mutableStateOf(false) }
     var showLumpSumBottomSheet by remember { mutableStateOf(false) }
     val sheetStateSIP = rememberModalBottomSheetState()
     val sheetStateLumpSum = rememberModalBottomSheetState()
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = Color.White,
-        topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 20.dp)
+    UiStateContainer(
+        uiState = uiState,
+        onRetry = vm::refresh,
+        errorContent = {
+            Column(
+                modifier= Modifier.fillMaxSize()
+                    .statusBarsPadding()
             ) {
-                IconButton(
-                    onClick = onBackClick,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.back_arrow),
-                        contentDescription = "Back",
-                        tint = Color.Black
-                    )
-                }
-            }
-        }
-    ) { paddingValues ->
-
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = 24.dp,
-                end = 24.dp,
-                top = 8.dp,
-                bottom = 24.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-
-            item {
-                Column {
-                    Text(
-                        text = "Invest Your Way",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = InterFontFamily,
-                        color = Color.Black
-                    )
-
-                    Text(
-                        text = "Pick an option to start your investment journey today. ",
-                        fontFamily = InterFontFamily,
-                        fontSize = 14.sp,
-                        lineHeight = 16.sp,
-                        color = Color.Gray
-                    )
-                }
-            }
-
-            item {
-                InvestmentOptionCard(title = "Start a SIP", description = "Automated monthly investments to build wealth steadily over time.", buttonText = "Start SIP ", icon = Res.drawable.ic_callended_filled, onButtonClick = { showSIPBottomSheet = true })
-            }
-
-            item {
-                InvestmentOptionCard(
-                    title = "Invest a Lump-Sum",
-                    description = "Make a one-time investment with your available funds today.",
-                    buttonText = "Invest Lump Sum",
-                    icon = Res.drawable.ic_ruppee_filled,
-                    onButtonClick = {
-                        showLumpSumBottomSheet = true
-                    }
+                BackHeader(
+                    title = "",
+                    onBack = onBackClick,
+                    modifier= Modifier.padding(horizontal = Spacing.dp16)
+                )
+                ErrorScreen(
+                    errorMessage = it,
+                    onRetryClick = vm::refresh,
+                    modifier= Modifier.weight(1f)
                 )
             }
         }
+    ){
+        val hasFunds = it.mutualFunds.isNotEmpty()
+        Scaffold(
+            modifier = modifier.fillMaxSize(),
+            containerColor = Color.White,
+            topBar = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 20.dp)
+                ) {
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.back_arrow),
+                            contentDescription = "Back",
+                            tint = Color.Black
+                        )
+                    }
+                }
+            }
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = 24.dp,
+                    end = 24.dp,
+                    top = 8.dp,
+                    bottom = 24.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
 
-        if (showSIPBottomSheet) {
-            SIPSelectionBottomSheet(
-                sheetState = sheetStateSIP,
-                onDismiss = { showSIPBottomSheet = false },
-                onExistingFundClick = {
-                    showSIPBottomSheet = false
-                    onExistingSIPFundClick()
-                },
-                onExploreNewFundsClick = {
-                    showSIPBottomSheet = false
-                    onStartSipClick()
+                item {
+                    Column {
+                        Text(
+                            text = "Invest Your Way",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = InterFontFamily,
+                            color = Color.Black
+                        )
+
+                        Text(
+                            text = "Pick an option to start your investment journey today. ",
+                            fontFamily = InterFontFamily,
+                            fontSize = 14.sp,
+                            lineHeight = 16.sp,
+                            color = Color.Gray
+                        )
+                    }
                 }
-            )
-        }
-        if (showLumpSumBottomSheet) {
-            SIPSelectionBottomSheet(
-                sheetState = sheetStateLumpSum,
-                onDismiss = { showLumpSumBottomSheet = false },
-                onExistingFundClick = {
-                    showLumpSumBottomSheet = false
-                    onExistingLumpSumFundClick()
-                },
-                onExploreNewFundsClick = {
-                    showLumpSumBottomSheet = false
-                    onLumpsumClick()
+
+                item {
+                    InvestmentOptionCard(
+                        title = "Start a SIP",
+                        description = "Automated monthly investments to build wealth steadily over time.",
+                        buttonText = "Start SIP ",
+                        icon = Res.drawable.ic_callended_filled,
+                        onButtonClick = {
+                            if (hasFunds){
+                                showSIPBottomSheet = true
+                            }
+                            else {
+                                onStartSipClick()
+                            }
+                        }
+                    )
                 }
-            )
+
+                item {
+                    InvestmentOptionCard(
+                        title = "Invest a Lump-Sum",
+                        description = "Make a one-time investment with your available funds today.",
+                        buttonText = "Invest Lump Sum",
+                        icon = Res.drawable.ic_ruppee_filled,
+                        onButtonClick = {
+                            if (hasFunds){
+                                showLumpSumBottomSheet = true
+                            }
+                            else
+                            {
+                                onLumpsumClick()
+                            }
+                        }
+                    )
+                }
+            }
+
+            if (showSIPBottomSheet) {
+                SIPSelectionBottomSheet(
+                    sheetState = sheetStateSIP,
+                    onDismiss = { showSIPBottomSheet = false },
+                    onExistingFundClick = {
+                        showSIPBottomSheet = false
+                        onExistingSIPFundClick()
+                    },
+                    onExploreNewFundsClick = {
+                        showSIPBottomSheet = false
+                        onStartSipClick()
+                    }
+                )
+            }
+            if (showLumpSumBottomSheet) {
+                SIPSelectionBottomSheet(
+                    sheetState = sheetStateLumpSum,
+                    onDismiss = { showLumpSumBottomSheet = false },
+                    onExistingFundClick = {
+                        showLumpSumBottomSheet = false
+                        onExistingLumpSumFundClick()
+                    },
+                    onExploreNewFundsClick = {
+                        showLumpSumBottomSheet = false
+                        onLumpsumClick()
+                    }
+                )
+            }
         }
     }
 }

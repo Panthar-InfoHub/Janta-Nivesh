@@ -104,6 +104,7 @@ sealed interface Route {
     @Serializable
     data class FolioFundScreen(val folioId: String) : Route
 
+    @Serializable
     data class SIPPortfolioDetails(
         val id: Int,
         val title: String,

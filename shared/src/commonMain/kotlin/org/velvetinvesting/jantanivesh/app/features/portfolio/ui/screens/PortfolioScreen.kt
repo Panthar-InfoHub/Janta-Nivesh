@@ -103,7 +103,8 @@ fun PortfolioScreenMain(
     onFolioItemClick: (MutualFundPortfolioDomain) -> Unit,
     onFDClick: (String) -> Unit,
     navigateToCategoryMutualFundScreen: () -> Unit,
-    navigateToCategoryFDScreen: () -> Unit
+    navigateToCategoryFDScreen: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     val screenState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -117,7 +118,7 @@ fun PortfolioScreenMain(
     val pagerState = rememberPagerState(pageCount = { 3 })
 
     Box(
-        modifier=Modifier.fillMaxSize(),
+        modifier=modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
         Column(

@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +39,7 @@ import jantanivesh.shared.generated.resources.profile_help
 import jantanivesh.shared.generated.resources.profile_kyc_status
 import jantanivesh.shared.generated.resources.profile_language
 import jantanivesh.shared.generated.resources.profile_setting
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
@@ -52,6 +54,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.ProfileSecondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.redColor
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenUiState
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
@@ -63,6 +66,7 @@ fun ProfileIntroScreen(
     modifier: Modifier = Modifier,
     onEvent: (ProfileEvent) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     Column(
         modifier.fillMaxSize()
             .background(White).padding(horizontal = 16.dp)
@@ -250,9 +254,14 @@ fun ProfileIntroScreen(
                             color = if (state.tradingAccountVerified) ProfileGreen else redColor,
                             onCLick = {
                                 if (state.tradingAccountVerified) return@RowItemText
-                                onEvent(
-                                    ProfileEvent.OnTradingAccountStatusClicked
-                                )
+                                if (!state.kycVerified){
+                                    scope.launch{ SnackBarController.showInfo("Complete Kyc First") }
+                                }
+                                else {
+                                    onEvent(
+                                        ProfileEvent.OnTradingAccountStatusClicked
+                                    )
+                                }
                             }
                         )
 
