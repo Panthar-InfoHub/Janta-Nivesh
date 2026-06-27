@@ -1,4 +1,4 @@
-package org.sharad.velvetinvestment.presentation.portfolio.viewmodel
+package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,22 +8,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.sharad.velvetinvestment.data.remote.model.fundredeem.FullRedemptionRequestDto
-import org.sharad.velvetinvestment.data.remote.model.fundredeem.PartialRedemptionRequestDto
-import org.sharad.velvetinvestment.domain.models.portfolio.SIPDetailsDomain
-import org.sharad.velvetinvestment.domain.usecases.cancelorder.CancelLumpSumOrderUseCase
-import org.sharad.velvetinvestment.domain.usecases.cancelorder.CancelSipOrderUseCase
-import org.sharad.velvetinvestment.domain.usecases.fundusecases.RedeemFullFundUseCase
-import org.sharad.velvetinvestment.domain.usecases.fundusecases.RedeemPartialFundUseCase
-import org.sharad.velvetinvestment.domain.usecases.report.ExportSoaReportUseCase
-import org.sharad.velvetinvestment.domain.usecases.report.DownloadPdfByUrlUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelLumpSumOrderUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelSipOrderUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportSoaReportUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.DownloadPdfByUrlUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.RedemptionInputType
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.RedemptionType
-import org.sharad.velvetinvestment.utils.LoadingState
-import org.sharad.velvetinvestment.utils.SnackBarController
-import org.sharad.velvetinvestment.utils.networking.onError
-import org.sharad.velvetinvestment.utils.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.FullRedemptionRequestDto
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.PartialRedemptionRequestDto
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemFullFundUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemPartialFundUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.SIPDetailsDomain
 
 sealed interface MFPortfolioSideEffects{
     data class openRedeemptionUrl(val url: String): MFPortfolioSideEffects

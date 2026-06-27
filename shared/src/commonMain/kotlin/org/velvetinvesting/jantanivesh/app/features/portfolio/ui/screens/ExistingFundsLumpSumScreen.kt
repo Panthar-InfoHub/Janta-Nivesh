@@ -38,9 +38,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.SubcomposeAsyncImageContent
 import org.koin.compose.viewmodel.koinViewModel
-import org.sharad.velvetinvestment.presentation.portfolio.viewmodel.ExistingFundsLumpSumSideEffect
-import org.sharad.velvetinvestment.presentation.portfolio.viewmodel.ExistingFundsLumpSumViewModel
-import org.sharad.velvetinvestment.presentation.portfolio.viewmodel.LumpSumAdd
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.ExistingFundsLumpSumSideEffect
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.ExistingFundsLumpSumViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.LumpSumAdd
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary

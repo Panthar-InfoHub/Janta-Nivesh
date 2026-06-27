@@ -35,7 +35,7 @@ import jantanivesh.shared.generated.resources.info_icon
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import org.sharad.velvetinvestment.presentation.portfolio.viewmodel.FolioFundsMFViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FolioFundsMFViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen

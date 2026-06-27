@@ -59,8 +59,8 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.sharad.velvetinvestment.presentation.portfolio.viewmodel.MFPortfolioDetailsViewModel
-import org.sharad.velvetinvestment.presentation.portfolio.viewmodel.MFPortfolioSideEffects
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPortfolioDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPortfolioSideEffects
 import org.velvetinvesting.jantanivesh.app.core.navigation.Route
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme

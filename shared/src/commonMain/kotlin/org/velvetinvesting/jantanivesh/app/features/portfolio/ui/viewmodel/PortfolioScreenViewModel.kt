@@ -1,29 +1,26 @@
-package org.sharad.velvetinvestment.presentation.portfolio.viewmodel
+package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.sharad.velvetinvestment.domain.models.portfolio.PortfolioDomain
-import org.sharad.velvetinvestment.domain.models.portfolio.PendingOrderDomain
-import org.sharad.velvetinvestment.domain.usecases.cancelorder.CancelLumpSumOrderUseCase
-import org.sharad.velvetinvestment.domain.usecases.cancelorder.CancelSipOrderUseCase
-import org.sharad.velvetinvestment.domain.usecases.report.DownloadPdfByUrlUseCase
-import org.sharad.velvetinvestment.domain.usecases.report.ExportCapitalReportUseCase
-import org.sharad.velvetinvestment.domain.usecases.report.ExportPortfolioReportUseCase
-import org.sharad.velvetinvestment.domain.usecases.report.ExportTaxReportUseCase
-import org.sharad.velvetinvestment.domain.usecases.userfinance.GetPortfolioUseCase
-import org.sharad.velvetinvestment.domain.usecases.portfolio.GetPendingOrdersUseCase
 import org.sharad.velvetinvestment.presentation.portfolio.models.SelectedPortfolio
-import org.sharad.velvetinvestment.utils.DateTimeUtils
-import org.sharad.velvetinvestment.utils.SnackBarController
-import org.sharad.velvetinvestment.utils.UiState
-import org.sharad.velvetinvestment.utils.networking.onError
-import org.sharad.velvetinvestment.utils.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PendingOrderDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelLumpSumOrderUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelSipOrderUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.DownloadPdfByUrlUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportCapitalReportUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportPortfolioReportUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportTaxReportUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPendingOrdersUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
 
 class PortfolioScreenViewModel(
     private val getPortfolioUseCase: GetPortfolioUseCase,

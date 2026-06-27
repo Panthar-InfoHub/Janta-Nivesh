@@ -1,15 +1,13 @@
-package org.sharad.velvetinvestment.presentation.portfolio.viewmodel
+package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.sharad.velvetinvestment.domain.models.portfolio.FolioFundDomain
-import org.sharad.velvetinvestment.domain.usecases.userfinance.GetFolioFundsUseCase
-import org.sharad.velvetinvestment.utils.UiState
-import org.sharad.velvetinvestment.utils.networking.onError
-import org.sharad.velvetinvestment.utils.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFolioFundsUseCase
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FolioFundDomain
 

@@ -8,20 +8,12 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.Pend
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.models.InvestMoreDto
 
-interface UserFinance {
-
-
+interface PortfolioRepo {
     suspend fun getPortfolio(): NetworkResponse<PortfolioDomain, ErrorDomain>
 
     suspend fun getFDPortfolioById(id:String): NetworkResponse<FixedDepositTransactionDomain, ErrorDomain>
 
     suspend fun getFDRedirectUrl(id:String, event: String): NetworkResponse<String, ErrorDomain>
-
-    suspend fun unMapGoal(goalId: Int): NetworkResponse<Unit, ErrorDomain>
-
-    suspend fun deleteSingleLoan(id: String): NetworkResponse<Unit, ErrorDomain>
-
-
     suspend fun exportReport(
         type: String,
         year: Int? = null,
@@ -34,6 +26,9 @@ interface UserFinance {
     suspend fun getFolioFunds(folioId: String): NetworkResponse<List<FolioFundDomain>, ErrorDomain>
 
     suspend fun investMoreLumpsum(body: InvestMoreDto): NetworkResponse<String, ErrorDomain>
+    
+    suspend fun cancelLumpSumOrder(orderId: String): NetworkResponse<Unit, ErrorDomain>
 
-    suspend fun requestConnection(type: String, message: String): NetworkResponse<Unit, ErrorDomain>
+    suspend fun cancelSipOrder(xsipRegNo: String): NetworkResponse<Unit, ErrorDomain>
+
 }

@@ -1,4 +1,4 @@
-package org.sharad.velvetinvestment.presentation.portfolio.viewmodel
+package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,13 +7,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.sharad.velvetinvestment.domain.models.portfolio.PortfolioDomain
-import org.sharad.velvetinvestment.domain.usecases.userfinance.GetPortfolioUseCase
-import org.sharad.velvetinvestment.domain.usecases.userfinance.InvestMoreLumpsumUseCase
-import org.sharad.velvetinvestment.utils.SnackBarController
-import org.sharad.velvetinvestment.utils.UiState
-import org.sharad.velvetinvestment.utils.networking.onError
-import org.sharad.velvetinvestment.utils.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.InvestMoreLumpsumUseCase
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain

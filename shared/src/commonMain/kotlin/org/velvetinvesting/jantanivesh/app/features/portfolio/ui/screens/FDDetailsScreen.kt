@@ -41,7 +41,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.sharad.velvetinvestment.presentation.portfolio.models.FDNomineeUiModel
-import org.sharad.velvetinvestment.presentation.portfolio.viewmodel.FDPortFolioDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FDPortFolioDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen

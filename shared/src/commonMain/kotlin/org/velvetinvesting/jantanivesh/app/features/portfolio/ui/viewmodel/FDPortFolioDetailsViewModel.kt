@@ -1,22 +1,18 @@
-package org.sharad.velvetinvestment.presentation.portfolio.viewmodel
+package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.sharad.velvetinvestment.domain.models.portfolio.FixedDepositTransactionDomain
-import org.sharad.velvetinvestment.domain.usecases.userfinance.GetFDPortfolioByIdUseCase
-import org.sharad.velvetinvestment.domain.usecases.userfinance.GetFDRedirectUrlUseCase
-import org.sharad.velvetinvestment.utils.BrowserLauncher
-import org.sharad.velvetinvestment.utils.SnackBarController
-import org.sharad.velvetinvestment.utils.UiState
-import org.sharad.velvetinvestment.utils.networking.onError
-import org.sharad.velvetinvestment.utils.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.BrowserLauncher
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositTransactionDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFDPortfolioByIdUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFDRedirectUrlUseCase
 
 class FDPortFolioDetailsViewModel(
     private val getFDPortfolioByIdUseCase: GetFDPortfolioByIdUseCase,

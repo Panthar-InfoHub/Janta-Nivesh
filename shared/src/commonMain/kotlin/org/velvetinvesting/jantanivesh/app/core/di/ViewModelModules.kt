@@ -30,6 +30,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.*
 
 val viewModelModule = module {
 
@@ -68,4 +69,11 @@ val viewModelModule = module {
     viewModel { YourGoalsViewModel(get()) }
     viewModel { AddGoalViewModel(get(), get()) }
     viewModel { (id: String) -> ProjectedImpactViewModel(id, get(), get()) }
+
+    // Portfolio ViewModels
+    viewModel { (folioId: String) -> FolioFundsMFViewModel(folioId, get()) }
+    viewModel { PortfolioScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { (fdId: String) -> FDPortFolioDetailsViewModel(get(), get(), get(), fdId) }
+    viewModel { MFPortfolioDetailsViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { ExistingFundsLumpSumViewModel(get(), get()) }
 }
