@@ -33,20 +33,20 @@ import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.InsuranceIntroScreen
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.PortfolioScreenMain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileIntroScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileViewModel
 
 @Composable
 fun BottomNavigation(
-    navigateToSIPDetailsScreen: (String) -> Unit,
+    navigateToSIPDetailsScreen: (MutualFundPortfolioDomain) -> Unit,
     navigateToFDDetailsScreen: (String) -> Unit,
     navigateToMutualFundTypeSelectionScreen: () -> Unit,
-    navigateToFireReportScreen: () -> Unit,
-    navigateToKYCScreen: () -> Unit,
     navigateToGoalScreen: () -> Unit,
     navigateToNotification: () -> Unit,
-    navigateToPersonalInfo: () -> Unit,
     navigateToCategoryFDScreen: () -> Unit,
     navigateToMutualFundDetailScreen: (String) -> Unit,
     navigateToHealthInsurance: () -> Unit,
@@ -55,7 +55,6 @@ fun BottomNavigation(
     onSignOut: () -> Unit,
     navigateToAddGoal: () -> Unit,
     navigateToSpecificGoalProjection: (String) -> Unit,
-    navigateToMutualFundList: () -> Unit,
     navigateToFD: () -> Unit,
     navigateToTradingAccountSetup: () -> Unit,
     navigateToPrivacyPolicy: () -> Unit,
@@ -64,7 +63,6 @@ fun BottomNavigation(
     navigateToAboutVelvet: () -> Unit = {},
     navigateToAboutFire: () -> Unit = {},
     navigateToKYC: () -> Unit,
-    navigateToInvestmentRateScree: () -> Unit,
     navigateToPortfolioFdDetailsScreen: (String) -> Unit,
     navigateToRequestCallBack: () -> Unit,
     navigateToLanguageSettings: () -> Unit,
@@ -77,8 +75,7 @@ fun BottomNavigation(
 
     val homeViewModel: HomeScreenViewModel = koinViewModel()
     val homeState by homeViewModel.uiState.collectAsStateWithLifecycle()
-
-//    val portfolioViewModel: PortfolioScreenViewModel=koinViewModel()
+    val portfolioViewModel: PortfolioScreenViewModel =koinViewModel()
 
     LaunchedEffect(Unit){
         AppEventsController.appEvent.collect {
@@ -98,8 +95,8 @@ fun BottomNavigation(
                     AppEventsController.clear()
                 }
                 AppEvent.PortfolioRefreshEvent -> {
-//                    portfolioViewModel.refresh()
-//                    AppEventsController.clear()
+                    portfolioViewModel.refresh()
+                    AppEventsController.clear()
                 }
                 else -> {}
             }
@@ -247,16 +244,16 @@ fun BottomNavigation(
                 )
             }
             composable<Route.PortFolio> {
-//                PortfolioScreenMain(
-//                    viewModel = portfolioViewModel,
-//                    onFolioItemClick = {
-//                        navigateToSIPDetailsScreen(it)
-//                    },
-//                    onFDClick = navigateToPortfolioFdDetailsScreen,
-//                    pv=pv,
-//                    navigateToCategoryMutualFundScreen=navigateToCategoryMutualFundScreen,
-//                    navigateToCategoryFDScreen=navigateToCategoryFDScreen
-//                )
+                PortfolioScreenMain(
+                    viewModel = portfolioViewModel,
+                    onFolioItemClick = {
+                        navigateToSIPDetailsScreen(it)
+                    },
+                    onFDClick = navigateToPortfolioFdDetailsScreen,
+                    navigateToCategoryMutualFundScreen=navigateToMutualFundTypeSelectionScreen,
+                    navigateToCategoryFDScreen=navigateToCategoryFDScreen,
+                    modifier = Modifier.padding(top = pv.calculateTopPadding())
+                )
             }
             composable<Route.Profile> {
                 val vm: ProfileViewModel = koinViewModel()

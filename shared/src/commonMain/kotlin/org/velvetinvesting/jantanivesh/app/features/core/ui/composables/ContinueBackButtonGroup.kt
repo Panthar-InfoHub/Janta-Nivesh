@@ -23,7 +23,7 @@ fun ContinueBackButtonFooter(
     backText: String = "Back",
     onContinue: () -> Unit,
     onBack: () -> Unit,
-    pv: PaddingValues,
+    pv: PaddingValues = PaddingValues(),
     enabled: Boolean = true,
 ) {
     Box(

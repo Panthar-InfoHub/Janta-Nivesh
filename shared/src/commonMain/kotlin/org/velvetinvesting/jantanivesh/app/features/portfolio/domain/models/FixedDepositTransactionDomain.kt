@@ -1,0 +1,36 @@
+package org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models
+
+
+data class FixedDepositTransactionDomain(
+    val id: String,
+    val userId: String,
+    val paymentCompletedAt: String?,
+    val isVkycPending: Boolean,
+    val amount: String,
+    val roiAtBooking: String,
+    val tenureAtBooking: Int,
+    val payoutFrequency: String,
+    val status: FDStatus,
+    val maturityAmount: String?,
+    val maturityDate: String?,
+    val maturityInstruction: String?,
+    val paymentTxId: String?,
+    val fdAccountNumber: String?,
+    val onboardedAt: String?,
+    val vkycCompletedAt: String?,
+    val fdIssuedAt: String?,
+    val refundDate: String?,
+    val vkycFailureReason: String?,
+    val failureReason: String?,
+    val createdAt: String,
+    val updatedAt: String,
+    val productId: String,
+    val issuerId: String,
+    val issuerFullName: String,
+    val issuerDisplayName: String,
+    val issuerType: String,
+    val issuerLogoUrl: String,
+    val issuerBannerUrl: String,
+    val issuerRatingText: String,
+    val pendingAction: PendingAction
+)

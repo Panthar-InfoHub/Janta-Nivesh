@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmod
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,9 +10,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
+import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
 
 data class HomeScreenUiState(
     val isLoading: Boolean = false,
@@ -55,7 +60,8 @@ sealed interface HomeScreenSideEffect {
 }
 
 class HomeScreenViewModel(
-    private val getUserDataUseCase: GetUserDataUseCase
+    private val getUserDataUseCase: GetUserDataUseCase,
+    private val getPortfolioUseCase: GetPortfolioUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
@@ -90,14 +96,25 @@ class HomeScreenViewModel(
     private fun loadData() {
         viewModelScope.launch {
             _uiState.update {
-                it.copy(isLoading = true, showError = false, error = "")
+                it.copy(
+                    isLoading = true,
+                    showError = false,
+                    error = ""
+                )
             }
 
-            getUserDataUseCase()
+            val userDeferred = async { getUserDataUseCase() }
+            val portfolioDeferred = async { getPortfolioUseCase() }
+
+            val userResult = userDeferred.await()
+            val portfolioResult = portfolioDeferred.await()
+
+            var errorMessage: String? = null
+
+            userResult
                 .onSuccess { userData ->
                     _uiState.update {
                         it.copy(
-                            isLoading = false,
                             userName = userData.name,
                             goals = userData.goals,
                             kycVerified = userData.kycVerified,
@@ -106,7 +123,38 @@ class HomeScreenViewModel(
                         )
                     }
                 }
+                .onError {
+                    errorMessage = it.message
+                }
 
+            portfolioResult
+                .onSuccess { portfolio ->
+                    _uiState.update {
+                        it.copy(
+                            portfolioValue = formatMoneyAfterL(portfolio.dashboard.investedAmount.toLong()),
+                            fixedDepositsAmount = formatMoneyAfterL(
+                                portfolio.totalInvestments.allocation.fixedDeposits.value.toLong()
+                            ),
+                            mutualFundsAmount = formatMoneyAfterL(
+                                portfolio.totalInvestments.allocation.mutualFunds.value.toLong()
+                            ),
+                            pnlTrend = portfolio.investedAmountBreakdown.returnsPercent.trimTo(2)
+                        )
+                    }
+                }
+                .onError {
+                    if (errorMessage == null) {
+                        errorMessage = it.message
+                    }
+                }
+
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    showError = errorMessage != null,
+                    error = errorMessage.orEmpty()
+                )
+            }
         }
     }
 }

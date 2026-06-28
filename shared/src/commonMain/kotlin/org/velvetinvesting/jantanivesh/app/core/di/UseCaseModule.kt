@@ -43,6 +43,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecas
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.SubmitTradingAccountFormUseCase
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.TradingAccountConfirmationUseCase
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.VerifyPANUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.*
 
 val useCaseModule = module {
     factory { LoginWithNumberUseCase(get()) }
@@ -94,4 +95,19 @@ val useCaseModule = module {
     factory { PurchaseSipFundUseCase(get()) }
     factory { RedeemFullFundUseCase(get()) }
     factory { RedeemPartialFundUseCase(get()) }
+
+    // Portfolio UseCases
+    factory { GetPortfolioUseCase(get()) }
+    factory { GetFolioFundsUseCase(get()) }
+    factory { CancelSipOrderUseCase(get()) }
+    factory { ExportSoaReportUseCase(get()) }
+    factory { ExportTaxReportUseCase(get()) }
+    factory { DownloadPdfByUrlUseCase(get()) }
+    factory { GetFDRedirectUrlUseCase(get()) }
+    factory { GetPendingOrdersUseCase(get()) }
+    factory { InvestMoreLumpsumUseCase(get()) }
+    factory { CancelLumpSumOrderUseCase(get()) }
+    factory { GetFDPortfolioByIdUseCase(get()) }
+    factory { ExportCapitalReportUseCase(get()) }
+    factory { ExportPortfolioReportUseCase(get()) }
 }
