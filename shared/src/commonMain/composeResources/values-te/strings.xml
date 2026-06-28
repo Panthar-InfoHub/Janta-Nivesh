@@ -29,6 +29,7 @@
     <!-- EnterOtpScreen -->
     <string name="enter_code">కోడ్‌ను నమోదు చేయండి</string>
     <string name="verification_code_sent">ధృవీకరణ కోడ్ దీనికి పంపబడింది</string>
+    <string name="resend_code">కోడ్‌ను మళ్లీ పంపండి</string>
     <string name="resend_code_timer">మీరు %1$d సెకన్లలో కోడ్‌ను మళ్లీ పంపగలరు</string>
     <string name="next">తర్వాత</string>
     <string name="otp_input_desc">కీబోర్డ్ ద్వారా OTP నమోదు చేయండి</string>

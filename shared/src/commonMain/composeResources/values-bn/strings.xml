@@ -30,6 +30,7 @@
     <!-- EnterOtpScreen -->
     <string name="enter_code">কোড লিখুন</string>
     <string name="verification_code_sent">একটি যাচাইকরণ কোড পাঠানো হয়েছে</string>
+    <string name="resend_code">কোড পুনরায় পাঠান</string>
     <string name="resend_code_timer">আপনি %1$d সেকেন্ডের মধ্যে কোডটি পুনরায় পাঠাতে পারেন</string>
     <string name="next">পরবর্তী</string>
     <string name="otp_input_desc">কীবোর্ডের মাধ্যমে ওটিপি লিখুন</string>

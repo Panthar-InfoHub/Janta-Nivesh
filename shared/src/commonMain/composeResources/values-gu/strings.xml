@@ -30,6 +30,7 @@
     <!-- EnterOtpScreen -->
     <string name="enter_code">કોડ દાખલ કરો</string>
     <string name="verification_code_sent">ચકાસણી કોડ આના પર મોકલવામાં આવ્યો છે</string>
+    <string name="resend_code">કોડ ફરીથી મોકલો</string>
     <string name="resend_code_timer">તમે %1$d સેકન્ડમાં કોડ ફરીથી મોકલી શકો છો</string>
     <string name="next">આગળ</string>
     <string name="otp_input_desc">કીબોર્ડ દ્વારા OTP દાખલ કરો</string>

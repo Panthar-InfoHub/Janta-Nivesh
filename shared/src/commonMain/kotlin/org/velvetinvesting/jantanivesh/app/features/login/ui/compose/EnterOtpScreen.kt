@@ -1,15 +1,14 @@
 package org.velvetinvesting.jantanivesh.app.features.login.ui.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -35,17 +34,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.enter_code
-import jantanivesh.shared.generated.resources.janta_nivesh_logo_desc
-import jantanivesh.shared.generated.resources.jantanivesh_logo
 import jantanivesh.shared.generated.resources.next
 import jantanivesh.shared.generated.resources.otp_input_desc
+import jantanivesh.shared.generated.resources.resend_code
 import jantanivesh.shared.generated.resources.resend_code_timer
 import jantanivesh.shared.generated.resources.verification_code_sent
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.TextFieldBorder
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
@@ -103,18 +101,33 @@ fun EnterOtpScreen(
                     modifier = Modifier.padding(bottom = Spacing.dp24)
                 )
 
-                Text(
-                    text = "You can resend the code in ${state.resendTimerSeconds} seconds/"+stringResource(Res.string.resend_code_timer, state.resendTimerSeconds),
-                    color = GreyText,
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier
-                        .padding(bottom = Spacing.dp24)
-                        .clickable {
-                            if (state.resendTimerSeconds == 0) {
+                if (state.resendTimerSeconds == 0) {
+                    Text(
+                        text = "Resend Code/" + stringResource(Res.string.resend_code),
+                        color = Primary,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.clickable(
+                            onClick = {
                                 onEvent(EnterOtpEvent.OnResendClicked)
-                            }
-                        }
-                )
+                            },
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        )
+                    )
+                } else {
+                    Text(
+                        text = "You can resend the code in ${state.resendTimerSeconds} seconds/" + stringResource(
+                            Res.string.resend_code_timer,
+                            state.resendTimerSeconds
+                        ),
+                        color = GreyText,
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier
+                            .padding(bottom = Spacing.dp24)
+                    )
+                }
+
+
 
                 AppButton(
                     text = stringResource(Res.string.next),
@@ -204,7 +217,7 @@ fun EnterOtpScreenPreview() {
             state = EnterOtpUiState(
                 otpValue = "123",
                 phoneNumber = "9876543210",
-                resendTimerSeconds = 15
+                resendTimerSeconds = 0
             ),
             onEvent = {}
         )

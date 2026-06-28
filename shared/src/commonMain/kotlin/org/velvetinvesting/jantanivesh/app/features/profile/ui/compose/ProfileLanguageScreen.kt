@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.profile.ui.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,6 +65,9 @@ fun ProfileLanguageScreen(
                     Box(
                         modifier = Modifier.genericDropShadow(RoundedCornerShape(Spacing.dp8))
                             .fillMaxWidth().clip(RoundedCornerShape(Spacing.dp8))
+                            .clickable(
+                                onClick = {onEvent(ProfileLanguageEvent.OnLanguageSelected(lang))}
+                            )
                             .background(color = White).padding(Spacing.dp12)
                     ) {
                         Row {

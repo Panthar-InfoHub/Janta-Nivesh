@@ -29,6 +29,7 @@
     <!-- EnterOtpScreen -->
     <string name="enter_code">Enter the Code</string>
     <string name="verification_code_sent">A verification code has been sent to</string>
+    <string name="resend_code">Resend Code</string>
     <string name="resend_code_timer">You can resend the code in %1$d seconds</string>
     <string name="next">Next</string>
     <string name="otp_input_desc">Enter Otp through Keyboard</string>

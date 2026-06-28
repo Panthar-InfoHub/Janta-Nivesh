@@ -30,6 +30,7 @@
     <!-- EnterOtpScreen -->
     <string name="enter_code">குறியீட்டை உள்ளிடவும்</string>
     <string name="verification_code_sent">சரிபார்ப்புக் குறியீடு அனுப்பப்பட்டுள்ளது</string>
+    <string name="resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
     <string name="resend_code_timer">நீங்கள் %1$d வினாடிகளில் குறியீட்டை மீண்டும் அனுப்பலாம்</string>
     <string name="next">அடுத்து</string>
     <string name="otp_input_desc">விசைப்பலகை மூலம் OTP ஐ உள்ளிடவும்</string>

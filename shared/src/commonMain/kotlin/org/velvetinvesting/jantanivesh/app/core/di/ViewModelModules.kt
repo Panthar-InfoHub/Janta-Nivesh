@@ -36,7 +36,7 @@ val viewModelModule = module {
 
     viewModel { ChooseLanguageViewModel(get()) }
     viewModel { LoginWithPhoneNumberViewModel(get()) }
-    viewModel { EnterOtpViewModel(get()) }
+    viewModel { EnterOtpViewModel(get(),get()) }
 
     viewModel { OnboardingViewModel(get()) }
 

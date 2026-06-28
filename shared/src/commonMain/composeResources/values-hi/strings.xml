@@ -46,6 +46,7 @@
     <string name="enter_code">कोड दर्ज करें</string>
 
     <string name="verification_code_sent">सत्यापन कोड भेजा गया है</string>
+    <string name="resend_code">कोड पुनः भेजें</string>
 
     <string name="resend_code_timer">आप %1$d सेकंड में कोड पुनः भेज सकते हैं</string>
 

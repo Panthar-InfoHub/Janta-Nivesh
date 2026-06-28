@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginWithNumberUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.VerifyOTPUseCase
 
 data class EnterOtpUiState(
@@ -40,7 +41,8 @@ sealed interface EnterOtpEffect {
 }
 
 class EnterOtpViewModel(
-    private val verifyOtpUseCase: VerifyOTPUseCase,
+    private val loginUseCase: LoginWithNumberUseCase,
+    private val verifyOtpUseCase: VerifyOTPUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EnterOtpUiState())
@@ -108,7 +110,25 @@ class EnterOtpViewModel(
     }
 
     private fun resendOtp() {
-        startTimer()
+        loginWithPhone()
+    }
+
+    private fun loginWithPhone() {
+        val currentNumber = _uiState.value.phoneNumber
+        if (currentNumber.length != 10) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            loginUseCase(currentNumber)
+                .onSuccess {
+                    _uiState.update { it.copy(isLoading = false) }
+                    startTimer()
+                }
+                .onError { error ->
+                    _uiState.update { it.copy(isLoading = false) }
+                    SnackBarController.showError(error.message)
+                }
+        }
     }
 
     private fun sendEffect(effect: EnterOtpEffect) {
