@@ -1,7 +1,17 @@
 package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -16,18 +26,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.flag_icon
 import jantanivesh.shared.generated.resources.tick_icon
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import org.jetbrains.compose.resources.painterResource
-import org.velvetinvesting.jantanivesh.app.core.theme.*
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.*
+import org.velvetinvesting.jantanivesh.app.core.theme.Black
+import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
+import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
+import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.SecondaryPrimary
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectTenureCardColor
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedTenureChipColor
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactEvent
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactUiData
-import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 
 @Composable
 fun ProjectedImpactScreen(
@@ -47,7 +69,7 @@ fun ProjectedImpactScreen(
             BackHeader(
                 title = "Projected Impact",
                 onBack = { handleEvent(ProjectedImpactEvent.OnBackClicked) },
-                modifier = Modifier.statusBarsPadding()
+                modifier = Modifier
             )
 
             Column(modifier = Modifier.fillMaxSize()) {

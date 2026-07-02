@@ -13,6 +13,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState.*
 import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalOption
@@ -47,6 +48,7 @@ data class GoalFormState(
 
 sealed interface AddGoalEvent {
     data object OnBackClicked : AddGoalEvent
+    data object LoadData : AddGoalEvent
     data class OnOptionSelected(val option: GoalOption) : AddGoalEvent
     data class UpdateForm(val update: GoalFormState.() -> GoalFormState) : AddGoalEvent
     data object OnSaveGoalClicked : AddGoalEvent
@@ -146,7 +148,7 @@ class AddGoalViewModel(
                     inflation = "8",
                     returns = "10"
                 )
-                _state.value = UiState.Success(
+                _state.value = Success(
                     current.copy(
                         form = newForm,
                         preview = null,
@@ -158,7 +160,7 @@ class AddGoalViewModel(
                 val current = (_state.value as? UiState.Success)?.data ?: return
                 val newForm = current.form.run(event.update)
                 val preview = createPreview(newForm, current.currentAge)
-                _state.value = UiState.Success(
+                _state.value = Success(
                     current.copy(
                         form = newForm,
                         preview = preview,
@@ -169,6 +171,8 @@ class AddGoalViewModel(
             AddGoalEvent.OnSaveGoalClicked -> {
                 saveGoal()
             }
+
+            AddGoalEvent.LoadData -> loadUserData()
         }
     }
 

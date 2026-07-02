@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -59,7 +57,6 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels
 fun TradingAccountClientInfoPreview() {
     JantaNiveshTheme {
         TradingAccountClientInfoScreen(
-            pv = PaddingValues(16.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.SINGLE
@@ -73,7 +70,6 @@ fun TradingAccountClientInfoPreview() {
 
 @Composable
 fun TradingAccountClientInfoScreen(
-    pv: PaddingValues,
     uiState: TradingAccountUiState,
     handleEvent: (TradingAccountEvent) -> Unit,
     onClick: () -> Unit,
@@ -87,7 +83,6 @@ fun TradingAccountClientInfoScreen(
             stepCount = if (uiState.isMinor) 5 else 4,
             totalSteps = uiState.totalSteps,
             onBack = onBackClick,
-            modifier = Modifier.padding(pv)
         )
 
         UiStateContainer(
@@ -103,7 +98,8 @@ fun TradingAccountClientInfoScreen(
                         .weight(1f)
                         .fillMaxSize()
                         .padding(horizontal = Spacing.dp16),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                    contentPadding = PaddingValues(bottom = Spacing.dp16)
                 ) {
                     item {
                         Column(
@@ -307,11 +303,9 @@ fun TradingAccountClientInfoScreen(
                             textConvertor = { it.displayName }
                         )
                     }
-                    item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
                 NextButtonFooter(
                     onClick = onClick,
-                    pv = pv,
                     value = "Continue →",
                     enabled = uiState.clientScreenButtonEnabled,
                 )

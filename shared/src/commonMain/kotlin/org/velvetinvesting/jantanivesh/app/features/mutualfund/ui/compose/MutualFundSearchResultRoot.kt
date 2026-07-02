@@ -152,15 +152,14 @@ private fun MutualFundSearchScreenContent(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White
-    ) { pv ->
+    ) {
         Box(modifier = Modifier.fillMaxSize())
         {
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
 
-                BackHeader(heading, onBack = onBackClick, modifier = Modifier.padding(horizontal = Spacing.dp16)
-                    .padding(top = pv.calculateTopPadding()))
+                BackHeader(heading, onBack = onBackClick, modifier = Modifier.padding(horizontal = Spacing.dp16))
 
                 Box(
                     modifier = Modifier.weight(1f)
@@ -182,7 +181,6 @@ private fun MutualFundSearchScreenContent(
                             MutualFundSearchScreen(
                                 result = sortedFunds,
                                 onFundClick = onFundClick,
-                                pv = pv,
                                 isLoadingNext = isLoadingNext,
                                 hasNextPage = hasNextPage,
                                 loadNext = loadNext,
@@ -228,7 +226,6 @@ private fun MutualFundSearchScreenContent(
                     onApplyClick = {
                         applyFilter(it)
                     },
-                    pv = pv
                 )
             }
 
@@ -240,7 +237,6 @@ private fun MutualFundSearchScreenContent(
 fun MutualFundSearchScreen(
     result: List<MutualFundDomain>,
     onFundClick: (String) -> Unit,
-    pv: PaddingValues,
     selectedYear: SelectedReturnRatePeriod,
     isLoadingNext: Boolean,
     hasNextPage: Boolean,

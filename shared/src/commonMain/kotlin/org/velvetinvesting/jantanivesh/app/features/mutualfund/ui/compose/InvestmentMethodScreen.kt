@@ -63,6 +63,13 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHead
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.InvestedAmountBreakdownDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationItemDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDashboardDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.TotalInvestmentsDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,6 +85,30 @@ fun InvestmentMethodScreen(
     val vm: PortfolioScreenViewModel = koinViewModel()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
+    InvestmentMethodContent(
+        uiState = uiState,
+        onRetry = vm::refresh,
+        onStartSipClick = onStartSipClick,
+        onLumpsumClick = onLumpsumClick,
+        onExistingSIPFundClick = onExistingSIPFundClick,
+        onBackClick = onBackClick,
+        modifier = modifier,
+        onExistingLumpSumFundClick = onExistingLumpSumFundClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InvestmentMethodContent(
+    uiState: UiState<PortfolioDomain>,
+    onRetry: () -> Unit,
+    onStartSipClick: () -> Unit = {},
+    onLumpsumClick: () -> Unit = {},
+    onExistingSIPFundClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    onExistingLumpSumFundClick: () -> Unit = {}
+) {
     var showSIPBottomSheet by remember { mutableStateOf(false) }
     var showLumpSumBottomSheet by remember { mutableStateOf(false) }
     val sheetStateSIP = rememberModalBottomSheetState()
@@ -85,25 +116,25 @@ fun InvestmentMethodScreen(
 
     UiStateContainer(
         uiState = uiState,
-        onRetry = vm::refresh,
+        onRetry = onRetry,
         errorContent = {
             Column(
-                modifier= Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize()
                     .statusBarsPadding()
             ) {
                 BackHeader(
                     title = "",
                     onBack = onBackClick,
-                    modifier= Modifier.padding(horizontal = Spacing.dp16)
+                    modifier = Modifier.padding(horizontal = Spacing.dp16)
                 )
                 ErrorScreen(
                     errorMessage = it,
-                    onRetryClick = vm::refresh,
-                    modifier= Modifier.weight(1f)
+                    onRetryClick = onRetry,
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
-    ){
+    ) {
         val hasFunds = it.mutualFunds.isNotEmpty()
         Scaffold(
             modifier = modifier.fillMaxSize(),
@@ -112,7 +143,7 @@ fun InvestmentMethodScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, top = 20.dp)
+                        .padding(start = 16.dp)
                 ) {
                     IconButton(
                         onClick = onBackClick,
@@ -367,6 +398,23 @@ fun InvestmentOptionCard(
 @Preview
 fun InvestmentMethodScreenPreview() {
     JantaNiveshTheme {
-        InvestmentMethodScreen()
+        InvestmentMethodContent(
+            uiState = UiState.Success(
+                PortfolioDomain(
+                    dashboard = PortfolioDashboardDomain(0.0, 0.0, 0, 0.0),
+                    totalInvestments = TotalInvestmentsDomain(
+                        0.0, 0.0, 0.0,
+                        PortfolioAllocationDomain(
+                            PortfolioAllocationItemDomain(0.0, 0.0),
+                            PortfolioAllocationItemDomain(0.0, 0.0)
+                        )
+                    ),
+                    investedAmountBreakdown = InvestedAmountBreakdownDomain(0.0, 0, 0.0, 0.0),
+                    mutualFunds = emptyList(),
+                    fixedDeposits = emptyList()
+                )
+            ),
+            onRetry = {}
+        )
     }
 }

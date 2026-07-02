@@ -1,27 +1,19 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.skip
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
@@ -31,7 +23,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.AddYou
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EnterNameFromPanScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EnterYourDOBScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingViewModel
 
 private const val TOTAL_STEPS = 3
@@ -102,19 +93,6 @@ fun OnboardingNavigation(
                     },
                     modifier= Modifier.padding(bottom = Spacing.dp24)
                 )
-                if (currentStep==2){
-                    Text(
-                        stringResource(Res.string.skip),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .offset(x = -Spacing.dp16, y = -Spacing.dp8)
-                            .clickable {
-                                onboardingViewModel.handleEvent(OnboardingEvent.OnEmailSkipClicked)
-                            }
-                    )
-                }
             }
             NavHost(
                 navController = navController,

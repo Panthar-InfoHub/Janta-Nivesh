@@ -58,7 +58,7 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
     Scaffold(
         modifier=Modifier.fillMaxSize(),
         containerColor = Color.White
-    ){pv->
+    ){
         NavHost(
             navController = navController,
             startDestination = Route.TradingAccountBasicDetails
@@ -66,7 +66,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
 
             composable<Route.TradingAccountBasicDetails> {
                 TradingAccountBasicDetailsScreen(
-                    pv = pv,
                     onClick = {
                         if (uiState.isMinor) {
                             navController.navigate(
@@ -88,7 +87,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
 
             composable<Route.TradingAccountPANDetails> {
                 TradingAccountPANDetailsScreen(
-                    pv = pv,
                     onClick= {navController.navigate(Route.TradingAccountFinancialDetails){
                         launchSingleTop=true
                     } },
@@ -100,7 +98,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
 
             composable<Route.TradingAccountFinancialDetails> {
                 TradingAccountFinancialDetailsScreen(
-                    pv = pv,
                     onClick = {
                         navController.navigate(Route.TradingAccountClientInfo){
                             launchSingleTop=true
@@ -114,7 +111,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
 
             composable<Route.TradingAccountClientInfo> {
                 TradingAccountClientInfoScreen(
-                    pv = pv,
                     onClick = {
                         navController.navigate(Route.TradingAccountBankDetails){
                             launchSingleTop=true
@@ -127,7 +123,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
 
             composable<Route.TradingAccountBankDetails> {
                 TradingAccountBankDetailsScreen(
-                    pv = pv,
                     onClick = {
                         navController.navigate(Route.TradingAccountAddressDetails){
                             launchSingleTop=true
@@ -141,7 +136,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
 
             composable<Route.TradingAccountAddressDetails> {
                 TradingAccountAddressScreen(
-                    pv = pv,
                     onClick = {
                         viewModel.handleEvent(TradingAccountEvent.SubmitForm{})
                     },
@@ -153,7 +147,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
 
             composable<Route.TradingAccountGuardianDetails> {
                 TradingAccountGuardianPanScreen(
-                    pv = pv,
                     onClick = {
                         navController.navigate(Route.TradingAccountGuardiansPANDetails){
                             launchSingleTop=true
@@ -167,7 +160,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
 
             composable<Route.TradingAccountGuardiansPANDetails> {
                 TradingAccountGuardianDetailScreen(
-                    pv = pv,
                     onClick = {
                         navController.navigate(Route.TradingAccountFinancialDetails){
                             launchSingleTop=true

@@ -50,8 +50,8 @@ import org.velvetinvesting.jantanivesh.app.core.theme.UploadBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.ImageUploader
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.dashedBorder
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderUiState
@@ -64,7 +64,7 @@ fun KycImageUploadScreen(
 ) {
 
 
-    val scope= rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     val fileLimitError = stringResource(Res.string.kyc_image_upload_file_size_error)
     ImageUploader(
         showGallery = state.showSignatureSelector,
@@ -85,7 +85,7 @@ fun KycImageUploadScreen(
             onEvent(
                 KYCImageUploaderEvent.OnSignatureSelected(
                     photoResult.loadBytes(),
-                    photoResult.mimeType ?:"image/jpeg"
+                    photoResult.mimeType ?: "image/jpeg"
                 )
             )
         }
@@ -110,7 +110,7 @@ fun KycImageUploadScreen(
             onEvent(
                 KYCImageUploaderEvent.OnUserPhotoSelected(
                     photoResult.loadBytes(),
-                    photoResult.mimeType ?:"image/jpeg"
+                    photoResult.mimeType ?: "image/jpeg"
 
                 )
             )
@@ -118,23 +118,11 @@ fun KycImageUploadScreen(
     )
 
     Scaffold(
-        bottomBar = {
-            AppButton(
-                text = "Save & Continue →",
-                onClick = { onEvent(KYCImageUploaderEvent.OnUploadClicked) },
-                loading = state.isLoading,
-                enabled = state.userPhotoBytes != null && state.signatureBytes != null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Spacing.dp24)
-            )
-        },
         containerColor = White
     ) { pv ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(pv)
         ) {
             BackHeader(
                 title = "Verification Details",
@@ -143,58 +131,67 @@ fun KycImageUploadScreen(
                     .fillMaxWidth()
                     .padding(horizontal = Spacing.dp24)
             )
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
-                .padding(horizontal = Spacing.dp24),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
-        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .padding(horizontal = Spacing.dp24),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
+            )
+            {
 
-            item {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
-                ) {
-                    Text(
-                        text = "Upload Documents",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
+                item {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
+                    ) {
+                        Text(
+                            text = "Upload Documents",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Please provide clear images of your signature and photo for identity verification.",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = GreyText
+                        )
+                    }
+                }
+
+                item {
+                    UploadDocumentCard(
+                        title = "Upload Signature/" + stringResource(Res.string.kyc_image_upload_signature_title),
+                        instructionText = "Click to Upload Signature",
+                        icon = Res.drawable.upload_signature_icon,
+                        topLineColor = Primary.copy(alpha = 0.5f),
+                        isSelected = state.signatureBytes != null,
+                        onClick = {
+                            onEvent(KYCImageUploaderEvent.showSignatureSelector)
+                        }
                     )
-                    Text(
-                        text = "Please provide clear images of your signature and photo for identity verification.",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = GreyText
+                }
+
+                item {
+                    UploadDocumentCard(
+                        title = "Upload Photo/" + stringResource(Res.string.kyc_image_upload_photo_title),
+                        instructionText = "Click to Upload Photo",
+                        icon = Res.drawable.upload_photo_icon,
+                        topLineColor = SelectedBoxBorder.copy(alpha = 0.4f),
+                        isSelected = state.userPhotoBytes != null,
+                        onClick = {
+                            onEvent(KYCImageUploaderEvent.showPhotoSelector)
+                        }
                     )
                 }
             }
-
-            item {
-                UploadDocumentCard(
-                    title = "Upload Signature/" + stringResource(Res.string.kyc_image_upload_signature_title),
-                    instructionText = "Click to Upload Signature",
-                    icon = Res.drawable.upload_signature_icon,
-                    topLineColor = Primary.copy(alpha = 0.5f),
-                    isSelected = state.signatureBytes != null,
-                    onClick = {
-                        onEvent(KYCImageUploaderEvent.showSignatureSelector)
-                    }
-                )
-            }
-
-            item {
-                UploadDocumentCard(
-                    title = "Upload Photo/" + stringResource(Res.string.kyc_image_upload_photo_title),
-                    instructionText = "Click to Upload Photo",
-                    icon = Res.drawable.upload_photo_icon,
-                    topLineColor = SelectedBoxBorder.copy(alpha = 0.4f),
-                    isSelected = state.userPhotoBytes != null,
-                    onClick = {
-                        onEvent(KYCImageUploaderEvent.showPhotoSelector)
-                    }
-                )
-            }
+            NextButtonFooter(
+                value = "Save & Continue →",
+                onClick = { onEvent(KYCImageUploaderEvent.OnUploadClicked) },
+                loading = state.isLoading,
+                enabled = state.userPhotoBytes != null && state.signatureBytes != null,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
         }
-    }
     }
 
 }

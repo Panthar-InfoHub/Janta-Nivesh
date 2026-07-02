@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 
 
@@ -23,22 +24,26 @@ fun NextButtonFooter(
     loading: Boolean = false,
     modifier: Modifier= Modifier
 ) {
+    val keyBoardManager = LocalSoftwareKeyboardController.current
     Box(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .imePadding()
             .shadow(elevation = 28.dp)
             .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
         AppButton(
-            modifier = Modifier.fillMaxWidth()
-                .imePadding()
-                .padding(
+            modifier = Modifier.fillMaxWidth().padding(
                 start = 24.dp,
                 end = 24.dp,
                 top = 20.dp,
                 bottom = 16.dp + pv.calculateBottomPadding()
             ),
-            onClick = onClick,
+            onClick = {
+                keyBoardManager?.hide()
+                onClick()
+            },
             enabled = enabled,
             text = value,
             loading = loading

@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,7 +50,6 @@ import jantanivesh.shared.generated.resources.pincode
 import jantanivesh.shared.generated.resources.state
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.InvestorOnboarding
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
@@ -72,13 +69,13 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.TradingAccountFormDomain
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.InvestorOnboarding
 
 @Preview(showBackground = true, locale = "hi", heightDp = 2000)
 @Composable
 fun TradingAccountAddressPreview() {
     JantaNiveshTheme {
         TradingAccountAddressScreen(
-            pv = PaddingValues(16.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.SINGLE
@@ -92,7 +89,6 @@ fun TradingAccountAddressPreview() {
 
 @Composable
 fun TradingAccountAddressScreen(
-    pv: PaddingValues,
     uiState: TradingAccountUiState,
     handleEvent: (TradingAccountEvent) -> Unit,
     onClick: () -> Unit,
@@ -105,7 +101,6 @@ fun TradingAccountAddressScreen(
             stepCount = if (uiState.isMinor) 7 else 6,
             totalSteps = uiState.totalSteps,
             onBack = onBackClick,
-            modifier = Modifier.padding(pv)
         )
 
         UiStateContainer(
@@ -122,7 +117,8 @@ fun TradingAccountAddressScreen(
                         .weight(1f)
                         .fillMaxSize()
                         .padding(horizontal = Spacing.dp16),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                    contentPadding = PaddingValues(bottom = Spacing.dp16)
                 ) {
                     item {
                         Column(modifier = Modifier.fillMaxWidth()) {
@@ -558,13 +554,11 @@ fun TradingAccountAddressScreen(
 
                         }
                     }
-                    item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
 
                 NextButtonFooter(
                     onClick = onClick,
-                    pv = pv,
-                    value = "Continue →",
+                    value = "Submit Form",
                     enabled = uiState.addressScreenButtonEnabled,
                 )
             }

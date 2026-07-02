@@ -5,12 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,13 +28,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.info_filled_icon
 import org.jetbrains.compose.resources.painterResource
-import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.GuardianRelation
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -56,13 +52,13 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.TradingAccountFormDomain
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.GuardianRelation
 
 @Preview(showBackground = true, locale = "hi", heightDp = 1000)
 @Composable
 fun TradingAccountGuardianDetailPreview() {
     JantaNiveshTheme {
         TradingAccountGuardianDetailScreen(
-            pv = PaddingValues(16.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.SINGLE
@@ -76,7 +72,6 @@ fun TradingAccountGuardianDetailPreview() {
 
 @Composable
 fun TradingAccountGuardianDetailScreen(
-    pv: PaddingValues,
     uiState: TradingAccountUiState,
     handleEvent: (TradingAccountEvent) -> Unit,
     onClick: () -> Unit,
@@ -91,7 +86,6 @@ fun TradingAccountGuardianDetailScreen(
             stepCount = 2,
             totalSteps = 6,
             onBack = onBackClick,
-            modifier = Modifier.padding(pv)
         )
 
         UiStateContainer(
@@ -225,11 +219,9 @@ fun TradingAccountGuardianDetailScreen(
                         )
                     }
 
-                    item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
                 NextButtonFooter(
                     onClick = onClick,
-                    pv = pv,
                     value = "Continue to step 3 →",
                     enabled = uiState.guardianScreenButtonEnabled,
                 )

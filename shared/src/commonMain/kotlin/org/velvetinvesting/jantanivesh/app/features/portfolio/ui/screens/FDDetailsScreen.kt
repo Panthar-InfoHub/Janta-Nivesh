@@ -57,6 +57,10 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCa
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FDStatus
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositTransactionDomain
+import androidx.compose.ui.tooling.preview.Preview
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PendingAction
 
 @Composable
 fun FDPortfolioDetailsScreen(
@@ -68,17 +72,32 @@ fun FDPortfolioDetailsScreen(
 
     val uiState by viewModel.loadingState.collectAsStateWithLifecycle()
 
+    FDPortfolioDetailsScreenContent(
+        uiState = uiState,
+        onBackClick = onBackClick,
+        onRetry = viewModel::loadFDDetails,
+        onClick = viewModel::onClick
+    )
+
+}
+
+@Composable
+fun FDPortfolioDetailsScreenContent(
+    uiState: UiState<FixedDepositTransactionDomain>,
+    onBackClick: () -> Unit,
+    onRetry: () -> Unit,
+    onClick: () -> Unit
+) {
     UiStateContainer(
         uiState = uiState,
-        onRetry = viewModel::loadFDDetails
+        onRetry = onRetry
     ) { data ->
         FDPortfolioDetailsMain(
             details = data,
             onBackClick = onBackClick,
-            onClick = viewModel::onClick,
+            onClick = onClick,
         )
     }
-
 }
 
 @Composable
@@ -383,7 +402,7 @@ fun FDDetailsHeader(onBackClick: () -> Unit, bankName: String, fdId: String) {
             ) {
                 Text(
                     text = bankName,
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.titleLarge,
                     color = Primary,
                 )
             }
@@ -426,5 +445,52 @@ fun InfoTextColumn(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FDPortfolioDetailsScreenPreview() {
+    val sampleData = FixedDepositTransactionDomain(
+        id = "1",
+        userId = "user123",
+        paymentCompletedAt = "2023-10-12",
+        isVkycPending = false,
+        amount = "100000",
+        roiAtBooking = "7.5",
+        tenureAtBooking = 365,
+        payoutFrequency = "Monthly",
+        status = FDStatus.FD_CREATED,
+        maturityAmount = "107500",
+        maturityDate = "2024-10-12",
+        maturityInstruction = "Reinvest",
+        paymentTxId = "tx123",
+        fdAccountNumber = "FD123456",
+        onboardedAt = "2023-10-12",
+        vkycCompletedAt = "2023-10-12",
+        fdIssuedAt = "2023-10-12",
+        refundDate = null,
+        vkycFailureReason = null,
+        failureReason = null,
+        createdAt = "2023-10-12",
+        updatedAt = "2023-10-12",
+        productId = "prod1",
+        issuerId = "issuer1",
+        issuerFullName = "HDFC Bank Limited",
+        issuerDisplayName = "HDFC Bank",
+        issuerType = "Private",
+        issuerLogoUrl = "",
+        issuerBannerUrl = "",
+        issuerRatingText = "AAA",
+        pendingAction = PendingAction.COMPLETED
+    )
+
+    JantaNiveshTheme {
+        FDPortfolioDetailsScreenContent(
+            uiState = UiState.Success(sampleData),
+            onBackClick = {},
+            onRetry = {},
+            onClick = {}
+        )
     }
 }

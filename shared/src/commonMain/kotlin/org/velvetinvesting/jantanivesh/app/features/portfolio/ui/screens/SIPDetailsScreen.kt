@@ -573,7 +573,7 @@ fun SIPDetailsLoadedScreenPreview() {
                 title = "Parag Parikh Flexi Cap Fund - Reg - Gr",
                 category = "MF-Flexi-cap Fund",
                 amount = 694965.34,
-                isSip = false,
+                isSip = true,
                 startDate = "28-Sep-2020",
                 returnPercentage = "56.18%",
                 returnAmount = -390424,

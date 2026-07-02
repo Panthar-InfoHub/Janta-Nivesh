@@ -101,7 +101,6 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels
 fun TradingAccountFinancialDetailsPreview() {
     JantaNiveshTheme {
         TradingAccountFinancialDetailsScreen(
-            pv = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.JOINT
@@ -115,7 +114,6 @@ fun TradingAccountFinancialDetailsPreview() {
 
 @Composable
 fun TradingAccountFinancialDetailsScreen(
-    pv: PaddingValues,
     uiState: TradingAccountUiState,
     handleEvent: (TradingAccountEvent) -> Unit,
     onClick: () -> Unit,
@@ -129,7 +127,7 @@ fun TradingAccountFinancialDetailsScreen(
             stepCount = if (uiState.isMinor) 4 else 3,
             totalSteps = uiState.totalSteps,
             onBack = onBackClick,
-            modifier = Modifier.padding(pv)
+            modifier = Modifier
         )
 
         UiStateContainer(
@@ -144,7 +142,7 @@ fun TradingAccountFinancialDetailsScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     contentPadding = PaddingValues(vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     item {
                         Column(
@@ -571,13 +569,9 @@ fun TradingAccountFinancialDetailsScreen(
                             }
                         }
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(pv.calculateBottomPadding() + 16.dp))
-                    }
                 }
                 NextButtonFooter(
                     onClick = onClick,
-                    pv = pv,
                     enabled = uiState.financeScreenButtonEnabled,
                 )
             }

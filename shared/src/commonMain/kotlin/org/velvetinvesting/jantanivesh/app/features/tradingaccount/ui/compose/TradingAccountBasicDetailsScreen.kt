@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -50,7 +49,6 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels
 fun TradingAccountBasicDetailsPreview() {
     JantaNiveshTheme {
         TradingAccountBasicDetailsScreen(
-            pv = PaddingValues(0.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.SINGLE
@@ -64,14 +62,13 @@ fun TradingAccountBasicDetailsPreview() {
 
 @Composable
 fun TradingAccountBasicDetailsScreen(
-    pv: PaddingValues,
     uiState: TradingAccountUiState,
     handleEvent: (TradingAccountEvent) -> Unit,
     onClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
     Column(modifier = Modifier
-        .clearFocusOnTap().fillMaxSize().padding(pv)) {
+        .clearFocusOnTap().fillMaxSize()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
             stepCount = 1,
@@ -93,7 +90,8 @@ fun TradingAccountBasicDetailsScreen(
                         .weight(1f)
                         .fillMaxSize()
                         .padding(horizontal = Spacing.dp16),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                    contentPadding = PaddingValues(bottom = Spacing.dp20)
                 ) {
                     item {
                         Column(
@@ -204,13 +202,10 @@ fun TradingAccountBasicDetailsScreen(
                             )
                         }
                     }
-
-                    item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
 
                 NextButtonFooter(
                     onClick = onClick,
-                    pv = pv,
                     enabled = uiState.basicDetailsNextEnabled,
                 )
             }

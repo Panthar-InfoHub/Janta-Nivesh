@@ -6,7 +6,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -53,7 +52,6 @@ fun InvestmentFilterScreen(
     onClose: () -> Unit,
     onCancelClick: () -> Unit,
     onApplyClick: (InvestmentFilter) -> Unit,
-    pv: PaddingValues
 ) {
     var selectedGroupIndex by remember { mutableStateOf(0) }
 
@@ -115,7 +113,6 @@ fun InvestmentFilterScreen(
             onCancelClick = onCancelClick,
             onApplyClick = { onApplyClick(editingFilter) },
             isApplyEnabled = hasSelectedFilters,
-            pv = pv
         )
     }
 }
@@ -125,7 +122,6 @@ fun FilterBottomBar(
     onCancelClick: () -> Unit,
     onApplyClick: () -> Unit,
     isApplyEnabled: Boolean,
-    pv: PaddingValues
 ) {
     ContinueBackButtonFooter(
         continueText = "View Results",
@@ -133,7 +129,6 @@ fun FilterBottomBar(
         onContinue = onApplyClick,
         onBack = onCancelClick,
         enabled = isApplyEnabled,
-        pv = pv,
     )
 }
 

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -63,7 +62,6 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels
 fun TradingAccountGuardianPanPreview() {
     JantaNiveshTheme {
         TradingAccountGuardianPanScreen(
-            pv = PaddingValues(16.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.SINGLE
@@ -77,7 +75,6 @@ fun TradingAccountGuardianPanPreview() {
 
 @Composable
 fun TradingAccountGuardianPanScreen(
-    pv: PaddingValues,
     uiState: TradingAccountUiState,
     handleEvent: (TradingAccountEvent) -> Unit,
     onClick: () -> Unit,
@@ -90,7 +87,6 @@ fun TradingAccountGuardianPanScreen(
             stepCount = 2,
             totalSteps = uiState.totalSteps,
             onBack = onBackClick,
-            modifier = Modifier.padding(pv)
         )
 
         UiStateContainer(
@@ -105,7 +101,8 @@ fun TradingAccountGuardianPanScreen(
                         .weight(1f)
                         .fillMaxWidth()
                         .padding(horizontal = Spacing.dp16),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
+                    contentPadding = PaddingValues(bottom = Spacing.dp16)
                 ) {
                     item {
                         Column(
@@ -271,12 +268,10 @@ fun TradingAccountGuardianPanScreen(
                         }
                     }
 
-                    item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
 
                 NextButtonFooter(
                     onClick = onClick,
-                    pv = pv,
                     enabled = uiState.panVerified && uiState.verifiedPanNumber == data.guardian_pan,
                 )
             }

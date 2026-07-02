@@ -1,28 +1,31 @@
 package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import org.velvetinvesting.jantanivesh.app.core.theme.*
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.*
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.goalOptions
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalEvent
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalUiState
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.GoalFormState
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.goalOptions
-import org.velvetinvesting.jantanivesh.app.core.utils.UiState
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 
 @Composable
 fun FinancialGoalScreen(
@@ -33,7 +36,7 @@ fun FinancialGoalScreen(
 ) {
     UiStateContainer(
         uiState = state,
-        onRetry = { handleEvent(AddGoalEvent.OnBackClicked) }, // Or a proper retry event
+        onRetry = { handleEvent(AddGoalEvent.LoadData) },
         modifier = Modifier
                 .clearFocusOnTap()
     ) { data ->

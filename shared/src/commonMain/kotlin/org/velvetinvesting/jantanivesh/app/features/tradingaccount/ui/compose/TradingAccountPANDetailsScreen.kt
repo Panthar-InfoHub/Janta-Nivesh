@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,7 +55,6 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels
 fun TradingAccountPANDetailsPreview() {
     JantaNiveshTheme {
         TradingAccountPANDetailsScreen(
-            pv = PaddingValues(16.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.SINGLE
@@ -72,7 +69,6 @@ fun TradingAccountPANDetailsPreview() {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TradingAccountPANDetailsScreen(
-    pv: PaddingValues,
     uiState: TradingAccountUiState,
     handleEvent: (TradingAccountEvent) -> Unit,
     onClick: () -> Unit,
@@ -85,7 +81,6 @@ fun TradingAccountPANDetailsScreen(
             stepCount = 2,
             totalSteps = uiState.totalSteps,
             onBack = onBackClick,
-            modifier = Modifier.padding(pv)
         )
 
         UiStateContainer(
@@ -100,7 +95,8 @@ fun TradingAccountPANDetailsScreen(
                         .weight(1f)
                         .fillMaxWidth()
                         .padding(horizontal = Spacing.dp16),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                    contentPadding = PaddingValues(bottom = Spacing.dp20)
                 ) {
                     item {
                         Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
@@ -225,13 +221,11 @@ fun TradingAccountPANDetailsScreen(
                             }
                         }
                     }
-
-                    item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
 
                 NextButtonFooter(
                     onClick = onClick,
-                    pv = pv,
+
                     enabled = uiState.panVerified && uiState.verifiedPanNumber == data.primary_holder_pan,
                 )
             }

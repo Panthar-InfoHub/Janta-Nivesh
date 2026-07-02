@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,9 +38,6 @@ import jantanivesh.shared.generated.resources.payment_mode
 import jantanivesh.shared.generated.resources.secure_icon
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.AccountType
-import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.DividendPayMode
-import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.YesNo
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -61,13 +57,15 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.TradingAccountFormDomain
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.AccountType
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.DividendPayMode
+import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.YesNo
 
 @Preview(showBackground = true, locale = "hi", heightDp = 1500)
 @Composable
 fun TradingAccountBankDetailsPreview() {
     JantaNiveshTheme {
         TradingAccountBankDetailsScreen(
-            pv = PaddingValues(16.dp),
             uiState = TradingAccountUiState(
                 formState = UiState.Success(TradingAccountFormDomain(data = Data())),
                 holderNature = Holding.SINGLE
@@ -81,7 +79,6 @@ fun TradingAccountBankDetailsPreview() {
 
 @Composable
 fun TradingAccountBankDetailsScreen(
-    pv: PaddingValues,
     uiState: TradingAccountUiState,
     handleEvent: (TradingAccountEvent) -> Unit,
     onClick: () -> Unit,
@@ -94,7 +91,6 @@ fun TradingAccountBankDetailsScreen(
             stepCount = if (uiState.isMinor) 6 else 5,
             totalSteps = uiState.totalSteps,
             onBack = onBackClick,
-            modifier = Modifier.padding(pv)
         )
 
         UiStateContainer(
@@ -111,7 +107,7 @@ fun TradingAccountBankDetailsScreen(
                         .fillMaxSize()
                         .padding(horizontal = Spacing.dp16),
                     verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
-                    contentPadding = PaddingValues(top = Spacing.dp12)
+                    contentPadding = PaddingValues(top = Spacing.dp12, bottom = Spacing.dp20)
                 ) {
 
                     item { SecureNote() }
@@ -174,12 +170,10 @@ fun TradingAccountBankDetailsScreen(
                             }
                         }
                     }
-                    item { Spacer(modifier = Modifier.height(pv.calculateBottomPadding())) }
                 }
 
                 NextButtonFooter(
                     onClick = onClick,
-                    pv = pv,
                     enabled = uiState.bankScreenButtonEnabled,
                 )
             }

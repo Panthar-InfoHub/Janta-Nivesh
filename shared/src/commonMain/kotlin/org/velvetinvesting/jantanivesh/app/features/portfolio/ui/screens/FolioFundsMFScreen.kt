@@ -38,6 +38,7 @@ import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FolioFundsMFViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
 import org.velvetinvesting.jantanivesh.app.core.theme.appRed
 import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
@@ -77,7 +78,7 @@ fun FolioFundMFScreen(
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White),
     ) {
-        BackHeader(title = "Funds", showBack = true, onBack = onBack)
+        BackHeader(title = "Funds", showBack = true, onBack = onBack, modifier = Modifier.padding(horizontal = Spacing.dp20))
 
         Box(
             modifier = Modifier.weight(1f).fillMaxSize(),
@@ -236,7 +237,7 @@ fun MutualFundsFolioCard(
                     Text(
                         text = title,
                         color = Color.Black,
-                        style = MaterialTheme.typography.displayLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 2
                     )

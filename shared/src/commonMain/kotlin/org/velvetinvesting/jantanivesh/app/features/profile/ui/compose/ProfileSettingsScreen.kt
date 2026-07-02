@@ -57,9 +57,9 @@ fun ProfileSettingScreen(
 ) {
     Scaffold(
         containerColor = White
-    ) { pv ->
+    ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp).padding(pv),
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
             contentPadding = PaddingValues(
                 bottom = Spacing.dp16

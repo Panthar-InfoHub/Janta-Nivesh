@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,7 +34,6 @@ import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.cart_icon
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SelectedReturnRatePeriod
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
@@ -53,6 +51,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Cat
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CombinedFundsDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.ReturnYearsRateDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SelectedReturnRatePeriod
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CategoryMutualFundViewModel
 
 @Composable
@@ -75,7 +74,7 @@ fun CategoryMutualFundScreenRoot(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White
-    ){pv->
+    ){
         CategoryMutualFundScreenRootContent(
             uiState = uiState,
             combinedState = combinedState,
@@ -83,7 +82,6 @@ fun CategoryMutualFundScreenRoot(
             onBackClick = onBackClick,
             onIconClick = onIconClick,
             onFundClick = onFundClick,
-            pv = pv,
             onSearchClick = onSearchClick,
             onCategoryClick = onCategoryClick,
             onBundleClick = onBundleClick,
@@ -102,7 +100,6 @@ fun CategoryMutualFundScreenRootContent(
     onBackClick: () -> Unit,
     onIconClick: () -> Unit,
     onFundClick: (String) -> Unit,
-    pv: PaddingValues,
     onSearchClick: (String) -> Unit,
     onCategoryClick: (String) -> Unit,
     onBundleClick: () -> Unit,
@@ -112,7 +109,6 @@ fun CategoryMutualFundScreenRootContent(
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
-            .padding(pv)
             .background(Color.White)
     ) {
         ScreenHeader(
@@ -139,7 +135,6 @@ fun CategoryMutualFundScreenRootContent(
                         onFundClick = {onFundClick(it)},
                         searchText =searchText,
                         onTextChange = onSearchTextChange,
-                        pv =pv,
                         onSearchClick = {onSearchClick(searchText)},
                         onBundledFundClick = {onBundledFundClick(it)},
                         onBundleClick = {onBundleClick()}
@@ -157,7 +152,6 @@ fun CategoryMutualFundScreen(
     onFundClick: (String) -> Unit,
     searchText: String,
     onTextChange: (String) -> Unit,
-    pv: PaddingValues,
     onSearchClick: (String) -> Unit,
     funds: List<CategoryMutualFundDomain>,
     onBundledFundClick: (String) -> Unit,
@@ -168,6 +162,7 @@ fun CategoryMutualFundScreen(
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = Spacing.dp16),
         verticalArrangement = Arrangement.spacedBy(20.dp),
+        contentPadding = PaddingValues(bottom = Spacing.dp20)
     ) {
         item {
             AppSearchBar(
@@ -247,9 +242,6 @@ fun CategoryMutualFundScreen(
                     )
                 }
             }
-        }
-        item{
-            Spacer(Modifier.height(pv.calculateBottomPadding()+20.dp))
         }
     }
 
@@ -414,7 +406,6 @@ private fun CategoryMutualFundScreenRootPreview() {
             onBackClick = {},
             onIconClick = {},
             onFundClick = {},
-            pv = PaddingValues(0.dp),
             onSearchClick = {},
             onCategoryClick = {},
             onBundleClick = {},

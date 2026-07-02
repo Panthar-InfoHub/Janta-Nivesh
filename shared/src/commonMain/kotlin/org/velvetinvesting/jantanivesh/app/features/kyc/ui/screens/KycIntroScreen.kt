@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,21 +30,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.kyc_image
-import jantanivesh.shared.generated.resources.kyc_intro_account_opening_fee
-import jantanivesh.shared.generated.resources.kyc_intro_account_opening_fee_subtitle
-import jantanivesh.shared.generated.resources.kyc_intro_button_text
-import jantanivesh.shared.generated.resources.kyc_intro_encrypted_data_subtitle
-import jantanivesh.shared.generated.resources.kyc_intro_encrypted_data_title
-import jantanivesh.shared.generated.resources.kyc_intro_header_title
-import jantanivesh.shared.generated.resources.kyc_intro_maintenance_charges
-import jantanivesh.shared.generated.resources.kyc_intro_maintenance_charges_subtitle
-import jantanivesh.shared.generated.resources.kyc_intro_subtitle
-import jantanivesh.shared.generated.resources.kyc_intro_title
 import jantanivesh.shared.generated.resources.lock_icon
-import jantanivesh.shared.generated.resources.rupee_symbol_desc
-import jantanivesh.shared.generated.resources.security_lock_desc
 import jantanivesh.shared.generated.resources.receipt_icon
 import jantanivesh.shared.generated.resources.rupee_icon
+import jantanivesh.shared.generated.resources.rupee_symbol_desc
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -54,7 +44,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenUiState
@@ -66,20 +56,10 @@ fun KycIntroScreen(
     onBack: () -> Unit
 ) {
     Scaffold(
-        bottomBar = {
-            AppButton(
-                text = "COMPLETE YOUR KYC  →",
-                onClick = { onEvent(KYCScreenEvent.OnStartKycClicked) },
-                loading = state.isLoading,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Spacing.dp24),
-            )
-        },
         containerColor = White
     ) { pv ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(pv)
+            modifier = Modifier.fillMaxSize()
         ){
             LocalBackHeader(
                 title = "KYC",
@@ -89,9 +69,11 @@ fun KycIntroScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .weight(1f)
                     .padding(horizontal = Spacing.dp24),
                 verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(bottom = Spacing.dp20)
             ) {
                 item {
                     Image(
@@ -143,6 +125,13 @@ fun KycIntroScreen(
                     EncryptedDataCard()
                 }
             }
+            NextButtonFooter(
+                value = "COMPLETE YOUR KYC  →",
+                onClick = { onEvent(KYCScreenEvent.OnStartKycClicked) },
+                loading = state.isLoading,
+                modifier = Modifier
+                    .fillMaxWidth(),
+            )
         }
     }
 }

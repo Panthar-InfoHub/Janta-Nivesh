@@ -256,7 +256,7 @@ fun MutualFundsFolioCardLumpSum(
                     Text(
                         text = title,
                         color = Color.Black,
-                        style = MaterialTheme.typography.displayLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 2
                     )

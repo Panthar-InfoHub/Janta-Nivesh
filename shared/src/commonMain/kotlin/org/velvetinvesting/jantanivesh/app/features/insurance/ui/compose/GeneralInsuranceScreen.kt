@@ -11,38 +11,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.ins_annual_checkup
 import jantanivesh.shared.generated.resources.ins_assistance
-import jantanivesh.shared.generated.resources.ins_cashless_treatment
 import jantanivesh.shared.generated.resources.ins_cover
 import jantanivesh.shared.generated.resources.ins_no_claim_bonus_general
-import jantanivesh.shared.generated.resources.ins_no_claim_bonus_health
 import jantanivesh.shared.generated.resources.ins_quick_claim
-import jantanivesh.shared.generated.resources.ins_tax_saving
-import kotlinx.datetime.Month
-import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsuranceFeatureCard
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsurancePopularPlansCard
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsurancePopularPlansCardGeneral
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
-import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.GeneralInsurancePlan
-import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.HealthInsurancePlan
-import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceEvent
-import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceUiState
 
 
 @Composable
@@ -51,9 +36,9 @@ fun GeneralInsuranceScreen(
     modifier: Modifier = Modifier,
     onRequestCallBackClick: () -> Unit
 ){
-    Scaffold { pv ->
+    Scaffold {
         Column(modifier.fillMaxSize()
-            .background(White).padding(pv)) {
+            .background(White)) {
             BackHeader(
                 title = "General Insurance",
                 onBack = { onBack() },

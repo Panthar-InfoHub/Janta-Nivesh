@@ -28,7 +28,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsuranceFeatureCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
-import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceEvent
 
 
 @Composable
@@ -37,10 +36,10 @@ fun HealthInsuranceScreen(
     modifier: Modifier = Modifier,
     onRequestCallBackClick: () -> Unit
 ) {
-    Scaffold { pv ->
+    Scaffold {
         Column(
             modifier.fillMaxSize()
-                .background(White).padding(pv),
+                .background(White),
 
             ) {
             BackHeader(

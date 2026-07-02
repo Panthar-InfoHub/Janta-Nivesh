@@ -43,10 +43,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.TextPrimary
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoadingScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractUiState
 
@@ -57,28 +57,12 @@ fun KycContractScreen(
     onBack: () -> Unit
 ) {
     Scaffold(
-        bottomBar = {
-            if (!state.isContractLoading && !state.showError) {
-                AppButton(
-                    text = "Complete KYC",
-                    onClick = {
-                        onEvent(KycContractEvent.OnStartESignClicked)
-                    },
-                    loading = state.isSubmitLoading,
-                    enabled = state.isMarkedAsRead,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Spacing.dp24)
-                )
-            }
-        },
         containerColor = White
-    ) { pv ->
+    ) {
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(pv)
         ) {
 
             BackHeader(
@@ -114,6 +98,19 @@ fun KycContractScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
+            }
+
+            if (!state.isContractLoading && !state.showError) {
+                NextButtonFooter(
+                    value = "Complete KYC",
+                    onClick = {
+                        onEvent(KycContractEvent.OnStartESignClicked)
+                    },
+                    loading = state.isSubmitLoading,
+                    enabled = state.isMarkedAsRead,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
             }
         }
     }

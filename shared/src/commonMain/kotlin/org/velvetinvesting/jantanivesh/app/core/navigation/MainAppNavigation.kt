@@ -74,6 +74,11 @@ fun MainAppNavigation(
         composable<Route.KycGraph> {
             KycNavigation(
                 onBackNavigation = { navController.popBackStack() },
+                navigateToTradingAccountFlow={
+                    navController.navigate(Route.TradingAccountNavigation) {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 
@@ -98,6 +103,7 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
+                onBack={navController.popBackStack()},
                 buttonText = "Start Investing"
             )
         }

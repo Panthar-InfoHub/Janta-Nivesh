@@ -2,11 +2,11 @@ package org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,11 +49,11 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoadingScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenUiState
@@ -68,40 +68,38 @@ fun KycFormScreen(
     onBack: () -> Unit
 ) {
     Scaffold(
-        bottomBar = {
-            AppButton(
-                text = "Continue",
-                onClick = { onEvent(KYCFormScreenEvent.OnSubmitClicked) },
-                loading = state.isButtonLoading,
-                enabled = state.formState.isValid(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .imePadding()
-                    .padding(Spacing.dp24)
-            )
-        },
         containerColor = White,
     ) { pv ->
         Column(
             modifier = Modifier
-                .clearFocusOnTap().fillMaxWidth().padding(pv)
+                .clearFocusOnTap()
+                .fillMaxWidth()
         ){
             BackHeader(
                 title = "KYC Form",
                 onBack = onBack,
                 modifier = Modifier.padding(horizontal = Spacing.dp16)
             )
-            if (state.isScreenLoading){
-                LoadingScreen()
+            Box(modifier = Modifier.weight(1f).fillMaxSize()){
+                if (state.isScreenLoading) {
+                    LoadingScreen()
+                } else {
+                    FormContent(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        state = state,
+                        onEvent = onEvent
+                    )
+                }
             }
-            else{
-                FormContent(
-                    modifier = Modifier.weight(1f)
-                        .fillMaxSize(),
-                    state=state,
-                    onEvent=onEvent
-                )
-            }
+            NextButtonFooter(
+                value = "Continue",
+                onClick = { onEvent(KYCFormScreenEvent.OnSubmitClicked) },
+                loading = state.isButtonLoading,
+                enabled = state.formState.isValid(),
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
         }
     }
 }

@@ -39,17 +39,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun TradingAccountSuccess(
     onButtonClick: () -> Unit,
     buttonText: String = "Start Investing",
+    onBack: () -> Unit,
 ) {
     var animationFinished by remember { mutableStateOf(false) }
     var showButton by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(2500) // Play animation for 2.5 seconds
+        delay(2500.milliseconds) // Play animation for 2.5 seconds
         animationFinished = true
     }
 
@@ -63,6 +66,13 @@ fun TradingAccountSuccess(
         modifier = Modifier.fillMaxSize().background(Color.White),
         contentAlignment = Alignment.Center
     ) {
+        BackHeader(
+            onBack = onBack,
+            title = "",
+            showBack = true,
+            modifier = Modifier.align(Alignment.TopStart)
+        )
+
         SuccessIconAnimation()
 
         if (showButton) {

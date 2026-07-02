@@ -1,10 +1,17 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.koinInject
+import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.core.utils.isAndroid
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 
 @Composable
@@ -20,60 +27,70 @@ fun BaseNavigation() {
         else -> Route.MainAppGraph
     }
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
+    val isAndroid = remember{ isAndroid() }
 
-        composable<Route.LoginGraph> {
-            LoginNavigation(
-                navigateToOnboardingGraph = {
-                    navController.navigate(Route.OnboardingGraph) {
-                        launchSingleTop = true
-
-                        popUpTo<Route.LoginGraph> {
-                            inclusive = true
-                        }
-                    }
-                },
-                navigateToMainAppFlow = {
-                    navController.navigate(Route.MainAppGraph) {
-                        launchSingleTop = true
-
-                        popUpTo<Route.LoginGraph> {
-                            inclusive = true
-                        }
-                    }
-                }
+    Scaffold(
+        containerColor = White
+    ){pv->
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.padding(
+                top = pv.calculateTopPadding(),
+                bottom = if (isAndroid) pv.calculateBottomPadding() else 8.dp
             )
-        }
+        ) {
 
-        composable<Route.OnboardingGraph> {
-            OnboardingNavigation(
-                onCompleted = {
-                    navController.navigate(Route.MainAppGraph) {
-                        launchSingleTop = true
+            composable<Route.LoginGraph> {
+                LoginNavigation(
+                    navigateToOnboardingGraph = {
+                        navController.navigate(Route.OnboardingGraph) {
+                            launchSingleTop = true
 
-                        popUpTo<Route.OnboardingGraph> {
-                            inclusive = true
+                            popUpTo<Route.LoginGraph> {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    navigateToMainAppFlow = {
+                        navController.navigate(Route.MainAppGraph) {
+                            launchSingleTop = true
+
+                            popUpTo<Route.LoginGraph> {
+                                inclusive = true
+                            }
                         }
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable<Route.MainAppGraph> {
-            MainAppNavigation(
-                onSignOut = {
-                    navController.navigate(Route.LoginGraph) {
-                        launchSingleTop = true
+            composable<Route.OnboardingGraph> {
+                OnboardingNavigation(
+                    onCompleted = {
+                        navController.navigate(Route.MainAppGraph) {
+                            launchSingleTop = true
 
-                        popUpTo(0) {
-                            inclusive = true
+                            popUpTo<Route.OnboardingGraph> {
+                                inclusive = true
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
+
+            composable<Route.MainAppGraph> {
+                MainAppNavigation(
+                    onSignOut = {
+                        navController.navigate(Route.LoginGraph) {
+                            launchSingleTop = true
+
+                            popUpTo(0) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
 }

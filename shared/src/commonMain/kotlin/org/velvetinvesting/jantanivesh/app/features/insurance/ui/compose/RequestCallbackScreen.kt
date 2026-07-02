@@ -42,7 +42,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.UploadBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.placeholderColor
 import org.velvetinvesting.jantanivesh.app.core.utils.isValidEmail
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
@@ -58,11 +57,10 @@ fun RequestCallbackScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
     ) {
-    Scaffold(modifier = modifier.clearFocusOnTap()){pv->
+    Scaffold(modifier = modifier.clearFocusOnTap()){
         Column(
             modifier = modifier.fillMaxWidth()
-                .background(White)
-                .padding(pv),
+                .background(White),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
 

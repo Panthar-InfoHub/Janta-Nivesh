@@ -3,7 +3,6 @@ package org.velvetinvesting.jantanivesh.app.core.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,7 +28,8 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContrac
 
 @Composable
 fun KycNavigation(
-    onBackNavigation:() -> Unit,
+    onBackNavigation: () -> Unit,
+    navigateToTradingAccountFlow: () -> Unit,
 ) {
     val navController = rememberNavController()
     val browserLauncher = rememberBrowserReturnLauncher()
@@ -149,7 +149,8 @@ fun KycNavigation(
                 onBackNavigation()
             }
             KycSuccessScreen(
-                onCompleted = onBackNavigation
+                onBackClick = onBackNavigation,
+                onTradingAccountSetupClick= navigateToTradingAccountFlow
             )
         }
     }

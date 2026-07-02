@@ -193,9 +193,8 @@ fun MutualFundDetailsScreenContent(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White
-    ) { pv ->
+    ) {
         Column(modifier = Modifier.fillMaxSize()
-            .padding(pv)
         )
         {
 

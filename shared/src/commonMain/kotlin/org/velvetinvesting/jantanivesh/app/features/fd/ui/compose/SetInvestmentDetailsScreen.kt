@@ -14,10 +14,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,15 +59,17 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackB
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEvent
-import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsUiState
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDTenureDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEvent
+import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsUiState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundIcon
 
 @Composable
@@ -81,16 +81,21 @@ fun SetInvestmentDetailsScreen(
     if (state.details == null) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             if (state.isLoading) {
-                Text("Loading...")
+                LoaderScreen()
             } else {
-                Text(state.errorMessage ?: "Something went wrong")
+                ErrorScreen(
+                    errorMessage = state.errorMessage?.ifEmpty { "Something Went Wrong" } ?: "Something Went Wrong",
+                    onRetryClick = { onEvent(SetInvestmentDetailsEvent.LoadDetails) }
+                )
             }
         }
         return
     }
     Column(
         modifier = modifier
-            .fillMaxSize().statusBarsPadding().padding(top = Spacing.dp8),
+            .fillMaxSize()
+            .clearFocusOnTap()
+            .padding(top = Spacing.dp8),
         verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
     ) {
         TopAppBar(onNavigateBack = { onEvent(SetInvestmentDetailsEvent.OnBackClicked) },
@@ -157,7 +162,7 @@ fun SetInvestmentDetailsScreen(
         NextButtonFooter(
             value = "Invest Now",
             onClick = { onEvent(SetInvestmentDetailsEvent.OnContinueClicked) },
-            modifier = Modifier.fillMaxWidth().navigationBarsPadding(),
+            modifier = Modifier.fillMaxWidth(),
             enabled = state.isButtonEnabled,
             loading = state.isPurchasing
         )

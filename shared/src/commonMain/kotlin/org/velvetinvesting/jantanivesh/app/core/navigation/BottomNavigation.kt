@@ -240,7 +240,6 @@ fun BottomNavigation(
                 ExploreFundsScreen(
                     uiState = state,
                     handleEvent = vm::handleEvent,
-                    modifier = Modifier.padding(top = pv.calculateTopPadding())
                 )
             }
             composable<Route.PortFolio> {
@@ -252,7 +251,6 @@ fun BottomNavigation(
                     onFDClick = navigateToPortfolioFdDetailsScreen,
                     navigateToCategoryMutualFundScreen=navigateToMutualFundTypeSelectionScreen,
                     navigateToCategoryFDScreen=navigateToCategoryFDScreen,
-                    modifier = Modifier.padding(top = pv.calculateTopPadding())
                 )
             }
             composable<Route.Profile> {
@@ -277,7 +275,6 @@ fun BottomNavigation(
                 ProfileIntroScreen(
                     state = homeState,
                     onEvent = vm::handleEvent,
-                    modifier = Modifier.padding(top = pv.calculateTopPadding())
                 )
             }
             composable<Route.Insurance> {
@@ -286,7 +283,6 @@ fun BottomNavigation(
                     navigateToTermInsurance = navigateToTermInsurance,
                     navigateToOtherInsurance = navigateToOtherInsurance,
                     navigateToRequestCallBackScreen = navigateToRequestCallBack,
-                    modifier = Modifier.padding(top = pv.calculateTopPadding())
                 )
             }
 

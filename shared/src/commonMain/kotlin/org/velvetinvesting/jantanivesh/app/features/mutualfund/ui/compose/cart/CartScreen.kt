@@ -106,7 +106,7 @@ fun CartScreen(
     Scaffold(
         containerColor = Color.White,
         modifier = Modifier.fillMaxSize()
-    ){pv->
+    ){
         UiStateContainer(
             uiState = uiState,
             onRetry = { viewModel.loadCart() },
@@ -114,7 +114,6 @@ fun CartScreen(
         ) { data ->
             Column(
                 modifier = Modifier.fillMaxSize()
-                    .padding(pv)
             ) {
                 CartHeader(
                     onBack = onBack
