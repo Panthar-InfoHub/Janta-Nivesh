@@ -226,4 +226,15 @@
     <string name="address_line_3_details">చిరునామా లైన్ 3 (ల్యాండ్‌మార్క్)</string>
     <string name="add_more_joint_holder">మరింత జాయింట్ హోల్డర్‌ను జోడించండి</string>
     <string name="nomination_subheading">నా మరణం తర్వాత నా ఖాతా కోసం ఒక వ్యక్తిని నామినేట్ చేయాలనుకుంటున్నాను.</string>
+    <string name="ensure_pan_matches_kyc">మీ PAN మీ KYC రికార్డులతో సరిపోలుతుందని దయచేసి నిర్ధారించుకోండి. PAN మరియు KYC ఐడెంటిఫైయర్‌లు సరిపోలకపోతే, యూనిక్ క్లయింట్ కోడ్ (UCC) నమోదు ఎక్స్ఛేంజ్ ద్వారా తిరస్కరించబడుతుంది.</string>
+    <string name="bank_details_encrypted">మీ బ్యాంక్ వివరాలు ఎన్‌క్రిప్ట్ చేయబడ్డాయి మరియు ఆటోమేటెడ్ చెల్లింపులు మరియు ధృవీకరణ కోసం సురక్షితంగా నిల్వ చేయబడ్డాయి.</string>
+    <string name="client_type">క్లయింట్ రకం</string>
+    <string name="pms_service">పీఎంఎస్ సేవ</string>
+    <string name="cdsl_details">సీడీఎస్ఎల్ వివరాలు</string>
+    <string name="cdsldp_id">సీడీఎస్ఎల్ డీపీ ఐడీ</string>
+    <string name="cdsl_client_id">సీడీఎస్ఎల్ క్లయింట్ ఐడీ</string>
+    <string name="cmbp_id">సీఎంబీపీ ఐడీ</string>
+    <string name="nsdl_details">ఎన్ఎస్‌డీఎల్ వివరాలు</string>
+    <string name="nsdl_dp_id">ఎన్ఎస్‌డీఎల్ డీపీ ఐడీ</string>
+    <string name="nsdl_client_id">ఎన్ఎస్‌డీఎల్ డీపీ ఐడీ</string>
 </resources>

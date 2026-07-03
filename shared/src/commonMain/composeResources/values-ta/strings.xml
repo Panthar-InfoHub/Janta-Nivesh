@@ -227,4 +227,15 @@
     <string name="address_line_3_details">முகவரி வரி 3 (அடையாளம்)</string>
     <string name="add_more_joint_holder">மேலும் கூட்டு கணக்குதாரரைச் சேர்க்கவும்</string>
     <string name="nomination_subheading">என் மரணத்திற்குப் பிறகு என் கணக்கிற்கு ஒருவரை நியமிக்க விரும்புகிறேன்.</string>
+    <string name="ensure_pan_matches_kyc">உங்கள் பான் (PAN) உங்கள் கேஒய்சி (KYC) பதிவுகளுடன் பொருந்துவதை உறுதி செய்யவும். பான் மற்றும் கேஒய்சி அடையாளங்கள் பொருந்தவில்லை என்றால், தனித்துவமான வாடிக்கையாளர் குறியீடு (UCC) பதிவு பரிமாற்றத்தால் நிராகரிக்கப்படும்.</string>
+    <string name="bank_details_encrypted">உங்கள் வங்கி விவரங்கள் என்க்ரிப்ட் செய்யப்பட்டு, தானியங்கு கட்டணங்கள் மற்றும் சரிபார்ப்பிற்காக பாதுகாப்பாக சேமிக்கப்பட்டுள்ளன.</string>
+    <string name="client_type">வாடிக்கையாளர் வகை</string>
+    <string name="pms_service">பிஎம்எஸ் சேவை</string>
+    <string name="cdsl_details">சிடிஎஸ்எல் விவரங்கள்</string>
+    <string name="cdsldp_id">சிடிஎஸ்எல் டிபி ஐடி</string>
+    <string name="cdsl_client_id">சிடிஎஸ்எல் கிளையண்ட் ஐடி</string>
+    <string name="cmbp_id">சிஎம்பிபி ஐடி</string>
+    <string name="nsdl_details">என்எஸ்டிஎல் விவரங்கள்</string>
+    <string name="nsdl_dp_id">என்எஸ்டிஎல் டிபி ஐடி</string>
+    <string name="nsdl_client_id">என்எஸ்டிஎல் டிபி ஐடி</string>
 </resources>

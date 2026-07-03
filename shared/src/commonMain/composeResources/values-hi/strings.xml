@@ -193,7 +193,17 @@
     <string name="address_line_3_details">पता पंक्ति 3 (लैंडमार्क)</string>
     <string name="add_more_joint_holder">अधिक संयुक्त धारक जोड़ें</string>
     <string name="nomination_subheading">मैं अपनी मृत्यु की स्थिति में, अपने खाते के लिए किसी व्यक्ति को नॉमिनेट करना चाहता हूँ।</string>
-
+    <string name = "ensure_pan_matches_kyc">कृपया सुनिश्चित करें कि आपका PAN आपके KYC रिकॉर्ड से मेल खाता हो। यदि PAN और KYC पहचानकर्ता मेल नहीं खाते हैं, तो एक्सचेंज द्वारा Unique Client Code (UCC) पंजीकरण अस्वीकृत कर दिया जाएगा।</string>
+    <string name = "bank_details_encrypted">आपके बैंक विवरण एन्क्रिप्टेड हैं और स्वचालित भुगतान और सत्यापन के लिए सुरक्षित रूप से संग्रहीत किए जाते हैं।</string>
+    <string name = "client_type">क्लाइंट प्रकार</string>
+    <string name = "pms_service">पीएमएस सेवा</string>
+    <string name = "cdsl_details">सीडीएसएल विवरण</string>
+    <string name = "cdsldp_id">सीडीएसएल डीपी आईडी</string>
+    <string name = "cdsl_client_id">सीडीएसएल क्लाइंट आईडी</string>
+    <string name = "cmbp_id">सीएमबीपी आईडी</string>
+    <string name = "nsdl_details">एनएसडीएल विवरण</string>
+    <string name = "nsdl_dp_id">एनएसडीएल डीपी आईडी</string>
+    <string name = "nsdl_client_id">एनएसडीएल डीपी आईडी</string>
     <!-- Fixed Deposits -->
     <string name="fixed_deposits">फिक्स्ड डिपॉजिट</string>
     <string name="best_rate">सर्वश्रेष्ठ दर</string>

@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.ensure_pan_matches_kyc
 import jantanivesh.shared.generated.resources.info_icon
 import jantanivesh.shared.generated.resources.lock_outlined_icon
 import jantanivesh.shared.generated.resources.pan_number
@@ -212,7 +213,7 @@ fun TradingAccountPANDetailsScreen(
                                     modifier = Modifier.padding(bottom = Spacing.dp16)
                                 )
                                 Text(
-                                    "कृपया सुनिश्चित करें कि आपका PAN आपके KYC रिकॉर्ड से मेल खाता हो। यदि PAN और KYC पहचानकर्ता मेल नहीं खाते हैं, तो एक्सचेंज द्वारा Unique Client Code (UCC) पंजीकरण अस्वीकृत कर दिया जाएगा।",
+                                    stringResource(Res.string.ensure_pan_matches_kyc),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = GreyText,
                                     modifier = Modifier.padding(bottom = Spacing.dp16)

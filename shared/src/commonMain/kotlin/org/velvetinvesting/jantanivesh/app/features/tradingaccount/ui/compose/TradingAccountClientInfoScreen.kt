@@ -26,8 +26,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.building_icon
+import jantanivesh.shared.generated.resources.cdsl_client_id
+import jantanivesh.shared.generated.resources.cdsl_details
+import jantanivesh.shared.generated.resources.cdsldp_id
+import jantanivesh.shared.generated.resources.client_type
+import jantanivesh.shared.generated.resources.cmbp_id
 import jantanivesh.shared.generated.resources.default_dp
 import jantanivesh.shared.generated.resources.monument_icon
+import jantanivesh.shared.generated.resources.nsdl_client_id
+import jantanivesh.shared.generated.resources.nsdl_details
+import jantanivesh.shared.generated.resources.nsdl_dp_id
+import jantanivesh.shared.generated.resources.pms_service
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
@@ -106,7 +115,7 @@ fun TradingAccountClientInfoScreen(
                             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                         ) {
                             DropDownSelector(
-                                title = "Client Type/ (क्लाइंट प्रकार)",
+                                title = "Client Type/ (" + stringResource(Res.string.client_type)+")",
                                 value = ClientType.getDisplayName(data.client_type),
                                 onValueChange = {
                                     handleEvent(
@@ -124,7 +133,7 @@ fun TradingAccountClientInfoScreen(
 
                             if (data.client_type == ClientType.DEMAT.code) {
                                 YesNoRadioGroup(
-                                    title = "PMS Service/ (पीएमएस सेवा)",
+                                    title = "PMS Service/ ("+ stringResource(Res.string.pms_service)+")",
                                     selectedCode = data.pms,
                                     onValueChange = {
                                         handleEvent(TradingAccountEvent.OnPmsChange(it))
@@ -168,7 +177,7 @@ fun TradingAccountClientInfoScreen(
                                             tint = Primary
                                         )
                                         Text(
-                                            "CDSL Details/ (सीडीएसएल विवरण)",
+                                            "CDSL Details/ ("+stringResource(Res.string.cdsl_details)+")",
                                             style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.Bold,
                                             color = Primary
@@ -176,7 +185,7 @@ fun TradingAccountClientInfoScreen(
                                     }
 
                                     TitledAppTextField(
-                                        title = "CDSL DP ID/ (सीडीएसएल डीपी आईडी)",
+                                        title = "CDSL DP ID/ ("+stringResource(Res.string.cdsldp_id)+")",
                                         value = data.cdsl_dpid,
                                         onValueChange = {
                                             handleEvent(
@@ -190,7 +199,7 @@ fun TradingAccountClientInfoScreen(
                                     )
 
                                     TitledAppTextField(
-                                        title = "CDSL Client ID/ (सीडीएसएल क्लाइंट आईडी)",
+                                        title = "CDSL Client ID/ ("+stringResource(Res.string.cdsl_client_id)+")",
                                         value = data.cdslcltid,
                                         onValueChange = {
                                             handleEvent(
@@ -208,7 +217,7 @@ fun TradingAccountClientInfoScreen(
                             // NSDL Block
                             if (data.default_dp == DefaultDp.NSDL.code) {
                                 TitledAppTextField(
-                                    title = "CMBP ID/ (सीएमबीपी आईडी)",
+                                    title = "CMBP ID/ ("+stringResource(Res.string.cmbp_id)+")",
                                     value = data.cmbp_id,
                                     onValueChange = {
                                         handleEvent(
@@ -240,7 +249,7 @@ fun TradingAccountClientInfoScreen(
                                             tint = Primary
                                         )
                                         Text(
-                                            "NSDL Details/ (एनएसडीएल विवरण)",
+                                            "NSDL Details/ ("+stringResource(Res.string.nsdl_details)+")",
                                             style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.Bold,
                                             color = Primary
@@ -252,7 +261,7 @@ fun TradingAccountClientInfoScreen(
                                         verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
                                     ) {
                                         TitledAppTextField(
-                                            title = "NSDL DP ID/ (एनएसडीएल डीपी आईडी)",
+                                            title = "NSDL DP ID/ ("+stringResource(Res.string.nsdl_dp_id)+")",
                                             value = data.nsdldpid,
                                             onValueChange = {
                                                 handleEvent(
@@ -268,7 +277,7 @@ fun TradingAccountClientInfoScreen(
                                         )
 
                                         TitledAppTextField(
-                                            title = "NSDL Client ID/ (एनएसडीएल क्लाइंट आईडी)",
+                                            title = "NSDL Client ID/ ("+stringResource(Res.string.nsdl_client_id)+")",
                                             value = data.nsdlcltid,
                                             onValueChange = {
                                                 handleEvent(

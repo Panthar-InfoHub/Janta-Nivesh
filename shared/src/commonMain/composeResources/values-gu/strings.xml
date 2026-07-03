@@ -164,6 +164,17 @@
     <string name="address_line_3_details">સરનામાની લાઇન 3 (લેન્ડમાર્ક)</string>
     <string name="add_more_joint_holder">વધુ જોઈન્ટ હોલ્ડર ઉમેરો</string>
     <string name="nomination_subheading">હું મારા મૃત્યુના કિસ્સામાં મારા એકાઉન્ટ માટે કોઈ વ્યક્તિને નોમિનેટ કરવા ઈચ્છું છું.</string>
+    <string name="ensure_pan_matches_kyc">કૃપા કરીને ખાતરી કરો કે તમારો PAN તમારા KYC રેકોર્ડ સાથે મેળ ખાતો હોય. જો PAN અને KYC ઓળખકર્તા મેળ ખાતા નથી, તો એક્સચેન્જ દ્વારા યુનિક ક્લાયન્ટ કોડ (UCC) નોંધણી નકારવામાં આવશે.</string>
+    <string name="bank_details_encrypted">તમારી બેંક વિગતો એન્ક્રિપ્ટેડ છે અને સ્વચાલિત ચુકવણીઓ અને ચકાસણી માટે સુરક્ષિત રીતે સંગ્રહિત છે.</string>
+    <string name="client_type">ક્લાયન્ટ પ્રકાર</string>
+    <string name="pms_service">પીએમએસ સેવા</string>
+    <string name="cdsl_details">સીડીએસએલ વિગતો</string>
+    <string name="cdsldp_id">સીડીએસએલ ડીપી આઈડી</string>
+    <string name="cdsl_client_id">સીડીએસએલ ક્લાયન્ટ આઈડી</string>
+    <string name="cmbp_id">સીએમબીપી આઈડી</string>
+    <string name="nsdl_details">એનએસડીએલ વિગતો</string>
+    <string name="nsdl_dp_id">એનએસડીએલ ડીપી આઈડી</string>
+    <string name="nsdl_client_id">એનએસડીએલ ડીપી આઈડી</string>
 
     <!-- Fixed Deposits -->
     <string name="fixed_deposits">ફિક્સ્ડ ડિપોઝિટ</string>

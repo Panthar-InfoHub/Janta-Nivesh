@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.bank_details_encrypted
 import jantanivesh.shared.generated.resources.payment_mode
 import jantanivesh.shared.generated.resources.secure_icon
 import org.jetbrains.compose.resources.painterResource
@@ -210,7 +211,7 @@ fun SecureNote() {
                 color = GreyText,
             )
             Text(
-                "आपके बैंक विवरण एन्क्रिप्टेड हैं और स्वचालित भुगतान और सत्यापन के लिए सुरक्षित रूप से संग्रहीत किए जाते हैं।",
+                stringResource(Res.string.bank_details_encrypted),
                 style = MaterialTheme.typography.labelSmall,
                 color = GreyText,
             )
