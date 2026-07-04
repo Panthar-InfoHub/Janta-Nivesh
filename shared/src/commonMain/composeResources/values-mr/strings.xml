@@ -227,4 +227,15 @@
     <string name="address_line_3_details">पत्ता ओळ ३ (खूण)</string>
     <string name="add_more_joint_holder">आणखी संयुक्त धारक जोडा</string>
     <string name="nomination_subheading">माझ्या मृत्यूनंतर मी माझ्या खात्यासाठी एखाद्या व्यक्तीला नामनिर्देशित करू इच्छितो.</string>
+    <string name="ensure_pan_matches_kyc">कृपया तुमचा PAN तुमच्या KYC रेकॉर्डशी जुळत असल्याची खात्री करा. जर PAN आणि KYC आयडेंटिफायर्स जुळत नसतील, तर एक्सचेंजद्वारे युनिक क्लायंट कोड (UCC) नोंदणी नाकारली जाईल.</string>
+    <string name="bank_details_encrypted">तुमचे बँक तपशील एन्क्रिप्ट केलेले आहेत आणि स्वयंचलित पेमेंट आणि पडताळणीसाठी सुरक्षितपणे संग्रहित केले आहेत.</string>
+    <string name="client_type">क्लायंट प्रकार</string>
+    <string name="pms_service">पीएमएस सेवा</string>
+    <string name="cdsl_details">सीडीएसएल तपशील</string>
+    <string name="cdsldp_id">सीडीएसएल डीपी आयडी</string>
+    <string name="cdsl_client_id">सीडीएसएल क्लायंट आयडी</string>
+    <string name="cmbp_id">सीएमबीपी आयडी</string>
+    <string name="nsdl_details">एनएसडीएल तपशील</string>
+    <string name="nsdl_dp_id">एनएसडीएल डीपी आयडी</string>
+    <string name="nsdl_client_id">एनएसडीएल डीपी आयडी</string>
 </resources>

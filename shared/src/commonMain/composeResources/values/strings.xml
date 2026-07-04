@@ -250,4 +250,15 @@
     <string name="amount_10k">10,000</string>
     <string name="amount_50k">50,000</string>
     <string name="amount_1lakh">1,00,000</string>
+    <string name="ensure_pan_matches_kyc">Please ensure your PAN matches your KYC records. If PAN and KYC identifiers do not match, Unique Client Code (UCC) registration will be rejected by the exchange.</string>
+    <string name="bank_details_encrypted">Your bank details are encrypted and securely stored for automated payments and verification.</string>
+    <string name="client_type">Client Type</string>
+    <string name="pms_service">PMS Service</string>
+    <string name="cdsl_details">CDSL Details</string>
+    <string name="cdsldp_id">CDSL DP ID</string>
+    <string name="cdsl_client_id">CDSL Client ID</string>
+    <string name="cmbp_id">CMBP ID</string>
+    <string name="nsdl_details">NSDL Details</string>
+    <string name="nsdl_dp_id">NSDL DP ID</string>
+    <string name="nsdl_client_id">NSDL Client ID</string>
 </resources>

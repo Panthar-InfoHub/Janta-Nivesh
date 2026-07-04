@@ -227,4 +227,15 @@
     <string name="address_line_3_details">ঠিকানার লাইন ৩ (ল্যান্ডমার্ক)</string>
     <string name="add_more_joint_holder">আরও জয়েন্ট হোল্ডার যোগ করুন</string>
     <string name="nomination_subheading">আমার মৃত্যুর ক্ষেত্রে আমি আমার অ্যাকাউন্টের জন্য একজন ব্যক্তিকে মনোনীত করতে চাই।</string>
+    <string name="ensure_pan_matches_kyc">অনুগ্রহ করে নিশ্চিত করুন যে আপনার প্যান আপনার কেওয়াইসি রেকর্ডের সাথে মেলে। যদি প্যান এবং কেওয়াইসি শনাক্তকারী না মেলে, তবে এক্সচেঞ্জ দ্বারা ইউনিক ক্লায়েন্ট কোড (ইউসিসি) নিবন্ধন প্রত্যাখ্যান করা হবে।</string>
+    <string name="bank_details_encrypted">আপনার ব্যাঙ্কের বিশদ এনক্রিপ্ট করা হয়েছে এবং স্বয়ংক্রিয় অর্থপ্রদান এবং যাচাইকরণের জন্য নিরাপদে সংরক্ষণ করা হয়েছে।</string>
+    <string name="client_type">ক্লায়েন্টের ধরন</string>
+    <string name="pms_service">পিএমএস পরিষেবা</string>
+    <string name="cdsl_details">সিডিএসএল বিবরণ</string>
+    <string name="cdsldp_id">সিডিএসএল ডিপি আইডি</string>
+    <string name="cdsl_client_id">সিডিএসএল ক্লায়েন্ট আইডি</string>
+    <string name="cmbp_id">সিএমবিপি আইডি</string>
+    <string name="nsdl_details">এনএসডিএল বিবরণ</string>
+    <string name="nsdl_dp_id">এনএসডিএল ডিপি আইডি</string>
+    <string name="nsdl_client_id">এনএসডিএল ডিপি আইডি</string>
 </resources>
