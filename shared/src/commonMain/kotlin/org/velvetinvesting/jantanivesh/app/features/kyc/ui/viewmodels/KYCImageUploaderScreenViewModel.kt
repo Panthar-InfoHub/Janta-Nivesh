@@ -2,6 +2,8 @@ package org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.ismoy.imagepickerkmp.domain.extensions.loadBytes
+import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,24 +17,36 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.LinkKycD
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycImageUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycSignatureUseCase
 
+enum class PickerTarget {
+    PHOTO,
+    SIGNATURE
+}
 data class KYCImageUploaderUiState(
     val isLoading: Boolean = false,
-    val userPhotoBytes: ByteArray? = null,
-    val signatureBytes: ByteArray? = null,
-    val photoMimeType: String?= null,
-    val signatureMimeType: String?= null,
+    val userPhoto: PhotoResult? = null,
+    val signature: PhotoResult? = null,
     val showSignatureSelector: Boolean = false,
     val showPhotoSelector: Boolean = false
+
 )
 
 sealed interface KYCImageUploaderEvent {
-    data class OnUserPhotoSelected(val bytes: ByteArray, val mimeType: String) : KYCImageUploaderEvent
-    data class OnSignatureSelected(val bytes: ByteArray, val mimeType: String) : KYCImageUploaderEvent
+
+
+    data class OnUserPhotoSelected(
+        val photo: PhotoResult
+    ) : KYCImageUploaderEvent
+
+    data class OnSignatureSelected(
+        val photo: PhotoResult
+    ) : KYCImageUploaderEvent
     data object OnUploadClicked : KYCImageUploaderEvent
     data object showSignatureSelector : KYCImageUploaderEvent
     data object showPhotoSelector : KYCImageUploaderEvent
     data object hideSignatureSelector : KYCImageUploaderEvent
     data object hidePhotoSelector : KYCImageUploaderEvent
+    data object removeSignature : KYCImageUploaderEvent
+    data object removePhoto : KYCImageUploaderEvent
 }
 
 sealed interface KYCImageUploaderEffect {
@@ -56,16 +70,14 @@ class KYCImageUploaderScreenViewModel(
         when (event) {
             is KYCImageUploaderEvent.OnUserPhotoSelected -> _uiState.update {
                 it.copy(
-                    userPhotoBytes = event.bytes,
-                    photoMimeType = event.mimeType,
+                    userPhoto = event.photo,
                     showPhotoSelector = false
                 )
             }
 
             is KYCImageUploaderEvent.OnSignatureSelected -> _uiState.update {
                 it.copy(
-                    signatureBytes = event.bytes,
-                    signatureMimeType = event.mimeType,
+                    signature = event.photo,
                     showSignatureSelector = false
                 )
             }
@@ -85,6 +97,16 @@ class KYCImageUploaderScreenViewModel(
             }
 
             KYCImageUploaderEvent.hidePhotoSelector -> _uiState.update { it.copy(showPhotoSelector = false) }
+            KYCImageUploaderEvent.removePhoto -> _uiState.update {
+                it.copy(
+                    userPhoto = null
+                )
+            }
+            KYCImageUploaderEvent.removeSignature -> _uiState.update {
+                it.copy(
+                    signature = null
+                )
+            }
         }
     }
 
@@ -92,7 +114,7 @@ class KYCImageUploaderScreenViewModel(
         viewModelScope.launch {
             val state = _uiState.value
 
-            val photoBytes = state.userPhotoBytes ?: run {
+            val photo = state.userPhoto ?: run {
                 sendEffect(
                     KYCImageUploaderEffect.ShowError(
                         "Please select both photo and signature"
@@ -101,7 +123,7 @@ class KYCImageUploaderScreenViewModel(
                 return@launch
             }
 
-            val signatureBytes = state.signatureBytes ?: run {
+            val signature = state.signature ?: run {
                 sendEffect(
                     KYCImageUploaderEffect.ShowError(
                         "Please select both photo and signature"
@@ -109,24 +131,21 @@ class KYCImageUploaderScreenViewModel(
                 )
                 return@launch
             }
-
-            val photoMimeType = state.photoMimeType ?: "image/jpeg"
-            val signatureMimeType = state.signatureMimeType ?: "image/jpeg"
 
             _uiState.update { it.copy(isLoading = true) }
 
             try {
                 val photoDeferred = async {
                     uploadKycImageUseCase(
-                        photoBytes,
-                        photoMimeType
+                        photo.loadBytes(),
+                        photo.mimeType ?: "image/jpeg"
                     )
                 }
 
                 val signatureDeferred = async {
                     uploadKycSignatureUseCase(
-                        signatureBytes,
-                        signatureMimeType
+                        signature.loadBytes(),
+                        signature.mimeType ?: "image/jpeg"
                     )
                 }
 

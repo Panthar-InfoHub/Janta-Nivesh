@@ -144,7 +144,9 @@ private fun FormContent(
                     )
                     AppTextField(
                         value = state.formState.name,
-                        onValueChange = {},
+                        onValueChange = {
+                            onEvent(KYCFormScreenEvent.OnNameChanged(it))
+                        },
                         placeholder = {
                             Text(
                                 "Enter your full name",
@@ -152,7 +154,6 @@ private fun FormContent(
                                 color = GreyText
                             )
                         },
-                        readOnly = true,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -424,7 +425,7 @@ private fun FormContent(
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     DropDownSelector(
-                        value = state.formState.occupationDescription,
+                        value = OccupationType.fromCode(state.formState.occupationCode)?.displayName ?: "",
                         onValueChange = {
                             onEvent(
                                 KYCFormScreenEvent.OnOccupationChanged(

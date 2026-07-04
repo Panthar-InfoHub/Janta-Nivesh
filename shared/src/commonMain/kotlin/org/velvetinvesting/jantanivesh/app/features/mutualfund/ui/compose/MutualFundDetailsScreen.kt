@@ -72,6 +72,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDialogList
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ContinueBackButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ListWheelPicker
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NavLineChart
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
@@ -266,15 +267,14 @@ fun MutualFundDetailsScreenContent(
                         )
 
                         if (cartState.dayDropDownExpanded) {
-                            AppDialogList(
-                                items = data.sipAllowedDated.ifEmpty {
-                                    (1..30).toList()
+                            ListWheelPicker(
+                                title = "Select SIP Date",
+                                items = data.sipAllowedDated,
+                                selectedItem = cartState.selectedSIPDate?.toIntOrNull(),
+                                onItemSelected = {
+                                    onCartDateChange(it)
                                 },
-                                textFormatter = {
-                                    it.toString()
-                                },
-                                onSelect = onCartDateChange,
-                                onDismiss = onCartDropDownDismiss,
+                                onDismiss = onCartDropDownDismiss
                             )
                         }
 

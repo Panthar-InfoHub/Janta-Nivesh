@@ -165,60 +165,6 @@ fun TradingAccountGuardianDetailScreen(
                             onClick = { showDateSelector = true }
                         )
                     }
-                    item {
-                        Text(
-                            "Guardian Mobile Number *",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = GreyText,
-                            modifier = Modifier.padding(bottom = Spacing.dp4)
-                        )
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            DropDownSelector(
-                                value = "+91 ",
-                                onValueChange = { TODO() },
-                                placeholder = "+91",
-                                list = listOf("+91", "+92", "+93"),
-                                textConvertor = { TODO() },
-                                modifier = Modifier.weight(0.4f)
-                            )
-                            TitledAppTextField(
-                                value = "", // TODO Implement phone number
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnGuardianPanChange(
-                                            it.toUpperCase(Locale.current)
-                                        )
-                                    )
-                                },
-                                placeholder = "Mobile Number",
-                                mandatory = true,
-                                keyboardType = KeyboardType.Number,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-                    item{
-
-                        TitledAppTextField(
-                            title = "Guardian Email Address",
-                            value = "", // TODO Implement email
-                            onValueChange = {
-                                handleEvent(
-                                    TradingAccountEvent.OnGuardianPanChange(
-                                        it.toUpperCase(Locale.current)
-                                    )
-                                )
-                            },
-                            placeholder = "Enter Email Address",
-                            mandatory = true,
-                            keyboardType = KeyboardType.Number,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-
                 }
                 NextButtonFooter(
                     onClick = onClick,

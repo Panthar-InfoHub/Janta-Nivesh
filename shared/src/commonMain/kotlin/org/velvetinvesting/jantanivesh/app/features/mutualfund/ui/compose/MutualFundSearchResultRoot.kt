@@ -72,9 +72,11 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Mut
 import androidx.compose.ui.tooling.preview.Preview
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.InvestmentFilter
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.createInitialInvestmentFilter
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.ReturnYearsRateDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
 
 @Composable
 fun MutualFundSearchScreenRoot(
@@ -153,7 +155,8 @@ private fun MutualFundSearchScreenContent(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White
     ) {
-        Box(modifier = Modifier.fillMaxSize())
+        Box(modifier = Modifier.fillMaxSize()
+            .clearFocusOnTap())
         {
             Column(
                 modifier = Modifier.fillMaxSize()
@@ -356,7 +359,7 @@ fun MutualFundListCard(
         ) {
             Row{
                 Text(
-                    text = fund.name,
+                    text = fund.name.toTitleCase(),
                     style = subHeading,
                     color = Color.Black,
                     maxLines = 1,

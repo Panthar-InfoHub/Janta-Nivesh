@@ -57,6 +57,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.TradingAccountFormDomain
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.TradingAccountUiState
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.viewmodels.isBankAccountMismatch
 import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.AccountType
 import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.DividendPayMode
 import org.velvetinvesting.jantanivesh.app.utils.tradingaccount.YesNo
@@ -88,7 +89,7 @@ fun TradingAccountBankDetailsScreen(
         .clearFocusOnTap()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
-            stepCount = if (uiState.isMinor) 6 else 5,
+            stepCount = if (uiState.isMinor) 5 else 4,
             totalSteps = uiState.totalSteps,
             onBack = onBackClick,
         )
@@ -133,6 +134,7 @@ fun TradingAccountBankDetailsScreen(
                         BankAccountSection(
                             index = index,
                             data = data,
+                            uiState = uiState,
                             removable = index != 1,
                             onRemove = {
                                 handleEvent(
@@ -223,6 +225,7 @@ fun BankAccountSection(
     index: Int,
     data: Data,
     removable: Boolean,
+    uiState: TradingAccountUiState,
     onRemove: () -> Unit,
     handleEvent: (TradingAccountEvent) -> Unit
 ) {
@@ -266,6 +269,39 @@ fun BankAccountSection(
             keyboardType = KeyboardType.Number
         )
 
+        val accountMismatch =
+            isBankAccountMismatch(index, data, uiState)
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp4)
+        ) {
+
+            TitledAppTextField(
+                title = "Re-enter Account Number",
+                value = uiState.reEnteredAccountNumbers[index - 1],
+                onValueChange = {
+                    handleEvent(
+                        TradingAccountEvent.OnReEnteredAccountNumberChange(
+                            index,
+                            it
+                        )
+                    )
+                },
+                placeholder = "Re-enter Account Number",
+                mandatory = true,
+                keyboardType = KeyboardType.Number,
+                isError = accountMismatch
+            )
+
+            if (accountMismatch) {
+                Text(
+                    text = "Account numbers do not match",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+
         TitledAppTextField(
             title = "IFSC",
             value = getIfsc(index, data),
@@ -273,15 +309,6 @@ fun BankAccountSection(
             placeholder = "IFSC",
             mandatory = true,
             keyboardType = KeyboardType.Text
-        )
-
-        TitledAppTextField(
-            title = "MICR",
-            value = getMicr(index, data),
-            onValueChange = { handleEvent(TradingAccountEvent.OnMicrChange(index, it)) },
-            placeholder = "MICR",
-            mandatory = false,
-            keyboardType = KeyboardType.Number
         )
 
         DropDownSelector(

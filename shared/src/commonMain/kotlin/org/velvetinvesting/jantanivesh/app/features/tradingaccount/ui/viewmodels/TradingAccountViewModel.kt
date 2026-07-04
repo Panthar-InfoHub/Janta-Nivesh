@@ -29,6 +29,7 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.StateCode
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.enums.TaxStatus
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.Data
+import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.OccupationSourceOfWealthMapper
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.models.TradingAccountFormDomain
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.GetTradingAccountPrefilledDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.usecases.SubmitTradingAccountFormUseCase
@@ -48,6 +49,7 @@ data class TradingAccountUiState(
     val nomineeChecked: Boolean = false,
     val showCalender: Boolean = false,
     val visibleBankAccounts: List<Int> = listOf(1),
+    val reEnteredAccountNumbers: List<String> = List(5) { "" },
     val basicDetailsNextEnabled: Boolean = false,
     val bankScreenButtonEnabled: Boolean = false,
     val clientScreenButtonEnabled: Boolean = false,
@@ -163,6 +165,10 @@ sealed interface TradingAccountEvent {
     data class OnIfscChange(val index: Int, val value: String) : TradingAccountEvent
     data class OnMicrChange(val index: Int, val value: String) : TradingAccountEvent
     data class OnDefaultBankChange(val index: Int, val value: String) : TradingAccountEvent
+    data class OnReEnteredAccountNumberChange(
+        val index: Int,
+        val value: String
+    ) : TradingAccountEvent
 
     data class OnAccountType1Change(val value: String) : TradingAccountEvent
     data class OnAccountType2Change(val value: String) : TradingAccountEvent
@@ -352,10 +358,21 @@ class TradingAccountViewModel(
                 )
             }
 
-            is TradingAccountEvent.OnOccupationChange -> updateData {
-                it.copy(
-                    occupation_code = event.value.trim().toUpperCase(Locale.current)
-                )
+            is TradingAccountEvent.OnOccupationChange -> {
+
+                val occupation = event.value.trim().toUpperCase(Locale.current)
+
+                val sourceOfWealth =
+                    OccupationSourceOfWealthMapper.getSourceOfWealthCode(occupation) ?: ""
+
+                updateData {
+                    it.copy(
+                        occupation_code = occupation,
+                        srce_wealt = sourceOfWealth,
+                        occ_type = OccupationSourceOfWealthMapper
+                            .getFatcaOccupationTypeCode(sourceOfWealth)
+                    )
+                }
             }
 
             is TradingAccountEvent.OnOccTypeChange -> updateData {
@@ -809,7 +826,19 @@ class TradingAccountViewModel(
 
             is TradingAccountEvent.RemoveBankAccount -> {
                 if (event.index == 1) return
-                _uiState.update { it.copy(visibleBankAccounts = it.visibleBankAccounts - event.index) }
+
+                _uiState.update {
+                    calculateDerivedState(
+                        it.copy(
+                            visibleBankAccounts = it.visibleBankAccounts - event.index,
+                            reEnteredAccountNumbers =
+                                it.reEnteredAccountNumbers.toMutableList().apply {
+                                    this[event.index - 1] = ""
+                                }
+                        )
+                    )
+                }
+
                 resetBankAccount(event.index)
             }
 
@@ -860,6 +889,19 @@ class TradingAccountViewModel(
                     3 -> handleEvent(TradingAccountEvent.OnDefaultBankFlag3Change(event.value))
                     4 -> handleEvent(TradingAccountEvent.OnDefaultBankFlag4Change(event.value))
                     5 -> handleEvent(TradingAccountEvent.OnDefaultBankFlag5Change(event.value))
+                }
+            }
+
+            is TradingAccountEvent.OnReEnteredAccountNumberChange -> {
+                _uiState.update {
+                    calculateDerivedState(
+                        it.copy(
+                            reEnteredAccountNumbers =
+                                it.reEnteredAccountNumbers.toMutableList().apply {
+                                    this[event.index - 1] = event.value
+                                }
+                        )
+                    )
                 }
             }
 
@@ -1360,16 +1402,40 @@ class TradingAccountViewModel(
 
         // bankScreenButtonEnabled
         val bankScreenButtonEnabled =
-            data.div_pay_mode.isNotBlank() && state.visibleBankAccounts.all { index ->
-                when (index) {
-                    1 -> data.account_type_1.isNotBlank() && data.account_no_1.isNotBlank() && data.ifsc_code_1.isNotBlank() && data.default_bank_flag_1.isNotBlank()
-                    2 -> data.account_type_2.isNotBlank() && data.account_no_2.isNotBlank() && data.ifsc_code_2.isNotBlank() && data.default_bank_flag_2.isNotBlank()
-                    3 -> data.account_type_3.isNotBlank() && data.account_no_3.isNotBlank() && data.ifsc_code_3.isNotBlank() && data.default_bank_flag_3.isNotBlank()
-                    4 -> data.account_type_4.isNotBlank() && data.account_no_4.isNotBlank() && data.ifsc_code_4.isNotBlank() && data.default_bank_flag_4.isNotBlank()
-                    5 -> data.account_type_5.isNotBlank() && data.account_no_5.isNotBlank() && data.ifsc_code_5.isNotBlank() && data.default_bank_flag_5.isNotBlank()
-                    else -> false
-                }
-            }
+            data.div_pay_mode.isNotBlank() &&
+                    state.visibleBankAccounts.all { index ->
+                        val accountValid = when (index) {
+                            1 -> data.account_type_1.isNotBlank() &&
+                                    data.account_no_1.isNotBlank() &&
+                                    data.ifsc_code_1.isNotBlank() &&
+                                    data.default_bank_flag_1.isNotBlank()
+
+                            2 -> data.account_type_2.isNotBlank() &&
+                                    data.account_no_2.isNotBlank() &&
+                                    data.ifsc_code_2.isNotBlank() &&
+                                    data.default_bank_flag_2.isNotBlank()
+
+                            3 -> data.account_type_3.isNotBlank() &&
+                                    data.account_no_3.isNotBlank() &&
+                                    data.ifsc_code_3.isNotBlank() &&
+                                    data.default_bank_flag_3.isNotBlank()
+
+                            4 -> data.account_type_4.isNotBlank() &&
+                                    data.account_no_4.isNotBlank() &&
+                                    data.ifsc_code_4.isNotBlank() &&
+                                    data.default_bank_flag_4.isNotBlank()
+
+                            5 -> data.account_type_5.isNotBlank() &&
+                                    data.account_no_5.isNotBlank() &&
+                                    data.ifsc_code_5.isNotBlank() &&
+                                    data.default_bank_flag_5.isNotBlank()
+
+                            else -> false
+                        }
+
+                        accountValid &&
+                                !isBankAccountMismatch(index, data, state)
+                    }
 
         // clientScreenButtonEnabled
         val clientTypeValid = data.client_type.isNotBlank()
@@ -1485,7 +1551,7 @@ class TradingAccountViewModel(
                     _uiState.update {
                         it.copy(
                             isMinor = minor,
-                            totalSteps = if (minor) 7 else 6
+                            totalSteps = if (minor) 6 else 5
                         )
                     }
 
@@ -1583,7 +1649,6 @@ class TradingAccountViewModel(
                 }
         }
     }
-
     private fun confirmAccount(
         onSuccessfulSubmit: () -> Unit
     ) {
@@ -1766,52 +1831,6 @@ class TradingAccountViewModel(
             }
         }
     }
-
-    // Helper functions for bank accounts (still used in bank screen probably)
-    fun getAccountType(index: Int, data: Data): String = when (index) {
-        1 -> data.account_type_1
-        2 -> data.account_type_2
-        3 -> data.account_type_3
-        4 -> data.account_type_4
-        5 -> data.account_type_5
-        else -> ""
-    }
-
-    fun getAccountNumber(index: Int, data: Data): String = when (index) {
-        1 -> data.account_no_1
-        2 -> data.account_no_2
-        3 -> data.account_no_3
-        4 -> data.account_no_4
-        5 -> data.account_no_5
-        else -> ""
-    }
-
-    fun getIfsc(index: Int, data: Data): String = when (index) {
-        1 -> data.ifsc_code_1
-        2 -> data.ifsc_code_2
-        3 -> data.ifsc_code_3
-        4 -> data.ifsc_code_4
-        5 -> data.ifsc_code_5
-        else -> ""
-    }
-
-    fun getMicr(index: Int, data: Data): String = when (index) {
-        1 -> data.micr_no_1
-        2 -> data.micr_no_2
-        3 -> data.micr_no_3
-        4 -> data.micr_no_4
-        5 -> data.micr_no_5
-        else -> ""
-    }
-
-    fun getDefaultBank(index: Int, data: Data): String = when (index) {
-        1 -> data.default_bank_flag_1
-        2 -> data.default_bank_flag_2
-        3 -> data.default_bank_flag_3
-        4 -> data.default_bank_flag_4
-        5 -> data.default_bank_flag_5
-        else -> ""
-    }
 }
 
 fun isMinor(dobIsoUtc: String): Boolean {
@@ -1831,4 +1850,70 @@ private fun calculateAge(birthDate: LocalDate, today: LocalDate): Int {
         age--
     }
     return age
+}
+
+// Helper functions for bank accounts (still used in bank screen probably)
+fun getAccountType(index: Int, data: Data): String = when (index) {
+    1 -> data.account_type_1
+    2 -> data.account_type_2
+    3 -> data.account_type_3
+    4 -> data.account_type_4
+    5 -> data.account_type_5
+    else -> ""
+}
+
+fun getAccountNumber(index: Int, data: Data): String = when (index) {
+    1 -> data.account_no_1
+    2 -> data.account_no_2
+    3 -> data.account_no_3
+    4 -> data.account_no_4
+    5 -> data.account_no_5
+    else -> ""
+}
+
+fun getIfsc(index: Int, data: Data): String = when (index) {
+    1 -> data.ifsc_code_1
+    2 -> data.ifsc_code_2
+    3 -> data.ifsc_code_3
+    4 -> data.ifsc_code_4
+    5 -> data.ifsc_code_5
+    else -> ""
+}
+
+fun getMicr(index: Int, data: Data): String = when (index) {
+    1 -> data.micr_no_1
+    2 -> data.micr_no_2
+    3 -> data.micr_no_3
+    4 -> data.micr_no_4
+    5 -> data.micr_no_5
+    else -> ""
+}
+
+fun getDefaultBank(index: Int, data: Data): String = when (index) {
+    1 -> data.default_bank_flag_1
+    2 -> data.default_bank_flag_2
+    3 -> data.default_bank_flag_3
+    4 -> data.default_bank_flag_4
+    5 -> data.default_bank_flag_5
+    else -> ""
+}
+
+fun getReEnteredAccountNumber(
+    index: Int,
+    state: TradingAccountUiState
+): String =
+    state.reEnteredAccountNumbers[index - 1]
+
+fun isBankAccountMismatch(
+    index: Int,
+    data: Data,
+    state: TradingAccountUiState
+): Boolean {
+
+    val original = getAccountNumber(index, data)
+    val reEntered = getReEnteredAccountNumber(index, state)
+
+    if (reEntered.isBlank()) return false
+
+    return original != reEntered
 }

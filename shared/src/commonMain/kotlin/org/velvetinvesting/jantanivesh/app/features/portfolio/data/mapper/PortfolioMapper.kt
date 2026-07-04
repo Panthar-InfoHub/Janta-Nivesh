@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.portfolio.data.mapper
 
 import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.getmf.MutualFundDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.fdportfoliobyid.FDPortFolioById
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.pendingorders.PendingOrderDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.portfolio.FdTransaction
@@ -20,6 +21,9 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.Port
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDashboardDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.TotalInvestmentsDomain
+import kotlin.text.category
+import kotlin.text.toInt
+import kotlin.text.toLong
 
 fun UserPortFolioDto.toDomain(): PortfolioDomain {
 
@@ -184,7 +188,7 @@ fun PendingOrderDto.toDomain(): PendingOrderDomain {
         amc = amc ?: "",
         frequency = frequency ?: "",
         startDate = start_date ?: "",
-        icon = raw_data?.img_url ?: "",
+        icon = img_url ?: "",
     )
 }
 
@@ -205,6 +209,7 @@ fun FolioFundDataDto.toDomain(): FolioFundDomain {
         balanceUnits = balance_units,
         imgUrl = img_url,
         schemeId = scheme_id,
-        orderId = order_id?:""
+        orderId = order_id?:"",
+        actualFolio=actual_folio?:""
     )
 }

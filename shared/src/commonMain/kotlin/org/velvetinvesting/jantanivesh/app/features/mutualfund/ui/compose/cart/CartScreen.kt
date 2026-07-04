@@ -84,6 +84,9 @@ fun CartScreen(
                 is CartSideEffects.OpenForPurchase ->{
                     browserLauncher.launch(it.url){
                         viewModel.reloadFund()
+                        scope.launch{
+                            AppEventsController.sendPortfolioRefreshEvent()
+                        }
                     }
                 }
 

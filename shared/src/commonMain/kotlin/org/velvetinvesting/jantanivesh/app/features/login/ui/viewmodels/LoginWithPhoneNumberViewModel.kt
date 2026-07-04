@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -65,15 +66,34 @@ class LoginWithPhoneNumberViewModel(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            loginUseCase(currentNumber)
-                .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
-                    sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
+
+            var currentRetry = 0
+            val maxRetries = 2
+
+            while (currentRetry <= maxRetries) {
+                var success = false
+
+                loginUseCase(currentNumber)
+                    .onSuccess {
+                        _uiState.update { it.copy(isLoading = false) }
+                        sendEffect(LoginWithPhoneNumberEffect.NavigateToOtpScreen)
+                        success = true
+                    }
+                    .onError { error ->
+                        if (currentRetry == maxRetries) {
+                            _uiState.update { it.copy(isLoading = false) }
+                            SnackBarController.showError(error.message)
+                        }
+                    }
+
+                if (success) break
+
+                currentRetry++
+
+                if (currentRetry <= maxRetries) {
+                    delay(1000)
                 }
-                .onError { error ->
-                    _uiState.update { it.copy(isLoading = false) }
-                    SnackBarController.showError(error.message)
-                }
+            }
         }
     }
 

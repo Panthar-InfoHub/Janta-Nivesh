@@ -180,7 +180,7 @@ fun MFPortfolioDetailsScreen(
                     ErrorScreen((screenState as LoadingState.Error).error, onRetryClick = {
                         viewModel.submitRedemption(
                             schemeId = data.id,
-                            folioNo = data.folio
+                            folioNo = data.actualFolio
                         )
                     })
                 }
@@ -207,7 +207,7 @@ fun MFPortfolioDetailsScreen(
             sheetState = sheetState,
             onDismiss = { viewModel.onDismissRedemptionSheet() },
             schemeId = data.id,
-            folioNo = data.folio,
+            folioNo = data.actualFolio,
             selectedRedemptionType = selectedRedemptionType,
             selectedInputType = selectedInputType,
             redemptionUnits = redemptionUnits,
@@ -221,7 +221,7 @@ fun MFPortfolioDetailsScreen(
             onSubmit = {
                 viewModel.submitRedemption(
                     schemeId = data.id,
-                    folioNo = data.folio
+                    folioNo = data.actualFolio
                 )
             },
             loading = isSubmitting
@@ -582,7 +582,8 @@ fun SIPDetailsLoadedScreenPreview() {
                 avgNav = 52.947,
                 folio = "CM_10534533",
                 balanceUnits = 13125.567,
-                orderId = ""
+                orderId = "",
+                actualFolio = "",
             ),
             {}
         ) {}

@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -57,6 +58,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.titlesStyle
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CartBottomSheetState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Duration
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.InvestmentFrequency
@@ -114,10 +116,12 @@ fun CartPopupContent(
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.fillMaxWidth()
-            .verticalScroll(state = scrollState)
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(scrollState)
             .imePadding()
-            .padding(vertical = 20.dp, horizontal = 16.dp),
+            .padding(vertical = 20.dp, horizontal = 16.dp)
+            .clearFocusOnTap(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         Column(
@@ -196,6 +200,7 @@ fun SIPCart(
     showDateDropDown: () -> Unit,
     showDurationDropDown: () -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val chips = generateInvestmentChips(
         minAmount = minAmount,
         isSip = true
@@ -258,7 +263,10 @@ fun SIPCart(
             DropDownField(
                 text = date ?: "",
                 placeholder = "Select Date",
-                onClick = showDateDropDown,
+                onClick = {
+                    keyboardController?.hide()
+                    showDateDropDown()
+                },
                 label = "SIP Day",
                 modifier = Modifier.weight(1f)
             )

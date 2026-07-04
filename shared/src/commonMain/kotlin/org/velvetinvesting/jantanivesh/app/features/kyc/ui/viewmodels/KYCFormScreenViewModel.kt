@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels
 
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
@@ -26,6 +27,8 @@ data class KYCFormScreenUiState(
 )
 
 sealed interface KYCFormScreenEvent {
+
+    data class OnNameChanged(val name: String) : KYCFormScreenEvent
     data class OnFatherNameChanged(val name: String) : KYCFormScreenEvent
     data class OnMotherNameChanged(val name: String) : KYCFormScreenEvent
     data class OnOccupationChanged(val description: String, val code: String) : KYCFormScreenEvent
@@ -61,10 +64,10 @@ class KYCFormScreenViewModel(
     fun handleEvent(event: KYCFormScreenEvent) {
         when (event) {
             is KYCFormScreenEvent.OnFatherNameChanged -> _uiState.update { 
-                it.copy(formState = it.formState.copy(fatherName = event.name.capitalize(Locale.current)))
+                it.copy(formState = it.formState.copy(fatherName = event.name.toUpperCase(Locale.current)))
             }
             is KYCFormScreenEvent.OnMotherNameChanged -> _uiState.update { 
-                it.copy(formState = it.formState.copy(motherName = event.name.capitalize(Locale.current)))
+                it.copy(formState = it.formState.copy(motherName = event.name.toUpperCase(Locale.current)))
             }
             is KYCFormScreenEvent.OnOccupationChanged -> _uiState.update { 
                 it.copy(formState = it.formState.copy(occupationDescription = event.description, occupationCode = event.code)) 
@@ -76,13 +79,16 @@ class KYCFormScreenViewModel(
                 it.copy(formState = it.formState.copy(gender = event.gender))
             }
             is KYCFormScreenEvent.OnPanNumberChanged -> _uiState.update {
-                it.copy(formState = it.formState.copy(panNumber = event.pan.capitalize(Locale.current)))
+                it.copy(formState = it.formState.copy(panNumber = event.pan.toUpperCase(Locale.current)))
             }
             is KYCFormScreenEvent.OnPlaceOfBirthChanged -> _uiState.update {
-                it.copy(formState = it.formState.copy(placeOfBirth = event.place))
+                it.copy(formState = it.formState.copy(placeOfBirth = event.place.toUpperCase(Locale.current)))
             }
             KYCFormScreenEvent.OnSubmitClicked -> submitForm()
             KYCFormScreenEvent.LoadInitialData -> loadInitialData()
+            is KYCFormScreenEvent.OnNameChanged -> _uiState.update {
+                it.copy(formState = it.formState.copy(name = event.name.toUpperCase(Locale.current)))
+            }
         }
     }
 

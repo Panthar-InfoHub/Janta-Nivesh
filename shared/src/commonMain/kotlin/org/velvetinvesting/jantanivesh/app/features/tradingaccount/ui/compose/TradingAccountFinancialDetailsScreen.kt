@@ -309,28 +309,6 @@ fun TradingAccountFinancialDetailsScreen(
                                     color = Color(0xff0B1C30)
                                 )
                             }
-                            DropDownSelector(
-                                title = "Nominee Authentication",
-                                value = NominationAuthentication.fromCode(data.nomination_authentication)
-                                    ?.displayName
-                                    ?: "",
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnNominationAuthChange(
-                                            it.code
-                                        )
-                                    )
-                                },
-                                placeholder = "Nominee Authentication",
-                                mandatory = true,
-                                modifier = Modifier.fillMaxWidth(),
-                                list = NominationAuthentication.getAllowedOptions(
-                                    data.nomination_opt
-                                ),
-                                textConvertor = {
-                                    it.displayName
-                                }
-                            )
                             TitledAppTextField(
                                 title = "Full Name/ " + "(" + stringResource(Res.string.full_name_placeholder) + ")",
                                 value = data.nominee_1_name,

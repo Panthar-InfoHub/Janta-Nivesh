@@ -27,7 +27,8 @@ data class PendingOrderDto(
     val amc: String? = null,
     val frequency: String? = null,
     val start_date: String? = null,
-    val raw_data: RawDataDto? = null
+    val raw_data: RawDataDto? = null,
+    val img_url: String? = null,
 )
 
 @Serializable
@@ -71,5 +72,4 @@ data class RawDataDto(
     val third_holder_email: String? = null,
     val third_holder_mobile: String? = null,
     val member_unique_id: String? = null,
-    val img_url: String? = null,
 )

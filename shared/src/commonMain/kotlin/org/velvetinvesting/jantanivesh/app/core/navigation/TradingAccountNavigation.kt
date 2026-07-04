@@ -18,7 +18,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountAddressScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountBankDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountBasicDetailsScreen
-import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountClientInfoScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountFinancialDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountGuardianDetailScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountGuardianPanScreen
@@ -99,7 +98,7 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
             composable<Route.TradingAccountFinancialDetails> {
                 TradingAccountFinancialDetailsScreen(
                     onClick = {
-                        navController.navigate(Route.TradingAccountClientInfo){
+                        navController.navigate(Route.TradingAccountBankDetails){
                             launchSingleTop=true
                         }
                     },
@@ -107,18 +106,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
                     uiState = uiState,
                     handleEvent = viewModel::handleEvent
                 )
-            }
-
-            composable<Route.TradingAccountClientInfo> {
-                TradingAccountClientInfoScreen(
-                    onClick = {
-                        navController.navigate(Route.TradingAccountBankDetails){
-                            launchSingleTop=true
-                        }
-                    },
-                    onBackClick = {navController.popBackStack()},
-                    uiState = uiState,
-                    handleEvent = viewModel::handleEvent)
             }
 
             composable<Route.TradingAccountBankDetails> {

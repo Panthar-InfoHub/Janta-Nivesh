@@ -98,7 +98,7 @@ fun TradingAccountAddressScreen(
         .clearFocusOnTap()) {
         LocalTopAppBarWithBackButtonAndStepCount(
             title = "Trading",
-            stepCount = if (uiState.isMinor) 7 else 6,
+            stepCount = if (uiState.isMinor) 6 else 5,
             totalSteps = uiState.totalSteps,
             onBack = onBackClick,
         )
@@ -156,28 +156,6 @@ fun TradingAccountAddressScreen(
                                 },
                                 placeholder = "House No, Building Name",
                                 mandatory = true
-                            )
-                            TitledAppTextField(
-                                title = "Address Line 2 (Optional)/ " + "(" + stringResource(Res.string.address_line_2_optional) + ")",
-                                value = data.address_2,
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnAddress2Change(
-                                            it
-                                        )
-                                    )
-                                },
-                                placeholder = "Street, Area",
-                            )
-                            TitledAppTextField(
-                                title = "Address Line 3 (Optional)/ " + "(" + stringResource(Res.string.address_line_3_optional) + ")",
-                                value = data.address_3,
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnAddress3Change(it)
-                                    )
-                                },
-                                placeholder = "Landmark",
                             )
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -249,91 +227,7 @@ fun TradingAccountAddressScreen(
                             }
                         }
                     }
-                    item {
-                        Text(
-                            "Contact Information",
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                    }
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .genericDropShadow(RoundedCornerShape(Spacing.dp16))
-                                .clip(RoundedCornerShape(Spacing.dp24))
-                                .background(Color.White)
-                                .padding(Spacing.dp16),
-                            verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
-                        ) {
-                            TitledAppTextField(
-                                title = "Email/ " + "(" + stringResource(Res.string.email) + ")",
-                                value = data.email,
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnEmailChange(it)
-                                    )
-                                },
-                                placeholder = "email@example.com",
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
-                            ) {
-                                TitledAppTextField(
-                                    title = "Mobile (Optional)/ " + "(" + stringResource(Res.string.mobile_optional) + ")",
-                                    value = data.resi_phone,
-                                    onValueChange = {
-                                        handleEvent(
-                                            TradingAccountEvent.OnResiPhoneChange(it)
-                                        )
-                                    },
-                                    placeholder = "Phone Number",
-                                    keyboardType = KeyboardType.Phone
-                                )
-                            }
-                            TitledAppTextField(
-                                title = "Fax Number (Optional)/ " + "(" + stringResource(Res.string.fax_number_optional) + ")",
-                                value = data.resi_fax,
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnResiFaxChange(it)
-                                    )
-                                },
-                                placeholder = "Residential Fax",
-                                keyboardType = KeyboardType.Number
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
-                            ) {
-                                TitledAppTextField(
-                                    title = "Office Number/ " + "(" + stringResource(Res.string.office_number) + ")",
-                                    value = data.office_phone,
-                                    onValueChange = {
-                                        handleEvent(
-                                            TradingAccountEvent.OnOfficePhoneChange(
-                                                it
-                                            )
-                                        )
-                                    },
-                                    placeholder = "Work Number",
-                                    modifier = Modifier.weight(1f),
-                                    keyboardType = KeyboardType.Number
-                                )
-                                TitledAppTextField(
-                                    title = "Office Fax (Optional)/ " + "(" + stringResource(Res.string.office_fax_optional) + ")",
-                                    value = data.office_fax,
-                                    modifier = Modifier.weight(1f),
-                                    onValueChange = {
-                                        handleEvent(
-                                            TradingAccountEvent.OnOfficeFaxChange(it)
-                                        )
-                                    },
-                                    placeholder = "Work Fax",
-                                    keyboardType = KeyboardType.Number
-                                )
-                            }
-                        }
-                    }
+
                     item {
                         if (showForeignAddress) {
                             Column(
@@ -535,22 +429,6 @@ fun TradingAccountAddressScreen(
                                     )
                                 }
                             }
-
-                            DropDownSelector(
-                                title = "Investor Onboarding/ (${stringResource(Res.string.investor_onboarding)})",
-                                value = InvestorOnboarding.getDisplayName(data.paperless_flag),
-                                placeholder = "Investor Onboarding",
-                                onValueChange = {
-                                    handleEvent(
-                                        TradingAccountEvent.OnPaperlessFlagChange(it.code)
-                                    )
-                                },
-                                list = InvestorOnboarding.entries,
-                                textConvertor = {
-                                    it.displayName
-                                },
-                                mandatory = true
-                            )
 
                         }
                     }

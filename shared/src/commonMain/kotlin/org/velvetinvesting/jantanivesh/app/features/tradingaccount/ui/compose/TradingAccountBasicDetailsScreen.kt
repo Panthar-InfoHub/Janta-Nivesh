@@ -123,32 +123,13 @@ fun TradingAccountBasicDetailsScreen(
                             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
                         ) {
                             TitledAppTextField(
-                                title = "First Name",
+                                title = "Full Name",
                                 value = data.primary_holder_first_name,
                                 onValueChange = { handleEvent(TradingAccountEvent.OnFirstNameChange(it)) },
-                                placeholder = "Enter First Name",
+                                placeholder = "Enter Full Name",
                                 mandatory = true,
                                 keyboardType = KeyboardType.Text
                             )
-
-                            TitledAppTextField(
-                                title = "Middle Name",
-                                value = data.primary_holder_middle_name,
-                                onValueChange = { handleEvent(TradingAccountEvent.OnMiddleNameChange(it)) },
-                                placeholder = "Enter Middle Name",
-                                mandatory = false,
-                                keyboardType = KeyboardType.Text
-                            )
-
-                            TitledAppTextField(
-                                title = "Last Name",
-                                value = data.primary_holder_last_name,
-                                onValueChange = { handleEvent(TradingAccountEvent.OnLastNameChange(it)) },
-                                placeholder = "Enter Last Name",
-                                mandatory = false,
-                                keyboardType = KeyboardType.Text
-                            )
-
                             TitledAppTextField(
                                 title = "Place of Birth",
                                 value = data.po_bir_inc,

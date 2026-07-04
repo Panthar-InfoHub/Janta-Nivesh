@@ -651,7 +651,8 @@ fun MainAppNavigation(
                             folio = it.folio,
                             balanceUnits = it.balanceUnits,
                             img_url = it.imgUrl,
-                            orderId = it.orderId
+                            orderId = it.orderId,
+                            actualFolio = it.actualFolio
                         )
                     ) {
                         launchSingleTop = true

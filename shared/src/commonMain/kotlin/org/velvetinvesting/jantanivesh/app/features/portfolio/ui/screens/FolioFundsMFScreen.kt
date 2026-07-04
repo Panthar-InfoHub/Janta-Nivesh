@@ -356,7 +356,8 @@ fun FolioFundsContentPreview() {
             balanceUnits = 961.53,
             imgUrl = "",
             schemeId = 1,
-            orderId = ""
+            orderId = "",
+            actualFolio = ""
         ),
         FolioFundDomain(
             id = "2",
@@ -374,7 +375,8 @@ fun FolioFundsContentPreview() {
             balanceUnits = 588.23,
             imgUrl = "",
             schemeId = 2,
-            orderId = ""
+            orderId = "",
+            actualFolio = ""
         )
     )
 
