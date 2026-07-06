@@ -12,6 +12,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
+import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.ExploreFdScreen
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.FdDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.SetInvestmentDetailsScreen
@@ -51,6 +52,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.Existin
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.FDPortfolioDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.FolioFundMFScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.MFPortfolioDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.NotificationScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileLanguageScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileSettingScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageEffect
@@ -573,16 +575,23 @@ fun MainAppNavigation(
         composable<Route.ProfileSettingsScreen> {
             val vm: ProfileSettingViewModel = koinViewModel()
             val state by vm.uiState.collectAsStateWithLifecycle()
+            val browserLauncher = rememberBrowserReturnLauncher()
 
             LaunchedEffect(vm.effect){
                 vm.effect.collect {
                     when(it){
                         ProfileSettingEffect.NavigateBack -> navController.popBackStack()
                         ProfileSettingEffect.NavigateToDeleteAccount -> {
-
+                            browserLauncher.launch(
+                                "https://velvetinvesting.com/delete-account"
+                            ){}
                         }
                         ProfileSettingEffect.NavigateToNotification -> {
-                            //TODO : Add navigation to notifications screen
+                            navController.navigate(
+                                Route.Notifications
+                            ){
+                                launchSingleTop=true
+                            }
                         }
                         ProfileSettingEffect.NavigateToPrivacyPolicy -> {
 
@@ -597,6 +606,12 @@ fun MainAppNavigation(
             ProfileSettingScreen(
                 state = state ,
                 onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.Notifications> {
+            NotificationScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 

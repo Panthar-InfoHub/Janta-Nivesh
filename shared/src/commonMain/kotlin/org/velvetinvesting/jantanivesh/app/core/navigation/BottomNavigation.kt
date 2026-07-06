@@ -32,6 +32,7 @@ import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
+import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.InsuranceIntroScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.PortfolioScreenMain
@@ -255,14 +256,19 @@ fun BottomNavigation(
             }
             composable<Route.Profile> {
                 val vm: ProfileViewModel = koinViewModel()
+                val browserLauncher = rememberBrowserReturnLauncher()
                 LaunchedEffect(vm.effect){
                     vm.effect.collect {
                         when (it) {
                             ProfileEffect.NavigateToContactUs -> {
-
+                                browserLauncher.launch(
+                                    "https://velvetinvesting.com/contact"
+                                ){}
                             }
                             ProfileEffect.NavigateToHelpFaq -> {
-
+                                browserLauncher.launch(
+                                    "https://velvetinvesting.com/faqs"
+                                ){}
                             }
                             ProfileEffect.NavigateToKycStatus -> navigateToKYC()
                             ProfileEffect.NavigateToSecondaryLanguage -> navigateToLanguageSettings()
