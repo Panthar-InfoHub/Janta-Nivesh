@@ -329,4 +329,115 @@
     <string name="privacy_policy_intro">At Janta Nivesh (a product under Velvet Investing) (“Janta Nivesh”, “we”, “our”, “us”), we value your trust and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, share, and safeguard your information when you use our website, mobile application, and related services.</string>
     <string name="privacy_policy_consent">By accessing or using Janta Nivesh, you agree to the practices described in this Privacy Policy.</string>
     <string name="privacy_policy_last_updated">Last updated: October 2023</string>
+    
+    <!-- Terms and Conditions Screen -->
+    <string name="terms_and_conditions">Terms &amp; Conditions</string>
+    <string name="tac_intro">Please read these terms carefully before using Janta Nivesh (a product under Velvet Investing) services.</string>
+    <string name="tac_effective_date_label">Effective Date: </string>
+    <string name="tac_effective_date_value">March 30, 2025</string>
+    <string name="tac_last_updated_label">Last Updated: </string>
+    <string name="tac_last_updated_value">March 30, 2025</string>
+
+    <string name="tac_sec1_title">1. About Janta Nivesh (a product under Velvet Investing)</string>
+    <string name="tac_sec1_body1">Janta Nivesh (a product under Velvet Investing) provides digital tools and services related to financial planning, goal tracking, investment facilitation, reporting, and related user experiences. Certain features may be enabled through third-party partners, including regulated intermediaries, technology service providers, KYC agencies, investment platforms, or financial institutions.</string>
+
+    <string name="tac_sec2_title">2. Eligibility</string>
+    <string name="tac_sec2_body1">By using our services, you represent that:</string>
+    <string name="tac_sec2_bullet1">you are legally capable of entering into a binding agreement</string>
+    <string name="tac_sec2_bullet2">the information you provide is true, complete, and accurate</string>
+    <string name="tac_sec2_bullet3">you will use the platform only for lawful purposes</string>
+    <string name="tac_sec2_bullet4">you are authorized to provide all details submitted through your account</string>
+
+    <string name="tac_sec3_title">3. Account Registration and Security</string>
+    <string name="tac_sec3_body1">To access certain services, you may be required to register and verify your identity using OTP, KYC, or other authentication steps.\nYou are responsible for:</string>
+    <string name="tac_sec3_remark">You must notify us immediately if you suspect any unauthorized access or misuse.</string>
+    <string name="tac_sec3_bullet1">maintaining the confidentiality of your login credentials</string>
+    <string name="tac_sec3_bullet2">protecting unauthorized access to your account</string>
+    <string name="tac_sec3_bullet3">ensuring that all activity under your account is authorized by you</string>
+
+    <string name="tac_sec4_title">4. Services Provided</string>
+    <string name="tac_sec4_body1">Janta Nivesh (a product under Velvet Investing) may offer services including:</string>
+    <string name="tac_sec4_bullet1">financial tracking</string>
+    <string name="tac_sec4_bullet2">goal-based planning</string>
+    <string name="tac_sec4_bullet3">investment recommendations</string>
+    <string name="tac_sec4_bullet4">SIP management</string>
+    <string name="tac_sec4_bullet5">mutual fund investments</string>
+    <string name="tac_sec4_bullet6">financial insights</string>
+    <string name="tac_sec4_remark">Not all services may be available to all users at all times.</string>
+
+    <string name="tac_sec5_title">5. No Personalized Investment Guarantee</string>
+    <string name="tac_sec5_body1">Unless explicitly stated otherwise in a separate written advisory arrangement, the platform content, calculators, reports, and projections are for informational and facilitative purposes only. They should not be construed as guaranteed returns, assured outcomes, or a promise that any financial goal will be achieved.\nInvestment decisions remain the user\'s responsibility.</string>
+
+    <string name="tac_sec6_title">6. User Responsibilities</string>
+    <string name="tac_sec6_body1">You agree not to:</string>
+    <string name="tac_sec6_bullet1">provide false, incomplete, or misleading information,</string>
+    <string name="tac_sec6_bullet2">impersonate another person,</string>
+    <string name="tac_sec6_bullet3">misuse the platform or attempt unauthorized access,</string>
+    <string name="tac_sec6_bullet4">copy, reverse engineer, scrape, or exploit the platform without permission,</string>
+    <string name="tac_sec6_bullet5">use the platform for unlawful, fraudulent, or abusive purposes.</string>
+
+    <string name="tac_sec7_title">7. KYC and Third-Party Dependencies</string>
+    <string name="tac_sec7_body1">Certain services may require successful KYC, third-party verification, or partner approvals. Janta Nivesh (a product under Velvet Investing) is not responsible for delays, rejections, downtime, or restrictions caused by banking partners, KYC agencies, investment platforms, registrars, payment processors, or regulatory requirements.</string>
+
+    <string name="tac_sec8_title">8. Transactions and Instructions</string>
+    <string name="tac_sec8_body1">By placing any investment, redemption, purchase, booking, or related instruction, you confirm that:</string>
+    <string name="tac_sec8_bullet1">the details submitted by you are correct</string>
+    <string name="tac_sec8_bullet2">you understand the product you are choosing</string>
+    <string name="tac_sec8_bullet3">you authorize Velvet and/or its partners to process your request,</string>
+    <string name="tac_sec8_bullet4">actual execution may depend on cut-off timings, partner validations, market conditions, and regulatory rules.</string>
+    <string name="tac_sec8_remark">A transaction request is not deemed completed until confirmed by the relevant processing entity or partner.</string>
+
+    <string name="tac_sec9_title">9. Fees and Charges</string>
+    <string name="tac_sec9_body1">Any applicable fees, charges, taxes, levies, or deductions, if any, will be disclosed through the platform, through partner terms, or at the time of transaction, where applicable.</string>
+
+    <string name="tac_sec10_title">10. Intellectual Property</string>
+    <string name="tac_sec10_body1">All platform content, including text, branding, design, UI, logos, software, graphics, and reports, unless otherwise stated, belongs to Janta Nivesh (a product under Velvet Investing) or its licensors and is protected by applicable intellectual property laws.\nYou may not reproduce, distribute, modify, or commercially exploit any part of the platform without prior written permission.</string>
+
+    <string name="tac_sec11_title">11. Limitation of Liability</string>
+    <string name="tac_sec11_body1">To the maximum extent permitted by law, Janta Nivesh (a product under Velvet Investing) shall not be liable for:</string>
+    <string name="tac_sec11_bullet1">any market losses</string>
+    <string name="tac_sec11_bullet2">indirect or consequential damages</string>
+    <string name="tac_sec11_bullet3">service interruptions</string>
+    <string name="tac_sec11_bullet4">third-party failures</string>
+    <string name="tac_sec11_bullet5">data delays</string>
+    <string name="tac_sec11_bullet6">investment decisions made by users</string>
+    <string name="tac_sec11_bullet7">technical or partner-side transaction issues beyond our reasonable control</string>
+
+    <string name="tac_sec12_title">12. Indemnity</string>
+    <string name="tac_sec12_body1">You agree to indemnify and hold harmless Janta Nivesh (a product under Velvet Investing), its founders, employees, affiliates, and partners against claims, liabilities, damages, losses, or expenses arising from your misuse of the platform, breach of these Terms, or violation of law.</string>
+
+    <string name="tac_sec13_title">13. Suspension or Termination</string>
+    <string name="tac_sec13_body1">We may suspend, restrict, or terminate access to your account if:</string>
+    <string name="tac_sec13_bullet1">required by law or regulation</string>
+    <string name="tac_sec13_bullet2">we detect suspicious or fraudulent activity</string>
+    <string name="tac_sec13_bullet3">you breach these Terms</string>
+    <string name="tac_sec13_bullet4">your use creates operational, legal, or security risk</string>
+
+    <string name="tac_sec14_title">14. Disclaimer of Warranties</string>
+    <string name="tac_sec14_body1">The platform is provided on an \"as is\" and \"as available\" basis. We do not guarantee uninterrupted availability, error-free operation, or suitability for every user objective.</string>
+
+    <string name="tac_sec15_title">15. Governing Law and Jurisdiction</string>
+    <string name="tac_sec15_body1">These Terms shall be governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts located in Gurugram, Haryana, unless otherwise required by applicable law.</string>
+
+    <string name="tac_sec16_title">16. Changes to Terms</string>
+    <string name="tac_sec16_body1">We may revise these Terms from time to time. Updated Terms will be posted on this page with the latest effective date. Your continued use of the platform constitutes acceptance of such revised Terms</string>
+
+    <string name="tac_sec17_title">17. Contact Us</string>
+    <string name="tac_sec17_company">Janta Nivesh (a product under Velvet Investing)</string>
+    <string name="tac_email_label">Email</string>
+    <string name="tac_email_value">Contact@velvetinvesting.com</string>
+    <string name="tac_phone_label">Phone</string>
+    <string name="tac_phone_value">+91 9992224817 / +91 7888353502</string>
+    <string name="tac_office_label">Office</string>
+    <string name="tac_office_value">5th Floor, Two Horizon Centre, DLF Phase 5,\nGolf Course Road, Gurugram, India</string>
+
+    <string name="tac_dialog_restricted_access">Restricted Access</string>
+    <string name="tac_dialog_cancel">Cancel</string>
+    <string name="tac_dialog_unlock">Unlock</string>
+    <string name="tac_quote_savy_text">\"Powered by caffeine, coroutines and questionable sleep schedules.\"</string>
+    <string name="tac_quote_savy_author">— Savy</string>
+    <string name="tac_quote_ayano_text">\"Finding joy in steady progress (and sometimes in logs).\"</string>
+    <string name="tac_quote_ayano_author">— Ayano</string>
+    <string name="tac_quote_pickle_text">\"Pondering and probably(hopefully) not leaving caffeine on the keyboard\"</string>
+    <string name="tac_quote_pickle_author">— Pickle</string>
 </resources>

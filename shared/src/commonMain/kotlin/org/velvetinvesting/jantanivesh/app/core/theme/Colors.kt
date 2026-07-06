@@ -26,6 +26,7 @@ val BorderFocused= Color(0xff23336E)
 val Secondary=Color(0xff00AEEF)
 val PrimaryLanguageText = Color(0xff191C1D)
 val White = Color(0xffffffff)
+val Gray = Color.Gray
 val GreyLock = Color(0xFF767681)
 val GreyText = Color(0xFF767681)
 val GreyBox = Color(0xFFF3F4F5)
