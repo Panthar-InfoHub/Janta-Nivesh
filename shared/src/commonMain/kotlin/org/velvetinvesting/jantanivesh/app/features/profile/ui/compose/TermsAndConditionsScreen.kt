@@ -73,6 +73,7 @@ object TermsAndConditionsTextStyle {
     fun body() = MaterialTheme.typography.bodyMedium
 }
 
+@Suppress("SuspiciousIndentation")
 @Composable
 
 fun TermsAndConditionsScreen(
