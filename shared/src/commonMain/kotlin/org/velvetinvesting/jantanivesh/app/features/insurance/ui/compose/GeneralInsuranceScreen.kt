@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,21 +12,37 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.banner_child_1
+import jantanivesh.shared.generated.resources.banner_child_2
+import jantanivesh.shared.generated.resources.banner_child_3
+import jantanivesh.shared.generated.resources.banner_family_1
+import jantanivesh.shared.generated.resources.banner_family_2
+import jantanivesh.shared.generated.resources.banner_family_3
+import jantanivesh.shared.generated.resources.banner_senior_1
+import jantanivesh.shared.generated.resources.banner_senior_2
+import jantanivesh.shared.generated.resources.banner_senior_3
 import jantanivesh.shared.generated.resources.ins_assistance
 import jantanivesh.shared.generated.resources.ins_cover
 import jantanivesh.shared.generated.resources.ins_no_claim_bonus_general
 import jantanivesh.shared.generated.resources.ins_quick_claim
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InsuranceFeatureCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 
@@ -36,6 +53,13 @@ fun GeneralInsuranceScreen(
     modifier: Modifier = Modifier,
     onRequestCallBackClick: () -> Unit
 ){
+    val familyBanner = listOf(Res.drawable.banner_family_1, Res.drawable.banner_family_2, Res.drawable.banner_family_3)
+    val childBanner = listOf(Res.drawable.banner_child_1, Res.drawable.banner_child_2, Res.drawable.banner_child_3)
+    val seniorBanner = listOf(Res.drawable.banner_senior_1, Res.drawable.banner_senior_2, Res.drawable.banner_senior_3)
+
+    val familyBannerPagerState = rememberPagerState{familyBanner.size}
+    val childBannerPagerState = rememberPagerState{childBanner.size}
+    val seniorBannerPagerState = rememberPagerState{seniorBanner.size}
     Scaffold {
         Column(modifier.fillMaxSize()
             .background(White)) {
@@ -97,11 +121,81 @@ fun GeneralInsuranceScreen(
                 }
 
                 item {
-                    Text(
-                        "Popular Plans",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                    )
+                    BarHeader(title ="Family Floater Insurance")
                 }
+
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        HorizontalPager(
+                            state = familyBannerPagerState,
+                        ){
+                            ImageCard(
+                                x0 = familyBanner[it]
+                            )
+                        }
+                        ExpandingDots(
+                            numberOfDots = familyBanner.size,
+                            currentIndexOfDot = familyBannerPagerState.currentPage
+                        )
+                    }
+                }
+
+                item {
+                    BarHeader(title ="Child Insurance")
+                }
+
+
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        HorizontalPager(
+                            state = childBannerPagerState,
+                        ){
+                            ImageCard(
+                                x0 = childBanner[it]
+                            )
+                        }
+                        ExpandingDots(
+                            numberOfDots = childBanner.size,
+                            currentIndexOfDot = childBannerPagerState.currentPage
+                        )
+                    }
+                }
+
+                item {
+                    BarHeader(title="Senior Citizen Health Insurance")
+                }
+
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        HorizontalPager(
+                            state = seniorBannerPagerState,
+                        ){
+                            ImageCard(
+                                x0 = seniorBanner[it]
+                            )
+                        }
+                        ExpandingDots(
+                            numberOfDots = seniorBanner.size,
+                            currentIndexOfDot = seniorBannerPagerState.currentPage
+                        )
+                    }
+                }
+
+//                item {
+//                    Text(
+//                        "Popular Plans",
+//                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+//                    )
+//                }
 //                items(
 //                    state.generalInsurancePlansList
 //                ) { plan ->
@@ -171,3 +265,14 @@ fun GeneralInsuranceScreen(
 //        )
 //    }
 //}
+
+@Composable
+fun ImageCard(x0: DrawableResource) {
+    Image(
+        painter = painterResource(x0),
+        contentDescription = null,
+        modifier = Modifier.fillMaxWidth()
+            .height(196.dp),
+        contentScale = ContentScale.FillWidth
+    )
+}

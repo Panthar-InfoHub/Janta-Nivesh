@@ -53,8 +53,10 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.FDPortf
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.FolioFundMFScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.MFPortfolioDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.NotificationScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.PrivacyPolicyScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileLanguageScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileSettingScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.TermsAndConditionsScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingEffect
@@ -594,10 +596,14 @@ fun MainAppNavigation(
                             }
                         }
                         ProfileSettingEffect.NavigateToPrivacyPolicy -> {
-
+                            navController.navigate(Route.PrivacyPolicy){
+                                launchSingleTop=true
+                            }
                         }
                         ProfileSettingEffect.NavigateToTermsOfService -> {
-
+                            navController.navigate(Route.TermsAndConditions){
+                                launchSingleTop=true
+                            }
                         }
                     }
                 }
@@ -606,6 +612,17 @@ fun MainAppNavigation(
             ProfileSettingScreen(
                 state = state ,
                 onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.PrivacyPolicy> {
+            PrivacyPolicyScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable<Route.TermsAndConditions> {
+            TermsAndConditionsScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 

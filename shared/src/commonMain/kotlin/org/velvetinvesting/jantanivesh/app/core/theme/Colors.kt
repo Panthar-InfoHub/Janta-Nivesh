@@ -7,6 +7,7 @@ val appGreen=Color(0xff008E23)
 val appRed=Color(0xffFF0600)
 
 val Primary= Color(0xff23336E)
+val LightGray=Color(0xffD9D9D9)
 val InterestChip = Color(0xffC6E7FF)
 val InterestChipBorder = Color(0x3382CFFF)
 

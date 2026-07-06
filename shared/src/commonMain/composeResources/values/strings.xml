@@ -261,4 +261,72 @@
     <string name="nsdl_details">NSDL Details</string>
     <string name="nsdl_dp_id">NSDL DP ID</string>
     <string name="nsdl_client_id">NSDL Client ID</string>
+
+    <!-- Privacy Policy -->
+    <string name="pp_section_1_title">1. Information We Collect</string>
+    <string name="pp_section_1_a_title">a) Personal Information: </string>
+    <string name="pp_section_1_a_content">Full Name, Mobile Number, Email Address, Date of Birth, PAN and other KYC-related information, and bank account details. Even details of payments made for transaction or through our website such as security, expenses, assets, liabilities, goals, and investment preferences.</string>
+    <string name="pp_section_1_b_title">b) Technical Information: </string>
+    <string name="pp_section_1_b_content">IP address, device type and operating system, browser type, app usage data, log files, Cookies and similar technologies.</string>
+    <string name="pp_section_1_c_title">c) Transaction and Service Information: </string>
+    <string name="pp_section_1_c_content">Investment instructions, holdings and funds, fixed deposit transaction details, KYC status, Portfolio tracking results, Mutual fund performance, Download history, for report/tax statements.</string>
+
+    <string name="pp_section_2_title">2. How We Use Your Information</string>
+    <string name="pp_section_2_intro">We may use your information to:</string>
+    <string name="pp_use_item_1">Create and manage your account.</string>
+    <string name="pp_use_item_2">Verify your identity and comply with KYC regulations.</string>
+    <string name="pp_use_item_3">Provide financial planning, investment, and reporting services.</string>
+    <string name="pp_use_item_4">Facilitate mutual fund transactions and manage your portfolio through our licensed partners.</string>
+    <string name="pp_use_item_5">Personalize your user experience and provide recommendations.</string>
+    <string name="pp_use_item_6">Communicate important updates, offers, news, and account notifications.</string>
+    <string name="pp_use_item_7">Analyze platform performance, security, and user experience.</string>
+    <string name="pp_use_item_8">Comply with legal obligations, tax, audit, and anti-fraud requirements.</string>
+
+    <string name="pp_section_3_title">3. Legal Basis and Consent</string>
+    <string name="pp_section_3_content">Where required, we process your data based on your consent. You can withdraw at any time. In other situations, for compliance with applicable laws, or legitimate business purposes such as fraud prevention, platform security, and service improvement.</string>
+
+    <string name="pp_section_4_title">4. Sharing of Information</string>
+    <string name="pp_section_4_intro">We do not sell your personal data. We may share your information only as needed to provide our services with:</string>
+    <string name="pp_share_item_1">KYC and identity verification partners.</string>
+    <string name="pp_share_item_2">Mutual fund house/AMC, payment, banking, and wealth management partners.</string>
+    <string name="pp_share_item_3">CRM, analytics, communication, cloud hosting, and customer support providers.</string>
+    <string name="pp_share_item_4">Regulatory bodies or judicial authorities when required by law or as requested.</string>
+    <string name="pp_share_item_5">Professional advisors, auditors, or legal consultants under confidentiality agreements.</string>
+
+    <string name="pp_section_5_title">5. Data Storage and Security</string>
+    <string name="pp_section_5_content">We maintain reasonable physical, organizational, and administrative safeguards to protect your information against unauthorized access, release, loss, alteration or destruction. Please note that no method of transmission over the internet, or any method of electronic storage, is 100% secure, and we cannot guarantee absolute security.</string>
+
+    <string name="pp_section_6_title">6. Data Retention</string>
+    <string name="pp_section_6_content">We retain your information only as long as necessary to provide our services, meet legal obligations, resolve disputes, and support trust.</string>
+
+    <string name="pp_section_7_title">7. Cookies and Tracking Technologies</string>
+    <string name="pp_section_7_content">Our website may use cookies to help you adjust to preferred preferences, and analyze traffic.</string>
+
+    <string name="pp_section_8_title">8. Your Rights</string>
+    <string name="pp_section_8_content">Subject to applicable law, you have the right to access, correct, or request deletion of your personal data.</string>
+    <string name="pp_request_access">Request Access</string>
+    <string name="pp_request_delete">Request Delete</string>
+
+    <string name="pp_section_9_title">9. Third-Party Links and Services</string>
+    <string name="pp_section_9_content">Our platform may contain links to third-party sites. We are not responsible for their independent policies.</string>
+
+    <string name="pp_section_10_title">10. Children’s Privacy</string>
+    <string name="pp_section_10_content">Janta Nivesh is for individuals legally eligible for financial services.</string>
+
+    <string name="pp_section_11_title">11. Changes to this Privacy Policy</string>
+    <string name="pp_section_11_content">We may update this policy. Continued use denotes your acceptance.</string>
+
+    <string name="pp_section_12_title">12. Contact Us</string>
+    <string name="pp_contact_name">Janta Nivesh</string>
+    <string name="pp_contact_email_label">Email</string>
+    <string name="pp_contact_email">contact@jantanivesh.com</string>
+    <string name="pp_contact_phone_label">Phone</string>
+    <string name="pp_contact_phone">+91 999 001 777, +91 999 001 888</string>
+    <string name="pp_contact_office_label">Office</string>
+    <string name="pp_contact_office">5th Floor, One Horizon Centre, DLF Phase 5, Golf Course Road, Gurugram, India.</string>
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="privacy_policy_header">Janta Nivesh Privacy Policy</string>
+    <string name="privacy_policy_intro">At Janta Nivesh (a product under Velvet Investing) (“Janta Nivesh”, “we”, “our”, “us”), we value your trust and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, share, and safeguard your information when you use our website, mobile application, and related services.</string>
+    <string name="privacy_policy_consent">By accessing or using Janta Nivesh, you agree to the practices described in this Privacy Policy.</string>
+    <string name="privacy_policy_last_updated">Last updated: October 2023</string>
 </resources>

@@ -11,14 +11,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.banner_term_1
+import jantanivesh.shared.generated.resources.banner_term_2
+import jantanivesh.shared.generated.resources.banner_term_3
 import jantanivesh.shared.generated.resources.health_insurance
 import jantanivesh.shared.generated.resources.ins_flexible_tenure
 import jantanivesh.shared.generated.resources.ins_high_coverage
@@ -35,6 +41,14 @@ fun TermInsuranceScreen(
     modifier: Modifier = Modifier,
     onRequestCallBackClick: () -> Unit
 ) {
+    val images = listOf(
+        Res.drawable.banner_term_3,
+        Res.drawable.banner_term_1,
+        Res.drawable.banner_term_2
+    )
+    val state= rememberPagerState { images.size }
+
+
     Scaffold {
         Column(
             modifier.fillMaxSize()
@@ -93,11 +107,30 @@ fun TermInsuranceScreen(
                 }
 
                 item {
-                    Text(
-                        "Popular Plans",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ){
+                        HorizontalPager(
+                            modifier = Modifier.fillMaxWidth(),
+                            state = state
+                        ) {
+                            ImageCard(images[it])
+                        }
+                        ExpandingDots(
+                            currentIndexOfDot = state.currentPage,
+                            numberOfDots = images.size
+                        )
+                    }
                 }
+
+//                item {
+//                    Text(
+//                        "Popular Plans",
+//                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+//                    )
+//                }
 //                items(
 //                    state.termInsurancePlansList
 //                ) { plan ->
