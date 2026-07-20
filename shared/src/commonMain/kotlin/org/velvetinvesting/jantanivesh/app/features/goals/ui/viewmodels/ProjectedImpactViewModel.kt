@@ -3,24 +3,21 @@ package org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalSchemeDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
 import org.velvetinvesting.jantanivesh.app.features.goals.utils.GoalCalculator
-import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
-import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
-import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import kotlin.math.pow
 
 data class ProjectedImpactUiData(
@@ -53,17 +50,19 @@ sealed interface ProjectedImpactEvent {
     data object OnBackClicked : ProjectedImpactEvent
     data object OnInvestNowClicked : ProjectedImpactEvent
     data object LoadGoalDetails : ProjectedImpactEvent
+
+    data object OnMapSchemesClick : ProjectedImpactEvent
     data object OpenPortfolioSelector : ProjectedImpactEvent
     data object ClosePortfolioSelector : ProjectedImpactEvent
     data class ToggleSchemeSelection(val schemeId: Int) : ProjectedImpactEvent
-    data object MapSelectedSchemes : ProjectedImpactEvent
-    data class UnMapScheme(val schemeId: Int) : ProjectedImpactEvent
     data object DeleteGoal : ProjectedImpactEvent
 }
 
 sealed interface ProjectedImpactEffect {
     data object NavigateBack : ProjectedImpactEffect
     data object NavigateToInvest : ProjectedImpactEffect
+
+    data object NavigateToMapScheme : ProjectedImpactEffect
     data object OpenPortfolioBottomSheet : ProjectedImpactEffect
     data object ClosePortfolioBottomSheet : ProjectedImpactEffect
     data class ShowError(val message: String) : ProjectedImpactEffect
@@ -98,9 +97,8 @@ class ProjectedImpactViewModel(
             }
             ProjectedImpactEvent.ClosePortfolioSelector -> sendEffect(ProjectedImpactEffect.ClosePortfolioBottomSheet)
             is ProjectedImpactEvent.ToggleSchemeSelection -> toggleSchemeSelection(event.schemeId)
-            ProjectedImpactEvent.MapSelectedSchemes -> mapSchemes()
-            is ProjectedImpactEvent.UnMapScheme -> unMapScheme(event.schemeId)
             ProjectedImpactEvent.DeleteGoal -> deleteGoal()
+            ProjectedImpactEvent.OnMapSchemesClick -> sendEffect(ProjectedImpactEffect.NavigateToMapScheme)
         }
     }
 

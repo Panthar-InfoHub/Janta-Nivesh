@@ -220,7 +220,7 @@ fun BottomNavigation(
                 HomeScreen(
                     state = homeState,
                     onEvent = homeViewModel::onEvent,
-                    modifier = Modifier.padding(top = pv.calculateTopPadding())
+                    modifier = Modifier
                 )
             }
             composable<Route.FundScreener> {

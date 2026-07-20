@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,7 +45,6 @@ fun FinancialGoalScreen(
                 title = "Financial Goal",
                 onBack = { handleEvent(AddGoalEvent.OnBackClicked) },
                 modifier = Modifier
-                    .statusBarsPadding()
                     .padding(horizontal = Spacing.dp16)
             )
 
@@ -56,7 +54,7 @@ fun FinancialGoalScreen(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize()
-                        .padding(horizontal = Spacing.dp16, vertical = Spacing.dp12)
+                        .padding(horizontal = Spacing.dp16)
                 ) {
                     item {
                         DropDownSelector(

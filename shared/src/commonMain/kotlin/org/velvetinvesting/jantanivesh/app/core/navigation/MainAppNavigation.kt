@@ -10,8 +10,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import org.velvetinvesting.jantanivesh.app.core.navigation.Route.*
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.ExploreFdScreen
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.FdDetailsScreen
@@ -24,12 +27,14 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestme
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.FinancialGoalScreen
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.MapSchemesScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.ProjectedImpactScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.YourGoalsScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
@@ -69,6 +74,19 @@ fun MainAppNavigation(
 ) {
 
     val navController = rememberNavController()
+    LaunchedEffect(Unit) {
+        AppEventsController.appEvent.collect {
+            when (it) {
+                AppEvent.LogOut -> {
+                    AppEventsController.clear()
+                    onSignOut()
+                    SnackBarController.showInfo("Token Expired. Login Again.")
+                }
+
+                else -> {}
+            }
+        }
+    }
     NavHost(
         navController = navController,
         startDestination = Route.BottomNav
@@ -512,17 +530,37 @@ fun MainAppNavigation(
                 vm.effect.collect { effect ->
                     when (effect) {
                         ProjectedImpactEffect.NavigateBack -> navController.popBackStack()
-                        ProjectedImpactEffect.NavigateToInvest -> navController.navigate(Route.MutualFundSearchResult())
+                        ProjectedImpactEffect.NavigateToInvest -> navController.navigate(
+                            MutualFundSearchResult()
+                        )
                         ProjectedImpactEffect.OpenPortfolioBottomSheet -> { /* handle */ }
                         ProjectedImpactEffect.ClosePortfolioBottomSheet -> { /* handle */ }
                         is ProjectedImpactEffect.ShowError -> {
                             SnackBarController.showError(effect.message)
+                        }
+
+                        ProjectedImpactEffect.NavigateToMapScheme -> {
+                            navController.navigate(Route.MapSchemes(route.id)) {
+                                launchSingleTop = true
+                            }
                         }
                     }
                 }
             }
             ProjectedImpactScreen(
                 state = uiState, handleEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.MapSchemes> {
+            val route = it.toRoute<Route.MapSchemes>()
+            val vm: ProjectionImpactViewModel = koinViewModel(parameters = { parametersOf(route.id) })
+            val uiState by vm.uiState.collectAsStateWithLifecycle()
+            MapSchemesScreen(
+                uiState = uiState,
+                effectFlow = vm.effect,
+                onEvent = vm::handleEvent,
+                onBack = { navController.popBackStack() }
             )
         }
 

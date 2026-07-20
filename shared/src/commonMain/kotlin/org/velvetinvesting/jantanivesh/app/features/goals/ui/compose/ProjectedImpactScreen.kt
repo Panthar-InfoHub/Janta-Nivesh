@@ -1,6 +1,8 @@
 package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -26,8 +30,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.flag_icon
+import jantanivesh.shared.generated.resources.icon_arrow_right
 import jantanivesh.shared.generated.resources.tick_icon
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import org.jetbrains.compose.resources.painterResource
@@ -35,6 +43,8 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.SecondaryPrimary
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectTenureCardColor
@@ -72,27 +82,68 @@ fun ProjectedImpactScreen(
                 modifier = Modifier
             )
 
-            Column(modifier = Modifier.fillMaxSize()) {
-                GoalAnalysisCard(
-                    data = data,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .genericDropShadow()
-                        .background(White, RoundedCornerShape(Spacing.dp32))
-                )
+            LazyColumn(modifier = Modifier.weight(1f).fillMaxSize()) {
+                item{
+                    GoalAnalysisCard(
+                        data = data,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .genericDropShadow()
+                            .background(White, RoundedCornerShape(Spacing.dp32))
+                    )
+                }
 
-                Spacer(modifier = Modifier.weight(1f))
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Spacing.dp20)
+                            .clip(LocalShapes.current.roundedDp12)
+                            .background(Primary.copy(alpha = 0.08f))
+                            .border(
+                                width = 1.dp,
+                                color = Primary.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clickable {
+                                handleEvent(ProjectedImpactEvent.OnMapSchemesClick)
+                            }
+                            .padding(vertical = 14.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                AppButton(
-                    text = "Invest Now",
-                    onClick = { handleEvent(ProjectedImpactEvent.OnInvestNowClicked) },
-                    modifier = Modifier
-                        .genericDropShadow()
-                        .fillMaxWidth()
-                        .navigationBarsPadding(),
-                    style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16))
-                )
+
+                        Text(
+                            text = "Map Scheme",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold
+                            ),
+                            color = Primary
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Icon(
+                            painter = painterResource(Res.drawable.icon_arrow_right),
+                            contentDescription = null,
+                            tint = Primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+
             }
+
+            AppButton(
+                text = "Invest Now",
+                onClick = { handleEvent(ProjectedImpactEvent.OnInvestNowClicked) },
+                modifier = Modifier
+                    .genericDropShadow()
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
+                style = AppButtonDefaults.style(shape = RoundedCornerShape(Spacing.dp16))
+            )
         }
     }
 }
@@ -148,7 +199,7 @@ private fun GoalAnalysisHeader(goalName: String, modifier: Modifier = Modifier) 
                 .background(color = SelectedTenureChipColor, shape = CircleShape)
                 .padding(Spacing.dp16)
         )
-        Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
+        Column {
             Text(
                 text = "GOAL ANALYSIS",
                 style = MaterialTheme.typography.titleSmall,
@@ -325,5 +376,32 @@ private fun ProjectedImpactCard(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProjectedImpactScreenPreview() {
+    val sampleData = ProjectedImpactUiData(
+        goalItemName = "Retirement",
+        todaysCost = 50000L,
+        futureValue = 5000000.0,
+        targetYear = 2050,
+        monthlySip = 15000.0,
+        feasibilityScore = 0.75f,
+        currentSaved = 100000L,
+        targetAmount = 5000000L,
+        increasedBy = 4500000.0,
+        requiredMonthly = 15000.0,
+        schemes = emptyList(),
+        goalId = 1,
+        goalName = "Retirement Goal",
+        goalTypeId = 3
+    )
+    JantaNiveshTheme {
+        ProjectedImpactScreen(
+            state = UiState.Success(sampleData),
+            handleEvent = {}
+        )
     }
 }

@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
+    package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

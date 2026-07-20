@@ -192,6 +192,11 @@ sealed interface Route {
     ) : Route
 
     @Serializable
+    data class MapSchemes(
+        val id: String
+    ) : Route
+
+    @Serializable
     data object PrivacyPolicy : Route
 
     @Serializable
