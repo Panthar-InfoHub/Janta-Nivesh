@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
 import kotlinx.serialization.Serializable
+import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
 
 @Serializable
 sealed interface Route {
@@ -102,7 +103,7 @@ sealed interface Route {
     data object ExistingFundLumpSumScreen : Route
 
     @Serializable
-    data class FolioFundScreen(val folioId: String) : Route
+    data class FolioFundScreen(val folioId: String, val actualFolio: String): Route
 
     @Serializable
     data class SIPPortfolioDetails(
@@ -220,8 +221,17 @@ sealed interface Route {
     ) : Route
 
     @Serializable
-    data object LanguageSelectionSettings
+    data object LanguageSelectionSettings : Route
 
     @Serializable
-    data object ProfileSettingsScreen
+    data object ProfileSettingsScreen : Route
+
+    @Serializable
+    data class WebViewScreen(
+        val url: String,
+        val exitUrlPatterns: List<String> = emptyList(),
+        val matchType: String = WebViewUrlMatchType.CONTAINS.name,
+        val title: String? = null,
+        val completionRouteKey: String? = null
+    ): Route
 }

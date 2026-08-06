@@ -39,6 +39,15 @@ object AppEventsController {
         Log("Refresh Event", "Fire Refresh Called")
     }
 
+    suspend fun sendNotificationClearEvent(){
+       _appEvent.emit(AppEvent.NotificationClearEvent)
+        Log("Refresh Event", "Notification Clear Called")
+    }
+    suspend fun sendNotificationMarkEvent(){
+       _appEvent.emit(AppEvent.NotificationMarkEvent)
+        Log("Refresh Event", "Notification Clear Called")
+    }
+
 
     suspend fun clear() {
         _appEvent.emit(null)
@@ -58,5 +67,7 @@ sealed interface AppEvent{
     data object FireRefreshEvent: AppEvent
 
     data object PortfolioRefreshEvent: AppEvent
+    data object NotificationClearEvent: AppEvent
+    data object NotificationMarkEvent: AppEvent
     data object LogOut: AppEvent
 }

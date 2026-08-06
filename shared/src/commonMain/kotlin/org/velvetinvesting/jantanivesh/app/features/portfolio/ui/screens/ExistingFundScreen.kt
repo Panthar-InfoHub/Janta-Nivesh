@@ -23,6 +23,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHead
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.InvestedAmountBreakdownDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationItemDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDashboardDomain
@@ -76,7 +77,7 @@ fun ExistingFundScreen(
                 items(data.mutualFunds, key = { it.id }) { fund ->
                     FolioFundCard(
                         fundItem = fund,
-                        onClick = { onFundClick(fund.id, fund.folio) }
+                        onClick = { onFundClick(fund.id, fund.actualFolio) }
                     )
                 }
             }
@@ -121,6 +122,7 @@ private val previewPortfolioData = PortfolioDomain(
             minLumpSumAmount = 500,
             schemeId = 1,
             balanceUnits = 40.04,
+            actualFolio = "cwcsdc"
         ),
         MutualFundPortfolioDomain(
             id = "0e222090-712c-4748-bbf0-bddd989822ae",
@@ -136,9 +138,16 @@ private val previewPortfolioData = PortfolioDomain(
             minLumpSumAmount = 1000,
             schemeId = 2,
             balanceUnits = 20.34,
+            actualFolio = "cwcsdc"
         )
     ),
-    fixedDeposits = emptyList()
+    fixedDeposits = emptyList(),
+    mutualFundSummary = MutualFundSummaryDomain(
+        investedAmount = 80000.0,
+        currentValue = 94130.0,
+        returnsAmount = 14130.0,
+        returnsPercent = 17.66
+    )
 )
 
 @Preview(showBackground = true)

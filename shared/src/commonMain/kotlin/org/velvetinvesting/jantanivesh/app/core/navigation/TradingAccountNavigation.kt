@@ -3,18 +3,18 @@ package org.velvetinvesting.jantanivesh.app.core.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
+import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
+import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
+import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountAddressScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountBankDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountBasicDetailsScreen
@@ -31,28 +31,6 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
     val navController = rememberNavController()
     val viewModel: TradingAccountViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME && uiState.launchedBrowser) {
-                viewModel.handleEvent(
-                    TradingAccountEvent.ConfirmAccount
-                    {
-                        onCompletion()
-                    }
-                )
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
 
     Scaffold(
         modifier=Modifier.fillMaxSize(),
@@ -124,7 +102,19 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
             composable<Route.TradingAccountAddressDetails> {
                 TradingAccountAddressScreen(
                     onClick = {
-                        viewModel.handleEvent(TradingAccountEvent.SubmitForm{})
+                        viewModel.handleEvent(
+                            TradingAccountEvent.SubmitForm { url ->
+                                navController.navigate(
+                                    Route.WebViewScreen(
+                                        url = url,
+                                        exitUrlPatterns = emptyList(),
+                                        title = "Trading Account"
+                                    )
+                                ) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
                     },
                     onBackClick = {navController.popBackStack()},
                     uiState = uiState,
@@ -155,6 +145,27 @@ fun TradingAccountNavigation(onBackClick: () -> Unit, onCompletion: () -> Unit) 
                     onBackClick = {navController.popBackStack()},
                     uiState = uiState,
                     handleEvent = viewModel::handleEvent
+                )
+            }
+
+            composable<Route.WebViewScreen> {
+                val route = it.toRoute<Route.WebViewScreen>()
+                val onWebViewDone: () -> Unit = {
+                    navController.popBackStack()
+                    viewModel.handleEvent(
+                        TradingAccountEvent.ConfirmAccount { onCompletion() }
+                    )
+                }
+
+                WebViewScreen(
+                    config = WebViewConfig(
+                        url = route.url,
+                        exitUrlPatterns = route.exitUrlPatterns,
+                        matchType = WebViewUrlMatchType.valueOf(route.matchType),
+                        title = route.title
+                    ),
+                    onExitUrlReached = { onWebViewDone() },
+                    onBackClick = { onWebViewDone() }
                 )
             }
         }

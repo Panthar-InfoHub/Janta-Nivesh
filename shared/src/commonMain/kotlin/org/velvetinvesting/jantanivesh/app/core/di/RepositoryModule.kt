@@ -23,6 +23,8 @@ import org.velvetinvesting.jantanivesh.app.features.tradingaccount.data.reposito
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.domain.repository.TradingAccountRepo
 import org.velvetinvesting.jantanivesh.app.features.goals.data.repository.GoalsRepositoryImpl
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.UserFinance
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.UserFinanceRepo
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.repository.PortfolioRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.repository.PortfolioRepo
 
@@ -38,5 +40,6 @@ val repositoryModule = module {
     single<FixedDepositRepository> { FixedDepositRepo(get()) }
     single<MutualFundRepository> { MutualFundRepo(get()) }
     single<GoalsRepository> { GoalsRepositoryImpl(get()) }
+    single<UserFinance> { UserFinanceRepo(get()) }
     single<PortfolioRepo> { PortfolioRepoImpl(get()) }
 }

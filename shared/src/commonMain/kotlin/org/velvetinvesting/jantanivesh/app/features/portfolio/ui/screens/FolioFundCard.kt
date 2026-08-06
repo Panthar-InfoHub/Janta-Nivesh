@@ -175,6 +175,7 @@ private fun FolioFundCardPreview() {
         minLumpSumAmount = 1000,
         schemeId = 1,
         balanceUnits = 33.44,
+        actualFolio = "cwcwecwc"
     )
     JantaNiveshTheme {
         Box(modifier = Modifier.padding(16.dp)) {

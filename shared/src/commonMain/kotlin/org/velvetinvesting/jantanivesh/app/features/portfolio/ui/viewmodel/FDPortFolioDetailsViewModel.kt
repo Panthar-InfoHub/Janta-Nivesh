@@ -2,27 +2,34 @@ package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
-import org.velvetinvesting.jantanivesh.app.core.utils.BrowserLauncher
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositTransactionDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFDPortfolioByIdUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFDRedirectUrlUseCase
 
+sealed interface FDPortfolioSideEffect {
+    data class OpenWebView(val url: String) : FDPortfolioSideEffect
+}
+
 class FDPortFolioDetailsViewModel(
     private val getFDPortfolioByIdUseCase: GetFDPortfolioByIdUseCase,
     private val getFDRedirectUrlUseCase: GetFDRedirectUrlUseCase,
-    private val openBrowserLauncher: BrowserLauncher,
     private val fdId: String
 ) : ViewModel() {
 
     private val _loadingState = MutableStateFlow<UiState<FixedDepositTransactionDomain>>(UiState.Loading)
     val loadingState = _loadingState.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<FDPortfolioSideEffect>()
+    val sideEffect = _sideEffect.asSharedFlow()
 
     init {
         loadFDDetails()
@@ -49,7 +56,7 @@ class FDPortFolioDetailsViewModel(
             getFDRedirectUrlUseCase(id=currentData.id, event = currentData.pendingAction.name)
                 .onSuccess { url ->
                     _loadingState.value = data
-                    openBrowserLauncher.launchBrowser(url)
+                    _sideEffect.emit(FDPortfolioSideEffect.OpenWebView(url))
                 }
                 .onError { error ->
                     _loadingState.value = data

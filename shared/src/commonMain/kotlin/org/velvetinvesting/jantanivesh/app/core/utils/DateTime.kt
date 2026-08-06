@@ -306,6 +306,26 @@ object DateTimeUtils {
         return Instant.parse(dob).toEpochMilliseconds()
     }
 
+    fun getRelativeTime(isoUtc: String?): String {
+        if (isoUtc.isNullOrBlank()) return ""
+        return try {
+            val instant = Instant.parse(isoUtc)
+            val now = Clock.System.now()
+            val duration = now - instant
+
+            when {
+                duration.inWholeMinutes < 1 -> "just now"
+                duration.inWholeMinutes < 60 -> "${duration.inWholeMinutes}m"
+                duration.inWholeHours < 24 -> "${duration.inWholeHours}h"
+                duration.inWholeDays < 30 -> "${duration.inWholeDays}d"
+                duration.inWholeDays < 365 -> "${duration.inWholeDays / 30}mo"
+                else -> "${duration.inWholeDays / 365}y"
+            }
+        } catch (_: Exception) {
+            ""
+        }
+    }
+
     fun formatDate(input: String): String {
         try{
             val normalized = input

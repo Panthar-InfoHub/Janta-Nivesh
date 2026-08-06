@@ -13,6 +13,7 @@ data class MutualFundPortfolioDto(
     val current_value: Double,
     val `return`: Double,
     val return_percentage: String,
+    val actual_folio: String? = null,
     val folio: String,
     val img_url: String? = null,
     val transaction_rules: TransactionRules

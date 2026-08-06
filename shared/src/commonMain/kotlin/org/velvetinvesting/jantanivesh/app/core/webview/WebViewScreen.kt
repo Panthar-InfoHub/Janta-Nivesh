@@ -75,7 +75,7 @@ private fun WebViewHeader(
     ) {
         Text(
             text = heading,
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.headlineSmall,
             color = Primary
         )
 

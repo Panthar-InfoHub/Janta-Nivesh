@@ -134,7 +134,8 @@ fun MapSchemesScreen(
                 BackHeader(
                     title = "Map Schemes",
                     showBack = true,
-                    onBack = onBack
+                    onBack = onBack,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp16)
                 )
             },
             bottomBar = {
@@ -445,7 +446,8 @@ fun MapSchemesBottomSheetContent(
                         AppButton(
                             onClick = { onEvent(ProjectionImpactEvent.MapGoal) },
                             text = "Confirm Selection",
-                            enabled = data.any { it.isSelected }
+                            enabled = data.any { it.isSelected },
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }

@@ -104,3 +104,5 @@ val Gray65: Color = Color(0xff656565)
 val Gray444:Color = Color(0xff44464F)
 val tagColor:Color =Color(0xffF5F2FB)
 val placeholderColor:Color = Color(0xff757780)
+
+val grayColor = Color(0xFF5A5E60)

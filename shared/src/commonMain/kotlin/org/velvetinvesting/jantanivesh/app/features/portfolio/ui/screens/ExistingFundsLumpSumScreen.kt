@@ -59,27 +59,32 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFu
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
 
 @Composable
 fun ExistingFundLumpSumScreen(
     onBack: () -> Unit,
+    onLaunchWebView: (String) -> Unit = {},
+    webViewReturned: Boolean = false,
+    onWebViewConsumed: () -> Unit = {},
 ) {
     val viewModel: ExistingFundsLumpSumViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val selectedFunds by viewModel.addedFundList.collectAsStateWithLifecycle()
     val buttonLoading by viewModel.buttonLoading.collectAsStateWithLifecycle()
 
-    val browserLauncher = rememberBrowserReturnLauncher()
+    LaunchedEffect(webViewReturned) {
+        if (webViewReturned) {
+            onWebViewConsumed()
+            viewModel.loadPortfolio()
+        }
+    }
 
     LaunchedEffect(Unit){
         viewModel.sideEffect.collect{
             when(it){
-                is ExistingFundsLumpSumSideEffect.OpenBrowserLink -> {
-                    browserLauncher.launch(it.link){
-                        viewModel.loadPortfolio()
-                    }
+                is ExistingFundsLumpSumSideEffect.OpenWebViewLink -> {
+                    onLaunchWebView(it.link)
                 }
             }
         }
@@ -478,7 +483,8 @@ fun FolioFundsContentLSPreview() {
             minSipAmount = 500L,
             minLumpSumAmount = 5000L,
             schemeId = 1,
-            balanceUnits = 961.53
+            balanceUnits = 961.53,
+            actualFolio = "fewfcwc"
         ),
         MutualFundPortfolioDomain(
             id = "2",
@@ -493,7 +499,8 @@ fun FolioFundsContentLSPreview() {
             minSipAmount = 100L,
             minLumpSumAmount = 1000L,
             schemeId = 2,
-            balanceUnits = 588.23
+            balanceUnits = 588.23,
+            actualFolio = "cwcwec"
         ),
         MutualFundPortfolioDomain(
             id = "3",
@@ -508,7 +515,8 @@ fun FolioFundsContentLSPreview() {
             minSipAmount = 100L,
             minLumpSumAmount = 5000L,
             schemeId = 3,
-            balanceUnits = 845.12
+            balanceUnits = 845.12,
+            actualFolio = "cwecwecwe"
         ),
         MutualFundPortfolioDomain(
             id = "4",
@@ -523,7 +531,8 @@ fun FolioFundsContentLSPreview() {
             minSipAmount = 1000L,
             minLumpSumAmount = 1000L,
             schemeId = 4,
-            balanceUnits = 421.76
+            balanceUnits = 421.76,
+            actualFolio = "wecwecew"
         )
     )
 

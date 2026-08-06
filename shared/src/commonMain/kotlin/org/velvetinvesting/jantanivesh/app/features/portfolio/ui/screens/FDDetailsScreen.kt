@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.sharad.velvetinvestment.presentation.portfolio.models.FDNomineeUiModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FDPortFolioDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FDPortfolioSideEffect
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
@@ -66,11 +68,29 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.Pend
 fun FDPortfolioDetailsScreen(
     onBackClick: () -> Unit,
     id: String,
+    onLaunchWebView: (String) -> Unit = {},
+    webViewReturned: Boolean = false,
+    onWebViewConsumed: () -> Unit = {},
 ){
 
     val viewModel: FDPortFolioDetailsViewModel = koinViewModel{ parametersOf(id) }
 
     val uiState by viewModel.loadingState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(webViewReturned) {
+        if (webViewReturned) {
+            onWebViewConsumed()
+            viewModel.loadFDDetails()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect {
+            when (it) {
+                is FDPortfolioSideEffect.OpenWebView -> onLaunchWebView(it.url)
+            }
+        }
+    }
 
     FDPortfolioDetailsScreenContent(
         uiState = uiState,

@@ -81,8 +81,10 @@ fun CartPopup(
     showFrequencyDropDown: () -> Unit,
     showDateDropDown: () -> Unit,
     showDurationDropDown: () -> Unit,
+    isFolioPurchase: Boolean = false,
 ) {
     val fundType by FundTypeSelector.fundType.collectAsStateWithLifecycle()
+    val isPurchase = isFolioPurchase && fundType == SelectedFundType.LUMSUM
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         modifier = Modifier.fillMaxWidth(),
@@ -98,7 +100,8 @@ fun CartPopup(
             onAddClick = onAddClick,
             showFrequencyDropDown = showFrequencyDropDown,
             showDateDropDown = showDateDropDown,
-            showDurationDropDown = showDurationDropDown
+            showDurationDropDown = showDurationDropDown,
+            isPurchase=isPurchase
         )
     }
 }
@@ -113,6 +116,7 @@ fun CartPopupContent(
     showFrequencyDropDown: () -> Unit,
     showDateDropDown: () -> Unit,
     showDurationDropDown: () -> Unit,
+    isPurchase: Boolean,
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -134,7 +138,7 @@ fun CartPopupContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Add to Cart",
+                    text = if (isPurchase) "Purchase" else "Add to Cart",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.Black,
@@ -165,6 +169,7 @@ fun CartPopupContent(
                 minAmount = cartState.minLumpSumAmount,
                 onAddClick = onAddClick,
                 loading = cartState.loading,
+                isPurchase = isPurchase,
             )
 
             SelectedFundType.SIP -> SIPCart(
@@ -301,8 +306,8 @@ fun LumpSumCart(
     minAmount: Long,
     onAddClick: () -> Unit,
     loading: Boolean,
-
-    ) {
+    isPurchase: Boolean = false,
+) {
     val chips = generateInvestmentChips(
         minAmount = minAmount,
         isSip = false
@@ -352,7 +357,10 @@ fun LumpSumCart(
 
         AppButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Add " + ((amount?.let {"of ₹" +formatMoneyAfterL(it) })?:"")+" to Cart" ,
+            text = if (isPurchase)
+                "Purchase " + ((amount?.let { "of ₹" + formatMoneyAfterL(it) }) ?: "")
+            else
+                "Add " + ((amount?.let { "of ₹" + formatMoneyAfterL(it) }) ?: "") + " to Cart",
             onClick = {
                 onAddClick()
             },
@@ -666,7 +674,8 @@ fun CartPopupSIPPreview() {
             onAddClick = {},
             showFrequencyDropDown = {},
             showDateDropDown = {},
-            showDurationDropDown = {}
+            showDurationDropDown = {},
+            isPurchase = true,
         )
     }
 }
@@ -685,7 +694,8 @@ fun CartPopupLumpSumPreview() {
             onAddClick = {},
             showFrequencyDropDown = {},
             showDateDropDown = {},
-            showDurationDropDown = {}
+            showDurationDropDown = {},
+            isPurchase = true,
         )
     }
 }

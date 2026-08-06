@@ -4,6 +4,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,6 @@ import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
-import org.velvetinvesting.jantanivesh.app.core.utils.BrowserLauncher
 import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
@@ -40,7 +40,6 @@ import kotlin.time.Instant
 
 data class TradingAccountUiState(
     val formState: UiState<TradingAccountFormDomain> = UiState.Loading,
-    val launchedBrowser: Boolean = false,
     val isMinor: Boolean = false,
     val panVerified: Boolean = false,
     val verifiedPanNumber: String = "",
@@ -64,7 +63,7 @@ data class TradingAccountUiState(
 
 sealed interface TradingAccountEvent {
     object GetUserData : TradingAccountEvent
-    data class SubmitForm(val onSuccessfulSubmit: () -> Unit) : TradingAccountEvent
+    data class SubmitForm(val onLaunchWebView: (String) -> Unit) : TradingAccountEvent
     data class ConfirmAccount(val onSuccessfulSubmit: () -> Unit) : TradingAccountEvent
     data class VerifyPan(val pan: String) : TradingAccountEvent
 
@@ -267,8 +266,7 @@ class TradingAccountViewModel(
     private val getTradingAccountPrefilledDataUseCase: GetTradingAccountPrefilledDataUseCase,
     private val verifyPANUseCase: VerifyPANUseCase,
     private val submitTradingAccountFormUseCase: SubmitTradingAccountFormUseCase,
-    private val tradingAccountConfirmationUseCase: TradingAccountConfirmationUseCase,
-    private val openBrowserLauncher: BrowserLauncher
+    private val tradingAccountConfirmationUseCase: TradingAccountConfirmationUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TradingAccountUiState())
@@ -298,7 +296,7 @@ class TradingAccountViewModel(
     fun handleEvent(event: TradingAccountEvent) {
         when (event) {
             TradingAccountEvent.GetUserData -> getUserData()
-            is TradingAccountEvent.SubmitForm -> submitForm(event.onSuccessfulSubmit)
+            is TradingAccountEvent.SubmitForm -> submitForm(event.onLaunchWebView)
             is TradingAccountEvent.ConfirmAccount -> confirmAccount(event.onSuccessfulSubmit)
             is TradingAccountEvent.VerifyPan -> verifyPan(event.pan)
             is TradingAccountEvent.OnFirstNameChange -> updateData {
@@ -1611,7 +1609,7 @@ class TradingAccountViewModel(
         }
     }
 
-    private fun submitForm(onSuccessfulSubmit: () -> Unit) {
+    private fun submitForm(onLaunchWebView: (String) -> Unit) {
         viewModelScope.launch {
 
             val previousState = _uiState.value.formState
@@ -1623,30 +1621,46 @@ class TradingAccountViewModel(
                 )
             }
 
-            submitTradingAccountFormUseCase(successState.data)
-                .onSuccess { response ->
-                    _uiState.update {
-                        it.copy(
-                            formState = previousState,
-                            launchedBrowser = true
-                        )
-                    }
+            var currentRetry = 0
+            val maxRetries = 2
 
-                    openBrowserLauncher.launchBrowser(response)
-                }
-                .onError { error ->
+            while (currentRetry <= maxRetries) {
 
-                    _uiState.update {
-                        it.copy(
-                            formState = previousState
-                        )
-                    }
-                    SnackBarController.showError(
-                        error.message.ifBlank {
-                            "Failed to submit trading account form"
+                var success = false
+
+                submitTradingAccountFormUseCase(successState.data)
+                    .onSuccess { response ->
+                        _uiState.update {
+                            it.copy(
+                                formState = previousState
+                            )
                         }
-                    )
+                        onLaunchWebView(response)
+                        success = true
+                    }
+                    .onError { error ->
+                        if (currentRetry == maxRetries) {
+                            _uiState.update {
+                                it.copy(
+                                    formState = previousState
+                                )
+                            }
+                            SnackBarController.showError(
+                                error.message.ifBlank {
+                                    "Failed to submit trading account form"
+                                }
+                            )
+                        }
+                    }
+
+                if (success) break
+
+                currentRetry++
+
+                if (currentRetry <= maxRetries) {
+                    delay(1000)
                 }
+            }
         }
     }
     private fun confirmAccount(
@@ -1655,15 +1669,7 @@ class TradingAccountViewModel(
         viewModelScope.launch {
 
             val previousState = _uiState.value.formState
-
-            _uiState.update {
-                it.copy(
-                    launchedBrowser = false
-                )
-            }
-
-            val successState = previousState as? UiState.Success
-                ?: return@launch
+            val successState = previousState as? UiState.Success ?: return@launch
 
             _uiState.update {
                 it.copy(

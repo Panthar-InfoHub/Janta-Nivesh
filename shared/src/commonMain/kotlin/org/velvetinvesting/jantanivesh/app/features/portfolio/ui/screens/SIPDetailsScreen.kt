@@ -82,13 +82,15 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFu
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
-import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MFPortfolioDetailsScreen(
     onBackClick: () -> Unit,
     data: Route.SIPPortfolioDetails,
+    onLaunchWebView: (String) -> Unit = {},
+    webViewReturned: Boolean = false,
+    onWebViewConsumed: () -> Unit = {},
 ) {
 
     val viewModel: MFPortfolioDetailsViewModel = koinViewModel()
@@ -100,22 +102,24 @@ fun MFPortfolioDetailsScreen(
     val redemptionAmount by viewModel.redemptionAmount.collectAsStateWithLifecycle()
     val isSubmitting by viewModel.isSubmitting.collectAsStateWithLifecycle()
     val soaDownloading by viewModel.soaDownloading.collectAsStateWithLifecycle()
-    val browserLauncher = rememberBrowserReturnLauncher()
     var showCancelDialog by remember {
         mutableStateOf(false)
     }
     val scope = rememberCoroutineScope()
 
+    LaunchedEffect(webViewReturned) {
+        if (webViewReturned) {
+            onWebViewConsumed()
+            AppEventsController.sendPortfolioRefreshEvent()
+            onBackClick()
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect {
             when (it) {
                 is MFPortfolioSideEffects.openRedeemptionUrl -> {
-                    browserLauncher.launch(it.url) {
-                        scope.launch {
-                            AppEventsController.sendPortfolioRefreshEvent()
-                            onBackClick()
-                        }
-                    }
+                    onLaunchWebView(it.url)
                 }
 
                 MFPortfolioSideEffects.OrderCancelled -> {
@@ -207,7 +211,7 @@ fun MFPortfolioDetailsScreen(
             sheetState = sheetState,
             onDismiss = { viewModel.onDismissRedemptionSheet() },
             schemeId = data.id,
-            folioNo = data.actualFolio,
+            folioNo = data.folio,
             selectedRedemptionType = selectedRedemptionType,
             selectedInputType = selectedInputType,
             redemptionUnits = redemptionUnits,
@@ -220,8 +224,7 @@ fun MFPortfolioDetailsScreen(
             onAmountChange = viewModel::onAmountChange,
             onSubmit = {
                 viewModel.submitRedemption(
-                    schemeId = data.id,
-                    folioNo = data.actualFolio
+                    schemeId = data.id, folioNo = data.actualFolio
                 )
             },
             loading = isSubmitting
@@ -282,7 +285,7 @@ fun SIPDetailsLoadedScreen(
             item {
                 ShadowCard {
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        FundDetailItem(folioIcon, "Folio", data.folio)
+                        FundDetailItem(folioIcon, "Folio", data.actualFolio)
                         HorizontalDivider(color = Color.LightGray.copy(0.2f))
                         FundDetailItem(calendarIcon, "Start date", data.startDate)
                         HorizontalDivider(color = Color.LightGray.copy(0.2f))
@@ -583,7 +586,7 @@ fun SIPDetailsLoadedScreenPreview() {
                 folio = "CM_10534533",
                 balanceUnits = 13125.567,
                 orderId = "",
-                actualFolio = "",
+                actualFolio = "HUDHUW9877",
             ),
             {}
         ) {}

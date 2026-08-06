@@ -12,6 +12,9 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.navigation.Route.*
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
+import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
+import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
@@ -67,7 +70,14 @@ import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.Profil
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountSuccess
+import kotlin.collections.set
 
+private const val KYC_CONTRACT_WEBVIEW_RESULT = "kyc_contract_webview_completed"
+private const val CART_WEBVIEW_RESULT = "cart_webview_completed"
+private const val SIP_DETAILS_WEBVIEW_RESULT = "sip_details_webview_completed"
+private const val EXISTING_FUND_LUMPSUM_WEBVIEW_RESULT = "existing_fund_lumpsum_webview_completed"
+private const val MF_DETAILS_LUMPSUM_WEBVIEW_RESULT = "mf_details_lumpsum_webview_completed"
+private const val FD_DETAILS_WEBVIEW_RESULT = "fd_details_webview_completed"
 @Composable
 fun MainAppNavigation(
     onSignOut: () -> Unit
@@ -207,31 +217,66 @@ fun MainAppNavigation(
         }
 
         composable<Route.MutualFundDetails> {
-            val route = it.toRoute<Route.MutualFundDetails>()
+            val id = it.toRoute<Route.MutualFundDetails>().id
+            val folioId = it.toRoute<Route.MutualFundDetails>().folioId
+            val lumpSumWebViewReturned by it.savedStateHandle
+                .getStateFlow(MF_DETAILS_LUMPSUM_WEBVIEW_RESULT, false)
+                .collectAsStateWithLifecycle()
             MutualFundDetailsScreenRoot(
-                id = route.id,
-                folioId = route.folioId,
                 onBackClick = { navController.popBackStack() },
+                id = id,
+                folioId=folioId,
                 onCartClick = {
                     navController.navigate(Route.CartScreen)
                 },
-                onKycClick = {
-                    navController.navigate(Route.KycGraph) {
-                        launchSingleTop = true
+                onKycClick={
+                    navController.navigate(Route.KycGraph){
+                        launchSingleTop=true
                     }
                 },
-                onTradingAccountClick = {
-                    navController.navigate(Route.TradingAccountNavigation) {
-                        launchSingleTop = true
+                onTradingAccountClick={
+                    navController.navigate(Route.TradingAccountNavigation){
+                        launchSingleTop=true
                     }
+                },
+                onLaunchWebView = { url ->
+                    navController.navigate(
+                        Route.WebViewScreen(
+                            url = url,
+                            exitUrlPatterns = emptyList(),
+                            title = "Complete Payment",
+                            completionRouteKey = "mf_details_lumpsum"
+                        )
+                    )
+                },
+                webViewReturned = lumpSumWebViewReturned,
+                onWebViewConsumed = {
+                    it.savedStateHandle[MF_DETAILS_LUMPSUM_WEBVIEW_RESULT] = false
                 }
             )
         }
 
         composable<Route.CartScreen> {
+            val cartWebViewReturned by it.savedStateHandle
+                .getStateFlow(CART_WEBVIEW_RESULT, false)
+                .collectAsStateWithLifecycle()
             CartScreen(
                 onBack = {
                     navController.popBackStack()
+                },
+                onLaunchWebView = { url ->
+                    navController.navigate(
+                        Route.WebViewScreen(
+                            url = url,
+                            exitUrlPatterns = emptyList(),
+                            title = "Complete Payment",
+                            completionRouteKey = "cart"
+                        )
+                    )
+                },
+                webViewReturned = cartWebViewReturned,
+                onWebViewConsumed = {
+                    it.savedStateHandle[CART_WEBVIEW_RESULT] = false
                 }
             )
         }
@@ -273,8 +318,8 @@ fun MainAppNavigation(
         //Bottom Navigation
         composable<Route.BottomNav> {
             BottomNavigation(
-                navigateToSIPDetailsScreen = { folio ->
-                    navController.navigate(Route.FolioFundScreen(folio.folio)) {
+                navigateToSIPDetailsScreen = {
+                    navController.navigate(Route.FolioFundScreen(it.folio, it.actualFolio)) {
                         launchSingleTop = true
                     }
                 },
@@ -450,6 +495,16 @@ fun MainAppNavigation(
                 vm.effect.collect { effect ->
                     when (effect) {
                         SetInvestmentDetailsEffect.NavigateBack -> navController.popBackStack()
+                        is SetInvestmentDetailsEffect.LaunchWebView -> {
+                            navController.navigate(
+                                Route.WebViewScreen(
+                                    url = effect.url,
+                                    exitUrlPatterns = emptyList(),
+                                    title = "Complete Payment",
+                                    completionRouteKey = "fd_purchase"
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -684,58 +739,87 @@ fun MainAppNavigation(
         }
 
         composable<Route.ExistingFundLumpSumScreen> {
+            val lumpSumWebViewReturned by it.savedStateHandle
+                .getStateFlow(EXISTING_FUND_LUMPSUM_WEBVIEW_RESULT, false)
+                .collectAsStateWithLifecycle()
             ExistingFundLumpSumScreen(
                 onBack = { navController.popBackStack() },
+                onLaunchWebView = { url ->
+                    navController.navigate(
+                        Route.WebViewScreen(
+                            url = url,
+                            exitUrlPatterns = emptyList(),
+                            title = "Complete Payment",
+                            completionRouteKey = "existing_fund_lumpsum"
+                        )
+                    )
+                },
+                webViewReturned = lumpSumWebViewReturned,
+                onWebViewConsumed = {
+                    it.savedStateHandle[EXISTING_FUND_LUMPSUM_WEBVIEW_RESULT] = false
+                },
             )
         }
 
         composable<Route.FDPortfolioDetailsScreen> {
             val id = it.toRoute<Route.FDPortfolioDetailsScreen>().id
+            val fdWebViewReturned by it.savedStateHandle
+                .getStateFlow(FD_DETAILS_WEBVIEW_RESULT, false)
+                .collectAsStateWithLifecycle()
             FDPortfolioDetailsScreen(
                 id = id,
                 onBackClick = { navController.popBackStack() },
+                onLaunchWebView = { url ->
+                    navController.navigate(
+                        Route.WebViewScreen(
+                            url = url,
+                            exitUrlPatterns = emptyList(),
+                            title = "Fixed Deposit",
+                            completionRouteKey = "fd_details"
+                        )
+                    )
+                },
+                webViewReturned = fdWebViewReturned,
+                onWebViewConsumed = {
+                    it.savedStateHandle[FD_DETAILS_WEBVIEW_RESULT] = false
+                },
             )
         }
 
-        composable<Route.FolioFundScreen> { data ->
-            val id = data.toRoute<Route.FolioFundScreen>().folioId
+        composable<Route.FolioFundScreen> {
+            val id = it.toRoute<Route.FolioFundScreen>().folioId
+            val actualFolio = it.toRoute<Route.FolioFundScreen>().actualFolio
             FolioFundMFScreen(
                 folioId = id,
+                actualFolio=actualFolio,
                 onBack = {
                     navController.popBackStack()
                 },
                 onFundClick = {
-                    navController.navigate(
-                        Route.SIPPortfolioDetails(
-                            id = it.schemeId,
-                            title = it.title,
-                            category = it.category,
-                            amount = it.amount.toDouble(),
-                            isSip = it.isSip,
-                            startDate = it.startDate,
-                            returnPercentage = it.returnPercentage,
-                            returnAmount = it.`return`.toInt(),
-                            xirr = it.xirr,
-                            currentNav = it.currentNav,
-                            avgNav = it.avgNav,
-                            folio = it.folio,
-                            balanceUnits = it.balanceUnits,
-                            img_url = it.imgUrl,
-                            orderId = it.orderId,
-                            actualFolio = it.actualFolio
-                        )
-                    ) {
+                    navController.navigate(Route.SIPPortfolioDetails(
+                        id = it.schemeId,
+                        title = it.title,
+                        category = it.category,
+                        amount = it.amount.toDouble(),
+                        isSip = it.isSip,
+                        startDate = it.startDate,
+                        returnPercentage = it.returnPercentage,
+                        returnAmount = it.`return`.toInt(),
+                        xirr = it.xirr,
+                        currentNav = it.currentNav,
+                        avgNav = it.avgNav,
+                        folio = it.folio,
+                        balanceUnits = it.balanceUnits,
+                        img_url = it.imgUrl,
+                        orderId = it.orderId,
+                        actualFolio = it.actualFolio
+                    )) {
                         launchSingleTop = true
                     }
                 },
-                onTopUp = { prod_id ->
-                    navController.navigate(
-                        Route.MutualFundDetails(
-                            id = prod_id,
-                            folioId = id
-                        )
-                    ) {
-                        launchSingleTop = true
+                onTopUp = {prod_id, actualFolio->
+                    navController.navigate(Route.MutualFundDetails(id=prod_id, folioId = actualFolio)){
+                        launchSingleTop=true
                     }
                 },
             )
@@ -743,9 +827,26 @@ fun MainAppNavigation(
 
         composable<Route.SIPPortfolioDetails> {
             val data = it.toRoute<Route.SIPPortfolioDetails>()
+            val sipWebViewReturned by it.savedStateHandle
+                .getStateFlow(SIP_DETAILS_WEBVIEW_RESULT, false)
+                .collectAsStateWithLifecycle()
             MFPortfolioDetailsScreen(
                 onBackClick = { navController.popBackStack() },
                 data = data,
+                onLaunchWebView = { url ->
+                    navController.navigate(
+                        Route.WebViewScreen(
+                            url = url,
+                            exitUrlPatterns = emptyList(),
+                            title = "Withdraw Fund",
+                            completionRouteKey = "sip_details"
+                        )
+                    )
+                },
+                webViewReturned = sipWebViewReturned,
+                onWebViewConsumed = {
+                    it.savedStateHandle[SIP_DETAILS_WEBVIEW_RESULT] = false
+                },
             )
         }
 
@@ -759,6 +860,65 @@ fun MainAppNavigation(
                     }
                 },
                 onCancelClick = { navController.popBackStack() },
+            )
+        }
+
+        composable<Route.WebViewScreen> {
+            val route = it.toRoute<Route.WebViewScreen>()
+
+            val onWebViewDone: () -> Unit = {
+                when (route.completionRouteKey) {
+                    "sip_details" -> {
+                        // Come back to the details screen so it can refresh the portfolio and close itself.
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(SIP_DETAILS_WEBVIEW_RESULT, true)
+                        navController.popBackStack()
+                    }
+
+                    "existing_fund_lumpsum" -> {
+                        // Come back to the fund list so it can reload the portfolio.
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(EXISTING_FUND_LUMPSUM_WEBVIEW_RESULT, true)
+                        navController.popBackStack()
+                    }
+
+                    "cart" -> {
+                        // Come back to the cart and run the queued payment follow-up.
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(CART_WEBVIEW_RESULT, true)
+                        navController.popBackStack()
+                    }
+
+                    "fd_purchase" -> {
+                        // Payment is done; the purchase form used to close itself right after
+                        // handing the URL off, so drop it along with the web view.
+                        navController.popBackStack<Route.PurchaseFixedDeposit>(inclusive = true)
+                    }
+
+                    "fd_details" -> {
+                        // Come back to the FD details so it can reload the deposit.
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(FD_DETAILS_WEBVIEW_RESULT, true)
+                        navController.popBackStack()
+                    }
+
+                    else -> navController.popBackStack()
+                }
+            }
+
+            WebViewScreen(
+                config = WebViewConfig(
+                    url = route.url,
+                    exitUrlPatterns = route.exitUrlPatterns,
+                    matchType = WebViewUrlMatchType.valueOf(route.matchType),
+                    title = route.title
+                ),
+                onExitUrlReached = { onWebViewDone() },
+                onBackClick = { onWebViewDone() }
             )
         }
 

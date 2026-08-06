@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +35,6 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.nav_icon_full_screener
 import jantanivesh.shared.generated.resources.wallet_icon
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -48,8 +46,6 @@ import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
-import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
-import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CartType
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SipDetails
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SipItemDomain
@@ -59,7 +55,10 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.Cart
 
 @Composable
 fun CartScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onLaunchWebView: (String) -> Unit = {},
+    webViewReturned: Boolean = false,
+    onWebViewConsumed: () -> Unit = {}
 ){
 
     val viewModel: CartScreenViewModel = koinViewModel()
@@ -70,33 +69,21 @@ fun CartScreen(
     val isPurchaseEnabled by viewModel
         .isPurchaseEnabled
         .collectAsStateWithLifecycle()
-    val browserLauncher = rememberBrowserReturnLauncher()
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit){
         viewModel.cartSideEffect.collect{
             when(it){
-                is CartSideEffects.OpenForInitiation -> {
-                    browserLauncher.launch(it.url){
-                        viewModel.checkPurchaseStatus(it.mandateId)
-                    }
-                }
-                is CartSideEffects.OpenForPurchase ->{
-                    browserLauncher.launch(it.url){
-                        viewModel.reloadFund()
-                        scope.launch{
-                            AppEventsController.sendPortfolioRefreshEvent()
-                        }
-                    }
-                }
-
-                is CartSideEffects.OpenForLumpSumPurchase -> {
-                    browserLauncher.launch(it.url){
-                        viewModel.reloadFund()
-                        scope.launch{ AppEventsController.sendPortfolioRefreshEvent() }
-                    }
-                }
+                is CartSideEffects.OpenForInitiation -> onLaunchWebView(it.url)
+                is CartSideEffects.OpenForPurchase -> onLaunchWebView(it.url)
+                is CartSideEffects.OpenForLumpSumPurchase -> onLaunchWebView(it.url)
             }
+        }
+    }
+
+    LaunchedEffect(webViewReturned) {
+        if (webViewReturned) {
+            viewModel.onWebViewReturned()
+            onWebViewConsumed()
         }
     }
 

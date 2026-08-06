@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -82,7 +83,9 @@ fun ProjectedImpactScreen(
                 modifier = Modifier
             )
 
-            LazyColumn(modifier = Modifier.weight(1f).fillMaxSize()) {
+            LazyColumn(modifier = Modifier.weight(1f).fillMaxSize(),
+                contentPadding = PaddingValues(top = Spacing.dp8)
+            ) {
                 item{
                     GoalAnalysisCard(
                         data = data,

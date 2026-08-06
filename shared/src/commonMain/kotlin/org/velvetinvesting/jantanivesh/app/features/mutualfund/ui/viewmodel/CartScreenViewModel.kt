@@ -17,6 +17,7 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CartType
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MandateStatus
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SipItemDomain
@@ -60,6 +61,9 @@ class CartScreenViewModel(
 
     private val _cartSideEffect = MutableSharedFlow<CartSideEffects>()
     val cartSideEffect = _cartSideEffect.asSharedFlow()
+
+    // Follow-up queued when the payment webview is launched, run when it returns.
+    private var onWebViewReturn: (() -> Unit)? = null
 
     private val _uiState = MutableStateFlow<UiState<CartUiModel>>(UiState.Loading)
     val uiState: StateFlow<UiState<CartUiModel>> = _uiState.asStateFlow()
@@ -191,6 +195,23 @@ class CartScreenViewModel(
         }
     }
 
+    /**
+     * Called by the screen when the in-app payment webview is closed/returns.
+     * Runs whatever follow-up was queued when the webview was launched.
+     */
+    fun onWebViewReturned() {
+        val action = onWebViewReturn
+        onWebViewReturn = null
+        action?.invoke()
+    }
+
+    private fun reloadFundAndRefreshPortfolio() {
+        reloadFund()
+        viewModelScope.launch {
+            AppEventsController.sendPortfolioRefreshEvent()
+        }
+    }
+
     fun reloadFund(){
         viewModelScope.launch {
             getUserCartUseCase()
@@ -233,6 +254,8 @@ class CartScreenViewModel(
 
                     when(it.status){
                         MandateStatus.PENDING -> {
+                            val mandateId = it.mandateId
+                            onWebViewReturn = { checkPurchaseStatus(mandateId) }
                             _cartSideEffect.emit(
                                 CartSideEffects.OpenForInitiation(
                                     url = it.url,
@@ -300,6 +323,7 @@ class CartScreenViewModel(
                 purchaseSipUseCase(mandateId=mandateId, sipItems = data.cartData.sipItems)
                     .onSuccess {
                         _uiState.value = UiState.Success(data)
+                        onWebViewReturn = { reloadFundAndRefreshPortfolio() }
                         _cartSideEffect.emit(
                             CartSideEffects.OpenForPurchase(
                                 url = it
@@ -321,6 +345,7 @@ class CartScreenViewModel(
             purchaseLumpSumUseCase()
                 .onSuccess {
                     _loading.value = false
+                    onWebViewReturn = { reloadFundAndRefreshPortfolio() }
                     _cartSideEffect.emit(
                         CartSideEffects.OpenForLumpSumPurchase(
                             url = it

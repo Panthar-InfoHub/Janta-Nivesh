@@ -65,6 +65,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateC
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.InvestedAmountBreakdownDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationItemDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDashboardDomain
@@ -411,7 +412,13 @@ fun InvestmentMethodScreenPreview() {
                     ),
                     investedAmountBreakdown = InvestedAmountBreakdownDomain(0.0, 0, 0.0, 0.0),
                     mutualFunds = emptyList(),
-                    fixedDeposits = emptyList()
+                    fixedDeposits = emptyList(),
+                    mutualFundSummary = MutualFundSummaryDomain(
+                        investedAmount = 80000.0,
+                        currentValue = 94130.0,
+                        returnsAmount = 14130.0,
+                        returnsPercent = 17.66
+                    )
                 )
             ),
             onRetry = {}

@@ -89,6 +89,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositPortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.InvestedAmountBreakdownDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PendingOrderDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationItemDomain
@@ -103,8 +104,7 @@ fun PortfolioScreenMain(
     onFolioItemClick: (MutualFundPortfolioDomain) -> Unit,
     onFDClick: (String) -> Unit,
     navigateToCategoryMutualFundScreen: () -> Unit,
-    navigateToCategoryFDScreen: () -> Unit,
-    modifier: Modifier = Modifier
+    navigateToCategoryFDScreen: () -> Unit
 ) {
 
     val screenState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -118,7 +118,7 @@ fun PortfolioScreenMain(
     val pagerState = rememberPagerState(pageCount = { 3 })
 
     Box(
-        modifier=modifier.fillMaxSize(),
+        modifier=Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
         Column(
@@ -141,13 +141,13 @@ fun PortfolioScreenMain(
                         reload = viewModel::loadPortfolio,
                         onDownloadPortfolioReport = viewModel::downloadPortfolioReport,
                         onDownloadCapitalReport = viewModel::downloadCapitalReport,
-                        onCancelPendingOrder= viewModel::cancelPendingOrder,
+                        onCancelPendingOrder = viewModel::cancelPendingOrder,
                         onDownloadTaxReport = { viewModel.downloadTaxReport() },
                         isExportingPortfolio = isExportingPortfolio,
                         isExportingCapital = isExportingCapital,
                         isExportingTax = isExportingTax,
                         pendingOrders = pendingOrders,
-                        pagerState=pagerState
+                        pagerState = pagerState
                     )
                 }
             }
@@ -155,7 +155,6 @@ fun PortfolioScreenMain(
     }
 
 }
-
 @Composable
 fun PortfolioScreen(
     selectedTab: SelectedPortfolio,
@@ -238,7 +237,7 @@ fun PortfolioScreen(
                 1-> {
                     MutualFundPortfolio(
                         mutualFund = portfolioData.mutualFunds,
-                        investedBreakdown = portfolioData.investedAmountBreakdown,
+                        mutualFundSummary = portfolioData.mutualFundSummary,
                         onFundClick = onSIPClick,
                         onEmptyButtonClick = navigateToCategoryMutualFundScreen,
                         reload = reload,
@@ -249,7 +248,7 @@ fun PortfolioScreen(
                         onDownloadPortfolioReport = onDownloadPortfolioReport,
                         isExportingPortfolio = isExportingPortfolio,
                         pendingOrders = pendingOrders,
-                        onCancelPendingOrder=onCancelPendingOrder
+                        onCancelPendingOrder = onCancelPendingOrder
                     )
                 }
                 2-> {
@@ -323,7 +322,7 @@ fun DashboardPortfolio(
 @Composable
 fun MutualFundPortfolio(
     mutualFund: List<MutualFundPortfolioDomain>,
-    investedBreakdown: InvestedAmountBreakdownDomain,
+    mutualFundSummary: MutualFundSummaryDomain,
     onFundClick: (MutualFundPortfolioDomain) -> Unit,
     onEmptyButtonClick: () -> Unit,
     reload: () -> Unit,
@@ -354,7 +353,7 @@ fun MutualFundPortfolio(
                 item { Spacer(modifier = Modifier.height(4.dp)) }
                 item {
                     MFInvestmentsCard(
-                        investedBreakdown,
+                        summary = mutualFundSummary,
                         onInvestMore = onEmptyButtonClick
                     )
                 }
@@ -682,8 +681,8 @@ fun TotalInvestmentCard(totalInvestments: TotalInvestmentsDomain) {
 
 @Composable
 fun MFInvestmentsCard(
-    investedBreakdown: InvestedAmountBreakdownDomain,
     onInvestMore: () -> Unit,
+    summary: MutualFundSummaryDomain,
 ) {
     val shapes = LocalShapes.current
     Box(
@@ -704,7 +703,7 @@ fun MFInvestmentsCard(
                 Column {
                     Text(text = "Total Investments", style = titlesStyle, color = titleColor)
                     Text(
-                        text = "₹${formatMoneyAfterL(investedBreakdown.investedAmount.toLong() + investedBreakdown.returnsAmount.toLong())}".withInterRupee(),
+                        text = "₹${formatMoneyAfterL(summary.investedAmount.toLong() + summary.returnsAmount.toLong())}".withInterRupee(),
                         style = subHeading.copy(fontSize = 24.sp),
                         color = Primary
                     )
@@ -713,19 +712,19 @@ fun MFInvestmentsCard(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "${if (investedBreakdown.returnsPercent >= 0) "+" else ""}${
-                                investedBreakdown.returnsPercent.trimTo(
+                            text = "${if (summary.returnsPercent >= 0) "+" else ""}${
+                                summary.returnsPercent.trimTo(
                                     2
                                 )
                             }%",
                             style = titlesStyle,
-                            color = if (investedBreakdown.returnsPercent >= 0) appGreen else Color.Red
+                            color = if (summary.returnsPercent >= 0) appGreen else Color.Red
                         )
                         Text(
-                            text = "Total Returns (${if (investedBreakdown.returnsAmount < 0) "-₹" else "₹"}${
+                            text = "Total Returns (${if (summary.returnsAmount < 0) "-₹" else "₹"}${
                                 formatMoneyAfterL(
                                     abs(
-                                        investedBreakdown.returnsAmount.toLong()
+                                        summary.returnsAmount.toLong()
                                     )
                                 )
                             })".withInterRupee(),
@@ -745,7 +744,7 @@ fun MFInvestmentsCard(
                 ) {
                     Text(text = "Invested Amount", style = titlesStyle, color = titleColor)
                     Text(
-                        text = "₹${formatMoneyAfterL(investedBreakdown.investedAmount.toLong())}".withInterRupee(),
+                        text = "₹${formatMoneyAfterL(summary.investedAmount.toLong())}".withInterRupee(),
                         style = subHeading,
                         color = Color.Black
                     )
@@ -757,9 +756,9 @@ fun MFInvestmentsCard(
                 ) {
                     Text(text = "Return Percent", style = titlesStyle, color = titleColor)
                     Text(
-                        text = investedBreakdown.returnsPercent.trimTo(2) + "%",
+                        text = summary.returnsPercent.trimTo(2) + "%",
                         style = subHeading,
-                        color = if (investedBreakdown.returnsPercent >= 0) appGreen else Color.Red
+                        color = if (summary.returnsPercent >= 0) appGreen else Color.Red
                     )
                 }
                 AppButton(
@@ -781,9 +780,9 @@ fun MFInvestmentsCardPreview() {
     JantaNiveshTheme {
         Box(modifier = Modifier.padding(16.dp)) {
             MFInvestmentsCard(
-                investedBreakdown = previewPortfolioData.investedAmountBreakdown,
+                summary = previewPortfolioData.mutualFundSummary,
                 onInvestMore = {},
-            )
+                )
         }
     }
 }
@@ -1077,6 +1076,7 @@ private val previewPortfolioData = PortfolioDomain(
             minLumpSumAmount = 500,
             schemeId = 1,
             balanceUnits = 40.04,
+            actualFolio = "372920222"
         ),
         MutualFundPortfolioDomain(
             id = "0e222090-712c-4748-bbf0-bddd989822ae",
@@ -1092,6 +1092,7 @@ private val previewPortfolioData = PortfolioDomain(
             minLumpSumAmount = 1000,
             schemeId = 2,
             balanceUnits = 20.34,
+            actualFolio = "3729202"
         )
     ),
     fixedDeposits = listOf(
@@ -1110,6 +1111,13 @@ private val previewPortfolioData = PortfolioDomain(
             issuerDisplayName = "HDFC Bank",
             maturityDate = "06 July,2024"
         )
+    ),
+    mutualFundSummary = MutualFundSummaryDomain(
+        investedAmount = 80000.0,
+        currentValue = 94130.0,
+        returnsAmount = 14130.0,
+        returnsPercent = 17.66
     )
 )
+
 

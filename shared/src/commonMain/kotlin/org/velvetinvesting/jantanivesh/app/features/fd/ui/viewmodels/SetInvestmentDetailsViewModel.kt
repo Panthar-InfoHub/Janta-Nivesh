@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
-import org.velvetinvesting.jantanivesh.app.core.utils.BrowserLauncher
 import org.velvetinvesting.jantanivesh.app.features.fd.data.models.dto.PurchaseFDBodyDto
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDTenureDomain
@@ -61,13 +60,13 @@ sealed interface SetInvestmentDetailsEvent {
 
 sealed interface SetInvestmentDetailsEffect {
     data object NavigateBack : SetInvestmentDetailsEffect
+    data class LaunchWebView(val url: String) : SetInvestmentDetailsEffect
 }
 
 class SetInvestmentDetailsViewModel(
     private val id: String,
     private val getFDDetailsUseCase: GetFDDetailsUseCase,
-    private val purchaseFDUseCase: PurchaseFDUseCase,
-    private val browserLaunchUseCase: BrowserLauncher
+    private val purchaseFDUseCase: PurchaseFDUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SetInvestmentDetailsUiState())
@@ -272,8 +271,8 @@ class SetInvestmentDetailsViewModel(
             purchaseFDUseCase(body)
                 .onSuccess { url ->
                     _uiState.update { it.copy(isPurchasing = false) }
-                    browserLaunchUseCase.launchBrowser(url)
-                    sendEffect(SetInvestmentDetailsEffect.NavigateBack)
+                    // The web view pops this screen too once the payment flow finishes.
+                    sendEffect(SetInvestmentDetailsEffect.LaunchWebView(url))
                 }
                 .onError { error ->
                     SnackBarController.showError(error.message)

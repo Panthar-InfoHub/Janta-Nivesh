@@ -14,6 +14,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.In
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain
+import kotlin.onSuccess
 
 data class LumpSumAdd(
     val prod_Id: String,
@@ -22,7 +23,7 @@ data class LumpSumAdd(
 )
 
 sealed interface ExistingFundsLumpSumSideEffect{
-    data class OpenBrowserLink(val link:String): ExistingFundsLumpSumSideEffect
+    data class OpenWebViewLink(val link:String): ExistingFundsLumpSumSideEffect
 }
 class ExistingFundsLumpSumViewModel(
     private val getPortfolioUseCase: GetPortfolioUseCase,
@@ -102,7 +103,7 @@ class ExistingFundsLumpSumViewModel(
                 .onSuccess {
                     _addedFundList.value = emptyList()
                     _buttonLoading.value=false
-                    _sideEffect.emit(ExistingFundsLumpSumSideEffect.OpenBrowserLink(it))
+                    _sideEffect.emit(ExistingFundsLumpSumSideEffect.OpenWebViewLink(it))
                 }
                 .onError { error ->
                     _buttonLoading.value=false

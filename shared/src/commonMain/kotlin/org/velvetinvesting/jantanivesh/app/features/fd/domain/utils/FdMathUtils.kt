@@ -34,36 +34,16 @@ fun calculateMaturity(
     frequency: PayoutType
 ): Double {
 
-    val years = days / 360.0
+    val years = days / 365.0
 
-    return when (frequency) {
+    val maturity = principal *
+            (1 + rate / 100)
+                .pow(years)
 
-        PayoutType.Cumulative -> {
-            val n = 4
+    Log(
+        "FD_CALC",
+        "principal=$principal rate=$rate years=$years maturity=$maturity"
+    )
 
-            val base = 1 + (rate / 100) / n
-            val exponent = n * years
-
-            val maturity = principal * base.pow(exponent)
-
-            Log("FD_CALC", "CUMULATIVE maturity=$maturity")
-
-            maturity.trimDoubleTo(2)
-        }
-
-        PayoutType.Monthly,
-        PayoutType.Quarterly,
-        PayoutType.HalfYearly,
-        PayoutType.Yearly,
-        is PayoutType.Custom -> {
-
-            val totalInterest = principal * (rate / 100) * years
-
-            val maturity = principal + totalInterest
-
-            Log("FD_CALC", "NON_CUMULATIVE maturity=$maturity")
-
-            maturity.trimDoubleTo(2)
-        }
-    }
+    return maturity.trimDoubleTo(2)
 }

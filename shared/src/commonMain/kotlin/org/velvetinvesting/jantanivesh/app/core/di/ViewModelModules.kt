@@ -32,6 +32,7 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoal
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.*
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.NotificationViewModel
 
 val viewModelModule = module {
 
@@ -43,18 +44,18 @@ val viewModelModule = module {
 
     viewModel {(id:String)-> FdDetailsViewModel(id ,get()) }
     viewModel { ExploreFdViewModel(get()) }
-    viewModel { (id:String)-> SetInvestmentDetailsViewModel(id, get(), get(), get()) }
+    viewModel { (id:String)-> SetInvestmentDetailsViewModel(id, get(), get()) }
     viewModel { KYCScreenViewModel(get(), get()) }
     viewModel { KYCFormScreenViewModel(get(), get(),get()) }
     viewModel { KYCImageUploaderScreenViewModel(get(), get(), get()) }
     viewModel { KycContractViewModel(get(), get(), get()) }
-    viewModel { TradingAccountViewModel(get(), get(), get(), get(), get()) }
+    viewModel { TradingAccountViewModel(get(), get(), get(), get()) }
 
     viewModel { AllBundlesViewModel(get()) }
     viewModel { (bundleKey: String) -> BundleResultViewModel(bundleKey, get(), get(), get()) }
     viewModel { CartScreenViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryMutualFundViewModel(get()) }
-    viewModel { (id: String) -> MutualFundDetailsScreenViewModel(id, get(), get(), get(), get(), get()) }
+    viewModel { (id: String) -> MutualFundDetailsScreenViewModel(id, get(), get(), get(), get(), get(),get()) }
     viewModel { (search: String?, fundCategory: String?) ->
         MutualFundSearchResultViewModel(search, fundCategory, get())
     }
@@ -75,7 +76,8 @@ val viewModelModule = module {
     // Portfolio ViewModels
     viewModel { (folioId: String) -> FolioFundsMFViewModel(folioId, get()) }
     viewModel { PortfolioScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { (fdId: String) -> FDPortFolioDetailsViewModel(get(), get(), get(), fdId) }
+    viewModel { (fdId: String) -> FDPortFolioDetailsViewModel(get(), get(), fdId) }
     viewModel { MFPortfolioDetailsViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ExistingFundsLumpSumViewModel(get(), get()) }
+    viewModel { NotificationViewModel(get(),get()) }
 }

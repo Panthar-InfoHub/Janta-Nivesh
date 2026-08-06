@@ -59,7 +59,6 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenUiState
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileEvent
 
 @Composable

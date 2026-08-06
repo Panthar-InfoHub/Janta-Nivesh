@@ -96,6 +96,9 @@ val useCaseModule = module {
     factory { RedeemFullFundUseCase(get()) }
     factory { RedeemPartialFundUseCase(get()) }
 
+    // Goals UseCases
+    factory { org.velvetinvesting.jantanivesh.app.features.goals.domain.usecases.GetPortfolioUseCase(get()) }
+
     // Portfolio UseCases
     factory { GetPortfolioUseCase(get()) }
     factory { GetFolioFundsUseCase(get()) }
