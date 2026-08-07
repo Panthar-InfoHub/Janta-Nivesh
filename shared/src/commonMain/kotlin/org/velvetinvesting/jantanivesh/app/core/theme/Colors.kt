@@ -102,12 +102,18 @@ val FeatureCardText=Color(0xff0B1C30)
 val LogoBackgroundColor = Color(0xffE4E1E7)
 val Gray65: Color = Color(0xff656565)
 val Gray444:Color = Color(0xff44464F)
+
 val tagColor:Color =Color(0xffF5F2FB)
 val placeholderColor:Color = Color(0xff757780)
 
 val grayColor = Color(0xFF5A5E60)
 
 //SplashScreen Colors
-
 val SplashGrey = Color(0xFF666666)
 val PagerImageCircle = Color(0xFFD1D5DB)
+
+//NewKycColors
+
+val lightBlue = Color(0xFFDDE1FF)
+val dirtGreen = Color(0xff475949)
+val leafIconBackground = Color(0xffF5F2FB)

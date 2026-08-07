@@ -237,4 +237,12 @@
     <string name="nsdl_details">ఎన్ఎస్‌డీఎల్ వివరాలు</string>
     <string name="nsdl_dp_id">ఎన్ఎస్‌డీఎల్ డీపీ ఐడీ</string>
     <string name="nsdl_client_id">ఎన్ఎస్‌డీఎల్ డీపీ ఐడీ</string>
+
+    <!--- kycnew-->
+    <string name="verify_your_info">మీ ఆర్థిక ప్రయాణాన్ని సురక్షితంగా మరియు మెరుగ్గా ఉంచడానికి మేము మీ సమాచారాన్ని ధృవీకరించాలి</string>
+    <string name="pan_label">పాన్ (PAN)</string>
+    <string name="name_as_per_pan">పేరు (PAN ప్రకారం)</string>
+    <string name="dob_as_per_pan">పుట్టిన తేదీ (PAN ప్రకారం)</string>
+    <string name="verification_amount_kyc">₹1 వెరిఫికేషన్ మొత్తం వెంటనే మీ ఖాతాకు తిరిగి జమ చేయబడుతుంది. ఈ ప్రక్రియ 100% సురక్షితమైనది మరియు RBI నిబంధనల ప్రకారం ఉంటుంది.</string>
+    <string name="agreement_text">ఈ సమ్మతిని సమర్పించడం ద్వారా, Zeny దాని ఉత్పత్తుల గురించి నాకు కాల్/SMS/WhatsApp/ఇమెయిల్ చేయడానికి నేను అధికారం ఇస్తున్నాను మరియు నేను ఉపయోగ నిబంధనలు మరియు గోప్యతా విధానాన్ని ఆమోదించాను. నేను అధికారం ఇస్తున్నాను</string>
 </resources>

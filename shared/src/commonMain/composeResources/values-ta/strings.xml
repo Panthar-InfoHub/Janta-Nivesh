@@ -238,4 +238,12 @@
     <string name="nsdl_details">என்எஸ்டிஎல் விவரங்கள்</string>
     <string name="nsdl_dp_id">என்எஸ்டிஎல் டிபி ஐடி</string>
     <string name="nsdl_client_id">என்எஸ்டிஎல் டிபி ஐடி</string>
+
+    <!--- kycnew-->
+    <string name="verify_your_info">உங்கள் நிதிப் பயணத்தைப் பாதுகாப்பாகவும் சிறப்பாகவும் வைத்திருக்க, உங்கள் தகவலை நாங்கள் சரிபார்க்க வேண்டும்</string>
+    <string name="pan_label">பான் (PAN)</string>
+    <string name="name_as_per_pan">பெயர் (PAN படி)</string>
+    <string name="dob_as_per_pan">பிறந்த தேதி (PAN படி)</string>
+    <string name="verification_amount_kyc">₹1 சரிபார்ப்புத் தொகை உடனடியாக உங்கள் கணக்கில் மீண்டும் வரவு வைக்கப்படும். இந்த செயல்முறை 100% பாதுகாப்பானது மற்றும் RBI விதிமுறைகளின்படி உள்ளது.</string>
+    <string name="agreement_text">இந்த ஒப்புதலைச் சமர்ப்பிப்பதன் மூலம், Zeny தனது தயாரிப்புகளைப் பற்றி எனக்கு அழைப்பு/SMS/WhatsApp/மின்னஞ்சல் செய்ய அங்கீகாரம் அளிக்கிறேன், மேலும் பயன்பாட்டு விதிமுறைகள் மற்றும் தனியுரிமைக் கொள்கையை நான் ஏற்றுக்கொண்டேன். நான் அங்கீகரிக்கிறேன்</string>
 </resources>
