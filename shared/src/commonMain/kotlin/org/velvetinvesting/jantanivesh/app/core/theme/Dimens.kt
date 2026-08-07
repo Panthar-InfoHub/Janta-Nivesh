@@ -36,3 +36,7 @@ object Spacing {
     val dp15: Dp = 15.dp
 }
 
+object ImageSize{
+    val dp320 = 320.dp
+}
+
