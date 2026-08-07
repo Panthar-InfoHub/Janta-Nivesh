@@ -19,9 +19,9 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 
 @Preview(showBackground = true)
 @Composable
-fun JantaNiveshAndVelvetLogo(){
+fun JantaNiveshAndVelvetLogo(modifier: Modifier = Modifier){
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(bottom = Spacing.dp16),
         verticalArrangement = Arrangement.spacedBy(Spacing.dp32), horizontalAlignment = Alignment.CenterHorizontally

@@ -40,6 +40,8 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.Portf
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileIntroScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileViewModel
+import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.compose.SplashScreen
+import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenUiState
 
 @Composable
 fun BottomNavigation(
