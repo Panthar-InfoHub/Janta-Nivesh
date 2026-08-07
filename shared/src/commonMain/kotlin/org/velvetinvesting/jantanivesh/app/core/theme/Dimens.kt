@@ -4,6 +4,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object Spacing {
+    val dp34 = 34.dp
+    val dp72: Dp = 72.dp
     val dp285: Dp = 285.dp
     val dp64: Dp = 64.dp
     val dp18: Dp = 18.dp
@@ -37,6 +39,7 @@ object Spacing {
 }
 
 object ImageSize{
+    val dp244 = 244.dp
     val dp320 = 320.dp
 }
 

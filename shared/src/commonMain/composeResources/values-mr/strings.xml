@@ -238,4 +238,12 @@
     <string name="nsdl_details">एनएसडीएल तपशील</string>
     <string name="nsdl_dp_id">एनएसडीएल डीपी आयडी</string>
     <string name="nsdl_client_id">एनएसडीएल डीपी आयडी</string>
+
+    <!--- kycnew-->
+    <string name="verify_your_info">तुमचा आर्थिक प्रवास सुरक्षित आणि अधिक चांगला ठेवण्यासाठी आम्हाला तुमची माहिती सत्यापित करणे आवश्यक आहे</string>
+    <string name="pan_label">पॅन (PAN)</string>
+    <string name="name_as_per_pan">नाव (PAN नुसार)</string>
+    <string name="dob_as_per_pan">जन्म तारीख (PAN नुसार)</string>
+    <string name="verification_amount_kyc">₹१ ची पडताळणी रक्कम त्वरित तुमच्या खात्यात परत जमा केली जाईल. ही प्रक्रिया १००% सुरक्षित आणि RBI च्या नियमांनुसार आहे.</string>
+    <string name="agreement_text">ही संमती सबमिट करून, मी Zeny ला त्याच्या उत्पादनांबद्दल मला कॉल/SMS/WhatsApp/ईमेल करण्यासाठी अधिकृत करतो आणि मी वापरण्याच्या अटी आणि गोपनीयता धोरण स्वीकारले आहे. मी अधिकृत करतो</string>
 </resources>

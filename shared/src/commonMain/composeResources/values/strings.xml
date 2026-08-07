@@ -440,4 +440,12 @@
     <string name="tac_quote_ayano_author">— Ayano</string>
     <string name="tac_quote_pickle_text">\"Pondering and probably(hopefully) not leaving caffeine on the keyboard\"</string>
     <string name="tac_quote_pickle_author">— Pickle</string>
+
+    <!--- kycnew-->
+    <string name="verify_your_info">To keep your financial journey safe and better, we need to verify your information</string>
+    <string name="pan_label">PAN</string>
+    <string name="name_as_per_pan">Name (as per PAN)</string>
+    <string name="dob_as_per_pan">Date of Birth (as per PAN)</string>
+    <string name="verification_amount_kyc">A verification amount of ₹1 will be immediately credited back to your account. This process is 100% secure and as per RBI regulations.</string>
+    <string name="agreement_text">By submitting this consent, I authorize Zeny to call/SMS/WhatsApp/email me about its products and I have accepted the Terms of Use and Privacy Policy. I authorize</string>
 </resources>

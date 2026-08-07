@@ -17,6 +17,10 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenV
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ConfirmYourDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.KycSplashViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyBankAccountViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyWithDigilockerViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.AllBundlesViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.BundleResultViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CartScreenViewModel
@@ -50,6 +54,12 @@ val viewModelModule = module {
     viewModel { KYCImageUploaderScreenViewModel(get(), get(), get()) }
     viewModel { KycContractViewModel(get(), get(), get()) }
     viewModel { TradingAccountViewModel(get(), get(), get(), get()) }
+
+    // KycNew ViewModels
+    viewModel { ConfirmYourDetailsViewModel() }
+    viewModel { KycSplashViewModel() }
+    viewModel { VerifyBankAccountViewModel() }
+    viewModel { VerifyWithDigilockerViewModel() }
 
     viewModel { AllBundlesViewModel(get()) }
     viewModel { (bundleKey: String) -> BundleResultViewModel(bundleKey, get(), get(), get()) }

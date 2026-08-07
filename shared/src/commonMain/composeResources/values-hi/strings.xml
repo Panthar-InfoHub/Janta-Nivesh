@@ -266,4 +266,11 @@
     <string name="rupee_symbol">₹</string>
     <string name="high_interest">उच्च ब्याज</string>
     <string name="dropdown_icon_desc">ड्रॉपडाउन आइकन</string>
+    <!--- kycnew-->
+    <string name = "verify_your_info">आपकी फाइनेंशियल यात्रा को सुरक्षित और बेहतर बनाए रखने के लिए हमें आपकी जानकारी वेरिफ़ाई करने की ज़रूरत है</string>
+    <string name = "pan_label">पैन</string>
+    <string name = "name_as_per_pan">नाम (PAN के अनुसार)</string>
+    <string name = "dob_as_per_pan">जन्म तिथि (PAN के अनुसार)</string>
+    <string name = "verification_amount_kyc">₹1 की वेरिफिकेशन राशि तुरंत आपके अकाउंट में वापस कर दी जाएगी। यह प्रोसेस 100% सुरक्षित और RBI के नियमों के अनुसार है।</string>
+    <string name = "agreement_text">इस सहमति को जमा करके, मैं Zeny को अपने उत्पादों के बारे में मुझे कॉल/एसएमएस/व्हाट्सएप/ईमेल करने के लिए अधिकृत करता/करती हूँ और मैंने उपयोग की शर्तें और गोपनीयता नीति स्वीकार कर ली हैं। मैं अधिकृत करता/करती हूँ</string>
 </resources>

@@ -238,4 +238,12 @@
     <string name="nsdl_details">এনএসডিএল বিবরণ</string>
     <string name="nsdl_dp_id">এনএসডিএল ডিপি আইডি</string>
     <string name="nsdl_client_id">এনএসডিএল ডিপি আইডি</string>
+
+    <!--- kycnew-->
+    <string name="verify_your_info">আপনার আর্থিক যাত্রা নিরাপদ এবং উন্নত রাখতে আমাদের আপনার তথ্য যাচাই করা প্রয়োজন</string>
+    <string name="pan_label">প্যান (PAN)</string>
+    <string name="name_as_per_pan">নাম (প্যান অনুযায়ী)</string>
+    <string name="dob_as_per_pan">জন্ম তারিখ (প্যান অনুযায়ী)</string>
+    <string name="verification_amount_kyc">₹১ যাচাইকরণ পরিমাণ অবিলম্বে আপনার অ্যাকাউন্টে ফেরত জমা করা হবে। এই প্রক্রিয়াটি ১০০% নিরাপদ এবং আরবিআই (RBI) নিয়ম অনুযায়ী।</string>
+    <string name="agreement_text">এই সম্মতি জমা দেওয়ার মাধ্যমে, আমি Zeny-কে তার পণ্য সম্পর্কে আমাকে কল/এসএমএস/হোয়াটসঅ্যাপ/ইমেল করার জন্য অনুমোদিত করছি এবং আমি ব্যবহারের শর্তাবলী এবং গোপনীয়ता নীতি গ্রহণ করেছি। আমি অনুমোদিত করছি</string>
 </resources>
