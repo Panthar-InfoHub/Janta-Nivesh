@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -105,7 +106,7 @@ fun ReviewProfileScreen(
                 )
             }
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp16), modifier = Modifier.fillMaxWidth()){
+                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp16), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()){
                     TitledAppTextField(
                         title = "Date of Birth/ " + stringResource(Res.string.date_of_birth),
                         value = state.dob,
@@ -133,7 +134,7 @@ fun ReviewProfileScreen(
                 )
             }
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp16), modifier = Modifier.fillMaxWidth()){
+                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp16), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()){
                     TitledAppTextField(
                         title = "Pincode/ " + stringResource(Res.string.pincode),
                         value = state.pincode,
@@ -199,7 +200,7 @@ fun ReviewProfileScreen(
         AppButton(
             text = "Confirm and proceed",
             onClick = { handleEvent(ReviewProfileEvent.OnProceedClick) },
-            modifier = Modifier.fillMaxWidth().genericDropShadow()
+            modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24).genericDropShadow()
         )
     }
 }

@@ -137,7 +137,7 @@ fun SetupAutopayScreen(
                 AppButton(
                     text = "Set Autopay",
                     onClick = { handleEvent(SetupAutopayEvent.OnSetAutopayClick) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24).genericDropShadow()
                 )
             }
         }
