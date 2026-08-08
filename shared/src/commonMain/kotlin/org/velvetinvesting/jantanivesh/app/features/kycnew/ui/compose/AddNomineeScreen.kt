@@ -246,12 +246,12 @@ fun AddNomineeScreen(
                 }
             }
         }
-
         AppButton(
             text = "Confirm and proceed",
             onClick = { handleEvent(AddNomineeEvent.OnConfirmAndProceedClick) },
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = Spacing.dp24)
                 .genericDropShadow()
         )
     }

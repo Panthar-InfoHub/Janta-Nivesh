@@ -116,7 +116,7 @@ fun EmailIdScreen(
             }
         }
 
-        JantaNiveshAndVelvetLogo()
+        JantaNiveshAndVelvetLogo(modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24))
     }
 }
 
