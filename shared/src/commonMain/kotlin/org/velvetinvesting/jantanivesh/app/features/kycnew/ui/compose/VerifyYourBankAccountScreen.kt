@@ -1,7 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -35,7 +33,6 @@ import jantanivesh.shared.generated.resources.verification_amount_kyc
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
-import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -43,8 +40,8 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.lightBlue
-import org.velvetinvesting.jantanivesh.app.core.theme.tagColor
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InfoNoteCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyBankAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyBankAccountUiState
@@ -110,7 +107,13 @@ fun VerifyBankAccountScreen(
             }
 
             item {
-                ImportantNoteCard()
+                InfoNoteCard(
+                    Res.drawable.info_filled_icon,
+                    title = "Important Note",
+                    subtitle = "The ₹1 verification amount will be instantly refunded to your account. This process is 100% secure and RBI compliant./ " + stringResource(
+                        Res.string.verification_amount_kyc
+                    )
+                )
             }
         }
 
@@ -214,46 +217,6 @@ private fun StepCard(number: String, text: String) {
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Gray444
-            )
-        }
-    }
-}
-
-@Composable
-private fun ImportantNoteCard() {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp24))
-            .border(
-                width = Spacing.dp1,
-                color = FilterChipUnselected,
-                RoundedCornerShape(Spacing.dp24)
-            )
-            .background(tagColor)
-            .padding(Spacing.dp20),
-    ) {
-        Icon(
-            painter = painterResource(Res.drawable.info_filled_icon),
-            contentDescription = "Info Icon",
-            tint = Primary,
-            modifier = Modifier.size(Spacing.dp20)
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
-        ) {
-            Text(
-                text = "Important Note",
-                style = MaterialTheme.typography.titleMedium,
-                color = Primary
-            )
-            Text(
-                text = "The ₹1 verification amount will be instantly refunded to your account. This process is 100% secure and RBI compliant./ " + stringResource(Res.string.verification_amount_kyc),
-                style = MaterialTheme.typography.bodyLarge,
-                color = Black,
             )
         }
     }
