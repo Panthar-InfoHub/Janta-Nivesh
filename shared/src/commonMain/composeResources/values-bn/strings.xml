@@ -245,7 +245,7 @@
     <string name="name_as_per_pan">নাম (প্যান অনুযায়ী)</string>
     <string name="dob_as_per_pan">জন্ম তারিখ (প্যান অনুযায়ী)</string>
     <string name="verification_amount_kyc">₹১ যাচাইকরণ পরিমাণ অবিলম্বে আপনার অ্যাকাউন্টে ফেরত জমা করা হবে। এই প্রক্রিয়াটি ১০০% নিরাপদ এবং আরবিআই (RBI) নিয়ম অনুযায়ী।</string>
-    <string name="agreement_text">এই সম্মতি জমা দেওয়ার মাধ্যমে, আমি Zeny-কে তার পণ্য সম্পর্কে আমাকে কল/এসএমএস/হোয়াটসঅ্যাপ/ইমেল করার জন্য অনুমোদিত করছি এবং আমি ব্যবহারের শর্তাবলী এবং গোপনীয়ता নীতি গ্রহণ করেছি। আমি অনুমোদিত করছি</string>
+    <string name="agreement_text">এই সম্মতি জমা দেওয়ার মাধ্যমে, আমি Janta Nivesh-কে তার পণ্য সম্পর্কে আমাকে কল/এসএমএস/হোয়াটসঅ্যাপ/ইমেল করার জন্য অনুমোদিত করছি এবং আমি ব্যবহারের শর্তাবলী এবং গোপনীয়ता নীতি গ্রহণ করেছি। আমি অনুমোদিত করছি</string>
     <string name="what_is_your_email_id">আপনার ইমেইল আইডি কি?</string>
     <string name="email_id_label">ইমেইল আইডি</string>
     <string name="email_subtitle">আমরা এটি আপনার অ্যাকাউন্ট সুরক্ষিত রাখতে এবং গুরুত্বপূর্ণ আপডেট পাঠাতে ব্যবহার করব।</string>
@@ -277,4 +277,11 @@
     <string name="set_up_upi_autopay">ইউপিআই অটো-পে সেট আপ করুন</string>
     <string name="upi_autopay_subtitle">একবার অনুমোদন দিন, এবং আপনার এসআইপি প্রতি মাসে নিজে থেকেই চলবে</string>
     <string name="important_note_desc">আপনার ব্যাংক স্টেটমেন্ট এবং ইউপিআই অ্যাপে সাইব্রিলা (Cybrilla) দেখা যাবে — এটিই অফিসিয়াল পার্টনার যা জনতা নিবেশের জন্য এই মিউচুয়াল ফান্ড লেনদেনগুলি প্রসেস করে</string>
+    <string name="nominee_document_number">নথি নম্বর</string>
+    <string name="nominee_document_pan">প্যান</string>
+    <string name="nominee_document_aadhaar">আধার (শেষ ৪টি সংখ্যা)</string>
+    <string name="nominee_document_driving_licence">ড্রাইভিং লাইসেন্স</string>
+    <string name="nominee_document_oci_passport">ওসিআই / পাসপোর্ট</string>
+    <string name="login_mobile_ownership_declaration">আমি ঘোষণা করছি যে এই মোবাইল নম্বরটি আমার এবং আমার নিজের নামে নিবন্ধিত।</string>
+    <string name="login_terms_acceptance">আমি জনতা নিবেশের নিয়ম ও শর্তাবলী এবং গোপনীয়তা নীতি পড়েছি এবং গ্রহণ করছি।</string>
 </resources>

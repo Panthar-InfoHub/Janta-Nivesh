@@ -23,6 +23,10 @@ interface AuthPrefs {
 
     fun isOnboardingCompleted(): Boolean
 
+    fun setOnboardingStage(stage: String)
+
+    fun getOnboardingStage(): String?
+
     fun setPhoneNumber(phoneNumber: String)
 
     fun getPhoneNumber(): String?

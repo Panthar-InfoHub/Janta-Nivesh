@@ -503,3 +503,15 @@ fun String.decrementSlashDateYearYear(): String = runCatching {
         .format(slashDateFormat)
 
 }.getOrDefault(this)
+/**
+ * Formats a date-picker selection as `yyyy-MM-dd`, the shape every onboarding API expects.
+ * The picker reports UTC midnight, so the date is read back in UTC to avoid shifting a day.
+ */
+@OptIn(ExperimentalTime::class)
+fun formatMillisToIsoDate(millis: Long?): String {
+    if (millis == null) return ""
+    val date = Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.UTC).date
+    return "${date.year.toString().padStart(4, '0')}-" +
+            "${date.month.number.toString().padStart(2, '0')}-" +
+            date.day.toString().padStart(2, '0')
+}

@@ -245,7 +245,7 @@
     <string name="name_as_per_pan">नाव (PAN नुसार)</string>
     <string name="dob_as_per_pan">जन्म तारीख (PAN नुसार)</string>
     <string name="verification_amount_kyc">₹१ ची पडताळणी रक्कम त्वरित तुमच्या खात्यात परत जमा केली जाईल. ही प्रक्रिया १००% सुरक्षित आणि RBI च्या नियमांनुसार आहे.</string>
-    <string name="agreement_text">ही संमती सबमिट करून, मी Zeny ला त्याच्या उत्पादनांबद्दल मला कॉल/SMS/WhatsApp/ईमेल करण्यासाठी अधिकृत करतो आणि मी वापरण्याच्या अटी आणि गोपनीयता धोरण स्वीकारले आहे. मी अधिकृत करतो</string>
+    <string name="agreement_text">ही संमती सबमिट करून, मी Janta Nivesh ला त्याच्या उत्पादनांबद्दल मला कॉल/SMS/WhatsApp/ईमेल करण्यासाठी अधिकृत करतो आणि मी वापरण्याच्या अटी आणि गोपनीयता धोरण स्वीकारले आहे. मी अधिकृत करतो</string>
     <string name="what_is_your_email_id">तुमचा ईमेल आयडी काय आहे?</string>
     <string name="email_id_label">ईमेल आयडी</string>
     <string name="email_subtitle">आम्ही याचा वापर तुमचे खाते सुरक्षित ठेवण्यासाठी आणि महत्त्वाचे अपडेट्स पाठवण्यासाठी करू.</string>
@@ -277,4 +277,11 @@
     <string name="set_up_upi_autopay">UPI ऑटोपे सेट करा</string>
     <string name="upi_autopay_subtitle">एकदा मंजुरी द्या, तुमची SIP दरमहा आपोआप चालेल</string>
     <string name="important_note_desc">तुमच्या बँक स्टेटमेंटमध्ये आणि UPI ॲपमध्ये सायब्रिला (Cybrilla) चे नाव दिसेल — हा अधिकृत भागीदार आहे जो जनता निवेशसाठी हे म्युच्युअल-फंड व्यवहार प्रक्रियेत आणतो</string>
+    <string name="nominee_document_number">दस्तऐवज क्रमांक</string>
+    <string name="nominee_document_pan">पॅन</string>
+    <string name="nominee_document_aadhaar">आधार (शेवटचे 4 अंक)</string>
+    <string name="nominee_document_driving_licence">ड्रायव्हिंग लायसन्स</string>
+    <string name="nominee_document_oci_passport">ओसीआय / पासपोर्ट</string>
+    <string name="login_mobile_ownership_declaration">मी घोषित करतो/करते की हा मोबाइल नंबर माझा आहे आणि माझ्या स्वतःच्या नावावर नोंदणीकृत आहे.</string>
+    <string name="login_terms_acceptance">मी जनता निवेशचे नियम व अटी आणि गोपनीयता धोरण वाचले आहे आणि स्वीकारतो/स्वीकारते.</string>
 </resources>

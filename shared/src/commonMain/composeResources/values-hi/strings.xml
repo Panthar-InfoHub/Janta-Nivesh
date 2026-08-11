@@ -272,7 +272,7 @@
     <string name = "name_as_per_pan">नाम (PAN के अनुसार)</string>
     <string name = "dob_as_per_pan">जन्म तिथि (PAN के अनुसार)</string>
     <string name = "verification_amount_kyc">₹1 की वेरिफिकेशन राशि तुरंत आपके अकाउंट में वापस कर दी जाएगी। यह प्रोसेस 100% सुरक्षित और RBI के नियमों के अनुसार है।</string>
-    <string name = "agreement_text">इस सहमति को जमा करके, मैं Zeny को अपने उत्पादों के बारे में मुझे कॉल/एसएमएस/व्हाट्सएप/ईमेल करने के लिए अधिकृत करता/करती हूँ और मैंने उपयोग की शर्तें और गोपनीयता नीति स्वीकार कर ली हैं। मैं अधिकृत करता/करती हूँ</string>
+    <string name = "agreement_text">इस सहमति को जमा करके, मैं Janta Nivesh को अपने उत्पादों के बारे में मुझे कॉल/एसएमएस/व्हाट्सएप/ईमेल करने के लिए अधिकृत करता/करती हूँ और मैंने उपयोग की शर्तें और गोपनीयता नीति स्वीकार कर ली हैं। मैं अधिकृत करता/करती हूँ</string>
     <string name = "what_is_your_email_id">आपकी ईमेल आईडी क्या है?</string>
     <string name = "email_id_label">ईमेल आईडी</string>
     <string name = "email_subtitle">हम इसका इस्तेमाल आपके अकाउंट को सुरक्षित रखने और ज़रूरी अपडेट भेजने के लिए करेंगे।</string>
@@ -304,4 +304,11 @@
     <string name="set_up_upi_autopay">यूपीआई ऑटोपे सेट करें</string>
     <string name="upi_autopay_subtitle">एक बार मंजूरी दें, आपकी SIP हर महीने अपने आप चलेगी</string>
     <string name="important_note_desc">आपके बैंक स्टेटमेंट और UPI ऐप में Cybrilla का नाम दिखेगा — यह वह ऑफिशियल पार्टनर है जो Janta Nivesh के लिए इन म्यूचुअल-फंड ट्रांज़ैक्शन को प्रोसेस करता है</string>
+    <string name="nominee_document_number">दस्तावेज़ संख्या</string>
+    <string name="nominee_document_pan">पैन</string>
+    <string name="nominee_document_aadhaar">आधार (अंतिम 4 अंक)</string>
+    <string name="nominee_document_driving_licence">ड्राइविंग लाइसेंस</string>
+    <string name="nominee_document_oci_passport">ओसीआई / पासपोर्ट</string>
+    <string name="login_mobile_ownership_declaration">मैं घोषणा करता/करती हूँ कि यह मोबाइल नंबर मेरा है और मेरे नाम पर रजिस्टर्ड है।</string>
+    <string name="login_terms_acceptance">मैंने जनता निवेश की नियम व शर्तें और गोपनीयता नीति पढ़ी हैं और स्वीकार करता/करती हूँ।</string>
 </resources>

@@ -22,6 +22,7 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.icon_cross
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.utils.AppBackHandler
 
 @Composable
 fun WebViewScreen(
@@ -31,6 +32,8 @@ fun WebViewScreen(
     modifier: Modifier = Modifier
 ) {
     val state = rememberWebViewState(config.url)
+
+
 
     Column(modifier = modifier.fillMaxSize()) {
         WebViewHeader(

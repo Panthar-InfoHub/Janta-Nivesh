@@ -1,6 +1,5 @@
-package org.velvetinvesting.jantanivesh.app.features.login.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.login.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -29,8 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.continue_text
-import jantanivesh.shared.generated.resources.janta_nivesh_logo_desc
-import jantanivesh.shared.generated.resources.jantanivesh_logo
 import jantanivesh.shared.generated.resources.lock_icon
 import jantanivesh.shared.generated.resources.lock_icon_desc
 import jantanivesh.shared.generated.resources.tick_icon
@@ -51,7 +47,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.PoweredByVelvet
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageEvent
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageUiState
 

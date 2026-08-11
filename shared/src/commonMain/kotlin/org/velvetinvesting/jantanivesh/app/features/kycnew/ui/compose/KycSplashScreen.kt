@@ -6,10 +6,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,24 +41,19 @@ import jantanivesh.shared.generated.resources.img_upi_logo
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
-import org.velvetinvesting.jantanivesh.app.core.theme.ImageSize
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.core.theme.dirtGreen
 import org.velvetinvesting.jantanivesh.app.core.theme.leafIconBackground
 import org.velvetinvesting.jantanivesh.app.core.theme.lightBlue
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.KycSplashEvent
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.KycSplashUiState
 
 @Composable
 fun KycSplashScreen(
-    state: KycSplashUiState,
     handleEvent: (KycSplashEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -64,12 +61,14 @@ fun KycSplashScreen(
         modifier = modifier
             .fillMaxSize()
             .background(White)
-            .padding(Spacing.dp24)
+            .padding(horizontal = Spacing.dp24)
+            .imePadding()
     ) {
         LazyColumn(
             modifier = Modifier.weight(1f).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(top = Spacing.dp24)
         ) {
             item {
                 Column(
@@ -85,7 +84,7 @@ fun KycSplashScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
                         Text(
-                            text = "FinGrow simplifies your wealth management with an empathetic approach to saving, investing, and growing.",
+                            text = "Janta Nivesh simplifies your wealth management with an empathetic approach to saving, investing, and growing.",
                             style = MaterialTheme.typography.bodyLarge,
                             color = Gray444,
                             textAlign = TextAlign.Start,
@@ -290,7 +289,6 @@ private fun LogoBox(logo: DrawableResource, contentDescription: String) {
 private fun KycSplashScreenPreview() {
     JantaNiveshTheme {
         KycSplashScreen(
-            state = KycSplashUiState(),
             handleEvent = {}
         )
     }

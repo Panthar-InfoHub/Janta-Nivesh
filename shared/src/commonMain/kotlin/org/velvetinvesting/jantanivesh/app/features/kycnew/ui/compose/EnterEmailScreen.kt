@@ -5,17 +5,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.email_declaration
@@ -36,6 +42,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.c
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.EmailIdEvent
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.EmailIdUiState
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.OnboardingInput
 
 @Composable
 fun EmailIdScreen(
@@ -47,13 +54,15 @@ fun EmailIdScreen(
         modifier = modifier
             .fillMaxSize()
             .background(color = White)
-            .padding(Spacing.dp24)
+            .padding(horizontal=Spacing.dp20)
             .clearFocusOnTap()
+            .imePadding()
 
     ) {
         LazyColumn(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
+            contentPadding = PaddingValues(top = Spacing.dp24)
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
@@ -77,6 +86,15 @@ fun EmailIdScreen(
                     value = state.email,
                     onValueChange = { handleEvent(EmailIdEvent.OnEmailChange(it)) },
                     placeholder = "you@example.com",
+                    mandatory = true,
+                    keyboardType = KeyboardType.Email,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.None,
+                        autoCorrectEnabled = false,
+                        imeAction = ImeAction.Done
+                    ),
+                    isError = state.email.isNotEmpty() &&
+                            !OnboardingInput.isValidEmail(state.email),
                     trailingIcon = {
                         Box(
                             modifier = Modifier
@@ -111,6 +129,7 @@ fun EmailIdScreen(
                 AppButton(
                     text = "Submit",
                     onClick = { handleEvent(EmailIdEvent.OnSubmitClick) },
+                    enabled = state.canSubmit,
                     modifier = Modifier.fillMaxWidth().genericDropShadow()
                 )
             }

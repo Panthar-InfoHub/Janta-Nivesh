@@ -9,7 +9,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import org.koin.compose.koinInject
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.isAndroid
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
@@ -20,10 +22,17 @@ fun BaseNavigation() {
     val prefs: AuthPrefs = koinInject()
     val isLoggedIn = prefs.isLoggedIn()
     val onboardingCompleted = prefs.isOnboardingCompleted()
+    val onboardingStage = OnboardingStage.fromIdOrDefault(
+        prefs.getOnboardingStage()
+    )
 
-    val startDestination = when {
+    val startDestination: Route = when {
         !isLoggedIn -> Route.LoginGraph
-        !onboardingCompleted -> Route.OnboardingGraph
+
+        !onboardingCompleted -> Route.OnboardingGraph(
+            stage = onboardingStage.id
+        )
+
         else -> Route.MainAppGraph
     }
 
@@ -43,8 +52,8 @@ fun BaseNavigation() {
 
             composable<Route.LoginGraph> {
                 LoginNavigation(
-                    navigateToOnboardingGraph = {
-                        navController.navigate(Route.OnboardingGraph) {
+                    navigateToOnboardingGraph = {stage->
+                        navController.navigate(Route.OnboardingGraph(stage.id)) {
                             launchSingleTop = true
 
                             popUpTo<Route.LoginGraph> {
@@ -53,6 +62,7 @@ fun BaseNavigation() {
                         }
                     },
                     navigateToMainAppFlow = {
+                        prefs.setLoggedIn(true)
                         navController.navigate(Route.MainAppGraph) {
                             launchSingleTop = true
 
@@ -65,8 +75,12 @@ fun BaseNavigation() {
             }
 
             composable<Route.OnboardingGraph> {
+                val route = it.toRoute<Route.OnboardingGraph>()
                 OnboardingNavigation(
+                    stage = route.stage,
                     onCompleted = {
+                        prefs.setLoggedIn(true)
+                        prefs.setOnboardingCompleted(true)
                         navController.navigate(Route.MainAppGraph) {
                             launchSingleTop = true
 
@@ -79,17 +93,9 @@ fun BaseNavigation() {
             }
 
             composable<Route.MainAppGraph> {
-                MainAppNavigation(
-                    onSignOut = {
-                        navController.navigate(Route.LoginGraph) {
-                            launchSingleTop = true
-
-                            popUpTo(0) {
-                                inclusive = true
-                            }
-                        }
-                    }
-                )
+                // TODO: restore MainAppNavigation here once the plans flow has its own entry
+                // point. It is stood up in place of the main app while it is being built.
+                PlansNavigation()
             }
         }
     }

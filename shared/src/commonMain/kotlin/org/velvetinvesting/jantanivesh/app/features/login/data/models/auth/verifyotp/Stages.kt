@@ -3,9 +3,10 @@ package org.velvetinvesting.jantanivesh.app.features.login.data.models.auth.veri
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Data(
-    val onboarding: Onboarding,
-    val refresh_token: String,
-    val token: String,
-    val user: User
+data class Stages(
+    val kyc: String,
+    val nominee: String,
+    val penny_drop: String,
+    val profile: String,
+    val readiness: String
 )

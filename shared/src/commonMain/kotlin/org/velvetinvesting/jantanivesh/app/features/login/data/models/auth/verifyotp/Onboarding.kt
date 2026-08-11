@@ -3,7 +3,8 @@ package org.velvetinvesting.jantanivesh.app.features.login.data.models.auth.veri
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Metadata(
-    val is_onboarding_completed: Boolean,
-    val onboarding_stage: Int
+data class Onboarding(
+    val current_stage: String,
+    val is_completed: Boolean,
+    val stages: Stages
 )

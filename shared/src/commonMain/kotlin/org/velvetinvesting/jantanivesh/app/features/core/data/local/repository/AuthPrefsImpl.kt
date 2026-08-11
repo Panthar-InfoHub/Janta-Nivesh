@@ -18,6 +18,7 @@ class AuthPrefsImpl(
 
         private const val KEY_USER_PHONE_NUMBER = "user_phone_number"
         private const val KEY_FIRST_LAUNCH = "first_launch"
+        private const val KEY_ONBOARDING_STAGE = "onboarding_stage"
     }
 
     override fun setBearerToken(token: String) {
@@ -58,6 +59,14 @@ class AuthPrefsImpl(
 
     override fun isOnboardingCompleted(): Boolean {
         return prefs.getBoolean(KEY_ONBOARDING_COMPLETED) ?: false
+    }
+
+    override fun setOnboardingStage(stage: String) {
+        prefs.setString(KEY_ONBOARDING_STAGE, stage)
+    }
+
+    override fun getOnboardingStage(): String? {
+        return prefs.getString(KEY_ONBOARDING_STAGE)
     }
 
     override fun setPhoneNumber(phoneNumber: String) {

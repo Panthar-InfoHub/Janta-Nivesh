@@ -447,7 +447,7 @@
     <string name="name_as_per_pan">Name (as per PAN)</string>
     <string name="dob_as_per_pan">Date of Birth (as per PAN)</string>
     <string name="verification_amount_kyc">A verification amount of ₹1 will be immediately credited back to your account. This process is 100% secure and as per RBI regulations.</string>
-    <string name="agreement_text">By submitting this consent, I authorize Zeny to call/SMS/WhatsApp/email me about its products and I have accepted the Terms of Use and Privacy Policy. I authorize</string>
+    <string name="agreement_text">By submitting this consent, I authorize Janta Nivesh to call/SMS/WhatsApp/email me about its products and I have accepted the Terms of Use and Privacy Policy. I authorize</string>
     <string name="what_is_your_email_id">What is your email ID?</string>
     <string name="email_id_label">Email ID</string>
     <string name="email_subtitle">We will use this to keep your account secure and send important updates.</string>
@@ -479,4 +479,11 @@
     <string name="set_up_upi_autopay">Set up UPI Autopay</string>
     <string name="upi_autopay_subtitle">One approval, and your SIP runs on its own every month.</string>
     <string name="important_note_desc">Your bank statement and UPI app will show Cybrilla — the official partner processing these mutual-fund transactions for Janta Nivesh.</string>
+    <string name="nominee_document_number">Document Number</string>
+    <string name="nominee_document_pan">PAN</string>
+    <string name="nominee_document_aadhaar">Aadhar (Last 4 digits)</string>
+    <string name="nominee_document_driving_licence">Driving Licence</string>
+    <string name="nominee_document_oci_passport">OCI / Passport</string>
+    <string name="login_mobile_ownership_declaration">I declare that this mobile number belongs to me and is registered in my own name.</string>
+    <string name="login_terms_acceptance">I have read and accept the Terms &amp; Conditions and the Privacy Policy of Janta Nivesh.</string>
 </resources>

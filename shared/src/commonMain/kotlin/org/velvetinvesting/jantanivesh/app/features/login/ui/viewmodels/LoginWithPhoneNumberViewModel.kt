@@ -18,11 +18,24 @@ import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginW
 data class LoginWithPhoneNumberUiState(
     val phoneNumber: String = "",
     val isLoading: Boolean = false,
-    val isNextEnabled: Boolean = false
-)
+    val isOwnershipDeclared: Boolean = false,
+    val areTermsAccepted: Boolean = false
+) {
+    /** Both declarations are the investor's own action, so neither starts ticked. */
+    val isNextEnabled: Boolean
+        get() = phoneNumber.length == PHONE_NUMBER_LENGTH &&
+                isOwnershipDeclared &&
+                areTermsAccepted
+
+    companion object {
+        const val PHONE_NUMBER_LENGTH = 10
+    }
+}
 
 sealed interface LoginWithPhoneNumberEvent {
     data class OnPhoneNumberChanged(val phoneNumber: String) : LoginWithPhoneNumberEvent
+    data class OnOwnershipDeclarationChanged(val isChecked: Boolean) : LoginWithPhoneNumberEvent
+    data class OnTermsAcceptanceChanged(val isChecked: Boolean) : LoginWithPhoneNumberEvent
     object OnVerifyClicked : LoginWithPhoneNumberEvent
     object OnBackClicked : LoginWithPhoneNumberEvent
 }
@@ -45,15 +58,17 @@ class LoginWithPhoneNumberViewModel(
     fun handleEvent(event: LoginWithPhoneNumberEvent) {
         when (event) {
             is LoginWithPhoneNumberEvent.OnPhoneNumberChanged -> {
-                if (event.phoneNumber.all { it.isDigit() } && event.phoneNumber.length <= 10) {
-                    _uiState.update {
-                        it.copy(
-                            phoneNumber = event.phoneNumber,
-                            isNextEnabled = event.phoneNumber.length == 10
-                        )
-                    }
+                val length = LoginWithPhoneNumberUiState.PHONE_NUMBER_LENGTH
+                if (event.phoneNumber.all { it.isDigit() } && event.phoneNumber.length <= length) {
+                    _uiState.update { it.copy(phoneNumber = event.phoneNumber) }
                 }
             }
+
+            is LoginWithPhoneNumberEvent.OnOwnershipDeclarationChanged ->
+                _uiState.update { it.copy(isOwnershipDeclared = event.isChecked) }
+
+            is LoginWithPhoneNumberEvent.OnTermsAcceptanceChanged ->
+                _uiState.update { it.copy(areTermsAccepted = event.isChecked) }
 
             LoginWithPhoneNumberEvent.OnVerifyClicked -> verifyPhoneNumber()
             LoginWithPhoneNumberEvent.OnBackClicked -> sendEffect(LoginWithPhoneNumberEffect.NavigateBack)
@@ -61,8 +76,9 @@ class LoginWithPhoneNumberViewModel(
     }
 
     private fun verifyPhoneNumber() {
-        val currentNumber = _uiState.value.phoneNumber
-        if (currentNumber.length != 10) return
+        val state = _uiState.value
+        if (!state.isNextEnabled) return
+        val currentNumber = state.phoneNumber
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

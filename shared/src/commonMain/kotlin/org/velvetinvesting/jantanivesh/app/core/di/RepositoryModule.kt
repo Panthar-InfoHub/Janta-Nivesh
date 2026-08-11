@@ -17,6 +17,8 @@ import org.velvetinvesting.jantanivesh.app.features.fd.data.repository.FixedDepo
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.repository.FixedDepositRepository
 import org.velvetinvesting.jantanivesh.app.features.kyc.data.repository.MFKYCRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.repository.MFKYCRepository
+import org.velvetinvesting.jantanivesh.app.features.kycnew.data.repository.OnboardingRepoImpl as KycNewOnboardingRepoImpl
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.repository.OnboardingRepo as KycNewOnboardingRepo
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.repository.MutualFundRepo
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.repository.MutualFundRepository
 import org.velvetinvesting.jantanivesh.app.features.tradingaccount.data.repository.TradingAccountRepoImpl
@@ -26,6 +28,8 @@ import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.Goal
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.UserFinance
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.UserFinanceRepo
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.repository.PortfolioRepoImpl
+import org.velvetinvesting.jantanivesh.app.features.plans.data.repository.PlansRepoImpl
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.repository.PlansRepo
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.repository.PortfolioRepo
 
 val repositoryModule = module {
@@ -42,4 +46,6 @@ val repositoryModule = module {
     single<GoalsRepository> { GoalsRepositoryImpl(get()) }
     single<UserFinance> { UserFinanceRepo(get()) }
     single<PortfolioRepo> { PortfolioRepoImpl(get()) }
+    single<KycNewOnboardingRepo> { KycNewOnboardingRepoImpl(get(),get()) }
+    single<PlansRepo> { PlansRepoImpl(get()) }
 }
