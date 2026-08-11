@@ -11,6 +11,22 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.LinkKycD
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycFormDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycImageUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycSignatureUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.ConfirmMandateUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.CreateMandateUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.GetKycFormStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.GetPANVerificationStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.InitiateKycFormUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.InitiatePANVerificationUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.SubmitInvestorProfileUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.SubmitNomineesUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.SubmitPennyDropUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.UploadKycFormSignatureUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CreatePurchasePlanUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetPurchasePlanUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetPurchasePlansUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetSchemePlansUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.RequestPurchasePlanOtpUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyPurchasePlanOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginWithNumberUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.VerifyOTPUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddBundleToCartLumpsumUseCase
@@ -67,6 +83,26 @@ val useCaseModule = module {
     factory { GetESignUrlUseCase(get()) }
     factory { FinalizeKycUseCase(get()) }
 
+    // New Onboarding UseCases
+    factory { InitiatePANVerificationUseCase(get()) }
+    factory { GetPANVerificationStatusUseCase(get()) }
+    factory { InitiateKycFormUseCase(get()) }
+    factory { GetKycFormStatusUseCase(get()) }
+    factory { UploadKycFormSignatureUseCase(get()) }
+    factory { SubmitPennyDropUseCase(get()) }
+    factory { SubmitInvestorProfileUseCase(get()) }
+    factory { SubmitNomineesUseCase(get()) }
+    factory { CreateMandateUseCase(get()) }
+    factory { ConfirmMandateUseCase(get()) }
+
+    // Plans UseCases
+    factory { GetSchemePlansUseCase(get()) }
+    factory { GetPurchasePlansUseCase(get()) }
+    factory { CreatePurchasePlanUseCase(get()) }
+    factory { GetPurchasePlanUseCase(get()) }
+    factory { RequestPurchasePlanOtpUseCase(get()) }
+    factory { VerifyPurchasePlanOtpUseCase(get()) }
+
     //Trading Account UseCases
     factory { GetTradingAccountPrefilledDataUseCase(get()) }
     factory { VerifyPANUseCase(get()) }
@@ -97,7 +133,7 @@ val useCaseModule = module {
     factory { RedeemPartialFundUseCase(get()) }
 
     // Goals UseCases
-    factory { org.velvetinvesting.jantanivesh.app.features.goals.domain.usecases.GetPortfolioUseCase(get()) }
+    factory { GetPortfolioUseCase(get()) }
 
     // Portfolio UseCases
     factory { GetPortfolioUseCase(get()) }

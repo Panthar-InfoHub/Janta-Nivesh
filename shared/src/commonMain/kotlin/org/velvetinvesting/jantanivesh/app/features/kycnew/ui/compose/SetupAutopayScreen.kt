@@ -3,9 +3,11 @@ package org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,12 +48,14 @@ fun SetupAutopayScreen(
         modifier = modifier
             .fillMaxSize()
             .background(color = White)
-            .padding(Spacing.dp20)
+            .padding(horizontal=Spacing.dp20)
             .clearFocusOnTap()
+            .imePadding()
     ) {
         LazyColumn(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
+            contentPadding = PaddingValues(top = Spacing.dp24)
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
@@ -137,6 +141,7 @@ fun SetupAutopayScreen(
                 AppButton(
                     text = "Set Autopay",
                     onClick = { handleEvent(SetupAutopayEvent.OnSetAutopayClick) },
+                    loading = state.isLoading,
                     modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24).genericDropShadow()
                 )
             }

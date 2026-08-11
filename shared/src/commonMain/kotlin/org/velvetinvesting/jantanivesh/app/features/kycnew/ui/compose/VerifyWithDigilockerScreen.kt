@@ -5,9 +5,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -55,11 +57,14 @@ fun VerifyWithDigilockerScreen(
         modifier = modifier
             .fillMaxSize()
             .background(White)
-            .padding(Spacing.dp24)
+            .padding(horizontal=Spacing.dp20)
+            .imePadding()
+
     ) {
         LazyColumn(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp32)
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp32),
+            contentPadding = PaddingValues(top = Spacing.dp24)
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
@@ -104,6 +109,7 @@ fun VerifyWithDigilockerScreen(
         AppButton(
             text = "Proceed to Digilocker",
             onClick = { handleEvent(VerifyWithDigilockerEvent.OnProceedClick) },
+            loading = state.isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = Spacing.dp24)

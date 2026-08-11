@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
@@ -34,7 +35,9 @@ sealed interface EnterOtpEvent {
 }
 
 sealed interface EnterOtpEffect {
-    data object NavigateOnboardingFlow : EnterOtpEffect
+    data class NavigateOnboardingFlow(
+        val stage: OnboardingStage
+    ) : EnterOtpEffect
     data object NavigateToMainAppFlow : EnterOtpEffect
     data object NavigateBack : EnterOtpEffect
      data class ShowToast(val message: String) : EnterOtpEffect
@@ -99,7 +102,7 @@ class EnterOtpViewModel(
                     if (it.onboarded) {
                         sendEffect(EnterOtpEffect.NavigateToMainAppFlow)
                     } else {
-                        sendEffect(EnterOtpEffect.NavigateOnboardingFlow)
+                        sendEffect(EnterOtpEffect.NavigateOnboardingFlow(it.stage))
                     }
                 }
                 .onError {

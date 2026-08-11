@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.login.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.login.ui.screens
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

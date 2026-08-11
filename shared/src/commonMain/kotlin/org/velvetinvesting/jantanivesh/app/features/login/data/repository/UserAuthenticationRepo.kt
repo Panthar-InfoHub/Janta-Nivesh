@@ -6,6 +6,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.networking.getUrl
@@ -79,9 +80,10 @@ class UserAuthenticationRepo(
 
                 authPrefs.setBearerToken(dto.token)
                 authPrefs.setRefreshToken(dto.refresh_token)
-                authPrefs.setUserId(dto.user.user_id)
-                authPrefs.setOnboardingCompleted(dto.user.metadata.is_onboarding_completed)
                 authPrefs.setLoggedIn(true)
+                authPrefs.setOnboardingCompleted(dto.onboarding.is_completed)
+                authPrefs.setOnboardingStage(OnboardingStage.fromIdOrDefault(dto.onboarding.current_stage).id)
+                authPrefs.setUserId(dto.user.user_id)
                 authPrefs.setPhoneNumber(dto.user.phone_no)
 
                 NetworkResponse.Success(

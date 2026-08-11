@@ -9,9 +9,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
-import org.velvetinvesting.jantanivesh.app.features.login.ui.compose.EnterOtpScreen
-import org.velvetinvesting.jantanivesh.app.features.login.ui.compose.LoginWithPhoneNumberScreen
-import org.velvetinvesting.jantanivesh.app.features.login.ui.compose.OnboardingChooseLanguage
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
+import org.velvetinvesting.jantanivesh.app.features.login.ui.screens.EnterOtpScreen
+import org.velvetinvesting.jantanivesh.app.features.login.ui.screens.LoginWithPhoneNumberScreen
+import org.velvetinvesting.jantanivesh.app.features.login.ui.screens.OnboardingChooseLanguage
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageEffect
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpEffect
@@ -19,17 +20,38 @@ import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtp
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberEffect
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberViewModel
+import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.compose.SplashScreen
+import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenEffect
+import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenViewModel
 
 @Composable
 fun LoginNavigation(
-    navigateToOnboardingGraph: () -> Unit,
+    navigateToOnboardingGraph: (stage: OnboardingStage) -> Unit,
     navigateToMainAppFlow: () -> Unit
 ){
     val navController = rememberNavController()
     NavHost(
-        startDestination = Route.ChooseLanguage,
+        startDestination = Route.SplashScreen,
         navController = navController
     ) {
+        composable<Route.SplashScreen> {
+            val viewModel: SplashScreenViewModel = koinViewModel()
+            LaunchedEffect(Unit){
+                viewModel.effect.collect { effect ->
+                    when(effect){
+                        SplashScreenEffect.OnGetStartedClick -> {
+                            navController.navigate(Route.ChooseLanguage){
+                                launchSingleTop=true
+                            }
+                        }
+                    }
+                }
+            }
+
+            SplashScreen(
+                handleEvent = viewModel::handleEvent,
+            )
+        }
         composable<Route.ChooseLanguage> {
             val viewModel: ChooseLanguageViewModel = koinViewModel()
             val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -87,8 +109,8 @@ fun LoginNavigation(
             LaunchedEffect(viewModel.effect) {
                 viewModel.effect.collect { effect ->
                     when (effect) {
-                        EnterOtpEffect.NavigateOnboardingFlow -> {
-                           navigateToOnboardingGraph()
+                        is EnterOtpEffect.NavigateOnboardingFlow -> {
+                           navigateToOnboardingGraph(effect.stage)
                         }
                         EnterOtpEffect.NavigateBack -> {
                             navController.popBackStack()

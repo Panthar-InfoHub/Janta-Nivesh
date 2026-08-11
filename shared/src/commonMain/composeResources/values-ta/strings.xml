@@ -245,7 +245,7 @@
     <string name="name_as_per_pan">பெயர் (PAN படி)</string>
     <string name="dob_as_per_pan">பிறந்த தேதி (PAN படி)</string>
     <string name="verification_amount_kyc">₹1 சரிபார்ப்புத் தொகை உடனடியாக உங்கள் கணக்கில் மீண்டும் வரவு வைக்கப்படும். இந்த செயல்முறை 100% பாதுகாப்பானது மற்றும் RBI விதிமுறைகளின்படி உள்ளது.</string>
-    <string name="agreement_text">இந்த ஒப்புதலைச் சமர்ப்பிப்பதன் மூலம், Zeny தனது தயாரிப்புகளைப் பற்றி எனக்கு அழைப்பு/SMS/WhatsApp/மின்னஞ்சல் செய்ய அங்கீகாரம் அளிக்கிறேன், மேலும் பயன்பாட்டு விதிமுறைகள் மற்றும் தனியுரிமைக் கொள்கையை நான் ஏற்றுக்கொண்டேன். நான் அங்கீகரிக்கிறேன்</string>
+    <string name="agreement_text">இந்த ஒப்புதலைச் சமர்ப்பிப்பதன் மூலம், Janta Nivesh தனது தயாரிப்புகளைப் பற்றி எனக்கு அழைப்பு/SMS/WhatsApp/மின்னஞ்சல் செய்ய அங்கீகாரம் அளிக்கிறேன், மேலும் பயன்பாட்டு விதிமுறைகள் மற்றும் தனியுரிமைக் கொள்கையை நான் ஏற்றுக்கொண்டேன். நான் அங்கீகரிக்கிறேன்</string>
     <string name="what_is_your_email_id">உங்கள் மின்னஞ்சல் ஐடி என்ன?</string>
     <string name="email_id_label">மின்னஞ்சல் ஐடி</string>
     <string name="email_subtitle">உங்கள் கணக்கைப் பாதுகாப்பாக வைத்திருக்கவும் முக்கியமான அறிவிப்புகளை அனுப்பவும் இதை நாங்கள் பயன்படுத்துவோம்.</string>
@@ -277,4 +277,11 @@
     <string name="set_up_upi_autopay">UPI தானியங்கி கட்டணத்தை அமைக்கவும்</string>
     <string name="upi_autopay_subtitle">ஒருமுறை அனுமதி அளிக்கவும், உங்கள் SIP ஒவ்வொரு மாதமும் தானாகவே இயங்கும்</string>
     <string name="important_note_desc">உங்கள் வங்கி அறிக்கை மற்றும் UPI பயன்பாட்டில் Cybrilla என்று தோன்றும் — இது ஜனதா நிவேஷிற்காக இந்த மியூச்சுவல் ஃபண்ட் பரிவர்த்தனைகளைச் செய்யும் அதிகாரப்பூர்வ கூட்டாளர்</string>
+    <string name="nominee_document_number">ஆவண எண்</string>
+    <string name="nominee_document_pan">பான்</string>
+    <string name="nominee_document_aadhaar">ஆதார் (கடைசி 4 இலக்கங்கள்)</string>
+    <string name="nominee_document_driving_licence">ஓட்டுநர் உரிமம்</string>
+    <string name="nominee_document_oci_passport">ஓசிஐ / கடவுச்சீட்டு</string>
+    <string name="login_mobile_ownership_declaration">இந்த மொபைல் எண் எனக்குச் சொந்தமானது என்றும் என் பெயரில் பதிவு செய்யப்பட்டுள்ளது என்றும் அறிவிக்கிறேன்.</string>
+    <string name="login_terms_acceptance">ஜனதா நிவேஷின் விதிமுறைகள் மற்றும் நிபந்தனைகள் மற்றும் தனியுரிமைக் கொள்கையைப் படித்து ஏற்றுக்கொள்கிறேன்.</string>
 </resources>

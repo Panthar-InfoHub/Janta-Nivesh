@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
 import kotlinx.serialization.Serializable
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
 
 @Serializable
@@ -19,7 +20,10 @@ sealed interface Route {
     data class EnterOtp(val phoneNumber: String) : Route
 
     @Serializable
-    data object OnboardingGraph : Route
+    data object SplashScreen : Route
+
+    @Serializable
+    data class OnboardingGraph(val stage: String) : Route
 
     @Serializable
     data object EnterName : Route
@@ -52,6 +56,25 @@ sealed interface Route {
 
     @Serializable
     data object MainAppGraph : Route
+
+    // Plans flow
+    @Serializable
+    data object PlansHome : Route
+
+    @Serializable
+    data object ChoosePlan : Route
+
+    /** Everything shown on the success screen, carried from the confirm response. */
+    @Serializable
+    data class PurchaseSuccess(
+        val schemeName: String,
+        val amount: String,
+        val installmentDay: Int,
+        val startDate: String
+    ) : Route
+
+    @Serializable
+    data object Redeem : Route
 
     @Serializable
     data object TradingAccountNavigation: Route
@@ -234,4 +257,26 @@ sealed interface Route {
         val title: String? = null,
         val completionRouteKey: String? = null
     ): Route
+
+    @Serializable
+    data object OnboardingKYCSplash: Route
+    @Serializable
+    data object OnboardingEmail: Route
+    @Serializable
+    data object OnboardingPANVerification: Route
+
+    @Serializable
+    data object OnboardingKYCInitiation: Route
+    @Serializable
+    data object OnboardingSignatureUpload: Route
+    @Serializable
+    data object OnboardingBankVerification: Route
+    @Serializable
+    data object OnboardingNominee: Route
+
+    /** [email] is collected on [OnboardingEmail], which always runs immediately before this. */
+    @Serializable
+    data class OnboardingProfile(val email: String): Route
+    @Serializable
+    data object OnboardingAutopay: Route
 }

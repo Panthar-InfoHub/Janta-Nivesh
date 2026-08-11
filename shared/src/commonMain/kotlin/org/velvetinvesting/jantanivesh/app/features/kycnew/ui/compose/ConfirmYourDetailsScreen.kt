@@ -4,18 +4,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +30,8 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
@@ -37,6 +46,7 @@ import jantanivesh.shared.generated.resources.nsdl_details
 import jantanivesh.shared.generated.resources.pan_label
 import jantanivesh.shared.generated.resources.verify_your_info
 import org.jetbrains.compose.resources.stringResource
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
@@ -46,12 +56,14 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ConfirmYourDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ConfirmYourDetailsUiState
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.OnboardingInput
 
 @Composable
 fun ConfirmYourDetailsScreen(
@@ -59,17 +71,30 @@ fun ConfirmYourDetailsScreen(
     handleEvent: (ConfirmYourDetailsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    AppDatePicker(
+        show = showDatePicker,
+        selectedDate = null,
+        onDismiss = { showDatePicker = false },
+        onDateSelected = { millis ->
+            handleEvent(ConfirmYourDetailsEvent.OnDobChange(formatMillisToIsoDate(millis)))
+        }
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(Spacing.dp24)
+            .padding(horizontal = Spacing.dp24)
             .clearFocusOnTap()
+            .imePadding()
     ) {
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp18)
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp18),
+            contentPadding = PaddingValues(top = Spacing.dp24)
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
@@ -99,8 +124,15 @@ fun ConfirmYourDetailsScreen(
                     title = "PAN/ " + stringResource(Res.string.pan_label),
                     value = state.pan,
                     onValueChange = { handleEvent(ConfirmYourDetailsEvent.OnPanChange(it)) },
-                    placeholder = "",
-                    keyboardType = KeyboardType.Text
+                    placeholder = "ABCDE1234F",
+                    mandatory = true,
+                    keyboardType = KeyboardType.Text,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Characters,
+                        autoCorrectEnabled = false,
+                        imeAction = ImeAction.Next
+                    ),
+                    isError = state.pan.isNotEmpty() && !OnboardingInput.isValidPan(state.pan)
                 )
             }
 
@@ -110,17 +142,20 @@ fun ConfirmYourDetailsScreen(
                     value = state.name,
                     onValueChange = { handleEvent(ConfirmYourDetailsEvent.OnNameChange(it)) },
                     placeholder = "",
-                    keyboardType = KeyboardType.Text
+                    mandatory = true,
+                    keyboardType = KeyboardType.Text,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next
+                    )
                 )
             }
 
             item {
-                TitledAppTextField(
+                TitledDateField(
                     title = "Date of Birth (as per PAN)/ " + stringResource(Res.string.dob_as_per_pan),
                     value = state.dob,
-                    onValueChange = { handleEvent(ConfirmYourDetailsEvent.OnDobChange(it)) },
-                    placeholder = "",
-                    keyboardType = KeyboardType.Text
+                    onClick = { showDatePicker = true }
                 )
             }
 
@@ -142,6 +177,8 @@ fun ConfirmYourDetailsScreen(
         AppButton(
             text = "Proceed",
             onClick = { handleEvent(ConfirmYourDetailsEvent.OnProceedClick) },
+            loading = state.isLoading,
+            enabled = state.canSubmit,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = Spacing.dp24)
@@ -179,7 +216,7 @@ private fun SecureAndSafeCard(
 
         val annotatedString = buildAnnotatedString {
             withStyle(SpanStyle(color = Primary, fontSize = 16.sp)) {
-                append("By submitting this consent, I authorize Zeny to call/ SMS/ WhatsApp/ email me about its products & have accepted the ")
+                append("By submitting this consent, I authorize Janta Nivesh to call/ SMS/ WhatsApp/ email me about its products & have accepted the ")
             }
 
             val termsLink = LinkAnnotation.Clickable("TERMS") {
@@ -205,23 +242,9 @@ private fun SecureAndSafeCard(
             }
 
             withStyle(SpanStyle(color = Primary, fontSize = 16.sp)) {
-                append(" I authorize  ")
+                append(" I authorize /  ")
             }
 
-            val readMoreLink = LinkAnnotation.Clickable("READ_MORE") {
-                onReadMoreClick()
-            }
-            withLink(readMoreLink) {
-                withStyle(
-                    SpanStyle(
-                        color = Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append("Read More")
-                }
-            }
             withStyle(SpanStyle(color = Primary, fontSize = 16.sp)){
                 append(stringResource(Res.string.agreement_text))
             }
@@ -233,7 +256,7 @@ private fun SecureAndSafeCard(
     }
 }
 
-@Preview(locale = "hi")
+@Preview(locale = "hi", showBackground = true)
 @Composable
 fun ConfirmYourDetailsScreenPreview(){
     JantaNiveshTheme {

@@ -3,6 +3,8 @@ package org.velvetinvesting.jantanivesh.app.core.di
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.velvetinvesting.jantanivesh.app.core.datastore.createIosDataStore
+import org.velvetinvesting.jantanivesh.app.core.location.IosLocationProvider
+import org.velvetinvesting.jantanivesh.app.core.location.LocationProvider
 import org.velvetinvesting.jantanivesh.app.core.platform.IosSharedPreferences
 import org.velvetinvesting.jantanivesh.app.core.platform.PdfDownloadManager
 import org.velvetinvesting.jantanivesh.app.core.platform.PdfDownloaderIos
@@ -21,4 +23,5 @@ actual val platformModule: Module = module {
     single<PdfViewer>{ PdfViewerIos() }
     single<BrowserLauncher> { IOSBrowserLauncher() }
     single<PdfDownloadManager> { PdfDownloaderIos(get()) }
+    single<LocationProvider> { IosLocationProvider() }
 }

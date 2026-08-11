@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +36,7 @@ import jantanivesh.shared.generated.resources.ic_pagerbackground
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.ImageSize
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.PagerImageCircle
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
@@ -48,7 +50,6 @@ import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.S
 
 @Composable
 fun SplashScreen(
-    state: SplashScreenUiState,
     handleEvent: (SplashScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -61,19 +62,29 @@ fun SplashScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-        Column(modifier = Modifier.padding(top = Spacing.dp48).padding(horizontal = Spacing.dp24), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxHeight().padding(top = Spacing.dp48)
+                .padding(horizontal = Spacing.dp24),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = Spacing.dp22).weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = Spacing.dp22)
             ) {
                 HorizontalPager(
                     state = pagerState,
-                    pageSpacing = Spacing.dp12
+                    pageSpacing = Spacing.dp12,
+                    verticalAlignment = Alignment.Top,
+                    modifier = Modifier.fillMaxSize()
                 ) { page ->
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Box(modifier = Modifier.clip(RoundedCornerShape(Spacing.dp40)).aspectRatio(1f)) {
+                        Box(
+                            modifier = Modifier.clip(LocalShapes.current.roundedDp24)
+                                .aspectRatio(1f)
+                        ) {
                             Image(
                                 painter = painterResource(pagerImageList[page].image),
                                 contentDescription = "Pager Image",
@@ -102,7 +113,6 @@ fun SplashScreen(
             }
             Row(
                 Modifier
-                    .wrapContentHeight()
                     .padding(bottom = Spacing.dp24),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
             ) {
@@ -123,7 +133,7 @@ fun SplashScreen(
             AppButton(
                 text = "Get Started",
                 onClick = { handleEvent(SplashScreenEvent.OnGetStartedClick) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.dp8)
             )
         }
     }
@@ -133,6 +143,6 @@ fun SplashScreen(
 @Composable
 fun SplashScreenPreview() {
     JantaNiveshTheme {
-        SplashScreen(state = SplashScreenUiState(), handleEvent = {})
+        SplashScreen(handleEvent = {})
     }
 }

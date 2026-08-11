@@ -8,13 +8,24 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.GetPANVerificationStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.InitiatePANVerificationUseCase
 
 data class ConfirmYourDetailsUiState(
     val pan: String = "",
     val name: String = "",
     val dob: String = "",
-    val isConsentChecked: Boolean = true
-)
+    val isConsentChecked: Boolean = false,
+    val isLoading: Boolean = false
+) {
+    val canSubmit: Boolean
+        get() = isConsentChecked &&
+                OnboardingInput.isValidPan(pan) &&
+                OnboardingInput.isFilled(name) &&
+                OnboardingInput.isValidIsoDate(dob)
+}
 
 sealed interface ConfirmYourDetailsEvent {
     data class OnPanChange(val pan: String) : ConfirmYourDetailsEvent
@@ -28,13 +39,17 @@ sealed interface ConfirmYourDetailsEvent {
 }
 
 sealed interface ConfirmYourDetailsEffect {
-    data object OnProceedClick : ConfirmYourDetailsEffect
+    data object PanVerified : ConfirmYourDetailsEffect
+    data object NavigateToKycInitiate : ConfirmYourDetailsEffect
     data object OpenTermsUrl : ConfirmYourDetailsEffect
     data object OpenPrivacyUrl : ConfirmYourDetailsEffect
     data object OpenReadMoreUrl : ConfirmYourDetailsEffect
 }
 
-class ConfirmYourDetailsViewModel : ViewModel() {
+class ConfirmYourDetailsViewModel(
+    private val initiatePANVerification: InitiatePANVerificationUseCase,
+    private val getPANVerificationStatus: GetPANVerificationStatusUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(ConfirmYourDetailsUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -55,17 +70,15 @@ class ConfirmYourDetailsViewModel : ViewModel() {
     }
 
     private fun onPanChange(pan: String) {
-        // TODO: Add PAN validation or formatting here later
-        _uiState.update { it.copy(pan = pan) }
+        _uiState.update { it.copy(pan = OnboardingInput.sanitizePan(pan)) }
     }
 
     private fun onNameChange(name: String) {
-        // TODO: Add Name validation or formatting here later
-        _uiState.update { it.copy(name = name) }
+        _uiState.update { it.copy(name = OnboardingInput.sanitizeName(name)) }
     }
 
+    /** Always arrives as `yyyy-MM-dd` from the date picker; the field itself is read-only. */
     private fun onDobChange(dob: String) {
-        // TODO: Add DOB validation or formatting here later
         _uiState.update { it.copy(dob = dob) }
     }
 
@@ -74,8 +87,45 @@ class ConfirmYourDetailsViewModel : ViewModel() {
     }
 
     private fun onProceedClick() {
-        // TODO: Add any pre-proceed logic here
-        sendEffect(ConfirmYourDetailsEffect.OnProceedClick)
+        val state = _uiState.value
+        if (state.isLoading || !state.canSubmit) return
+
+        viewModelScope.launch {
+            setLoading(true)
+
+            val initiateResult = initiatePANVerification(
+                pan = state.pan,
+                name = state.name,
+                dob = state.dob
+            )
+
+            when (initiateResult) {
+                is NetworkResponse.Error -> {
+                    setLoading(false)
+                    SnackBarController.showError(initiateResult.error.message)
+                }
+
+                is NetworkResponse.Success -> checkVerificationStatus()
+            }
+        }
+    }
+
+    private suspend fun checkVerificationStatus() {
+        when (val statusResult = getPANVerificationStatus()) {
+            is NetworkResponse.Success -> {
+                setLoading(false)
+                sendEffect(ConfirmYourDetailsEffect.PanVerified)
+            }
+
+            is NetworkResponse.Error -> {
+                setLoading(false)
+                if (statusResult.error.isNewKycRequired) {
+                    sendEffect(ConfirmYourDetailsEffect.NavigateToKycInitiate)
+                } else {
+                    SnackBarController.showError(statusResult.error.message)
+                }
+            }
+        }
     }
 
     private fun onTermsClick() {
@@ -88,6 +138,10 @@ class ConfirmYourDetailsViewModel : ViewModel() {
 
     private fun onReadMoreClick() {
         sendEffect(ConfirmYourDetailsEffect.OpenReadMoreUrl)
+    }
+
+    private fun setLoading(loading: Boolean) {
+        _uiState.update { it.copy(isLoading = loading) }
     }
 
     private fun sendEffect(effect: ConfirmYourDetailsEffect) {

@@ -245,7 +245,7 @@
     <string name="name_as_per_pan">નામ (PAN મુજબ)</string>
     <string name="dob_as_per_pan">જન્મ તારીખ (PAN મુજબ)</string>
     <string name="verification_amount_kyc">₹1 ની વેરિફિકેશન રકમ તરત જ તમારા એકાઉન્ટમાં પરત જમા કરવામાં આવશે. આ પ્રક્રિયા 100% સુરક્ષિત અને RBI ના નિયમો મુજબ છે.</string>
-    <string name="agreement_text">આ સંમતિ સબમિટ કરીને, હું Zeny ને તેના ઉત્પાદનો વિશે મને કૉલ/SMS/WhatsApp/ઇમેઇલ કરવા માટે અધિકૃત કરું છું અને મેં ઉપયોગની શરતો અને ગોપનીયતા નીતિ સ્વીકારી છે. હું અધિકૃત કરું છું</string>
+    <string name="agreement_text">આ સંમતિ સબમિટ કરીને, હું Janta Nivesh ને તેના ઉત્પાદનો વિશે મને કૉલ/SMS/WhatsApp/ઇમેઇલ કરવા માટે અધિકૃત કરું છું અને મેં ઉપયોગની શરતો અને ગોપનીયતા નીતિ સ્વીકારી છે. હું અધિકૃત કરું છું</string>
     <string name="what_is_your_email_id">તમારું ઇમેઇલ આઈડી શું છે?</string>
     <string name="email_id_label">ઇમેઇલ આઈડી</string>
     <string name="email_subtitle">અમે તમારા એકાઉન્ટને સુરક્ષિત રાખવા અને મહત્વપૂર્ણ અપડેટ્સ મોકલવા માટે આનો ઉપયોગ કરીશું.</string>
@@ -277,4 +277,11 @@
     <string name="set_up_upi_autopay">UPI ઓટોપે સેટ કરો</string>
     <string name="upi_autopay_subtitle">એકવાર મંજૂરી આપો, તમારી SIP દર મહિને આપમેળે ચાલશે</string>
     <string name="important_note_desc">તમારા બેંક સ્ટેટમેન્ટ અને UPI એપમાં સાયબ્રિલા (Cybrilla) નું નામ દેખાશે — આ સત્તાવાર ભાગીદાર છે જે જનતા નિવેશ માટે આ મ્યુચ્યુઅલ-ફંડ ટ્રાન્ઝેક્શન પ્રોસેસ કરે છે</string>
+    <string name="nominee_document_number">દસ્તાવેજ નંબર</string>
+    <string name="nominee_document_pan">પાન</string>
+    <string name="nominee_document_aadhaar">આધાર (છેલ્લા 4 અંક)</string>
+    <string name="nominee_document_driving_licence">ડ્રાઇવિંગ લાઇસન્સ</string>
+    <string name="nominee_document_oci_passport">ઓસીઆઈ / પાસપોર્ટ</string>
+    <string name="login_mobile_ownership_declaration">હું જાહેર કરું છું કે આ મોબાઇલ નંબર મારો છે અને મારા પોતાના નામે નોંધાયેલ છે.</string>
+    <string name="login_terms_acceptance">મેં જનતા નિવેશની નિયમો અને શરતો તથા ગોપનીયતા નીતિ વાંચી છે અને સ્વીકારું છું.</string>
 </resources>

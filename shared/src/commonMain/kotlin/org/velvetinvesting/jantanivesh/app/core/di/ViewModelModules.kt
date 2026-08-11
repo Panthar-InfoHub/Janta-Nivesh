@@ -17,8 +17,13 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenV
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.AddNomineeViewModel
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ConfirmYourDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.EmailIdViewModel
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.KycSplashViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ReviewProfileViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.SetupAutopayViewModel
+import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.UploadSignatureViewModel
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyBankAccountViewModel
 import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyWithDigilockerViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.AllBundlesViewModel
@@ -27,6 +32,8 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.Cart
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CategoryMutualFundViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundSearchResultViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.ChoosePlanViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.RedeemViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileViewModel
@@ -37,6 +44,7 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.Projecte
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.*
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.NotificationViewModel
+import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenViewModel
 
 val viewModelModule = module {
 
@@ -45,6 +53,7 @@ val viewModelModule = module {
     viewModel { EnterOtpViewModel(get(),get()) }
 
     viewModel { OnboardingViewModel(get()) }
+    viewModel { SplashScreenViewModel() }
 
     viewModel {(id:String)-> FdDetailsViewModel(id ,get()) }
     viewModel { ExploreFdViewModel(get()) }
@@ -56,10 +65,19 @@ val viewModelModule = module {
     viewModel { TradingAccountViewModel(get(), get(), get(), get()) }
 
     // KycNew ViewModels
-    viewModel { ConfirmYourDetailsViewModel() }
+    viewModel { ConfirmYourDetailsViewModel(get(), get()) }
+    viewModel { EmailIdViewModel() }
     viewModel { KycSplashViewModel() }
-    viewModel { VerifyBankAccountViewModel() }
-    viewModel { VerifyWithDigilockerViewModel() }
+    viewModel { VerifyBankAccountViewModel(get()) }
+    viewModel { VerifyWithDigilockerViewModel(get(), get()) }
+    viewModel { UploadSignatureViewModel(get()) }
+    viewModel { (email: String) -> ReviewProfileViewModel(email, get(), get(), get()) }
+    viewModel { AddNomineeViewModel(get()) }
+    viewModel { SetupAutopayViewModel(get(), get()) }
+
+    // Plans ViewModels
+    viewModel { ChoosePlanViewModel(get(), get(), get(), get(), get()) }
+    viewModel { RedeemViewModel(get()) }
 
     viewModel { AllBundlesViewModel(get()) }
     viewModel { (bundleKey: String) -> BundleResultViewModel(bundleKey, get(), get(), get()) }

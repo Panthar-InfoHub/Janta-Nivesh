@@ -11,8 +11,11 @@ import kotlinx.coroutines.launch
 
 data class EmailIdUiState(
     val email: String = "",
-    val isConsentChecked: Boolean = true
-)
+    val isConsentChecked: Boolean = false
+) {
+    val canSubmit: Boolean
+        get() = isConsentChecked && OnboardingInput.isValidEmail(email)
+}
 
 sealed interface EmailIdEvent {
     data class OnEmailChange(val email: String) : EmailIdEvent
@@ -22,7 +25,8 @@ sealed interface EmailIdEvent {
 }
 
 sealed interface EmailIdEffect {
-    data object NavigateToNext : EmailIdEffect
+    /** Carries the address forward — the next screen shows it back to the user. */
+    data class EmailSubmitted(val email: String) : EmailIdEffect
 }
 
 class EmailIdViewModel : ViewModel() {
@@ -42,20 +46,20 @@ class EmailIdViewModel : ViewModel() {
     }
 
     private fun onEmailChange(email: String) {
-        _uiState.update { it.copy(email = email) }
+        _uiState.update { it.copy(email = OnboardingInput.sanitizeEmail(email)) }
     }
 
     private fun onGmailSuffixClick() {
         _uiState.update { state ->
             val currentEmail = state.email
 
-            val newEmail = if (currentEmail.contains("@")) {
+            val newEmail = if (currentEmail.contains("@") || currentEmail.isEmpty()) {
                 currentEmail
             } else {
                 "$currentEmail@gmail.com"
             }
 
-            state.copy(email = newEmail)
+            state.copy(email = OnboardingInput.sanitizeEmail(newEmail))
         }
     }
 
@@ -64,7 +68,9 @@ class EmailIdViewModel : ViewModel() {
     }
 
     private fun onSubmitClick() {
-        sendEffect(EmailIdEffect.NavigateToNext)
+        val state = _uiState.value
+        if (!state.canSubmit) return
+        sendEffect(EmailIdEffect.EmailSubmitted(state.email.trim()))
     }
 
     private fun sendEffect(effect: EmailIdEffect) {
