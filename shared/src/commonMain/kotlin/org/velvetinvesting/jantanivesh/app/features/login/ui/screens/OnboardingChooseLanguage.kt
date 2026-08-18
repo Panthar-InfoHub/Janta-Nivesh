@@ -26,9 +26,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.choose_languages
+import jantanivesh.shared.generated.resources.choose_languages_subtitle
 import jantanivesh.shared.generated.resources.continue_text
+import jantanivesh.shared.generated.resources.default_system_language
+import jantanivesh.shared.generated.resources.english
 import jantanivesh.shared.generated.resources.lock_icon
 import jantanivesh.shared.generated.resources.lock_icon_desc
+import jantanivesh.shared.generated.resources.primary_language
+import jantanivesh.shared.generated.resources.secondary_language
 import jantanivesh.shared.generated.resources.tick_icon
 import jantanivesh.shared.generated.resources.tick_icon_desc
 import org.jetbrains.compose.resources.painterResource
@@ -67,17 +73,18 @@ fun OnboardingChooseLanguage(
         ) {
 
             Text(
-                "Choose Languages",
+                text = "Choose Languages/ " + stringResource(Res.string.choose_languages),
                 style = MaterialTheme.typography.headlineMedium
             )
             Text(
-                "English is your default primary language. Please select a secondary language.",
+                text = "English is your default primary language. Please select a secondary " +
+                        "language./ " + stringResource(Res.string.choose_languages_subtitle),
                 color = GreyText,
                 style = MaterialTheme.typography.labelSmall
             )
 
             Text(
-                "Primary Language",
+                text = "Primary Language/ " + stringResource(Res.string.primary_language),
                 style = MaterialTheme.typography.labelLarge,
                 color = PrimaryLanguageText
             )
@@ -99,13 +106,16 @@ fun OnboardingChooseLanguage(
                     modifier = Modifier.fillMaxWidth().padding(Spacing.dp20)
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
+                        // The name of the language itself, so it is not localised — the
+                        // secondary cards show their own native names for the same reason.
                         Text(
-                            "English",
+                            text = stringResource(Res.string.english),
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.Black
                         )
                         Text(
-                           "Default System Language",
+                            text = "Default System Language/ " +
+                                    stringResource(Res.string.default_system_language),
                             style = MaterialTheme.typography.titleSmall,
                             color = GreyText
                         )
@@ -120,7 +130,7 @@ fun OnboardingChooseLanguage(
             }
 
             Text(
-                "Secondary Language",
+                text = "Secondary Language/ " + stringResource(Res.string.secondary_language),
                 style = MaterialTheme.typography.labelLarge,
             )
 
@@ -212,7 +222,7 @@ private fun LanguageCard(
 }
 
 @Composable
-@Preview(showBackground = true, locale = "te")
+@Preview(showBackground = true, locale = "hi")
 fun OnboardingChooseLanguagePreview() {
     val mockLanguages = listOf(
         AppLanguage.HINDI,
