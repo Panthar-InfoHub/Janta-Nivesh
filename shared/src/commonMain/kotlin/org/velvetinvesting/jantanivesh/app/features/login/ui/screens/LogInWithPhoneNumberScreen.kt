@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.login.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,8 +23,13 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.india_code
 import jantanivesh.shared.generated.resources.login_mobile_number
 import jantanivesh.shared.generated.resources.login_mobile_ownership_declaration
+import jantanivesh.shared.generated.resources.login_prompt_action
+import jantanivesh.shared.generated.resources.login_prompt_question
 import jantanivesh.shared.generated.resources.login_terms_acceptance
 import jantanivesh.shared.generated.resources.otp_verify_identity
+import jantanivesh.shared.generated.resources.signup_mobile_number
+import jantanivesh.shared.generated.resources.signup_prompt_action
+import jantanivesh.shared.generated.resources.signup_prompt_question
 import jantanivesh.shared.generated.resources.verify
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
@@ -58,7 +64,13 @@ fun LoginWithPhoneNumberScreen(
             AppBackButton(onClick = { onEvent(LoginWithPhoneNumberEvent.OnBackClicked) })
 
             Text(
-                text = "Log in with your mobile number/" + stringResource(Res.string.login_mobile_number),
+                text = if (state.isSignUpMode) {
+                    "Sign up with your mobile number/" +
+                            stringResource(Res.string.signup_mobile_number)
+                } else {
+                    "Log in with your mobile number/" +
+                            stringResource(Res.string.login_mobile_number)
+                },
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(bottom = Spacing.dp16)
             )
@@ -109,28 +121,32 @@ fun LoginWithPhoneNumberScreen(
                     )
                 }
 
-                item {
-                    CheckBoxCard(
-                        text = "I declare that this mobile number belongs to me and is " +
-                                "registered in my own name./ " +
-                                stringResource(Res.string.login_mobile_ownership_declaration),
-                        isChecked = state.isOwnershipDeclared,
-                        onCheckedChange = {
-                            onEvent(LoginWithPhoneNumberEvent.OnOwnershipDeclarationChanged(it))
-                        }
-                    )
-                }
+                // Consents belong to account creation only; logging in reuses what was
+                // already agreed to at sign up.
+                if (state.isSignUpMode) {
+                    item {
+                        AgreementCheckBoxCard(
+                            text = "I declare that this mobile number belongs to me and is " +
+                                    "registered in my own name./ " +
+                                    stringResource(Res.string.login_mobile_ownership_declaration),
+                            isConsentChecked = state.isOwnershipDeclared,
+                            onConsentChange = {
+                                onEvent(LoginWithPhoneNumberEvent.OnOwnershipDeclarationChanged(it))
+                            }
+                        )
+                    }
 
-                item {
-                    AgreementCheckBoxCard(
-                        text = "I have read and accept the Terms & Conditions and the Privacy " +
-                                "Policy of Janta Nivesh./ " +
-                                stringResource(Res.string.login_terms_acceptance),
-                        isConsentChecked = state.areTermsAccepted,
-                        onConsentChange = {
-                            onEvent(LoginWithPhoneNumberEvent.OnTermsAcceptanceChanged(it))
-                        }
-                    )
+                    item {
+                        AgreementCheckBoxCard(
+                            text = "I have read and accept the Terms & Conditions and the Privacy " +
+                                    "Policy of Janta Nivesh./ " +
+                                    stringResource(Res.string.login_terms_acceptance),
+                            isConsentChecked = state.areTermsAccepted,
+                            onConsentChange = {
+                                onEvent(LoginWithPhoneNumberEvent.OnTermsAcceptanceChanged(it))
+                            }
+                        )
+                    }
                 }
 
                 item {
@@ -142,6 +158,13 @@ fun LoginWithPhoneNumberScreen(
                         modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24)
                     )
                 }
+
+                item {
+                    AuthModeSwitchPrompt(
+                        isSignUpMode = state.isSignUpMode,
+                        onClick = { onEvent(LoginWithPhoneNumberEvent.OnAuthModeToggled) }
+                    )
+                }
             }
 
             JantaNiveshAndVelvetLogo()
@@ -150,7 +173,62 @@ fun LoginWithPhoneNumberScreen(
     }
 }
 
-@Preview(showBackground = true, locale = "te")
+/**
+ * Separates the two flows: the question stays plain text and only the action word is
+ * tappable, on both the English and the localized line.
+ */
+@Composable
+private fun AuthModeSwitchPrompt(
+    isSignUpMode: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val questionEnglish = if (isSignUpMode) "Already have an account?" else "Don't have an account?"
+    val actionEnglish = if (isSignUpMode) "Log in" else "Sign up"
+    val questionLocalized = stringResource(
+        if (isSignUpMode) Res.string.login_prompt_question else Res.string.signup_prompt_question
+    )
+    val actionLocalized = stringResource(
+        if (isSignUpMode) Res.string.login_prompt_action else Res.string.signup_prompt_action
+    )
+
+    Column(
+        modifier = modifier.fillMaxWidth().padding(top = Spacing.dp16),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp4)
+    ) {
+        AuthModeSwitchLine(questionEnglish, actionEnglish, onClick)
+        AuthModeSwitchLine(questionLocalized, actionLocalized, onClick)
+    }
+}
+
+@Composable
+private fun AuthModeSwitchLine(
+    question: String,
+    action: String,
+    onClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = question,
+            color = GreyText,
+            style = MaterialTheme.typography.titleSmall
+        )
+        Text(
+            text = action,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .padding(start = Spacing.dp4)
+                .clickable(onClick = onClick)
+        )
+    }
+}
+
+@Preview(showBackground = true, locale = "hi")
 @Composable
 fun LoginWithPhoneNumberPreview() {
     JantaNiveshTheme {

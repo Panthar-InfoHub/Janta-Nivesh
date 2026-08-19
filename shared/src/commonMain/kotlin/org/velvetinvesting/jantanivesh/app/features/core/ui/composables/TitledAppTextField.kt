@@ -56,13 +56,13 @@ fun TitledAppTextField(
     mandatory: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8), modifier = modifier) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4), modifier = modifier) {
         if(title.isNotEmpty())
             Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     title,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
-                    color = Color(0xff44464F)
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    color = Color(0xff434843)
                 )
                 if (mandatory) Text("*", color = MaterialTheme.colorScheme.error)
             }

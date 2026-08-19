@@ -4,9 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Stages(
+    val basic_details: String,
     val kyc: String,
     val nominee: String,
     val penny_drop: String,
     val profile: String,
-    val readiness: String
+    val readiness: String,
+    val email: String
 )

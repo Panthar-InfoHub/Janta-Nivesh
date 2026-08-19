@@ -25,6 +25,11 @@
     <string name="otp_verify_identity">మీ గుర్తింపును ధృవీకరించడానికి మేము 4 అంకెల OTPని పంపుతాము</string>
     <string name="india_code">+91</string>
     <string name="verify">ధృవీకరించండి</string>
+    <string name="signup_mobile_number">మీ మొబైల్ నంబర్‌తో సైన్ అప్ చేయండి</string>
+    <string name="signup_prompt_question">ఖాతా లేదా?</string>
+    <string name="signup_prompt_action">సైన్ అప్ చేయండి</string>
+    <string name="login_prompt_question">ఇప్పటికే ఖాతా ఉందా?</string>
+    <string name="login_prompt_action">లాగిన్ అవ్వండి</string>
 
     <!-- EnterOtpScreen -->
     <string name="enter_code">కోడ్‌ను నమోదు చేయండి</string>
@@ -234,7 +239,7 @@
     <string name="cdsldp_id">సీడీఎస్ఎల్ డీపీ ఐడీ</string>
     <string name="cdsl_client_id">సీడీఎస్ఎల్ క్లయింట్ ఐడీ</string>
     <string name="cmbp_id">సీఎంబీపీ ఐడీ</string>
-    <string name="nsdl_details">ఎన్ఎస్‌డీఎల్ వివరాలు</string>
+    <string name="confirm_your_details">ఎన్ఎస్‌డీఎల్ వివరాలు</string>
     <string name="nsdl_dp_id">ఎన్ఎస్‌డీఎల్ డీపీ ఐడీ</string>
     <string name="nsdl_client_id">ఎన్ఎస్‌డీఎల్ డీపీ ఐడీ</string>
 
@@ -249,6 +254,7 @@
     <string name="email_id_label">ఇమెయిల్ ఐడి</string>
     <string name="email_subtitle">మీ ఖాతాను సురక్షితంగా ఉంచడానికి మరియు ముఖ్యమైన అప్‌డేట్‌లను పంపడానికి మేము దీనిని ఉపయోగిస్తాము.</string>
     <string name="email_declaration">ఈ ఇమెయిల్ ఐడి నాదేనని మరియు దీనిని నేనే ఉపయోగిస్తున్నానని నేను ప్రకటిస్తున్నాను. నేను ఈ ఇమెయిల్‌లో ఖాతా స్టేట్‌మెంట్, లావాదేవీ ధృవీకరణ మరియు నియంత్రణ సమాచారాన్ని పొందుతాను.</string>
+    <string name="verify_your_email">మీ ఇమెయిల్ ఐడిని ధృవీకరించండి</string>
     <string name="review_profile_title">ప్రొఫైల్‌ను సమీక్షించండి</string>
     <string name="review_profile_subtitle">దయచేసి దిగువ సమాచారాన్ని ధృవీకరించండి మరియు అవసరమైతే మార్పులు చేయండి.</string>
     <string name="full_name_label">పూర్తి పేరు</string>
@@ -283,4 +289,13 @@
     <string name="nominee_document_oci_passport">ఓసీఐ / పాస్‌పోర్ట్</string>
     <string name="login_mobile_ownership_declaration">ఈ మొబైల్ నంబర్ నాదేనని మరియు నా స్వంత పేరుపై నమోదు చేయబడిందని నేను ప్రకటిస్తున్నాను.</string>
     <string name="login_terms_acceptance">నేను జనతా నివేష్ నియమ నిబంధనలు మరియు గోప్యతా విధానాన్ని చదివి అంగీకరిస్తున్నాను.</string>
+
+    <!-- Bank Details -->
+    <string name="bank_details_title">బ్యాంకు వివరాలు</string>
+    <string name="bank_details_subtitle">చెల్లింపులను సురక్షితంగా స్వీకరించడానికి మరియు మీ ఆర్థిక సమాచారాన్ని పూర్తి చేయడానికి మీ బ్యాంక్ ఖాతా వివరాలను నమోదు చేయండి.</string>
+    <string name="bank_name_label">బ్యాంకు పేరు</string>
+    <string name="account_type_label">ఖాతా రకం</string>
+    <string name="account_holder_label">ఖాతాదారుడు</string>
+    <string name="account_number_label">ఖాతా నంబర్</string>
+    <string name="ifsc_code_label">IFSC కోడ్</string>
 </resources>

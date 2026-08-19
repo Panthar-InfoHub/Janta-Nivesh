@@ -26,6 +26,11 @@
     <string name="otp_verify_identity">તમારી ઓળખ ચકાસવા માટે અમે 4 અંકનો OTP મોકલીશું</string>
     <string name="india_code">+91</string>
     <string name="verify">ચકાસો</string>
+    <string name="signup_mobile_number">તમારા મોબાઇલ નંબરથી સાઇન અપ કરો</string>
+    <string name="signup_prompt_question">ખાતું નથી?</string>
+    <string name="signup_prompt_action">સાઇન અપ કરો</string>
+    <string name="login_prompt_question">પહેલેથી ખાતું છે?</string>
+    <string name="login_prompt_action">લૉગ ઇન કરો</string>
 
     <!-- EnterOtpScreen -->
     <string name="enter_code">કોડ દાખલ કરો</string>
@@ -172,7 +177,7 @@
     <string name="cdsldp_id">સીડીએસએલ ડીપી આઈડી</string>
     <string name="cdsl_client_id">સીડીએસએલ ક્લાયન્ટ આઈડી</string>
     <string name="cmbp_id">સીએમબીપી આઈડી</string>
-    <string name="nsdl_details">એનએસડીએલ વિગતો</string>
+    <string name="confirm_your_details">એનએસડીએલ વિગતો</string>
     <string name="nsdl_dp_id">એનએસડીએલ ડીપી આઈડી</string>
     <string name="nsdl_client_id">એનએસડીએલ ડીપી આઈડી</string>
 
@@ -250,6 +255,7 @@
     <string name="email_id_label">ઇમેઇલ આઈડી</string>
     <string name="email_subtitle">અમે તમારા એકાઉન્ટને સુરક્ષિત રાખવા અને મહત્વપૂર્ણ અપડેટ્સ મોકલવા માટે આનો ઉપયોગ કરીશું.</string>
     <string name="email_declaration">હું જાહેર કરું છું કે આ ઇમેઇલ આઈડી મારું છે અને હું તેનો ઉપયોગ કરું છું. મને આ ઇમેઇલ પર એકાઉન્ટ સ્ટેટમેન્ટ, ટ્રાન્ઝેક્શન કન્ફર્મેશન અને રેગ્યુલેટરી કમ્યુનિકેશન પ્રાપ્ત થશે.</string>
+    <string name="verify_your_email">તમારું ઇમેઇલ આઈડી ચકાસો</string>
     <string name="review_profile_title">પ્રોફાઇલની સમીક્ષા કરો</string>
     <string name="review_profile_subtitle">કૃપા કરીને નીચેની માહિતી તપાસો અને જો જરૂર હોય તો તેમાં ફેરફાર કરો.</string>
     <string name="full_name_label">પૂરું નામ</string>
@@ -284,4 +290,13 @@
     <string name="nominee_document_oci_passport">ઓસીઆઈ / પાસપોર્ટ</string>
     <string name="login_mobile_ownership_declaration">હું જાહેર કરું છું કે આ મોબાઇલ નંબર મારો છે અને મારા પોતાના નામે નોંધાયેલ છે.</string>
     <string name="login_terms_acceptance">મેં જનતા નિવેશની નિયમો અને શરતો તથા ગોપનીયતા નીતિ વાંચી છે અને સ્વીકારું છું.</string>
+
+    <!-- Bank Details -->
+    <string name="bank_details_title">બેંક વિગતો</string>
+    <string name="bank_details_subtitle">ચુકવણી સુરક્ષિત રીતે મેળવવા અને તમારી નાણાકીય માહિતી પૂર્ણ કરવા માટે તમારી બેંક એકાઉન્ટ વિગતો દાખલ કરો。</string>
+    <string name="bank_name_label">બેંકનું નામ</string>
+    <string name="account_type_label">એકાઉન્ટનો પ્રકાર</string>
+    <string name="account_holder_label">ખાતાધારક</string>
+    <string name="account_number_label">એકાઉન્ટ નંબર</string>
+    <string name="ifsc_code_label">IFSC કોડ</string>
 </resources>

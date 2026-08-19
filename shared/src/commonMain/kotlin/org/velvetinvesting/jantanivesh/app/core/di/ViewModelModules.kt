@@ -9,7 +9,6 @@ import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.Insu
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpViewModel
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingViewModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdViewModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
@@ -17,15 +16,16 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCScreenV
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCFormScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KYCImageUploaderScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.kyc.ui.viewmodels.KycContractViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.AddNomineeViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ConfirmYourDetailsViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.EmailIdViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.KycSplashViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ReviewProfileViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.SetupAutopayViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.UploadSignatureViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyBankAccountViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyWithDigilockerViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddNomineeViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.PanVerificationViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EmailIdViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EmailOtpViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.KycSplashViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.UploadSignatureViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.AllBundlesViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.BundleResultViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CartScreenViewModel
@@ -52,7 +52,6 @@ val viewModelModule = module {
     viewModel { LoginWithPhoneNumberViewModel(get()) }
     viewModel { EnterOtpViewModel(get(),get()) }
 
-    viewModel { OnboardingViewModel(get()) }
     viewModel { SplashScreenViewModel() }
 
     viewModel {(id:String)-> FdDetailsViewModel(id ,get()) }
@@ -65,13 +64,14 @@ val viewModelModule = module {
     viewModel { TradingAccountViewModel(get(), get(), get(), get()) }
 
     // KycNew ViewModels
-    viewModel { ConfirmYourDetailsViewModel(get(), get()) }
-    viewModel { EmailIdViewModel() }
+    viewModel { PanVerificationViewModel(get(), get(), get()) }
+    viewModel { EmailIdViewModel(get()) }
+    viewModel { (email: String) -> EmailOtpViewModel(email, get(), get()) }
     viewModel { KycSplashViewModel() }
     viewModel { VerifyBankAccountViewModel(get()) }
     viewModel { VerifyWithDigilockerViewModel(get(), get()) }
     viewModel { UploadSignatureViewModel(get()) }
-    viewModel { (email: String) -> ReviewProfileViewModel(email, get(), get(), get()) }
+    viewModel { ReviewProfileViewModel(get(), get(), get()) }
     viewModel { AddNomineeViewModel(get()) }
     viewModel { SetupAutopayViewModel(get(), get()) }
 

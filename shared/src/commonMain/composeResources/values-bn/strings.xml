@@ -26,6 +26,11 @@
     <string name="otp_verify_identity">আপনার পরিচয় যাচাই করতে আমরা একটি 4 অঙ্কের OTP পাঠাব</string>
     <string name="india_code">+91</string>
     <string name="verify">যাচাই করুন</string>
+    <string name="signup_mobile_number">আপনার মোবাইল নম্বর দিয়ে সাইন আপ করুন</string>
+    <string name="signup_prompt_question">অ্যাকাউন্ট নেই?</string>
+    <string name="signup_prompt_action">সাইন আপ করুন</string>
+    <string name="login_prompt_question">ইতিমধ্যে অ্যাকাউন্ট আছে?</string>
+    <string name="login_prompt_action">লগ ইন করুন</string>
 
     <!-- EnterOtpScreen -->
     <string name="enter_code">কোড লিখুন</string>
@@ -235,7 +240,7 @@
     <string name="cdsldp_id">সিডিএসএল ডিপি আইডি</string>
     <string name="cdsl_client_id">সিডিএসএল ক্লায়েন্ট আইডি</string>
     <string name="cmbp_id">সিএমবিপি আইডি</string>
-    <string name="nsdl_details">এনএসডিএল বিবরণ</string>
+    <string name="confirm_your_details">এনএসডিএল বিবরণ</string>
     <string name="nsdl_dp_id">এনএসডিএল ডিপি আইডি</string>
     <string name="nsdl_client_id">এনএসডিএল ডিপি আইডি</string>
 
@@ -250,6 +255,7 @@
     <string name="email_id_label">ইমেইল আইডি</string>
     <string name="email_subtitle">আমরা এটি আপনার অ্যাকাউন্ট সুরক্ষিত রাখতে এবং গুরুত্বপূর্ণ আপডেট পাঠাতে ব্যবহার করব।</string>
     <string name="email_declaration">আমি ঘোষণা করছি যে এই ইমেইল আইডিটি আমার এবং এটি আমিই পরিচালনা করি। আমি এই ইমেইলে অ্যাকাউন্ট স্টেটমেন্ট, লেনদেন নিশ্চিতকরণ এবং রেগুলেটরি যোগাযোগ পাব।</string>
+    <string name="verify_your_email">আপনার ইমেইল আইডি যাচাই করুন</string>
     <string name="review_profile_title">প্রোফাইল পর্যালোচনা করুন</string>
     <string name="review_profile_subtitle">অনুগ্রহ করে নীচের তথ্য যাচাই করুন এবং প্রয়োজন হলে পরিবর্তন করুন।</string>
     <string name="full_name_label">পুরো নাম</string>
@@ -283,5 +289,14 @@
     <string name="nominee_document_driving_licence">ড্রাইভিং লাইসেন্স</string>
     <string name="nominee_document_oci_passport">ওসিআই / পাসপোর্ট</string>
     <string name="login_mobile_ownership_declaration">আমি ঘোষণা করছি যে এই মোবাইল নম্বরটি আমার এবং আমার নিজের নামে নিবন্ধিত।</string>
-    <string name="login_terms_acceptance">আমি জনতা নিবেশের নিয়ম ও শর্তাবলী এবং গোপনীয়তা নীতি পড়েছি এবং গ্রহণ করছি।</string>
+    <string name="login_terms_acceptance">আমি জনতা নিবেশের নিয়ম ও শর্তাবলী এবং গোপনীয়ता নীতি পড়েছি এবং গ্রহণ করছি।</string>
+
+    <!-- Bank Details -->
+    <string name="bank_details_title">ব্যাংকের বিবরণ</string>
+    <string name="bank_details_subtitle">নিরাপদে অর্থপ্রদান পেতে এবং আপনার আর্থিক তথ্য সম্পূর্ণ করতে আপনার ব্যাংক অ্যাকাউন্টের বিবরণ লিখুন।</string>
+    <string name="bank_name_label">ব্যাংকের নাম</string>
+    <string name="account_type_label">অ্যাকাউন্টের ধরন</string>
+    <string name="account_holder_label">অ্যাকাউন্ট হোল্ডার</string>
+    <string name="account_number_label">অ্যাকাউন্টের নম্বর</string>
+    <string name="ifsc_code_label">IFSC কোড</string>
 </resources>

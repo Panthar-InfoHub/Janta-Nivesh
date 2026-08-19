@@ -26,6 +26,11 @@
     <string name="otp_verify_identity">तुमची ओळख सत्यापित करण्यासाठी आम्ही ४ अंकी OTP पाठवू</string>
     <string name="india_code">+९१</string>
     <string name="verify">सत्यापित करा</string>
+    <string name="signup_mobile_number">तुमच्या मोबाईल नंबरने साइन अप करा</string>
+    <string name="signup_prompt_question">खाते नाही?</string>
+    <string name="signup_prompt_action">साइन अप करा</string>
+    <string name="login_prompt_question">आधीच खाते आहे?</string>
+    <string name="login_prompt_action">लॉग इन करा</string>
 
     <!-- EnterOtpScreen -->
     <string name="enter_code">कोड एंटर करा</string>
@@ -235,7 +240,7 @@
     <string name="cdsldp_id">सीडीएसएल डीपी आयडी</string>
     <string name="cdsl_client_id">सीडीएसएल क्लायंट आयडी</string>
     <string name="cmbp_id">सीएमबीपी आयडी</string>
-    <string name="nsdl_details">एनएसडीएल तपशील</string>
+    <string name="confirm_your_details">एनएसडीएल तपशील</string>
     <string name="nsdl_dp_id">एनएसडीएल डीपी आयडी</string>
     <string name="nsdl_client_id">एनएसडीएल डीपी आयडी</string>
 
@@ -250,6 +255,7 @@
     <string name="email_id_label">ईमेल आयडी</string>
     <string name="email_subtitle">आम्ही याचा वापर तुमचे खाते सुरक्षित ठेवण्यासाठी आणि महत्त्वाचे अपडेट्स पाठवण्यासाठी करू.</string>
     <string name="email_declaration">मी घोषित करतो की हा ईमेल आयडी माझा आहे आणि मी तो स्वतः वापरतो. मला या ईमेलवर खाते विवरण, व्यवहार पुष्टीकरण आणि नियामक संप्रेषण प्राप्त होतील.</string>
+    <string name="verify_your_email">तुमचा ईमेल आयडी सत्यापित करा</string>
     <string name="review_profile_title">प्रोఫైलचे पुनरावलोकन करा</string>
     <string name="review_profile_subtitle">कृपया खालील माहिती तपासा आणि आवश्यक असल्यास त्यात बदल करा.</string>
     <string name="full_name_label">पूर्ण नाव</string>
@@ -284,4 +290,13 @@
     <string name="nominee_document_oci_passport">ओसीआय / पासपोर्ट</string>
     <string name="login_mobile_ownership_declaration">मी घोषित करतो/करते की हा मोबाइल नंबर माझा आहे आणि माझ्या स्वतःच्या नावावर नोंदणीकृत आहे.</string>
     <string name="login_terms_acceptance">मी जनता निवेशचे नियम व अटी आणि गोपनीयता धोरण वाचले आहे आणि स्वीकारतो/स्वीकारते.</string>
+
+    <!-- Bank Details -->
+    <string name="bank_details_title">बँक तपशील</string>
+    <string name="bank_details_subtitle">पेमेंट सुरक्षितपणे मिळवण्यासाठी आणि तुमची आर्थिक माहिती पूर्ण करण्यासाठी तुमच्या बँक खात्याचा तपशील द्या</string>
+    <string name="bank_name_label">बँकेचे नाव</string>
+    <string name="account_type_label">खात्याचा प्रकार</string>
+    <string name="account_holder_label">खातेधारक</string>
+    <string name="account_number_label">खाते क्रमांक</string>
+    <string name="ifsc_code_label">IFSC कोड</string>
 </resources>

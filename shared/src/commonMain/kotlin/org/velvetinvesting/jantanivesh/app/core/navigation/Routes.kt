@@ -1,7 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
 import kotlinx.serialization.Serializable
-import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
 
 @Serializable
@@ -262,6 +261,15 @@ sealed interface Route {
     data object OnboardingKYCSplash: Route
     @Serializable
     data object OnboardingEmail: Route
+
+    /**
+     * [email] rides along on the route so this screen can show the address back to the user and
+     * resend to it, without re-reading it from the server.
+     */
+    @Serializable
+    data class OnboardingEmailOtp(val email: String): Route
+    @Serializable
+    data object OnboardingBasicDetails: Route
     @Serializable
     data object OnboardingPANVerification: Route
 
@@ -276,7 +284,7 @@ sealed interface Route {
 
     /** [email] is collected on [OnboardingEmail], which always runs immediately before this. */
     @Serializable
-    data class OnboardingProfile(val email: String): Route
+    data object OnboardingProfile: Route
     @Serializable
     data object OnboardingAutopay: Route
 }

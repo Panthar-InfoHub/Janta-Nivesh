@@ -20,7 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
+import org.velvetinvesting.jantanivesh.app.core.theme.Gray65
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.PathGray
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
@@ -35,7 +38,7 @@ fun AgreementCheckBoxCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Spacing.dp16))
+            .clip(LocalShapes.current.roundedDp16)
             .border(Spacing.dp1, FilterChipUnselected, RoundedCornerShape(Spacing.dp16))
             .background(GoalIconBg)
             .padding(Spacing.dp20),
@@ -48,12 +51,12 @@ fun AgreementCheckBoxCard(
             colors = CheckboxDefaults.colors(checkedColor = Primary, checkmarkColor = White),
             modifier = Modifier
                 .size(Spacing.dp24)
-                .padding(top = Spacing.dp2)
+                .padding(top = Spacing.dp2),
         )
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            color = Gray444
+            style = MaterialTheme.typography.bodySmall,
+            color = Gray65
         )
     }
 }

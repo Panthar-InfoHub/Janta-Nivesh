@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.core.theme
+    package org.velvetinvesting.jantanivesh.app.core.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable

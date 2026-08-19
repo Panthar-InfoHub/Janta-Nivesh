@@ -19,6 +19,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
+import org.velvetinvesting.jantanivesh.app.core.theme.Gray65
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.tagColor
@@ -56,8 +57,8 @@ fun InfoNoteCard(icon: DrawableResource, title: String, subtitle: String) {
             )
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Black,
+                style = MaterialTheme.typography.titleSmall,
+                color = Gray65,
             )
         }
     }

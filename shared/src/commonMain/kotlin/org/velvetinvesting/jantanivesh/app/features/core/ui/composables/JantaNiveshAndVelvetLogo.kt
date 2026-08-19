@@ -24,7 +24,7 @@ fun JantaNiveshAndVelvetLogo(modifier: Modifier = Modifier){
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = Spacing.dp16),
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp32), horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp16), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(Res.drawable.jantanivesh_logo),

@@ -3,26 +3,30 @@ package org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.ui.otp.OtpController
+import org.velvetinvesting.jantanivesh.app.features.core.ui.otp.OtpUiState
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginWithNumberUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.VerifyOTPUseCase
 
+/**
+ * [otp] holds everything the shared OTP screen draws; the rest of this state is what makes *this*
+ * OTP screen the login one.
+ */
 data class EnterOtpUiState(
-    val otpValue: String = "",
     val phoneNumber: String = "",
-    val resendTimerSeconds: Int = 30,
-    val isLoading: Boolean = false,
-    val isNextEnabled: Boolean = false
+    val otp: OtpUiState = OtpUiState()
 )
 
 sealed interface EnterOtpEvent {
@@ -48,57 +52,43 @@ class EnterOtpViewModel(
     private val verifyOtpUseCase: VerifyOTPUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(EnterOtpUiState())
-    val uiState: StateFlow<EnterOtpUiState> = _uiState.asStateFlow()
+    private val otpController = OtpController(viewModelScope)
+
+    private val _phoneNumber = MutableStateFlow("")
+
+    val uiState: StateFlow<EnterOtpUiState> =
+        combine(_phoneNumber, otpController.state) { phoneNumber, otp ->
+            EnterOtpUiState(phoneNumber = phoneNumber, otp = otp)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = EnterOtpUiState()
+        )
 
     private val _effect = Channel<EnterOtpEffect>()
     val effect = _effect.receiveAsFlow()
 
-    init {
-        startTimer()
-    }
-
-    private fun startTimer() {
-        viewModelScope.launch {
-            for (i in 30 downTo 0) {
-                _uiState.update { it.copy(resendTimerSeconds = i) }
-                delay(1000)
-            }
-        }
-    }
-
     fun handleEvent(event: EnterOtpEvent) {
         when (event) {
-            is EnterOtpEvent.OnOtpChanged -> {
-                if (event.otp.length <= 5 && event.otp.all { it.isDigit() }) {
-                    _uiState.update {
-                        it.copy(
-                            otpValue = event.otp,
-                            isNextEnabled = event.otp.length == 4
-                        )
-                    }
-                }
-            }
+            is EnterOtpEvent.OnOtpChanged -> otpController.onOtpChange(event.otp)
             EnterOtpEvent.OnNextClicked -> verifyOtp()
             EnterOtpEvent.OnBackClicked -> sendEffect(EnterOtpEffect.NavigateBack)
             EnterOtpEvent.OnResendClicked -> resendOtp()
             is EnterOtpEvent.OnPhoneNumberChanged -> {
-                _uiState.update { it.copy(phoneNumber = event.phoneNumber) }
+                _phoneNumber.update { event.phoneNumber }
             }
         }
     }
 
     private fun verifyOtp() {
-        val currentOtp = _uiState.value.otpValue
-        if (currentOtp.length != 4) return
+        val otpState = otpController.state.value
+        if (!otpState.isComplete) return
+
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            verifyOtpUseCase(
-                _uiState.value.phoneNumber,
-                currentOtp
-            )
+            otpController.withLoading {
+                verifyOtpUseCase(_phoneNumber.value, otpState.otpValue)
+            }
                 .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
                     if (it.onboarded) {
                         sendEffect(EnterOtpEffect.NavigateToMainAppFlow)
                     } else {
@@ -106,7 +96,6 @@ class EnterOtpViewModel(
                     }
                 }
                 .onError {
-                    _uiState.update { it.copy(isLoading = false) }
                     SnackBarController.showError(it.message)
                 }
         }
@@ -117,18 +106,15 @@ class EnterOtpViewModel(
     }
 
     private fun loginWithPhone() {
-        val currentNumber = _uiState.value.phoneNumber
+        val currentNumber = _phoneNumber.value
         if (currentNumber.length != 10) return
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            loginUseCase(currentNumber)
+            otpController.withLoading { loginUseCase(currentNumber) }
                 .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
-                    startTimer()
+                    otpController.startResendTimer()
                 }
                 .onError { error ->
-                    _uiState.update { it.copy(isLoading = false) }
                     SnackBarController.showError(error.message)
                 }
         }

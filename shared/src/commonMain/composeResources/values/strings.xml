@@ -25,6 +25,11 @@
     <string name="otp_verify_identity">We\'ll send a 4 digit OTP to verify your identity</string>
     <string name="india_code">+91</string>
     <string name="verify">Verify</string>
+    <string name="signup_mobile_number">Sign up with your mobile number</string>
+    <string name="signup_prompt_question">Don\'t have an account?</string>
+    <string name="signup_prompt_action">Sign up</string>
+    <string name="login_prompt_question">Already have an account?</string>
+    <string name="login_prompt_action">Log in</string>
 
     <!-- EnterOtpScreen -->
     <string name="enter_code">Enter the Code</string>
@@ -258,7 +263,7 @@
     <string name="cdsldp_id">CDSL DP ID</string>
     <string name="cdsl_client_id">CDSL Client ID</string>
     <string name="cmbp_id">CMBP ID</string>
-    <string name="nsdl_details">NSDL Details</string>
+    <string name="confirm_your_details">NSDL Details</string>
     <string name="nsdl_dp_id">NSDL DP ID</string>
     <string name="nsdl_client_id">NSDL Client ID</string>
 
@@ -452,6 +457,7 @@
     <string name="email_id_label">Email ID</string>
     <string name="email_subtitle">We will use this to keep your account secure and send important updates.</string>
     <string name="email_declaration">I declare that this email ID belongs to me and is operated by me. I will receive account statements, transaction confirmations and regulatory communications on this email.</string>
+    <string name="verify_your_email">Verify your email ID</string>
     <string name="review_profile_title">Review Profile</string>
     <string name="review_profile_subtitle">Please verify and edit the details below if needed.</string>
     <string name="full_name_label">Full Name</string>
@@ -486,4 +492,13 @@
     <string name="nominee_document_oci_passport">OCI / Passport</string>
     <string name="login_mobile_ownership_declaration">I declare that this mobile number belongs to me and is registered in my own name.</string>
     <string name="login_terms_acceptance">I have read and accept the Terms &amp; Conditions and the Privacy Policy of Janta Nivesh.</string>
+
+    <!-- Bank Details -->
+    <string name="bank_details_title">Bank Details</string>
+    <string name="bank_details_subtitle">Enter your bank account details to securely receive payments and complete your financial information.</string>
+    <string name="bank_name_label">Bank Name</string>
+    <string name="account_type_label">Account Type</string>
+    <string name="account_holder_label">Account Holder</string>
+    <string name="account_number_label">Account Number</string>
+    <string name="ifsc_code_label">IFSC Code</string>
 </resources>

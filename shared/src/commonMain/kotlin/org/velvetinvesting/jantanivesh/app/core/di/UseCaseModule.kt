@@ -11,16 +11,20 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.LinkKycD
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycFormDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycImageUseCase
 import org.velvetinvesting.jantanivesh.app.features.kyc.domain.usecases.UploadKycSignatureUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.ConfirmMandateUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.CreateMandateUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.GetKycFormStatusUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.GetPANVerificationStatusUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.InitiateKycFormUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.InitiatePANVerificationUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.SubmitInvestorProfileUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.SubmitNomineesUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.SubmitPennyDropUseCase
-import org.velvetinvesting.jantanivesh.app.features.kycnew.domain.usecases.UploadKycFormSignatureUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.ConfirmMandateUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.CreateMandateUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetKycFormStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetPANVerificationStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.InitiateKycFormUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.InitiatePANVerificationUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SkipPANVerificationUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitBasicDetailsUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitInvestorProfileUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitNomineesUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.RequestEmailOtpUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitPennyDropUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.VerifyEmailOtpUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.UploadKycFormSignatureUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CreatePurchasePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetPurchasePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetPurchasePlansUseCase
@@ -50,7 +54,6 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.P
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.PurchaseSipFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemFullFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemPartialFundUseCase
-import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.OnboardUserUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFixedDepositsSearchResultUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPickFDUseCase
@@ -64,8 +67,6 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.*
 val useCaseModule = module {
     factory { LoginWithNumberUseCase(get()) }
     factory { VerifyOTPUseCase(get()) }
-    factory { OnboardUserUseCase(get()) }
-
     factory { GetFDDetailsUseCase(get()) }
     factory { GetFixedDepositsSearchResultUseCase(get()) }
     factory { PurchaseFDUseCase(get()) }
@@ -84,12 +85,16 @@ val useCaseModule = module {
     factory { FinalizeKycUseCase(get()) }
 
     // New Onboarding UseCases
+    factory { SubmitBasicDetailsUseCase(get()) }
     factory { InitiatePANVerificationUseCase(get()) }
+    factory { SkipPANVerificationUseCase(get()) }
     factory { GetPANVerificationStatusUseCase(get()) }
     factory { InitiateKycFormUseCase(get()) }
     factory { GetKycFormStatusUseCase(get()) }
     factory { UploadKycFormSignatureUseCase(get()) }
     factory { SubmitPennyDropUseCase(get()) }
+    factory { RequestEmailOtpUseCase(get()) }
+    factory { VerifyEmailOtpUseCase(get()) }
     factory { SubmitInvestorProfileUseCase(get()) }
     factory { SubmitNomineesUseCase(get()) }
     factory { CreateMandateUseCase(get()) }

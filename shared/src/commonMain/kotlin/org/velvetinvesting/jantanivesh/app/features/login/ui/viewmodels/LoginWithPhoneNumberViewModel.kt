@@ -19,13 +19,14 @@ data class LoginWithPhoneNumberUiState(
     val phoneNumber: String = "",
     val isLoading: Boolean = false,
     val isOwnershipDeclared: Boolean = false,
-    val areTermsAccepted: Boolean = false
+    val areTermsAccepted: Boolean = false,
+    /** The same screen serves both flows; sign up additionally collects the consents. */
+    val isSignUpMode: Boolean = false
 ) {
     /** Both declarations are the investor's own action, so neither starts ticked. */
     val isNextEnabled: Boolean
         get() = phoneNumber.length == PHONE_NUMBER_LENGTH &&
-                isOwnershipDeclared &&
-                areTermsAccepted
+                (!isSignUpMode || (isOwnershipDeclared && areTermsAccepted))
 
     companion object {
         const val PHONE_NUMBER_LENGTH = 10
@@ -36,6 +37,7 @@ sealed interface LoginWithPhoneNumberEvent {
     data class OnPhoneNumberChanged(val phoneNumber: String) : LoginWithPhoneNumberEvent
     data class OnOwnershipDeclarationChanged(val isChecked: Boolean) : LoginWithPhoneNumberEvent
     data class OnTermsAcceptanceChanged(val isChecked: Boolean) : LoginWithPhoneNumberEvent
+    object OnAuthModeToggled : LoginWithPhoneNumberEvent
     object OnVerifyClicked : LoginWithPhoneNumberEvent
     object OnBackClicked : LoginWithPhoneNumberEvent
 }
@@ -69,6 +71,15 @@ class LoginWithPhoneNumberViewModel(
 
             is LoginWithPhoneNumberEvent.OnTermsAcceptanceChanged ->
                 _uiState.update { it.copy(areTermsAccepted = event.isChecked) }
+
+            // Switching flows drops the consents so sign up never inherits a stale tick.
+            LoginWithPhoneNumberEvent.OnAuthModeToggled -> _uiState.update {
+                it.copy(
+                    isSignUpMode = !it.isSignUpMode,
+                    isOwnershipDeclared = false,
+                    areTermsAccepted = false
+                )
+            }
 
             LoginWithPhoneNumberEvent.OnVerifyClicked -> verifyPhoneNumber()
             LoginWithPhoneNumberEvent.OnBackClicked -> sendEffect(LoginWithPhoneNumberEffect.NavigateBack)

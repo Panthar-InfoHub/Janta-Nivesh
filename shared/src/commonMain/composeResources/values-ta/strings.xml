@@ -26,6 +26,11 @@
     <string name="otp_verify_identity">உங்கள் அடையாளத்தைச் சரிபார்க்க 4 இலக்க OTP ஐ அனுப்புவோம்</string>
     <string name="india_code">+91</string>
     <string name="verify">சரிபார்க்கவும்</string>
+    <string name="signup_mobile_number">உங்கள் மொபைல் எண்ணுடன் பதிவு செய்யவும்</string>
+    <string name="signup_prompt_question">கணக்கு இல்லையா?</string>
+    <string name="signup_prompt_action">பதிவு செய்யவும்</string>
+    <string name="login_prompt_question">ஏற்கனவே கணக்கு உள்ளதா?</string>
+    <string name="login_prompt_action">உள்நுழையவும்</string>
 
     <!-- EnterOtpScreen -->
     <string name="enter_code">குறியீட்டை உள்ளிடவும்</string>
@@ -235,7 +240,7 @@
     <string name="cdsldp_id">சிடிஎஸ்எல் டிபி ஐடி</string>
     <string name="cdsl_client_id">சிடிஎஸ்எல் கிளையண்ட் ஐடி</string>
     <string name="cmbp_id">சிஎம்பிபி ஐடி</string>
-    <string name="nsdl_details">என்எஸ்டிஎல் விவரங்கள்</string>
+    <string name="confirm_your_details">என்எஸ்டிஎல் விவரங்கள்</string>
     <string name="nsdl_dp_id">என்எஸ்டிஎல் டிபி ஐடி</string>
     <string name="nsdl_client_id">என்எஸ்டிஎல் டிபி ஐடி</string>
 
@@ -250,6 +255,7 @@
     <string name="email_id_label">மின்னஞ்சல் ஐடி</string>
     <string name="email_subtitle">உங்கள் கணக்கைப் பாதுகாப்பாக வைத்திருக்கவும் முக்கியமான அறிவிப்புகளை அனுப்பவும் இதை நாங்கள் பயன்படுத்துவோம்.</string>
     <string name="email_declaration">இந்த மின்னஞ்சல் ஐடி எனக்குச் சொந்தமானது என்றும் இதை நான் இயக்குகிறேன் என்றும் அறிவிக்கிறேன். இந்தக் கணக்கிற்கான அறிக்கை, பரிவர்த்தனை உறுதிப்படுத்தல் மற்றும் ஒழுங்குமுறை அறிவிப்புகளை இந்த மின்னஞ்சலில் பெறுவேன்.</string>
+    <string name="verify_your_email">உங்கள் மின்னஞ்சல் ஐடியை சரிபார்க்கவும்</string>
     <string name="review_profile_title">சுயவிவரத்தை மதிப்பாய்வு செய்யவும்</string>
     <string name="review_profile_subtitle">கீழே உள்ள தகவலைச் சரிபார்த்து, தேவைப்பட்டால் மாற்றங்களைச் செய்யவும்.</string>
     <string name="full_name_label">முழு பெயர்</string>
@@ -284,4 +290,13 @@
     <string name="nominee_document_oci_passport">ஓசிஐ / கடவுச்சீட்டு</string>
     <string name="login_mobile_ownership_declaration">இந்த மொபைல் எண் எனக்குச் சொந்தமானது என்றும் என் பெயரில் பதிவு செய்யப்பட்டுள்ளது என்றும் அறிவிக்கிறேன்.</string>
     <string name="login_terms_acceptance">ஜனதா நிவேஷின் விதிமுறைகள் மற்றும் நிபந்தனைகள் மற்றும் தனியுரிமைக் கொள்கையைப் படித்து ஏற்றுக்கொள்கிறேன்.</string>
+
+    <!-- Bank Details -->
+    <string name="bank_details_title">வங்கி விவரங்கள்</string>
+    <string name="bank_details_subtitle">பணத்தைப் பாதுகாப்பாகப் பெறவும், உங்கள் நிதித் தகவலைப் பூர்த்தி செய்யவும் உங்கள் வங்கி கணக்கு விவரங்களை உள்ளிடவும்.</string>
+    <string name="bank_name_label">வங்கியின் பெயர்</string>
+    <string name="account_type_label">கணக்கு வகை</string>
+    <string name="account_holder_label">கணக்கு வைத்திருப்பவர்</string>
+    <string name="account_number_label">கணக்கு எண்</string>
+    <string name="ifsc_code_label">IFSC குறியீடு</string>
 </resources>

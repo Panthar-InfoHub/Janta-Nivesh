@@ -49,13 +49,13 @@ fun <T> DropDownSelector(
     textConvertor: (T) -> String
 ) {
     var extended by remember { mutableStateOf(false) }
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8), modifier = modifier) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4), modifier = modifier) {
         if (title.isNotEmpty()) {
-            Row(verticalAlignment = Alignment.Top) {
+            Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
-                    color = Color(0xff44464F)
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    color = Color(0xff434843)
                 )
                 if (mandatory) {
                     Text(

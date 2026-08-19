@@ -1,7 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,39 +15,46 @@ import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.AddNomineeScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.ConfirmYourDetailsScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.EmailIdScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.KycSplashScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.ReviewProfileScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.SetupAutopayScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.UploadSignatureScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.VerifyBankAccountScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.compose.VerifyWithDigilockerScreen
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.AddNomineeEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.AddNomineeViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ConfirmYourDetailsEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ConfirmYourDetailsViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.EmailIdEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.EmailIdViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.KycSplashEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.KycSplashViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ReviewProfileEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ReviewProfileEvent
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.ReviewProfileViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.SetupAutopayEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.SetupAutopayEvent
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.SetupAutopayViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.UploadSignatureEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.UploadSignatureViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyBankAccountEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyBankAccountViewModel
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyWithDigilockerEffect
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyWithDigilockerEvent
-import org.velvetinvesting.jantanivesh.app.features.kycnew.ui.viewmodels.VerifyWithDigilockerViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.AddNomineeScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.BasicDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.ConfirmYourDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EmailIdScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EmailOtpScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.KycSplashScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.ReviewProfileScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.SetupAutopayScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.UploadSignatureScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.VerifyBankAccountScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.DigiLockerSplashScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddNomineeEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddNomineeViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.BasicDetailsEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.BasicDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.PanVerificationEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.PanVerificationViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EmailIdEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EmailIdViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EmailOtpEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EmailOtpViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.KycSplashEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.KycSplashViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.UploadSignatureEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.UploadSignatureViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerViewModel
 
 /**
  * Set on whichever entry launched a web view once the user comes back, so that screen can
@@ -68,10 +74,13 @@ fun OnboardingNavigation(
 
     val navController = rememberNavController()
     val startDestination = when (OnboardingStage.fromIdOrDefault(stage)) {
-        OnboardingStage.Nominee -> Route.OnboardingNominee
-        OnboardingStage.PennyDrop -> Route.OnboardingBankVerification
-        OnboardingStage.Profile -> Route.OnboardingEmail
-        OnboardingStage.Readiness -> Route.OnboardingKYCSplash
+        OnboardingStage.NomineeAddition -> Route.OnboardingNominee
+        OnboardingStage.PennyDropVerification -> Route.OnboardingBankVerification
+        OnboardingStage.InvestorProfile -> Route.OnboardingProfile
+        OnboardingStage.PanVerification -> Route.OnboardingPANVerification
+        OnboardingStage.BasicDetails -> Route.OnboardingBasicDetails
+        OnboardingStage.EmailVerification -> Route.OnboardingEmail
+        OnboardingStage.KycVerification -> Route.OnboardingPANVerification
         else -> null
     }
 
@@ -109,14 +118,13 @@ fun OnboardingNavigation(
                 )
             }
 
-            // Always precedes the investor profile, which prefills the address it collects.
             composable<Route.OnboardingEmail> {
                 val vm: EmailIdViewModel = koinViewModel()
                 LaunchedEffect(Unit) {
                     vm.effect.collect { effect ->
                         when (effect) {
-                            is EmailIdEffect.EmailSubmitted -> {
-                                navController.navigate(Route.OnboardingProfile(effect.email)) {
+                            is EmailIdEffect.OtpRequested -> {
+                                navController.navigate(Route.OnboardingEmailOtp(effect.email)) {
                                     launchSingleTop = true
                                 }
                             }
@@ -131,24 +139,79 @@ fun OnboardingNavigation(
                 )
             }
 
-            composable<Route.OnboardingPANVerification> {
-                val vm: ConfirmYourDetailsViewModel = koinViewModel()
+            composable<Route.OnboardingEmailOtp> { entry ->
+                val route = entry.toRoute<Route.OnboardingEmailOtp>()
+                val vm: EmailOtpViewModel = koinViewModel(
+                    parameters = { parametersOf(route.email) }
+                )
+
                 LaunchedEffect(Unit) {
                     vm.effect.collect { effect ->
                         when (effect) {
-                            ConfirmYourDetailsEffect.PanVerified -> {
+                            EmailOtpEffect.EmailVerified -> {
+                                navController.navigate(Route.OnboardingProfile) {
+                                    // The address is confirmed — going back to re-enter the code
+                                    // would only hit an already-consumed OTP.
+                                    popUpTo(Route.OnboardingEmail) { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            }
+
+                            EmailOtpEffect.NavigateBack -> navController.popBackStack()
+                        }
+                    }
+                }
+
+                val state by vm.uiState.collectAsStateWithLifecycle()
+                EmailOtpScreen(
+                    state = state,
+                    handleEvent = vm::handleEvent
+                )
+            }
+
+            composable<Route.OnboardingBasicDetails> {
+                val vm: BasicDetailsViewModel = koinViewModel()
+                LaunchedEffect(Unit) {
+                    vm.effect.collect { effect ->
+                        when (effect) {
+                            BasicDetailsEffect.NavigateToPanInitiate -> {
+                                navController.navigate(Route.OnboardingPANVerification){
+                                    launchSingleTop=true
+                                }
+                            }
+                        }
+                    }
+                }
+
+                val state by vm.uiState.collectAsStateWithLifecycle()
+                BasicDetailsScreen(
+                    state = state,
+                    handleEvent = vm::handleEvent
+                )
+            }
+
+            composable<Route.OnboardingPANVerification> {
+                val vm: PanVerificationViewModel = koinViewModel()
+                LaunchedEffect(Unit) {
+                    vm.effect.collect { effect ->
+                        when (effect) {
+                            PanVerificationEffect.PanVerified -> {
                                 navController.navigate(Route.OnboardingBankVerification){
                                     launchSingleTop=true
                                 }
                             }
-                            ConfirmYourDetailsEffect.NavigateToKycInitiate -> {
+                            PanVerificationEffect.NavigateToKycInitiate -> {
                                 navController.navigate(Route.OnboardingKYCInitiation){
                                     launchSingleTop= true
                                 }
                             }
-                            ConfirmYourDetailsEffect.OpenPrivacyUrl -> {}
-                            ConfirmYourDetailsEffect.OpenReadMoreUrl -> {}
-                            ConfirmYourDetailsEffect.OpenTermsUrl -> {}
+                            PanVerificationEffect.OpenPrivacyUrl -> {}
+                            PanVerificationEffect.OpenReadMoreUrl -> {}
+                            PanVerificationEffect.OpenTermsUrl -> {}
+                            PanVerificationEffect.SkipPanVerification -> {
+                                SnackBarController.showSuccess("KYC Skipped. Please complete the remaining steps before making fund purchases.")
+                                onCompleted()
+                            }
                         }
                     }
                 }
@@ -197,7 +260,7 @@ fun OnboardingNavigation(
                 }
 
                 val state by vm.uiState.collectAsStateWithLifecycle()
-                VerifyWithDigilockerScreen(
+                DigiLockerSplashScreen(
                     state = state,
                     handleEvent = vm::handleEvent
                 )
@@ -232,7 +295,6 @@ fun OnboardingNavigation(
                 LaunchedEffect(Unit) {
                     vm.effect.collect { effect ->
                         when (effect) {
-                            // The email screen sits in between and hands the address on.
                             VerifyBankAccountEffect.PennyDropCompleted -> {
                                 navController.navigate(Route.OnboardingEmail) {
                                     launchSingleTop = true
@@ -252,10 +314,7 @@ fun OnboardingNavigation(
             }
 
             composable<Route.OnboardingProfile> { entry ->
-                val route = entry.toRoute<Route.OnboardingProfile>()
-                val vm: ReviewProfileViewModel = koinViewModel(
-                    parameters = { parametersOf(route.email) }
-                )
+                val vm: ReviewProfileViewModel = koinViewModel()
 
                 val eSignReturned by entry.savedStateHandle
                     .getStateFlow(KYC_STEP_RESULT, false)
