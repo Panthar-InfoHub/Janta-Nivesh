@@ -288,6 +288,8 @@
     <string name = "email_subtitle">हम इसका इस्तेमाल आपके अकाउंट को सुरक्षित रखने और ज़रूरी अपडेट भेजने के लिए करेंगे।</string>
     <string name = "email_declaration">मैं यह घोषित करता हूँ कि यह ईमेल आईडी मेरी है और इसे मैं ही ऑपरेट करता हूँ मुझे इस ईमेल पर अकाउंट स्टेटमेंट, ट्रांज़ैक्शन कन्फर्मेशन और रेगुलेटरी कम्युनिकेशन प्राप्त होंगे</string>
     <string name = "verify_your_email">अपना ईमेल आईडी सत्यापित करें</string>
+    <string name="confirm_and_proceed">पुष्टि करें और आगे बढ़ें</string>
+
     <string name="review_profile_title">प्रोफ़ाइल की समीक्षा करें</string>
     <string name="review_profile_subtitle">कृपया नीचे दी गई जानकारी की जाँच करें और ज़रूरत हो तो उसमें बदलाव करें।</string>
     <string name="full_name_label">पूरा नाम</string>

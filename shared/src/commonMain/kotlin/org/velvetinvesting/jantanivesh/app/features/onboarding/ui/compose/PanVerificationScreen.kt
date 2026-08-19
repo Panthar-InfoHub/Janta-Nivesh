@@ -21,10 +21,6 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,35 +37,30 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.agreement_text
-import jantanivesh.shared.generated.resources.dob_as_per_pan
-import jantanivesh.shared.generated.resources.name_as_per_pan
+import jantanivesh.shared.generated.resources.confirm_and_proceed
 import jantanivesh.shared.generated.resources.confirm_your_details
 import jantanivesh.shared.generated.resources.pan_label
 import jantanivesh.shared.generated.resources.skip
 import jantanivesh.shared.generated.resources.verify_your_info
 import org.jetbrains.compose.resources.stringResource
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
+import org.velvetinvesting.jantanivesh.app.core.theme.Gray65
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.ProfileLightBlue
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedTextColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.PanVerificationEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.PanVerificationUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingInput
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
 @Composable
 fun ConfirmYourDetailsScreen(
@@ -162,19 +153,14 @@ fun ConfirmYourDetailsScreen(
 
             item {
                 AppButton(
-                    text = "Proceed",
+                    text = stringResource(Res.string.confirm_and_proceed),
                     onClick = { handleEvent(PanVerificationEvent.OnProceedClick) },
                     loading = state.isLoading,
                     enabled = state.canSubmit,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = Spacing.dp24)
                         .genericDropShadow()
                 )
-            }
-
-            item {
-                JantaNiveshAndVelvetLogo()
             }
         }
     }
@@ -208,7 +194,7 @@ private fun SecureAndSafeCard(
         )
 
         val annotatedString = buildAnnotatedString {
-            withStyle(SpanStyle(color = Primary)) {
+            withStyle(SpanStyle()) {
                 append("By submitting this consent, I authorize Janta Nivesh to call/ SMS/ WhatsApp/ email me about its products & have accepted the ")
             }
 
@@ -216,12 +202,12 @@ private fun SecureAndSafeCard(
                 onTermsClick()
             }
             withLink(termsLink) {
-                withStyle(SpanStyle(color = Black)) {
+                withStyle(SpanStyle(color = Primary)) {
                     append("Terms of Use")
                 }
             }
 
-            withStyle(SpanStyle(color = Primary)) {
+            withStyle(SpanStyle()) {
                 append(" & the ")
             }
 
@@ -229,22 +215,23 @@ private fun SecureAndSafeCard(
                 onPrivacyClick()
             }
             withLink(privacyLink) {
-                withStyle(SpanStyle(color = Black)) {
+                withStyle(SpanStyle(color = Primary)) {
                     append("Privacy Policy.")
                 }
             }
 
-            withStyle(SpanStyle(color = Primary)) {
+            withStyle(SpanStyle()) {
                 append(" I authorize /  ")
             }
 
-            withStyle(SpanStyle(color = Primary)){
+            withStyle(SpanStyle()){
                 append(stringResource(Res.string.agreement_text))
             }
         }
         Text(
             text = annotatedString,
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
+            color = Gray65
         )
     }
 }

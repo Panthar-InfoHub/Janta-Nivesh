@@ -256,6 +256,7 @@
     <string name="email_subtitle">আমরা এটি আপনার অ্যাকাউন্ট সুরক্ষিত রাখতে এবং গুরুত্বপূর্ণ আপডেট পাঠাতে ব্যবহার করব।</string>
     <string name="email_declaration">আমি ঘোষণা করছি যে এই ইমেইল আইডিটি আমার এবং এটি আমিই পরিচালনা করি। আমি এই ইমেইলে অ্যাকাউন্ট স্টেটমেন্ট, লেনদেন নিশ্চিতকরণ এবং রেগুলেটরি যোগাযোগ পাব।</string>
     <string name="verify_your_email">আপনার ইমেইল আইডি যাচাই করুন</string>
+    <string name="confirm_and_proceed">নিশ্চিত করুন এবং এগিয়ে যান</string>
     <string name="review_profile_title">প্রোফাইল পর্যালোচনা করুন</string>
     <string name="review_profile_subtitle">অনুগ্রহ করে নীচের তথ্য যাচাই করুন এবং প্রয়োজন হলে পরিবর্তন করুন।</string>
     <string name="full_name_label">পুরো নাম</string>

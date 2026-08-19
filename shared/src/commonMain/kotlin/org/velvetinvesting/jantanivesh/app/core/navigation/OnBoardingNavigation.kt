@@ -73,14 +73,16 @@ fun OnboardingNavigation(
 ) {
 
     val navController = rememberNavController()
-    val startDestination = when (OnboardingStage.fromIdOrDefault(stage)) {
-        OnboardingStage.NomineeAddition -> Route.OnboardingNominee
-        OnboardingStage.PennyDropVerification -> Route.OnboardingBankVerification
-        OnboardingStage.InvestorProfile -> Route.OnboardingProfile
-        OnboardingStage.PanVerification -> Route.OnboardingPANVerification
+    // `resumePoint` has already folded away the stages with no screen of their own, so every
+    // remaining branch maps to exactly one destination.
+    val startDestination = when (OnboardingStage.resumePoint(stage)) {
         OnboardingStage.BasicDetails -> Route.OnboardingBasicDetails
+        OnboardingStage.PanVerification -> Route.OnboardingPANVerification
+        OnboardingStage.PennyDropVerification -> Route.OnboardingBankVerification
         OnboardingStage.EmailVerification -> Route.OnboardingEmail
-        OnboardingStage.KycVerification -> Route.OnboardingPANVerification
+        OnboardingStage.InvestorProfile -> Route.OnboardingProfile
+        OnboardingStage.NomineeAddition -> Route.OnboardingNominee
+        OnboardingStage.AutopaySetup -> Route.OnboardingAutopay
         else -> null
     }
 

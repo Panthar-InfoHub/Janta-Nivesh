@@ -89,7 +89,7 @@ class EnterOtpViewModel(
                 verifyOtpUseCase(_phoneNumber.value, otpState.otpValue)
             }
                 .onSuccess {
-                    if (it.onboarded) {
+                    if (it.canEnterMainApp) {
                         sendEffect(EnterOtpEffect.NavigateToMainAppFlow)
                     } else {
                         sendEffect(EnterOtpEffect.NavigateOnboardingFlow(it.stage))

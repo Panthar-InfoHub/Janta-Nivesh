@@ -67,7 +67,6 @@ fun OnboardingChooseLanguage(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
                 .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
         ) {

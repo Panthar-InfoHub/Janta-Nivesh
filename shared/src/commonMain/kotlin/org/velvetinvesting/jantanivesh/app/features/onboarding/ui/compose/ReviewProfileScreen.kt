@@ -29,6 +29,7 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.address_label
 import jantanivesh.shared.generated.resources.annual_income_label
 import jantanivesh.shared.generated.resources.city
+import jantanivesh.shared.generated.resources.confirm_and_proceed
 import jantanivesh.shared.generated.resources.date_of_birth
 import jantanivesh.shared.generated.resources.kyc_form_full_name_label
 import jantanivesh.shared.generated.resources.kyc_form_gender_label
@@ -58,7 +59,7 @@ import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.Gender
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.MaritalStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Occupation
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.SourceOfFund
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingInput
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileUiState
 
@@ -151,7 +152,8 @@ fun ReviewProfileScreen(
                     )
                 }
             }
-            item {
+            // A verified address is final: it is neither editable nor shown here.
+            if (!state.isEmailLocked) item {
                 TitledAppTextField(
                     title = "Email",
                     value = state.email,
@@ -320,12 +322,9 @@ fun ReviewProfileScreen(
                     onConsentChange = { handleEvent(ReviewProfileEvent.OnResidentConfirmChange(it)) }
                 )
             }
-
-            item {
-            }
         }
         AppButton(
-            text = "Confirm and proceed",
+            text = stringResource(Res.string.confirm_and_proceed),
             onClick = { handleEvent(ReviewProfileEvent.OnProceedClick) },
             loading = state.isLoading,
             enabled = state.canSubmit,

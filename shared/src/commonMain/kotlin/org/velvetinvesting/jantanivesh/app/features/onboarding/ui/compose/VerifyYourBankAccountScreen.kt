@@ -203,9 +203,6 @@ fun VerifyBankAccountScreen(
                 )
             }
         }
-
-        JantaNiveshAndVelvetLogo()
-
         AppButton(
             text = "Confirm & Proceed/ " + stringResource(Res.string.confirm_proceed),
             onClick = { handleEvent(VerifyBankAccountEvent.OnProceedClick) },

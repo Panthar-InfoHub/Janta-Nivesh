@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.confirm_and_proceed
 import jantanivesh.shared.generated.resources.confirm_your_details
 import jantanivesh.shared.generated.resources.dob_as_per_pan
 import jantanivesh.shared.generated.resources.name_as_per_pan
@@ -122,19 +123,21 @@ fun BasicDetailsScreen(
 
             item {
                 AppButton(
-                    text = "Proceed",
+                    text = stringResource(Res.string.confirm_and_proceed),
                     onClick = { handleEvent(BasicDetailsEvent.OnProceedClick) },
                     loading = state.isLoading,
                     enabled = state.canSubmit,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = Spacing.dp24)
+                        .padding(vertical = Spacing.dp16)
                         .genericDropShadow()
                 )
             }
+            item {
+                JantaNiveshAndVelvetLogo()
+            }
         }
 
-        JantaNiveshAndVelvetLogo()
     }
 }
 

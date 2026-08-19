@@ -51,7 +51,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.c
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddNomineeEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddNomineeUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingInput
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeDocumentType
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeRelation
 
@@ -66,15 +66,16 @@ private val wordsKeyboardOptions = KeyboardOptions(
  * the number field below them, so the two always read the same in every language.
  */
 @Composable
-private fun nomineeDocumentLabel(type: NomineeDocumentType?): String = stringResource(
-    when (type) {
-        NomineeDocumentType.PAN -> Res.string.nominee_document_pan
-        NomineeDocumentType.AADHAAR -> Res.string.nominee_document_aadhaar
-        NomineeDocumentType.DRIVING_LICENCE -> Res.string.nominee_document_driving_licence
-        NomineeDocumentType.PASSPORT -> Res.string.nominee_document_oci_passport
-        null -> Res.string.nominee_document_number
+private fun nomineeDocumentLabel(type: NomineeDocumentType?): String {
+    return when (type) {
+        NomineeDocumentType.PAN -> "PAN / " + stringResource(Res.string.nominee_document_pan)
+        NomineeDocumentType.AADHAAR -> "Aadhar (Last 4 digits) /" + stringResource(Res.string.nominee_document_aadhaar)
+        NomineeDocumentType.DRIVING_LICENCE ->"Driving Licence" +stringResource( Res.string.nominee_document_driving_licence)
+        NomineeDocumentType.PASSPORT -> "OCI /" + stringResource(Res.string.nominee_document_oci_passport)
+        null -> "Document Number /" + stringResource(Res.string.nominee_document_number)
     }
-)
+}
+
 
 @Composable
 fun AddNomineeScreen(
@@ -225,7 +226,7 @@ fun AddNomineeScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
                     DropDownSelector(
-                        title = stringResource(Res.string.identity_type),
+                        title = "Identity Type / " +stringResource(Res.string.identity_type),
                         value = nominee.identityType?.let { nomineeDocumentLabel(it) } ?: "",
                         onValueChange = {
                                 handleEvent(AddNomineeEvent.OnIdentityTypeChanged(index, it))
@@ -360,7 +361,7 @@ fun AddNomineeScreen(
             }
         }
         AppButton(
-            text = "Confirm and proceed",
+            text = stringResource(Res.string.confirm_and_proceed),
             onClick = { handleEvent(AddNomineeEvent.OnConfirmAndProceedClick) },
             loading = state.isLoading,
             enabled = state.canSubmit,

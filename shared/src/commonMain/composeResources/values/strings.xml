@@ -458,6 +458,7 @@
     <string name="email_subtitle">We will use this to keep your account secure and send important updates.</string>
     <string name="email_declaration">I declare that this email ID belongs to me and is operated by me. I will receive account statements, transaction confirmations and regulatory communications on this email.</string>
     <string name="verify_your_email">Verify your email ID</string>
+    <string name="confirm_and_proceed">Confirm &amp; Proceed</string>
     <string name="review_profile_title">Review Profile</string>
     <string name="review_profile_subtitle">Please verify and edit the details below if needed.</string>
     <string name="full_name_label">Full Name</string>

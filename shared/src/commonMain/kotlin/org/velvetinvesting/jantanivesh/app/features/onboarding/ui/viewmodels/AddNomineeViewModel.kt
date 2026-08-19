@@ -15,6 +15,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Nomi
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitNomineesUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeDocumentType
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeRelation
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
 data class NomineeDetails(
     val name: String = "",
@@ -55,7 +56,7 @@ data class NomineeDetails(
 }
 
 data class AddNomineeUiState(
-    val addLater: Boolean = true,
+    val addLater: Boolean = false,
     val nominees: List<NomineeDetails> = listOf(NomineeDetails()),
     val isLoading: Boolean = false
 ) {

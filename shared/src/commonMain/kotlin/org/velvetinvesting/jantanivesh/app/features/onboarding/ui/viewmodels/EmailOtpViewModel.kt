@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.core.ui.otp.OtpController
 import org.velvetinvesting.jantanivesh.app.features.core.ui.otp.OtpUiState
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.RequestEmailOtpUseCase
@@ -44,7 +45,8 @@ sealed interface EmailOtpEffect {
 class EmailOtpViewModel(
     private val email: String,
     private val requestEmailOtp: RequestEmailOtpUseCase,
-    private val verifyEmailOtp: VerifyEmailOtpUseCase
+    private val verifyEmailOtp: VerifyEmailOtpUseCase,
+    private val authPrefs: AuthPrefs
 ) : ViewModel() {
 
     private val otpController = OtpController(viewModelScope)
@@ -76,6 +78,10 @@ class EmailOtpViewModel(
         viewModelScope.launch {
             otpController.withLoading { verifyEmailOtp(otpState.otpValue) }
                 .onSuccess {
+                    // From here on the address is settled — the review screen shows it as final
+                    // rather than offering it for editing.
+                    authPrefs.setEmail(email)
+                    authPrefs.setEmailVerified(true)
                     sendEffect(EmailOtpEffect.EmailVerified)
                 }
                 .onError { error ->

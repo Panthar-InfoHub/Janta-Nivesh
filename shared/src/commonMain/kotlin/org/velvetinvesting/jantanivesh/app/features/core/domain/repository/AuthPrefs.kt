@@ -31,6 +31,23 @@ interface AuthPrefs {
 
     fun getPhoneNumber(): String?
 
+    fun setFullName(fullName: String)
+
+    fun getFullName(): String?
+
+    fun setDob(dob: String)
+
+    fun getDob(): String?
+
+    fun setEmail(email: String)
+
+    fun getEmail(): String?
+
+    /** Set once the email OTP has been verified; the address is then no longer the user's to edit. */
+    fun setEmailVerified(verified: Boolean)
+
+    fun isEmailVerified(): Boolean
+
     fun setFirstLaunch(firstLaunch: Boolean)
 
     fun isFirstLaunch(): Boolean

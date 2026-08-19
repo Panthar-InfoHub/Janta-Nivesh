@@ -6,7 +6,6 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.networking.getUrl
@@ -77,18 +76,23 @@ class UserAuthenticationRepo(
         return when (response) {
             is NetworkResponse.Success -> {
                 val dto = response.data.data
+                val login = response.data.toLoginDomain()
 
                 authPrefs.setBearerToken(dto.token)
                 authPrefs.setRefreshToken(dto.refresh_token)
                 authPrefs.setLoggedIn(true)
-                authPrefs.setOnboardingCompleted(dto.onboarding.is_completed)
-                authPrefs.setOnboardingStage(OnboardingStage.fromIdOrDefault(dto.onboarding.current_stage).id)
                 authPrefs.setUserId(dto.user.user_id)
                 authPrefs.setPhoneNumber(dto.user.phone_no)
 
-                NetworkResponse.Success(
-                    response.data.toLoginDomain()
-                )
+                // Locally "onboarded" also covers the user who deferred the optional steps: they
+                // belong in the main app, which takes over chasing whatever is still outstanding.
+                authPrefs.setOnboardingCompleted(login.canEnterMainApp)
+
+                // Recorded either way, so the stage is there for the main app to act on and for a
+                // relaunch mid-onboarding to resume from.
+                authPrefs.setOnboardingStage(login.stage.id)
+
+                NetworkResponse.Success(login)
             }
             is NetworkResponse.Error -> {
                 NetworkResponse.Error(response.error)

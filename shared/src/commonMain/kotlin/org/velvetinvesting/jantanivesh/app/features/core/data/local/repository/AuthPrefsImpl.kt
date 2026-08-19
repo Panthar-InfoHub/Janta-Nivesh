@@ -19,6 +19,11 @@ class AuthPrefsImpl(
         private const val KEY_USER_PHONE_NUMBER = "user_phone_number"
         private const val KEY_FIRST_LAUNCH = "first_launch"
         private const val KEY_ONBOARDING_STAGE = "onboarding_stage"
+
+        private const val KEY_USER_FULL_NAME = "user_full_name"
+        private const val KEY_USER_DOB = "user_dob"
+        private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_USER_EMAIL_VERIFIED = "user_email_verified"
     }
 
     override fun setBearerToken(token: String) {
@@ -77,6 +82,38 @@ class AuthPrefsImpl(
         return prefs.getString(KEY_USER_PHONE_NUMBER)
     }
 
+    override fun setFullName(fullName: String) {
+        prefs.setString(KEY_USER_FULL_NAME, fullName)
+    }
+
+    override fun getFullName(): String? {
+        return prefs.getString(KEY_USER_FULL_NAME)
+    }
+
+    override fun setDob(dob: String) {
+        prefs.setString(KEY_USER_DOB, dob)
+    }
+
+    override fun getDob(): String? {
+        return prefs.getString(KEY_USER_DOB)
+    }
+
+    override fun setEmail(email: String) {
+        prefs.setString(KEY_USER_EMAIL, email)
+    }
+
+    override fun getEmail(): String? {
+        return prefs.getString(KEY_USER_EMAIL)
+    }
+
+    override fun setEmailVerified(verified: Boolean) {
+        prefs.setBoolean(KEY_USER_EMAIL_VERIFIED, verified)
+    }
+
+    override fun isEmailVerified(): Boolean {
+        return prefs.getBoolean(KEY_USER_EMAIL_VERIFIED) ?: false
+    }
+
     override fun setFirstLaunch(firstLaunch: Boolean) {
         prefs.setBoolean(KEY_FIRST_LAUNCH, firstLaunch)
     }
@@ -91,6 +128,13 @@ class AuthPrefsImpl(
         prefs.remove(KEY_USER_ID)
         prefs.remove(KEY_LOGIN_STATUS)
         prefs.remove(KEY_ONBOARDING_COMPLETED)
+        // Otherwise the next user to log in on this device resumes at the previous one's stage
+        // for as long as it takes the OTP response to overwrite it.
+        prefs.remove(KEY_ONBOARDING_STAGE)
         prefs.remove(KEY_USER_PHONE_NUMBER)
+        prefs.remove(KEY_USER_FULL_NAME)
+        prefs.remove(KEY_USER_DOB)
+        prefs.remove(KEY_USER_EMAIL)
+        prefs.remove(KEY_USER_EMAIL_VERIFIED)
     }
 }

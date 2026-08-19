@@ -17,6 +17,7 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
@@ -57,7 +58,6 @@ fun LoginWithPhoneNumberScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
         ) {
 
@@ -221,6 +221,7 @@ private fun AuthModeSwitchLine(
             text = action,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(start = Spacing.dp4)
                 .clickable(onClick = onClick)

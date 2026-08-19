@@ -11,7 +11,9 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.RequestEmailOtpUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
 data class EmailIdUiState(
     val email: String = "",
@@ -38,7 +40,8 @@ sealed interface EmailIdEffect {
 }
 
 class EmailIdViewModel(
-    private val requestEmailOtp: RequestEmailOtpUseCase
+    private val requestEmailOtp: RequestEmailOtpUseCase,
+    private val authPrefs: AuthPrefs
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(EmailIdUiState())
     val uiState = _uiState.asStateFlow()
@@ -86,6 +89,10 @@ class EmailIdViewModel(
             requestEmailOtp(email)
                 .onSuccess {
                     _uiState.update { it.copy(isLoading = false) }
+                    // Remembered as soon as it is submitted; it only counts as verified once the
+                    // OTP for this address goes through.
+                    authPrefs.setEmail(email)
+                    authPrefs.setEmailVerified(false)
                     sendEffect(EmailIdEffect.OtpRequested(email))
                 }
                 .onError { error ->

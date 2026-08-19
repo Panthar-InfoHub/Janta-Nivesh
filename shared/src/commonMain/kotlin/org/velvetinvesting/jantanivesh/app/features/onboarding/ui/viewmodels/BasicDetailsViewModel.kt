@@ -11,7 +11,9 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitBasicDetailsUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
 data class BasicDetailsUiState(
     val name: String = "",
@@ -34,7 +36,9 @@ sealed interface BasicDetailsEffect {
 }
 
 class BasicDetailsViewModel(
-    private val basicDetailsUseCase: SubmitBasicDetailsUseCase
+    private val basicDetailsUseCase: SubmitBasicDetailsUseCase,
+    /** The confirmed name and date of birth are kept locally so later steps can prefill them. */
+    private val authPrefs: AuthPrefs
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BasicDetailsUiState())
     val uiState = _uiState.asStateFlow()
@@ -78,6 +82,8 @@ class BasicDetailsViewModel(
             }
                 .onSuccess {
                     setLoading(false)
+                    authPrefs.setFullName(state.name.trim())
+                    authPrefs.setDob(state.dob.trim())
                     sendEffect(BasicDetailsEffect.NavigateToPanInitiate)
                 }
 

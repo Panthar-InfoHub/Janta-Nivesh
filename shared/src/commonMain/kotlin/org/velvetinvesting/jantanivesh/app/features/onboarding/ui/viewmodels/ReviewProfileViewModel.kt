@@ -13,6 +13,7 @@ import org.velvetinvesting.jantanivesh.app.core.location.LocationProvider
 import org.velvetinvesting.jantanivesh.app.core.location.LocationResult
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimDoubleTo
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.Gender
 import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.MaritalStatus
@@ -24,6 +25,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Inve
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.KYCError
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetKycFormStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitInvestorProfileUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
 /**
  * Six decimals is roughly 0.1 m — more precision than a phone GPS delivers, and enough to keep
@@ -59,7 +61,12 @@ data class ReviewProfileUiState(
     val isLoading: Boolean = false,
     /** Only ever set from a GPS fix — the coordinate fields are display-only. */
     val coordinates: GeoCoordinates? = null,
-    val isFetchingLocation: Boolean = false
+    val isFetchingLocation: Boolean = false,
+    /**
+     * True once the email OTP has been verified: the address is then settled, so the field is
+     * neither shown nor editable. Every other prefilled value stays editable here.
+     */
+    val isEmailLocked: Boolean = false
 ) {
     /** Null until the field holds a usable amount; this is what the request is built from. */
     val annualIncomeSlab: IncomeSlab?
@@ -128,13 +135,20 @@ sealed interface ReviewProfileEffect {
 }
 
 class ReviewProfileViewModel(
-    /** Prefills the email field; the user can still correct it here. */
     private val submitInvestorProfile: SubmitInvestorProfileUseCase,
     private val getKycFormStatus: GetKycFormStatusUseCase,
-    private val locationProvider: LocationProvider
+    private val locationProvider: LocationProvider,
+    /** Source of the name, date of birth and email captured earlier in onboarding. */
+    private val authPrefs: AuthPrefs
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
-        ReviewProfileUiState()
+        // Anything the earlier steps did not store simply comes through as empty and is typed here.
+        ReviewProfileUiState(
+            fullName = authPrefs.getFullName().orEmpty(),
+            dob = authPrefs.getDob().orEmpty(),
+            email = authPrefs.getEmail().orEmpty(),
+            isEmailLocked = authPrefs.isEmailVerified() && !authPrefs.getEmail().isNullOrBlank()
+        )
     )
     val uiState = _uiState.asStateFlow()
 
@@ -146,8 +160,10 @@ class ReviewProfileViewModel(
             is ReviewProfileEvent.OnFullNameChange ->
                 update { it.copy(fullName = OnboardingInput.sanitizeName(event.value)) }
 
-            is ReviewProfileEvent.OnEmailChange ->
+            is ReviewProfileEvent.OnEmailChange -> {
+                if (_uiState.value.isEmailLocked) return
                 update { it.copy(email = OnboardingInput.sanitizeEmail(event.value)) }
+            }
 
             // Always `yyyy-MM-dd` from the date picker; the field itself is read-only.
             is ReviewProfileEvent.OnDobChange -> update { it.copy(dob = event.value) }

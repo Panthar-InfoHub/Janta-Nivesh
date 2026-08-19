@@ -15,6 +15,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetPANVerificationStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.InitiatePANVerificationUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SkipPANVerificationUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
 data class PanVerificationUiState(
     val pan: String = "",

@@ -91,7 +91,6 @@ fun OtpVerificationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
         ) {
 
@@ -141,7 +140,7 @@ fun OtpVerificationScreen(
                     onClick = onSubmit,
                     enabled = state.isSubmitEnabled,
                     loading = state.isLoading,
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp40)
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp28)
                 )
             }
 

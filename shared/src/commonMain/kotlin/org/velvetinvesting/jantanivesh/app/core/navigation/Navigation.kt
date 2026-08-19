@@ -21,10 +21,14 @@ fun BaseNavigation() {
     val navController = rememberNavController()
     val prefs: AuthPrefs = koinInject()
     val isLoggedIn = prefs.isLoggedIn()
+
+    // Set once the user belongs in the main app — either the server finished onboarding, or they
+    // deferred the optional part of it and the app chases the rest from inside the main flow.
     val onboardingCompleted = prefs.isOnboardingCompleted()
-    val onboardingStage = OnboardingStage.fromIdOrDefault(
-        prefs.getOnboardingStage()
-    )
+
+    // Written on every step that succeeds, so a relaunch after process death picks up on the
+    // screen the user actually reached rather than restarting the flow.
+    val onboardingStage = OnboardingStage.resumePoint(prefs.getOnboardingStage())
 
     val startDestination: Route = when {
         !isLoggedIn -> Route.LoginGraph
@@ -63,6 +67,7 @@ fun BaseNavigation() {
                     },
                     navigateToMainAppFlow = {
                         prefs.setLoggedIn(true)
+                        prefs.setOnboardingCompleted(true)
                         navController.navigate(Route.MainAppGraph) {
                             launchSingleTop = true
 
@@ -78,6 +83,9 @@ fun BaseNavigation() {
                 val route = it.toRoute<Route.OnboardingGraph>()
                 OnboardingNavigation(
                     stage = route.stage,
+                    // Reached from autopay finishing and from skipping the optional steps. The
+                    // stored stage is deliberately left as it is: for a skip it still records
+                    // what the user has left to do once they are inside the app.
                     onCompleted = {
                         prefs.setLoggedIn(true)
                         prefs.setOnboardingCompleted(true)

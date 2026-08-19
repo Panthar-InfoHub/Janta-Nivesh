@@ -42,6 +42,7 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalV
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.BasicDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.*
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.NotificationViewModel
 import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenViewModel
@@ -64,14 +65,15 @@ val viewModelModule = module {
     viewModel { TradingAccountViewModel(get(), get(), get(), get()) }
 
     // KycNew ViewModels
+    viewModel { BasicDetailsViewModel(get(), get()) }
     viewModel { PanVerificationViewModel(get(), get(), get()) }
-    viewModel { EmailIdViewModel(get()) }
-    viewModel { (email: String) -> EmailOtpViewModel(email, get(), get()) }
+    viewModel { EmailIdViewModel(get(), get()) }
+    viewModel { (email: String) -> EmailOtpViewModel(email, get(), get(), get()) }
     viewModel { KycSplashViewModel() }
     viewModel { VerifyBankAccountViewModel(get()) }
     viewModel { VerifyWithDigilockerViewModel(get(), get()) }
     viewModel { UploadSignatureViewModel(get()) }
-    viewModel { ReviewProfileViewModel(get(), get(), get()) }
+    viewModel { ReviewProfileViewModel(get(), get(), get(), get()) }
     viewModel { AddNomineeViewModel(get()) }
     viewModel { SetupAutopayViewModel(get(), get()) }
 

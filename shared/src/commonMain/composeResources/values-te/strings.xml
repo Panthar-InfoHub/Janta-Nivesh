@@ -255,6 +255,7 @@
     <string name="email_subtitle">మీ ఖాతాను సురక్షితంగా ఉంచడానికి మరియు ముఖ్యమైన అప్‌డేట్‌లను పంపడానికి మేము దీనిని ఉపయోగిస్తాము.</string>
     <string name="email_declaration">ఈ ఇమెయిల్ ఐడి నాదేనని మరియు దీనిని నేనే ఉపయోగిస్తున్నానని నేను ప్రకటిస్తున్నాను. నేను ఈ ఇమెయిల్‌లో ఖాతా స్టేట్‌మెంట్, లావాదేవీ ధృవీకరణ మరియు నియంత్రణ సమాచారాన్ని పొందుతాను.</string>
     <string name="verify_your_email">మీ ఇమెయిల్ ఐడిని ధృవీకరించండి</string>
+    <string name="confirm_and_proceed">నిర్ధారించి కొనసాగండి</string>
     <string name="review_profile_title">ప్రొఫైల్‌ను సమీక్షించండి</string>
     <string name="review_profile_subtitle">దయచేసి దిగువ సమాచారాన్ని ధృవీకరించండి మరియు అవసరమైతే మార్పులు చేయండి.</string>
     <string name="full_name_label">పూర్తి పేరు</string>

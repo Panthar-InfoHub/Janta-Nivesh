@@ -42,7 +42,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.c
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EmailIdEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.EmailIdUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.OnboardingInput
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
 @Composable
 fun EmailIdScreen(
@@ -134,9 +134,11 @@ fun EmailIdScreen(
                     modifier = Modifier.fillMaxWidth().genericDropShadow()
                 )
             }
+            item {
+                JantaNiveshAndVelvetLogo(modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24))
+            }
         }
 
-        JantaNiveshAndVelvetLogo(modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24))
     }
 }
 

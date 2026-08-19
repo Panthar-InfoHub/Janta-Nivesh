@@ -50,9 +50,9 @@ fun rememberLessPayTypography(): Typography {
             ),
             headlineMedium = TextStyle(
                 fontFamily = fontFamily,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.SemiBold,
-                lineHeight = 28.sp
+                lineHeight = 24.sp
             ),
             headlineSmall = TextStyle(
                 fontFamily = fontFamily,

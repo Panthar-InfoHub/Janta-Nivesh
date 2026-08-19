@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
+package org.velvetinvesting.jantanivesh.app.features.onboarding.ui
 
 /**
  * Input sanitisers and validators shared by the onboarding screens.

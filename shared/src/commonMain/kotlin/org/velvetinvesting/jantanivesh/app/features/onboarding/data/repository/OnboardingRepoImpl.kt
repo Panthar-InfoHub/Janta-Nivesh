@@ -73,7 +73,12 @@ class OnboardingRepoImpl(
             }
         }
         return when (response) {
-            is NetworkResponse.Success -> NetworkResponse.Success(response.data.toDomain())
+            is NetworkResponse.Success -> {
+                val status = response.data.toDomain()
+                persistStage(status.currentStage)
+                NetworkResponse.Success(status)
+            }
+
             is NetworkResponse.Error -> NetworkResponse.Error(response.error)
         }
     }
@@ -104,7 +109,12 @@ class OnboardingRepoImpl(
             }
         }
         return when (response) {
-            is NetworkResponse.Success -> NetworkResponse.Success(response.data.toDomain())
+            is NetworkResponse.Success -> {
+                val status = response.data.toDomain()
+                persistStage(status.currentStage)
+                NetworkResponse.Success(status)
+            }
+
             is NetworkResponse.Error -> NetworkResponse.Error(response.error)
         }
     }
@@ -186,13 +196,7 @@ class OnboardingRepoImpl(
             try {
                 val responseDto = response.body<KycFormStatusResponseDto>()
 
-                authPrefs.setOnboardingStage(
-                    OnboardingStage
-                        .fromIdOrDefault(
-                            responseDto.data?.onboarding?.current_stage
-                        )
-                        .id
-                )
+                persistStage(responseDto.data?.onboarding?.current_stage)
 
                 NetworkResponse.Success(
                     responseDto.toDomain()
@@ -248,7 +252,7 @@ class OnboardingRepoImpl(
     override suspend fun submitPennyDrop(
         bankAccount: BankAccount
     ): NetworkResponse<Unit, ErrorDomain> {
-        return safeUnitRequest {
+        val response = safeUnitRequest {
             client.post(getUrl("/onboarding/penny-drop")) {
                 setBody(
                     PennyDropBody(
@@ -261,6 +265,10 @@ class OnboardingRepoImpl(
                 )
             }
         }
+        if (response is NetworkResponse.Success) {
+            persistStage(OnboardingStage.EmailVerification)
+        }
+        return response
     }
 
     override suspend fun requestEmailOtp(
@@ -346,19 +354,32 @@ class OnboardingRepoImpl(
     }
 
     override suspend fun skipNominees(): NetworkResponse<Unit, ErrorDomain> {
-        return safeUnitRequest {
+        val response = safeUnitRequest {
             client.post(getUrl("/onboarding/nominee")) {
                 setBody(SkipNomineeRequestBody(skip = true))
             }
         }
+        if (response is NetworkResponse.Success) {
+            persistStage(OnboardingStage.AutopaySetup)
+        }
+        return response
     }
 
+    /**
+     * The nominees are the last thing the server tracks, so from here the flow is on the autopay
+     * mandate — which is why the stored stage moves to [OnboardingStage.AutopaySetup] and not to
+     * completed.
+     */
     private suspend fun postNominees(body: NomineeRequestBody): NetworkResponse<Unit, ErrorDomain> {
-        return safeUnitRequest {
+        val response = safeUnitRequest {
             client.post(getUrl("/onboarding/nominee")) {
                 setBody(body)
             }
         }
+        if (response is NetworkResponse.Success) {
+            persistStage(OnboardingStage.AutopaySetup)
+        }
+        return response
     }
 
     override suspend fun createMandate(
@@ -397,12 +418,19 @@ class OnboardingRepoImpl(
 
     /**
      * Keeps the locally remembered stage in step with the server's, so a restart resumes on the
-     * screen the user actually reached.
+     * screen the user actually reached. Always stored as a resume point, so `KYC_VERIFICATION`
+     * (no screen of its own) and `COMPLETED` (autopay still outstanding) never reach storage.
      */
     private fun persistStage(currentStage: String?) {
-        authPrefs.setOnboardingStage(
-            OnboardingStage.fromIdOrDefault(currentStage).id
-        )
+        persistStage(OnboardingStage.resumePoint(currentStage))
+    }
+
+    /**
+     * For the endpoints that answer with no body: the flow is linear from here, so the next screen
+     * is known client-side and a relaunch should not replay the step that just succeeded.
+     */
+    private fun persistStage(stage: OnboardingStage) {
+        authPrefs.setOnboardingStage(stage.id)
     }
 
     private fun Nominee.toBody() = NomineeBody(
