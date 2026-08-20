@@ -10,7 +10,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import org.velvetinvesting.jantanivesh.app.core.navigation.Route.*
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
@@ -69,8 +68,6 @@ import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.Profil
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
-import org.velvetinvesting.jantanivesh.app.features.tradingaccount.ui.compose.TradingAccountSuccess
-import kotlin.collections.set
 
 private const val KYC_CONTRACT_WEBVIEW_RESULT = "kyc_contract_webview_completed"
 private const val CART_WEBVIEW_RESULT = "cart_webview_completed"
@@ -101,45 +98,6 @@ fun MainAppNavigation(
         navController = navController,
         startDestination = Route.BottomNav
     ) {
-
-        //KYC Graph
-        composable<Route.KycGraph> {
-            KycNavigation(
-                onBackNavigation = { navController.popBackStack() },
-                navigateToTradingAccountFlow={
-                    navController.navigate(Route.TradingAccountNavigation) {
-                        launchSingleTop = true
-                    }
-                }
-            )
-        }
-
-        //Trading Account Graph
-        composable<Route.TradingAccountNavigation> {
-            TradingAccountNavigation(
-                onBackClick = { navController.popBackStack() },
-                onCompletion = {
-                    navController.navigate(Route.TradingAccountSuccess) {
-                        popUpTo<Route.TradingAccountNavigation> {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                }
-            )
-        }
-        composable<Route.TradingAccountSuccess> {
-            TradingAccountSuccess(
-                onButtonClick = {
-                    navController.navigate(Route.MutualFundTypeSelectionScreen) {
-                        launchSingleTop = true
-                    }
-                },
-                onBack={navController.popBackStack()},
-                buttonText = "Start Investing"
-            )
-        }
-
 
 
         composable<Route.MutualFundTypeSelectionScreen> {
@@ -235,9 +193,7 @@ fun MainAppNavigation(
                     }
                 },
                 onTradingAccountClick={
-                    navController.navigate(Route.TradingAccountNavigation){
-                        launchSingleTop=true
-                    }
+
                 },
                 onLaunchWebView = { url ->
                     navController.navigate(
@@ -379,9 +335,7 @@ fun MainAppNavigation(
                 },
 
                 navigateToTradingAccountSetup = {
-                    navController.navigate(
-                        Route.TradingAccountNavigation
-                    )
+
                 },
                 navigateToFD = {
                     navController.navigate(
@@ -586,7 +540,7 @@ fun MainAppNavigation(
                     when (effect) {
                         ProjectedImpactEffect.NavigateBack -> navController.popBackStack()
                         ProjectedImpactEffect.NavigateToInvest -> navController.navigate(
-                            MutualFundSearchResult()
+                            Route.MutualFundSearchResult()
                         )
                         ProjectedImpactEffect.OpenPortfolioBottomSheet -> { /* handle */ }
                         ProjectedImpactEffect.ClosePortfolioBottomSheet -> { /* handle */ }

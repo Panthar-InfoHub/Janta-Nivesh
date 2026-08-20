@@ -24,34 +24,10 @@ sealed interface Route {
     @Serializable
     data class OnboardingGraph(val stage: String) : Route
 
-    @Serializable
-    data object EnterName : Route
-
-    @Serializable
-    data object EnterDob : Route
-
-    @Serializable
-    data object EnterEmail : Route
-
 
     // KYC Routes
     @Serializable
     data object KycGraph : Route
-
-    @Serializable
-    data object KycIntro : Route
-
-    @Serializable
-    data object KycForm : Route
-
-    @Serializable
-    data object KycImageUpload : Route
-
-    @Serializable
-    data object KycContract : Route
-
-    @Serializable
-    data object KycSuccess : Route
 
     @Serializable
     data object MainAppGraph : Route
@@ -74,28 +50,6 @@ sealed interface Route {
 
     @Serializable
     data object Redeem : Route
-
-    @Serializable
-    data object TradingAccountNavigation: Route
-
-    @Serializable
-    data object TradingAccountBasicDetails: Route
-    @Serializable
-    data object TradingAccountPANDetails: Route
-    @Serializable
-    data object TradingAccountFinancialDetails: Route
-    @Serializable
-    data object TradingAccountClientInfo: Route
-    @Serializable
-    data object TradingAccountBankDetails: Route
-    @Serializable
-    data object TradingAccountAddressDetails: Route
-    @Serializable
-    data object TradingAccountGuardianDetails: Route
-    @Serializable
-    data object TradingAccountGuardiansPANDetails: Route
-    @Serializable
-    data object TradingAccountSuccess: Route
 
     @Serializable
     data object CategoryMutualFund : Route
@@ -188,13 +142,6 @@ sealed interface Route {
     @Serializable
     data class PurchaseFixedDeposit(val id:String)
 
-
-    @Serializable
-    data object FireReport : Route
-
-    @Serializable
-    data object CheckKYC : Route
-
     @Serializable
     data object GoalsScreen : Route
 
@@ -202,12 +149,7 @@ sealed interface Route {
     data object Notifications : Route
 
     @Serializable
-    data object PersonalInformation : Route
-
-    @Serializable
     data object SingleGoalAdd : Route
-    @Serializable
-    data object ViewYourGoals: Route
 
     @Serializable
     data class GoalProjectionFlow(
@@ -233,9 +175,6 @@ sealed interface Route {
 
     @Serializable
     data object AboutFire : Route
-
-    @Serializable
-    data object InvestmentRateScreen : Route
 
     @Serializable
     data class FDPortfolioDetailsScreen(
