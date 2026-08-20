@@ -15,14 +15,14 @@ import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimDoubleTo
-import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.Gender
-import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.MaritalStatus
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Gender
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.GeoLocation
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.IncomeSlab
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Occupation
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.SourceOfFund
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.InvestorProfile
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.KYCError
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.MaritalStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetKycFormStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitInvestorProfileUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput

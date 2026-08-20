@@ -42,11 +42,11 @@ import jantanivesh.shared.generated.resources.review_profile_title
 import jantanivesh.shared.generated.resources.source_of_fund_label
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.location.rememberLocationPermissionRequester
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AgreementCheckBoxCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
@@ -55,15 +55,14 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.Inverted
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.Gender
-import org.velvetinvesting.jantanivesh.app.features.kyc.uistate.MaritalStatus
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Gender
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.MaritalStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Occupation
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.SourceOfFund
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileUiState
 
-/** Shared by every free-text name-like field on this screen. */
 private val nameKeyboardOptions = KeyboardOptions(
     capitalization = KeyboardCapitalization.Words,
     imeAction = ImeAction.Next

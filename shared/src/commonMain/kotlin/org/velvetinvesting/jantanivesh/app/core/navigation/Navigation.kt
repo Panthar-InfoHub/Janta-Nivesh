@@ -101,9 +101,13 @@ fun BaseNavigation() {
             }
 
             composable<Route.MainAppGraph> {
-                // TODO: restore MainAppNavigation here once the plans flow has its own entry
-                // point. It is stood up in place of the main app while it is being built.
-                PlansNavigation()
+                MainAppNavigation {
+                    prefs.setLoggedIn(false)
+                    navController.navigate(Route.LoginGraph) {
+                        launchSingleTop = true
+                        popUpTo(0)
+                    }
+                }
             }
         }
     }

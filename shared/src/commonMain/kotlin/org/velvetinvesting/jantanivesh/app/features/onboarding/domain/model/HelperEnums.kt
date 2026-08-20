@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.kyc.uistate
+package org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model
 
 enum class Gender(
     val code: String,

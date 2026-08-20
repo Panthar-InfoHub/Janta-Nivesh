@@ -47,7 +47,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 import org.velvetinvesting.jantanivesh.app.core.theme.titlesStyle
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ContinueBackButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
-import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.ConsentSection
+//import org.velvetinvesting.jantanivesh.app.features.kyc.ui.screens.ConsentSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,12 +109,12 @@ fun CartCutOffPopup(
             LinkSection(onLinkClick = {
                 openBrowserLauncher.launch(link) {}
             })
-            ConsentSection(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                isChecked = isChecked,
-                onToggle = {isChecked=!isChecked},
-                text = "I have read and understood the cut-off timings and NAV rules"
-            )
+//            ConsentSection(
+//                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+//                isChecked = isChecked,
+//                onToggle = {isChecked=!isChecked},
+//                text = "I have read and understood the cut-off timings and NAV rules"
+//            )
             Footer(
                 onProceedClick= {
                     onPurchase()
