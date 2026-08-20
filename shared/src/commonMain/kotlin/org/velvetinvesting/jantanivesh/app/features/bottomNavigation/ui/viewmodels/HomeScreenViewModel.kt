@@ -45,6 +45,9 @@ sealed interface HomeScreenEvent {
     data object OnGoToGoalsClicked : HomeScreenEvent
     data class OnGoalClicked(val goalId: String) : HomeScreenEvent
     data object OnCreateCustomGoalClicked : HomeScreenEvent
+
+    data object OnDailySipClicked : HomeScreenEvent
+    data object OnMonthlySipClicked : HomeScreenEvent
 }
 
 sealed interface HomeScreenSideEffect {
@@ -57,6 +60,8 @@ sealed interface HomeScreenSideEffect {
     data object NavigateToTradingVerification : HomeScreenSideEffect
     data object NavigateToGoals : HomeScreenSideEffect
     data class NavigateToSpecificGoal(val goalId: String) : HomeScreenSideEffect
+    data object NavigateToDailySip : HomeScreenSideEffect
+    data object NavigateToMonthlySip : HomeScreenSideEffect
 }
 
 class HomeScreenViewModel(
@@ -89,6 +94,8 @@ class HomeScreenViewModel(
                     _sideEffect.send(HomeScreenSideEffect.NavigateToSpecificGoal(event.goalId))
                 }
                 HomeScreenEvent.OnTradingSetupClick -> _sideEffect.send(HomeScreenSideEffect.NavigateToTradingVerification)
+                HomeScreenEvent.OnDailySipClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToDailySip)
+                HomeScreenEvent.OnMonthlySipClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToMonthlySip)
             }
         }
     }
