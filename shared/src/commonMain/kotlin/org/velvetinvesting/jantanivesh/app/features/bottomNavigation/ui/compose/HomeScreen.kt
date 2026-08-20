@@ -139,7 +139,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     Box(modifier= Modifier.fillMaxSize()
-        .background(GrayScreenBackGround)){
+        .background(White)){
         when {
             state.isLoading -> {
                 LoaderScreen(
@@ -176,7 +176,7 @@ fun HomeScreenContent(
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
         modifier = modifier,
-        contentPadding = PaddingValues(top = Spacing.dp8)
+        contentPadding = PaddingValues(top = Spacing.dp24)
     ) {
         item {
             HomeHeader(
@@ -336,7 +336,7 @@ private fun PortfolioCard(
             modifier = Modifier.padding(Spacing.dp24)
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
             ) {
                 Text(
                     stringResource(Res.string.home_portfolio_value),
@@ -860,7 +860,7 @@ private fun HomeFooter(
         .background(
             brush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xffF0F2F8), Secondary.copy(0.3f)
+                    White, Secondary.copy(0.1f), Secondary.copy(0.2f)
                 )
             )
         )){

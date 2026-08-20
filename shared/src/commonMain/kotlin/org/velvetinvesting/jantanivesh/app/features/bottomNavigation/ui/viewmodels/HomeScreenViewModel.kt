@@ -2,18 +2,12 @@ package org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmod
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.velvetinvesting.jantanivesh.app.core.networking.onError
-import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
-import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
@@ -22,12 +16,12 @@ data class HomeScreenUiState(
     val isLoading: Boolean = false,
     val showError: Boolean = false,
     val error: String = "",
-    val userName: String = "",
+    val userName: String = "User",
     val email: String = "",
-    val portfolioValue: String = "",
-    val fixedDepositsAmount: String = "",
-    val mutualFundsAmount: String = "",
-    val pnlTrend: String = "",
+    val portfolioValue: String = "XXXXX",
+    val fixedDepositsAmount: String = "XXXXX",
+    val mutualFundsAmount: String = "XXXXX",
+    val pnlTrend: String = "XX",
     val goals: List<GoalsSummaryDomain> = emptyList(),
     val kycVerified: Boolean = false,
     val tradingAccountVerified: Boolean = false
@@ -101,67 +95,67 @@ class HomeScreenViewModel(
     }
 
     private fun loadData() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    showError = false,
-                    error = ""
-                )
-            }
-
-            val userDeferred = async { getUserDataUseCase() }
-            val portfolioDeferred = async { getPortfolioUseCase() }
-
-            val userResult = userDeferred.await()
-            val portfolioResult = portfolioDeferred.await()
-
-            var errorMessage: String? = null
-
-            userResult
-                .onSuccess { userData ->
-                    _uiState.update {
-                        it.copy(
-                            userName = userData.name,
-                            goals = userData.goals,
-                            kycVerified = userData.kycVerified,
-                            tradingAccountVerified = userData.tradingAccountVerified,
-                            email = userData.email
-                        )
-                    }
-                }
-                .onError {
-                    errorMessage = it.message
-                }
-
-            portfolioResult
-                .onSuccess { portfolio ->
-                    _uiState.update {
-                        it.copy(
-                            portfolioValue = formatMoneyAfterL(portfolio.dashboard.investedAmount.toLong()),
-                            fixedDepositsAmount = formatMoneyAfterL(
-                                portfolio.totalInvestments.allocation.fixedDeposits.value.toLong()
-                            ),
-                            mutualFundsAmount = formatMoneyAfterL(
-                                portfolio.totalInvestments.allocation.mutualFunds.value.toLong()
-                            ),
-                            pnlTrend = portfolio.investedAmountBreakdown.returnsPercent.trimTo(2)
-                        )
-                    }
-                }
-                .onError {
-                    if (errorMessage == null) {
-                        errorMessage = it.message
-                    }
-                }
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    showError = errorMessage != null,
-                    error = errorMessage.orEmpty()
-                )
-            }
-        }
+//        viewModelScope.launch {
+//            _uiState.update {
+//                it.copy(
+//                    isLoading = true,
+//                    showError = false,
+//                    error = ""
+//                )
+//            }
+//
+//            val userDeferred = async { getUserDataUseCase() }
+//            val portfolioDeferred = async { getPortfolioUseCase() }
+//
+//            val userResult = userDeferred.await()
+//            val portfolioResult = portfolioDeferred.await()
+//
+//            var errorMessage: String? = null
+//
+//            userResult
+//                .onSuccess { userData ->
+//                    _uiState.update {
+//                        it.copy(
+//                            userName = userData.name,
+//                            goals = userData.goals,
+//                            kycVerified = userData.kycVerified,
+//                            tradingAccountVerified = userData.tradingAccountVerified,
+//                            email = userData.email
+//                        )
+//                    }
+//                }
+//                .onError {
+//                    errorMessage = it.message
+//                }
+//
+//            portfolioResult
+//                .onSuccess { portfolio ->
+//                    _uiState.update {
+//                        it.copy(
+//                            portfolioValue = formatMoneyAfterL(portfolio.dashboard.investedAmount.toLong()),
+//                            fixedDepositsAmount = formatMoneyAfterL(
+//                                portfolio.totalInvestments.allocation.fixedDeposits.value.toLong()
+//                            ),
+//                            mutualFundsAmount = formatMoneyAfterL(
+//                                portfolio.totalInvestments.allocation.mutualFunds.value.toLong()
+//                            ),
+//                            pnlTrend = portfolio.investedAmountBreakdown.returnsPercent.trimTo(2)
+//                        )
+//                    }
+//                }
+//                .onError {
+//                    if (errorMessage == null) {
+//                        errorMessage = it.message
+//                    }
+//                }
+//
+//            _uiState.update {
+//                it.copy(
+//                    isLoading = false,
+//                    showError = errorMessage != null,
+//                    error = errorMessage.orEmpty()
+//                )
+//            }
+//        }
     }
 }

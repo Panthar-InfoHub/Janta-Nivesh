@@ -214,6 +214,12 @@ fun BottomNavigation(
                             HomeScreenSideEffect.NavigateToNotifications -> navigateToNotification()
                             is HomeScreenSideEffect.NavigateToSpecificGoal -> navigateToSpecificGoalProjection(it.goalId)
                             HomeScreenSideEffect.NavigateToTradingVerification -> navigateToTradingAccountSetup()
+                            HomeScreenSideEffect.NavigateToDailySip -> {
+
+                            }
+                            HomeScreenSideEffect.NavigateToMonthlySip -> {
+
+                            }
                         }
                     }
                 }
