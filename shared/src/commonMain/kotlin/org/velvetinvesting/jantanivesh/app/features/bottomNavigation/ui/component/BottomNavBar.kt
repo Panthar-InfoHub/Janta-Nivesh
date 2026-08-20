@@ -27,7 +27,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.nav_icon_full_screener
 import jantanivesh.shared.generated.resources.nav_icon_home
-import jantanivesh.shared.generated.resources.nav_icon_incurance
 import jantanivesh.shared.generated.resources.nav_icon_portfolio
 import jantanivesh.shared.generated.resources.nav_icon_profile
 import org.jetbrains.compose.resources.painterResource
@@ -42,11 +41,11 @@ fun BottomNavBar(
     currentDestination: NavDestination?,
     onNavigate: (Any) -> Unit
 ) {
-    val bottomBarItems = listOf(Route.Home, Route.FundScreener, Route.PortFolio, Route.Insurance, Route.Profile)
-    val itemsLabels= listOf("Home","Fund Screener","Portfolio", "Insurance","Profile")
+    val bottomBarItems = listOf(Route.Home, Route.FundScreener, Route.PortFolio, Route.Profile)
+    val itemsLabels= listOf("Home","Fund Screener","Portfolio","Profile")
     val icons= listOf(
         Res.drawable.nav_icon_home,
-        Res.drawable.nav_icon_full_screener,Res.drawable.nav_icon_portfolio,Res.drawable.nav_icon_incurance,Res.drawable.nav_icon_profile)
+        Res.drawable.nav_icon_full_screener,Res.drawable.nav_icon_portfolio,Res.drawable.nav_icon_profile)
 
     Box(modifier=Modifier.fillMaxWidth()
         .dropShadow(
