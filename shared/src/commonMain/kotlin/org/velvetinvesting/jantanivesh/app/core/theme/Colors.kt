@@ -114,6 +114,16 @@ val PagerImageCircle = Color(0xFFD1D5DB)
 
 //NewKycColors
 
-val lightBlue = Color(0xFFDDE1FF)
-val dirtGreen = Color(0xff475949)
+val LightBlue = Color(0xFFDDE1FF)
+val LightBlueBorder = Color(0xFFB5BDEB)
+
+val LightGreen = Color(0xFFE6F4EA)
+val LightGreenBorder = Color(0xFFB8D8C1)
+
+val LightOrange = Color(0xFFFFF5E5)
+val LightOrangeBorder = Color(0xFFE8D2AC)
+
 val leafIconBackground = Color(0xffF5F2FB)
+
+val IconBackgroundBlue = Color(0xffEFF6FF)
+val GrayScreenBackGround = Color(0xffF0F2F8)

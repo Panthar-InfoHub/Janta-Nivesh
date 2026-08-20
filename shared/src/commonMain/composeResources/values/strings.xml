@@ -172,8 +172,8 @@
     <string name="home_fixed_deposits">Fixed Deposits</string>
     <string name="home_mutual_funds">Mutual Funds</string>
     <string name="home_pnl_trend_suffix"> % this month</string>
-    <string name="home_invest_in_fd">Invest in FD</string>
-    <string name="home_invest_in_mf">Invest in MF</string>
+    <string name="home_invest_in_fd">Invest in\nFD</string>
+    <string name="home_invest_in_mf">Invest in\nMF</string>
     <string name="home_create_goal">Create Goal</string>
     <string name="home_insurance">Insurance</string>
     <string name="home_kyc_desc">Complete your KYC to start investing</string>

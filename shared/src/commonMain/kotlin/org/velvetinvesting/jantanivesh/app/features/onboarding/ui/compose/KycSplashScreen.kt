@@ -47,7 +47,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.leafIconBackground
-import org.velvetinvesting.jantanivesh.app.core.theme.lightBlue
+import org.velvetinvesting.jantanivesh.app.core.theme.LightBlue
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.KycSplashEvent
@@ -156,7 +156,7 @@ private fun TitleBox(title: String, subtitle: String, number: String) {
     ) {
 
         Box(
-            modifier = Modifier.genericDropShadow(CircleShape).size(Spacing.dp48).background(lightBlue, CircleShape),
+            modifier = Modifier.genericDropShadow(CircleShape).size(Spacing.dp48).background(LightBlue, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -237,7 +237,7 @@ private fun WellnessScoreBox(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(Spacing.dp12, vertical = Spacing.dp8)
         ) {
             Box(
-                modifier = Modifier.size(Spacing.dp48).background(lightBlue, CircleShape),
+                modifier = Modifier.size(Spacing.dp48).background(LightBlue, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
