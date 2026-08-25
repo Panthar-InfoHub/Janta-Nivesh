@@ -30,6 +30,7 @@ object Spacing {
     val dp36: Dp = 36.dp
     val dp40: Dp = 40.dp
     val dp42: Dp = 42.dp
+    val dp44: Dp = 44.dp
     val dp48: Dp = 48.dp
     val dp52: Dp = 52.dp
     val dp53: Dp = 53.dp

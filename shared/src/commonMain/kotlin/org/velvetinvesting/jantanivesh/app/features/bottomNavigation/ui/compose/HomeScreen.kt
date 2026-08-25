@@ -81,26 +81,25 @@ import org.velvetinvesting.jantanivesh.app.core.theme.DashedBorderColor
 import org.velvetinvesting.jantanivesh.app.core.theme.FdIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray65
-import org.velvetinvesting.jantanivesh.app.core.theme.GrayScreenBackGround
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.IconBackgroundBlue
 import org.velvetinvesting.jantanivesh.app.core.theme.IconSize
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
-import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
-import org.velvetinvesting.jantanivesh.app.core.theme.MutualFundIconBg
-import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
-import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
-import org.velvetinvesting.jantanivesh.app.core.theme.ShadowElevation
-import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.LightBlue
 import org.velvetinvesting.jantanivesh.app.core.theme.LightBlueBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.LightGreen
 import org.velvetinvesting.jantanivesh.app.core.theme.LightGreenBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.LightOrange
 import org.velvetinvesting.jantanivesh.app.core.theme.LightOrangeBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.MutualFundIconBg
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
+import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
+import org.velvetinvesting.jantanivesh.app.core.theme.ShadowElevation
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyWithUnits
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
@@ -196,7 +195,7 @@ fun HomeScreenContent(
             )
         }
 
-        if (!state.kycVerified) {
+        if (state.showKycPrompt) {
             item {
                 KycCard(
                     title = stringResource(Res.string.home_kyc_title),

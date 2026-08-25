@@ -28,6 +28,15 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsVi
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEffect
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchasePlan
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.FundPurchaseScreen
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.PurchaseSuccessScreen
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseEffect
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.SetupAutopayScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.FinancialGoalScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.MapSchemesScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.ProjectedImpactScreen
@@ -48,6 +57,7 @@ import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.Requ
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.AllBundlesScreen
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.BundleResultScreenRoot
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.CategoryMutualFundScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.InvestmentMethodScreen
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundDetailsScreenRoot
@@ -74,6 +84,21 @@ private const val CART_WEBVIEW_RESULT = "cart_webview_completed"
 private const val SIP_DETAILS_WEBVIEW_RESULT = "sip_details_webview_completed"
 private const val EXISTING_FUND_LUMPSUM_WEBVIEW_RESULT = "existing_fund_lumpsum_webview_completed"
 private const val MF_DETAILS_LUMPSUM_WEBVIEW_RESULT = "mf_details_lumpsum_webview_completed"
+
+/** Set on the purchase screen when autopay setup finishes, so it re-reads the mandate list. */
+private const val MANDATE_ADDED_RESULT = "mandate_added"
+
+/** Set on the autopay screen when the user returns from the bank's authorization page. */
+private const val ADD_MANDATE_WEBVIEW_RESULT = "add_mandate_webview_completed"
+
+/** Marks a web view that should pop back to the autopay screen and flag the return. */
+private const val WEBVIEW_COMPLETION_ADD_MANDATE = "add_mandate"
+
+/** Set on the purchase screen when the user returns from the lumpsum payment page. */
+private const val PURCHASE_PAYMENT_RESULT = "purchase_payment_returned"
+
+/** Marks the payment web view, which pops back to the purchase screen so it can poll. */
+private const val WEBVIEW_COMPLETION_PURCHASE_PAYMENT = "mf_purchase_payment"
 private const val FD_DETAILS_WEBVIEW_RESULT = "fd_details_webview_completed"
 @Composable
 fun MainAppNavigation(
@@ -132,9 +157,26 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
-                onFundClick = { id: String ->
-                    navController.navigate(Route.MutualFundDetails(id)) {
-                        launchSingleTop = true
+                onFundClick = { fund: MutualFundDomain ->
+                    val isin = fund.isin
+                    // The buy screen loads every threshold from `GET /mf-scheme/{isin}`, so a
+                    // fund without an ISIN has nothing to load; those fall back to the details
+                    // screen rather than opening a form that cannot be filled in.
+                    if (isin.isNullOrBlank()) {
+                        navController.navigate(Route.MutualFundDetails(fund.id)) {
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(
+                            Route.FundPurchase(
+                                mfProductId = fund.id,
+                                isin = isin,
+                                fundName = fund.name,
+                                fundSubtitle = fund.purchaseSubtitle
+                            )
+                        ) {
+                            launchSingleTop = true
+                        }
                     }
                 },
                 onSearchClick = { search: String ->
@@ -152,6 +194,17 @@ fun MainAppNavigation(
                 },
                 onBundleClick = {
                     navController.navigate(Route.AllBundleScreen)
+                },
+                onStartSipClick = {
+                    // The full fund list, where picking one opens the buy screen.
+                    navController.navigate(Route.MutualFundSearchResult()) {
+                        launchSingleTop = true
+                    }
+                },
+                onBookFdClick = {
+                    navController.navigate(Route.FixedDepositSearchResult()) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -209,6 +262,154 @@ fun MainAppNavigation(
                 onWebViewConsumed = {
                     it.savedStateHandle[MF_DETAILS_LUMPSUM_WEBVIEW_RESULT] = false
                 }
+            )
+        }
+
+        composable<Route.FundPurchase> { entry ->
+            val route = entry.toRoute<Route.FundPurchase>()
+            val vm: FundPurchaseViewModel = koinViewModel {
+                parametersOf(
+                    route.mfProductId,
+                    route.isin,
+                    route.fundName,
+                    route.fundSubtitle
+                )
+            }
+
+            val mandateAdded by entry.savedStateHandle
+                .getStateFlow(MANDATE_ADDED_RESULT, false)
+                .collectAsStateWithLifecycle()
+
+            LaunchedEffect(mandateAdded) {
+                if (mandateAdded) {
+                    entry.savedStateHandle[MANDATE_ADDED_RESULT] = false
+                    vm.refreshMandates()
+                }
+            }
+
+            val paymentReturned by entry.savedStateHandle
+                .getStateFlow(PURCHASE_PAYMENT_RESULT, false)
+                .collectAsStateWithLifecycle()
+
+            LaunchedEffect(paymentReturned) {
+                if (paymentReturned) {
+                    entry.savedStateHandle[PURCHASE_PAYMENT_RESULT] = false
+                    // Whether the user actually paid is only knowable from the server.
+                    vm.onPaymentReturned()
+                }
+            }
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        FundPurchaseEffect.AddMandate -> {
+                            navController.navigate(Route.AddMandate) {
+                                launchSingleTop = true
+                            }
+                        }
+
+                        is FundPurchaseEffect.OpenPayment -> {
+                            navController.navigate(
+                                Route.WebViewScreen(
+                                    url = effect.url,
+                                    exitUrlPatterns = emptyList(),
+                                    title = "Complete Payment",
+                                    completionRouteKey = WEBVIEW_COMPLETION_PURCHASE_PAYMENT
+                                )
+                            )
+                        }
+
+                        is FundPurchaseEffect.PurchaseConfirmed -> {
+                            navController.navigate(
+                                Route.PurchaseSuccess(
+                                    schemeName = effect.schemeName,
+                                    amount = effect.amount,
+                                    installmentDay = effect.installmentDay,
+                                    startDate = effect.startDate
+                                )
+                            ) {
+                                // The purchase is placed — going back to the form would only
+                                // invite a duplicate.
+                                popUpTo<Route.FundPurchase> { inclusive = true }
+                            }
+                        }
+                    }
+                }
+            }
+
+            val state by vm.uiState.collectAsStateWithLifecycle()
+            FundPurchaseScreen(
+                state = state,
+                handleEvent = vm::handleEvent,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable<Route.AddMandate> { entry ->
+            val vm: SetupAutopayViewModel = koinViewModel()
+
+            val authorizationReturned by entry.savedStateHandle
+                .getStateFlow(ADD_MANDATE_WEBVIEW_RESULT, false)
+                .collectAsStateWithLifecycle()
+
+            LaunchedEffect(authorizationReturned) {
+                if (authorizationReturned) {
+                    entry.savedStateHandle[ADD_MANDATE_WEBVIEW_RESULT] = false
+                    vm.handleEvent(SetupAutopayEvent.OnAuthorizationReturned)
+                }
+            }
+
+            LaunchedEffect(Unit) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        is SetupAutopayEffect.OpenMandateWebView -> {
+                            navController.navigate(
+                                Route.WebViewScreen(
+                                    url = effect.url,
+                                    title = "UPI Autopay",
+                                    completionRouteKey = WEBVIEW_COMPLETION_ADD_MANDATE
+                                )
+                            )
+                        }
+
+                        SetupAutopayEffect.AutopayCompleted -> {
+                            // Hand the result back to whoever asked for the mandate so it can
+                            // pick the new one up without being rebuilt.
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set(MANDATE_ADDED_RESULT, true)
+                            navController.popBackStack()
+                        }
+                    }
+                }
+            }
+
+            val state by vm.uiState.collectAsStateWithLifecycle()
+            SetupAutopayScreen(
+                state = state,
+                handleEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.PurchaseSuccess> { entry ->
+            val route = entry.toRoute<Route.PurchaseSuccess>()
+
+            PurchaseSuccessScreen(
+                plan = PurchasePlan(
+                    id = "",
+                    state = PurchasePlan.CONFIRMED,
+                    scheme = "",
+                    folioNumber = null,
+                    amount = route.amount,
+                    frequency = "monthly",
+                    installmentDay = route.installmentDay.takeIf { it > 0 },
+                    numberOfInstallments = null,
+                    remainingInstallments = null,
+                    startDate = route.startDate.takeIf { it.isNotBlank() }
+                ),
+                schemeName = route.schemeName,
+                onViewHoldingsClick = { navController.popBackStack() },
+                onDoneClick = { navController.popBackStack() }
             )
         }
 
@@ -284,8 +485,8 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
-                navigateToMutualFundTypeSelectionScreen = {
-                    navController.navigate(Route.MutualFundTypeSelectionScreen) {
+                navigateToCategoryMutualFundTypeScreen = {
+                    navController.navigate(Route.CategoryMutualFund) {
                         launchSingleTop = true
                     }
                 },
@@ -341,31 +542,6 @@ fun MainAppNavigation(
                     navController.navigate(
                         Route.FixedDepositSearchResult()
                     ) {
-                        launchSingleTop = true
-                    }
-                },
-                navigateToPrivacyPolicy = {
-                    navController.navigate(Route.PrivacyPolicy) {
-                        launchSingleTop = true
-                    }
-                },
-                navigateToTermsAndConditions = {
-                    navController.navigate(Route.TermsAndConditions) {
-                        launchSingleTop = true
-                    }
-                },
-                navigateToAboutUs = {
-                    navController.navigate(Route.AboutUs) {
-                        launchSingleTop = true
-                    }
-                },
-                navigateToAboutVelvet = {
-                    navController.navigate(Route.AboutVelvet) {
-                        launchSingleTop = true
-                    }
-                },
-                navigateToAboutFire = {
-                    navController.navigate(Route.AboutFire) {
                         launchSingleTop = true
                     }
                 },
@@ -846,6 +1022,23 @@ fun MainAppNavigation(
                         navController.popBackStack()
                     }
 
+                    WEBVIEW_COMPLETION_PURCHASE_PAYMENT -> {
+                        // Come back to the purchase screen so it can read the purchase back and
+                        // decide whether the payment actually landed.
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(PURCHASE_PAYMENT_RESULT, true)
+                        navController.popBackStack()
+                    }
+
+                    WEBVIEW_COMPLETION_ADD_MANDATE -> {
+                        // Come back to the autopay screen so it can confirm with the bank.
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(ADD_MANDATE_WEBVIEW_RESULT, true)
+                        navController.popBackStack()
+                    }
+
                     "fd_purchase" -> {
                         // Payment is done; the purchase form used to close itself right after
                         // handing the URL off, so drop it along with the web view.
@@ -878,3 +1071,14 @@ fun MainAppNavigation(
 
     }
 }
+
+/**
+ * "Very High · Equity: Large Cap" for the buy screen's header. The listing endpoint leaves these
+ * fields blank for some funds, so anything empty is dropped and the screen falls back to the
+ * fund house name from the scheme lookup.
+ */
+private val MutualFundDomain.purchaseSubtitle: String
+    get() = listOf(riskText.orEmpty(), category, type)
+        .filter { it.isNotBlank() }
+        .distinct()
+        .joinToString(" · ")

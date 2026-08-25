@@ -18,7 +18,6 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.D
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetAllBundledFundsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetBundleFundsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetCategoryMutualFundsUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetCombinedCategoryMutualFundsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundGraphUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundSearchResultUseCase
@@ -43,10 +42,19 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.S
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitPennyDropUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.UploadKycFormSignatureUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.VerifyEmailOtpUseCase
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CreatePurchasePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetPurchasePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetPurchasePlansUseCase
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetSchemePlansUseCase
+import org.velvetinvesting.jantanivesh.app.features.search.domain.usecases.ClearRecentSearchesUseCase
+import org.velvetinvesting.jantanivesh.app.features.search.domain.usecases.DeleteRecentSearchUseCase
+import org.velvetinvesting.jantanivesh.app.features.search.domain.usecases.ObserveRecentSearchesUseCase
+import org.velvetinvesting.jantanivesh.app.features.search.domain.usecases.SaveRecentSearchUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CreateMfPurchaseUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CreateSipPlanUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetMandatesUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetMfPurchaseUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetSchemePlanUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.RequestMfPurchaseOtpUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyMfPurchaseOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.RequestPurchasePlanOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyPurchasePlanOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelLumpSumOrderUseCase
@@ -88,10 +96,21 @@ val useCaseModule = module {
     factory { CreateMandateUseCase(get()) }
     factory { ConfirmMandateUseCase(get()) }
 
+    // Search UseCases
+    factory { ObserveRecentSearchesUseCase(get()) }
+    factory { SaveRecentSearchUseCase(get()) }
+    factory { DeleteRecentSearchUseCase(get()) }
+    factory { ClearRecentSearchesUseCase(get()) }
+
     // Plans UseCases
-    factory { GetSchemePlansUseCase(get()) }
     factory { GetPurchasePlansUseCase(get()) }
-    factory { CreatePurchasePlanUseCase(get()) }
+    factory { GetSchemePlanUseCase(get()) }
+    factory { GetMandatesUseCase(get()) }
+    factory { CreateSipPlanUseCase(get()) }
+    factory { CreateMfPurchaseUseCase(get()) }
+    factory { GetMfPurchaseUseCase(get()) }
+    factory { RequestMfPurchaseOtpUseCase(get()) }
+    factory { VerifyMfPurchaseOtpUseCase(get()) }
     factory { GetPurchasePlanUseCase(get()) }
     factory { RequestPurchasePlanOtpUseCase(get()) }
     factory { VerifyPurchasePlanOtpUseCase(get()) }
@@ -107,7 +126,6 @@ val useCaseModule = module {
     factory { GetAllBundledFundsUseCase(get()) }
     factory { GetBundleFundsUseCase(get()) }
     factory { GetCategoryMutualFundsUseCase(get()) }
-    factory { GetCombinedCategoryMutualFundsUseCase(get()) }
     factory { GetMutualFundDetailsUseCase(get()) }
     factory { GetMutualFundGraphUseCase(get()) }
     factory { GetMutualFundSearchResultUseCase(get()) }

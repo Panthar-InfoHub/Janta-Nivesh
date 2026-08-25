@@ -474,7 +474,7 @@
     <string name="pep_confirmation">I confirm that I am not a Politically Exposed Person (PEP) or related to any PEP as defined under PMLA guidelines.</string>
     <string name="resident_confirmation">I confirm that I am a resident, citizen, born in, a national and a tax resident of India and all the information provided on this page is accurate to the best of my knowledge.</string>
     <string name="add_your_nominee_label">Add your Nominee</string>
-    <string name="nominee_subtitle">If something happens, who should get your money? Make sure it is a trusted person or family member</string>
+    <string name="nominee_subtitle">Who should receive your money if something happens to you?</string>
     <string name="add_nominees_later">I will add Nominees later</string>
     <string name="nominee_name">Nominee Name</string>
     <string name="percentage_allocation">Percentage Allocation</string>
@@ -502,4 +502,13 @@
     <string name="account_holder_label">Account Holder</string>
     <string name="account_number_label">Account Number</string>
     <string name="ifsc_code_label">IFSC Code</string>
+
+    <!-- AddNominee: opt-out -->
+    <string name="add_nominee_tab">Add Nominee</string>
+    <string name="opt_nominee_out_tab">Opt Nominee Out</string>
+    <string name="nominee_opt_out_title">Nominee Opt-Out</string>
+    <string name="nominee_opt_out_consent">I hereby confirm that I do not wish to appoint any nominee(s) to my mutual fund folio at this point of time.</string>
+    <string name="nominee_opt_out_terms_link">Nominee Opt-Out terms</string>
+    <string name="nominee_opt_out_terms_screen_title">Skip Nominee</string>
+    <string name="nominee_opt_out_terms_body">I hereby confirm that I do not wish to appoint any nominee(s) to my mutual fund folio at this point of time.\nI understand that –\n(i) the nomination helps to quickly identify the person for transfer of securities and helps in faster and smoother transmission of my securities to my legal heir after my demise.\n(ii) in the absence of a nomination, my legal heir(s) may require the submission of certain additional legal or court-issued documents which may delay the process of transmission of securities to my legal heir(s).\n(iii) if no claim is made on the account / folio for a prolonged period after my demise, the holdings may be treated as unclaimed assets, and they may be transferred to Investor Education and Protection Fund Authority (IEPF) in accordance with the applicable regulatory framework.\nI confirm that I have understood the above implications and that my decision to opt out of nomination is voluntary.</string>
 </resources>

@@ -11,7 +11,6 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundlecart.AddBundleLumpsumRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundlecart.AddBundleSipRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundledfundbyid.BundledFundByIdDto
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundledfunds.BundledFundsDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddlumpsum.AddCartLumpSumRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddlumpsum.AddCartLumpSumResponseDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddsip.AddCartSipRequest as AddCartSipRequestDto
@@ -26,12 +25,12 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mfdetails.MutualFundsDetailDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mfgraph.MFGraphDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mfpurchasemandatestatus.CheckMFPurchaseMandateStatusDto
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mutualfundcombined.CombinedFundsDto
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.frontendmfdata.FrontendMfDataDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.usercart.UserCartDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SIPStatus
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PaginatedData
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CombinedFundsDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundGraphDomain
@@ -51,16 +50,10 @@ class MutualFundRepo(
     private val client: HttpClient
 ): MutualFundRepository {
 
-    override suspend fun getCategoryMutualFunds(
-        page: Int?,
-        limit: Int?
-    ): NetworkResponse<List<BundledMutualFundDomain>, ErrorDomain> {
+    override suspend fun getCategoryMutualFunds(): NetworkResponse<List<CategoryMutualFundDomain>, ErrorDomain> {
 
-        val response = safeRequest<BundledFundsDto> {
-            client.get(getUrl("/bundles")) {
-                page?.let { parameter("page", it) }
-                limit?.let { parameter("limit", it) }
-            }
+        val response = safeRequest<FrontendMfDataDto> {
+            client.get(getUrl("/frontend/mf-data"))
         }
 
         return when (response) {
@@ -313,22 +306,6 @@ class MutualFundRepo(
             }
             is NetworkResponse.Success -> {
                 NetworkResponse.Success(response.data.data.xsip_short_url)
-            }
-        }
-    }
-
-    override suspend fun getCombinedCategoryMutualFunds(): NetworkResponse<CombinedFundsDomain, ErrorDomain> {
-        val response = safeRequest<CombinedFundsDto> {
-            client.get(getUrl("/frontend/mf-data"))
-        }
-
-        return when (response) {
-            is NetworkResponse.Error -> {
-                NetworkResponse.Error(response.error)
-            }
-
-            is NetworkResponse.Success -> {
-                NetworkResponse.Success(response.data.toDomain())
             }
         }
     }

@@ -2,7 +2,9 @@ package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,6 +17,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,13 +44,13 @@ import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
+import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.CheckBoxCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
@@ -81,6 +87,7 @@ private fun nomineeDocumentLabel(type: NomineeDocumentType?): String {
 fun AddNomineeScreen(
     state: AddNomineeUiState,
     handleEvent: (AddNomineeEvent) -> Unit,
+    onOptOutTermsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Resolved up front because the dropdown's textConvertor is not a composable scope.
@@ -122,9 +129,8 @@ fun AddNomineeScreen(
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     )
                     Text(
-                        text = "Who should get your money if something happens? Make sure it is a trusted person or family member./ " + stringResource(
-                            Res.string.nominee_subtitle
-                        ),
+                        text = "Who should receive your money if something happens to you?\n" +
+                                stringResource(Res.string.nominee_subtitle),
                         style = MaterialTheme.typography.bodyLarge,
                         color = Gray444
                     )
@@ -132,14 +138,30 @@ fun AddNomineeScreen(
             }
 
             item {
-                CheckBoxCard(
-                    text = "I will add Nominees later",
-                    isChecked = state.addLater,
-                    onCheckedChange = { handleEvent(AddNomineeEvent.OnAddLaterChanged(it)) }
+                NomineeModeToggle(
+                    isOptedOut = state.addLater,
+                    onAddNomineeClick = {
+                        handleEvent(AddNomineeEvent.OnOptOutModeChanged(false))
+                    },
+                    onOptOutClick = {
+                        handleEvent(AddNomineeEvent.OnOptOutModeChanged(true))
+                    }
                 )
             }
 
-            // Nothing is collected when the user opts to add nominees later.
+            if (state.addLater) {
+                item {
+                    NomineeOptOutCard(
+                        isChecked = state.optOutConsent,
+                        onCheckedChange = {
+                            handleEvent(AddNomineeEvent.OnOptOutConsentChanged(it))
+                        },
+                        onTermsClick = onOptOutTermsClick
+                    )
+                }
+            }
+
+            // Nothing is collected once the user has opted out of nomination.
             itemsIndexed(
                 if (state.addLater) emptyList() else state.nominees
             ) { index, nominee ->
@@ -373,13 +395,133 @@ fun AddNomineeScreen(
     }
 }
 
+/**
+ * The two paths through this screen. Rendered as a pair of cards rather than a sliding switch so
+ * that "Opt Nominee Out" reads as a deliberate choice and not as an on/off toggle.
+ */
+@Composable
+private fun NomineeModeToggle(
+    isOptedOut: Boolean,
+    onAddNomineeClick: () -> Unit,
+    onOptOutClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp16)
+    ) {
+        NomineeModeTab(
+            text = "Add Nominee/ " + stringResource(Res.string.add_nominee_tab),
+            selected = !isOptedOut,
+            onClick = onAddNomineeClick,
+            modifier = Modifier.weight(1f)
+        )
+        NomineeModeTab(
+            text = "Opt Nominee Out/ " + stringResource(Res.string.opt_nominee_out_tab),
+            selected = isOptedOut,
+            onClick = onOptOutClick,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun NomineeModeTab(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .genericDropShadow(RoundedCornerShape(Spacing.dp12))
+            .clip(RoundedCornerShape(Spacing.dp12))
+            .background(if (selected) Primary else White)
+            .clickable(
+                onClick = onClick,
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            )
+            .padding(horizontal = Spacing.dp16, vertical = Spacing.dp20),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            color = if (selected) White else Primary,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+/**
+ * The opt-out declaration. The user has to tick it before the button unlocks — choosing the tab
+ * says what they want to do, this says they understand what it means.
+ */
+@Composable
+private fun NomineeOptOutCard(
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    onTermsClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Spacing.dp16))
+            .background(GoalIconBg)
+            .padding(Spacing.dp16),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
+        verticalAlignment = Alignment.Top
+    ) {
+        Checkbox(
+            checked = isChecked,
+            onCheckedChange = onCheckedChange,
+            colors = CheckboxDefaults.colors(checkedColor = Primary, checkmarkColor = White),
+            modifier = Modifier.size(Spacing.dp24)
+        )
+
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
+            Text(
+                text = "Nominee Opt-Out/ " + stringResource(Res.string.nominee_opt_out_title),
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = Primary
+            )
+            Text(
+                text = "I hereby confirm that I do not wish to appoint any nominee(s) to my " +
+                        "mutual fund folio at this point of time.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Gray444
+            )
+            Text(
+                text = "(" + stringResource(Res.string.nominee_opt_out_consent) + ")",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Gray444
+            )
+            Text(
+                text = "Nominee Opt-Out terms/ " +
+                        stringResource(Res.string.nominee_opt_out_terms_link),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    textDecoration = TextDecoration.Underline
+                ),
+                color = Primary,
+                modifier = Modifier.clickable(
+                    onClick = onTermsClick,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
+            )
+        }
+    }
+}
+
 @Preview(locale = "hi", heightDp = 1800, showBackground = true)
 @Composable
 private fun AddNomineeScreenPreview() {
     JantaNiveshTheme {
         AddNomineeScreen(
-            state = AddNomineeUiState(addLater = false),
-            handleEvent = {}
+            state = AddNomineeUiState(addLater = true),
+            handleEvent = {},
+            onOptOutTermsClick = {}
         )
     }
 }

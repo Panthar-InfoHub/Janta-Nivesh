@@ -118,7 +118,6 @@ class ProfileViewModel(
                             userName = userDataDomain.name,
                             email = userDataDomain.email,
                             kycCompleted = userDataDomain.kycVerified,
-                            tradingAccountCompleted = userDataDomain.tradingAccountVerified
                         )
                     }
                 }

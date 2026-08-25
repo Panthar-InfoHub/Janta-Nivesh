@@ -7,10 +7,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
+import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
-import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
 
 data class HomeScreenUiState(
     val isLoading: Boolean = false,
@@ -18,12 +21,26 @@ data class HomeScreenUiState(
     val error: String = "",
     val userName: String = "User",
     val email: String = "",
+    /**
+     * Placeholders rather than zeroes: until the first load lands, "0" would read as a real
+     * balance, which is worse than visibly having nothing yet.
+     */
     val portfolioValue: String = "XXXXX",
     val fixedDepositsAmount: String = "XXXXX",
     val mutualFundsAmount: String = "XXXXX",
     val pnlTrend: String = "XX",
     val goals: List<GoalsSummaryDomain> = emptyList(),
     val kycVerified: Boolean = false,
+    /**
+     * Whether to offer the "complete your KYC" card. Driven by whether onboarding was skipped or
+     * left unfinished, not by the KYC step alone — a user who skipped in has every step pending.
+     */
+    val showKycPrompt: Boolean = false,
+    /**
+     * `GET /user/` no longer reports a trading account, so this always reads false. The profile
+     * screen still renders a row for it; the field stays until that row is retired with the rest
+     * of the trading-account flow.
+     */
     val tradingAccountVerified: Boolean = false
 )
 sealed interface HomeScreenEvent {
@@ -58,9 +75,12 @@ sealed interface HomeScreenSideEffect {
     data object NavigateToMonthlySip : HomeScreenSideEffect
 }
 
+/**
+ * `GET /user/` returns the dashboard totals alongside the profile, so the home screen is one
+ * call: there is no separate portfolio read to fan out to any more.
+ */
 class HomeScreenViewModel(
-    private val getUserDataUseCase: GetUserDataUseCase,
-    private val getPortfolioUseCase: GetPortfolioUseCase
+    private val getUserDataUseCase: GetUserDataUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
@@ -95,67 +115,45 @@ class HomeScreenViewModel(
     }
 
     private fun loadData() {
-//        viewModelScope.launch {
-//            _uiState.update {
-//                it.copy(
-//                    isLoading = true,
-//                    showError = false,
-//                    error = ""
-//                )
-//            }
-//
-//            val userDeferred = async { getUserDataUseCase() }
-//            val portfolioDeferred = async { getPortfolioUseCase() }
-//
-//            val userResult = userDeferred.await()
-//            val portfolioResult = portfolioDeferred.await()
-//
-//            var errorMessage: String? = null
-//
-//            userResult
-//                .onSuccess { userData ->
-//                    _uiState.update {
-//                        it.copy(
-//                            userName = userData.name,
-//                            goals = userData.goals,
-//                            kycVerified = userData.kycVerified,
-//                            tradingAccountVerified = userData.tradingAccountVerified,
-//                            email = userData.email
-//                        )
-//                    }
-//                }
-//                .onError {
-//                    errorMessage = it.message
-//                }
-//
-//            portfolioResult
-//                .onSuccess { portfolio ->
-//                    _uiState.update {
-//                        it.copy(
-//                            portfolioValue = formatMoneyAfterL(portfolio.dashboard.investedAmount.toLong()),
-//                            fixedDepositsAmount = formatMoneyAfterL(
-//                                portfolio.totalInvestments.allocation.fixedDeposits.value.toLong()
-//                            ),
-//                            mutualFundsAmount = formatMoneyAfterL(
-//                                portfolio.totalInvestments.allocation.mutualFunds.value.toLong()
-//                            ),
-//                            pnlTrend = portfolio.investedAmountBreakdown.returnsPercent.trimTo(2)
-//                        )
-//                    }
-//                }
-//                .onError {
-//                    if (errorMessage == null) {
-//                        errorMessage = it.message
-//                    }
-//                }
-//
-//            _uiState.update {
-//                it.copy(
-//                    isLoading = false,
-//                    showError = errorMessage != null,
-//                    error = errorMessage.orEmpty()
-//                )
-//            }
-//        }
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(isLoading = true, showError = false, error = "")
+            }
+
+            when (val result = getUserDataUseCase()) {
+                is NetworkResponse.Error -> _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        showError = true,
+                        error = result.error.message
+                    )
+                }
+
+                is NetworkResponse.Success -> {
+                    val user = result.data
+                    val dashboard = user.dashboard
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            showError = false,
+                            error = "",
+                            // A blank name would leave the greeting reading "Hello ,".
+                            userName = user.name.ifBlank { it.userName },
+                            email = user.email,
+                            portfolioValue = formatMoneyAfterL(dashboard.portfolioValue.toLong()),
+                            fixedDepositsAmount = formatMoneyAfterL(
+                                dashboard.fixedDeposits.toLong()
+                            ),
+                            mutualFundsAmount = formatMoneyAfterL(dashboard.mutualFunds.toLong()),
+                            pnlTrend = dashboard.returnPercent.trimTo(2),
+                            goals = user.goals,
+                            kycVerified = user.kycVerified,
+                            showKycPrompt = user.needsOnboarding,
+                        )
+                    }
+                }
+            }
+        }
     }
 }

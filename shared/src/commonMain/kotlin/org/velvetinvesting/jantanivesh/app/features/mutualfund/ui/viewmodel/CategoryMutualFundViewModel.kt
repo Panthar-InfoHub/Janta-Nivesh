@@ -6,26 +6,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetCombinedCategoryMutualFundsUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetCategoryMutualFundsUseCase
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CombinedFundsDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
 
 class CategoryMutualFundViewModel(
-    private val getCategoryMutualFundsUseCase: GetCombinedCategoryMutualFundsUseCase
+    private val getCategoryMutualFundsUseCase: GetCategoryMutualFundsUseCase
 ) : ViewModel() {
 
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Loading)
     val loadingState: StateFlow<LoadingState> = _loadingState.asStateFlow()
 
     private val _mutualFunds =
-        MutableStateFlow<CombinedFundsDomain>(CombinedFundsDomain())
+        MutableStateFlow<List<CategoryMutualFundDomain>>(emptyList())
     val mutualFunds = _mutualFunds.asStateFlow()
-
-    private val _searchText = MutableStateFlow("")
-    val searchText: StateFlow<String> = _searchText
 
 
     init {
@@ -46,10 +43,6 @@ class CategoryMutualFundViewModel(
                         LoadingState.Error(error.message)
                 }
         }
-    }
-
-    fun onSearchTextChange(newText: String) {
-        _searchText.value = newText
     }
 
 }

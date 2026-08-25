@@ -17,7 +17,7 @@ class UserDataRepoImpl(
     override suspend fun getUserData(): NetworkResponse<UserDataDomain, ErrorDomain> {
         val response= safeRequest<UserDataDto> {
             client.get(
-                getUrl("/user")
+                getUrl("/user/")
             )
         }
         return when(response){
