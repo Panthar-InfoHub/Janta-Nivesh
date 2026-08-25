@@ -49,6 +49,12 @@ enum class PurchaseMode(val label: String, val frequency: String) {
     /** Only a monthly SIP debits on a fixed day of the month. */
     val needsInstallmentDay: Boolean
         get() = this == MONTHLY
+
+    companion object {
+        /** Recovers a mode from a navigation argument; an unknown name falls back to monthly. */
+        fun fromName(name: String?): PurchaseMode =
+            entries.firstOrNull { it.name == name } ?: MONTHLY
+    }
 }
 
 data class SipThreshold(

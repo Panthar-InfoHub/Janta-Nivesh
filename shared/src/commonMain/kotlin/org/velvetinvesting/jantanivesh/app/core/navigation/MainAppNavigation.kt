@@ -28,7 +28,7 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsVi
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEffect
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchasePlan
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.FundPurchaseScreen
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.PurchaseSuccessScreen
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseEffect
@@ -322,6 +322,7 @@ fun MainAppNavigation(
                         is FundPurchaseEffect.PurchaseConfirmed -> {
                             navController.navigate(
                                 Route.PurchaseSuccess(
+                                    mode = effect.mode.name,
                                     schemeName = effect.schemeName,
                                     amount = effect.amount,
                                     installmentDay = effect.installmentDay,
@@ -395,19 +396,11 @@ fun MainAppNavigation(
             val route = entry.toRoute<Route.PurchaseSuccess>()
 
             PurchaseSuccessScreen(
-                plan = PurchasePlan(
-                    id = "",
-                    state = PurchasePlan.CONFIRMED,
-                    scheme = "",
-                    folioNumber = null,
-                    amount = route.amount,
-                    frequency = "monthly",
-                    installmentDay = route.installmentDay.takeIf { it > 0 },
-                    numberOfInstallments = null,
-                    remainingInstallments = null,
-                    startDate = route.startDate.takeIf { it.isNotBlank() }
-                ),
+                mode = PurchaseMode.fromName(route.mode),
                 schemeName = route.schemeName,
+                amount = route.amount,
+                installmentDay = route.installmentDay.takeIf { it > 0 },
+                startDate = route.startDate.takeIf { it.isNotBlank() },
                 onViewHoldingsClick = { navController.popBackStack() },
                 onDoneClick = { navController.popBackStack() }
             )
