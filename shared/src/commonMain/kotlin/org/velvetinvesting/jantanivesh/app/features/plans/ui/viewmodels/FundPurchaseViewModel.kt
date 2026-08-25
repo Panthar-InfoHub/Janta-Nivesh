@@ -255,8 +255,11 @@ sealed interface FundPurchaseEffect {
     data class OpenPayment(val url: String) : FundPurchaseEffect
 
     data class PurchaseConfirmed(
+        /** What was bought, which is what decides the success screen's wording. */
+        val mode: PurchaseMode,
         val schemeName: String,
         val amount: String,
+        /** Zero when the mode has no debit day, which the success screen reads as "none". */
         val installmentDay: Int,
         val startDate: String
     ) : FundPurchaseEffect
@@ -760,11 +763,18 @@ class FundPurchaseViewModel(
 
         _effect.send(
             FundPurchaseEffect.PurchaseConfirmed(
+                mode = state.mode,
                 schemeName = schemeName,
                 // The gateway echoes the amount back, but not always; the typed amount stands in.
                 amount = confirmed.amount.takeIf { it.isNotBlank() }
                     ?: state.enteredAmount.toString(),
-                installmentDay = confirmed.installmentDay ?: state.installmentDay ?: 0,
+                // A daily SIP and a lumpsum both carry a seeded debit day in state that means
+                // nothing to them, so it is dropped rather than shown on the success screen.
+                installmentDay = if (state.mode.needsInstallmentDay) {
+                    confirmed.installmentDay ?: state.installmentDay ?: 0
+                } else {
+                    0
+                },
                 startDate = confirmed.startDate.orEmpty()
             )
         )

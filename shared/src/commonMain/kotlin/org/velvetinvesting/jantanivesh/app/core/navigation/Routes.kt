@@ -33,9 +33,15 @@ sealed interface Route {
     data object MainAppGraph : Route
 
     // Plans flow
-    /** Everything shown on the success screen, carried from the confirm response. */
+    /**
+     * Everything shown on the success screen, carried from the confirm response. [mode] is a
+     * [org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode] name, and
+     * decides whether the screen reads as a SIP registration or a completed purchase.
+     * [installmentDay] is zero when the mode has no debit day.
+     */
     @Serializable
     data class PurchaseSuccess(
+        val mode: String,
         val schemeName: String,
         val amount: String,
         val installmentDay: Int,

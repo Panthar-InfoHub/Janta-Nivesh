@@ -38,15 +38,25 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InvertedAppButton
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchasePlan
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
 
-/** `start_date` can arrive as a full timestamp; only the date part is shown. */
+/** `start_date` and `scheduled_on` can arrive as full timestamps; only the date part is shown. */
 private const val ISO_DATE_LENGTH = 10
 
+/**
+ * The end of every purchase, whichever way it was made.
+ *
+ * What actually happened differs by mode and the copy has to follow: a SIP is a *registration*
+ * that will debit later, while a one-time buy is money that has already moved. Telling a user
+ * their lumpsum "will be debited automatically through UPI Autopay" would be plainly wrong.
+ */
 @Composable
 fun PurchaseSuccessScreen(
-    plan: PurchasePlan,
+    mode: PurchaseMode,
     schemeName: String,
+    amount: String,
+    installmentDay: Int?,
+    startDate: String?,
     onViewHoldingsClick: () -> Unit,
     onDoneClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -80,7 +90,7 @@ fun PurchaseSuccessScreen(
                 }
 
                 Text(
-                    text = "SIP Registered Successfully!",
+                    text = mode.successTitle,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = Black,
@@ -88,7 +98,7 @@ fun PurchaseSuccessScreen(
                     modifier = Modifier.padding(top = Spacing.dp24)
                 )
                 Text(
-                    text = "Your instalments will be debited automatically through UPI Autopay.",
+                    text = mode.successSubtitle,
                     style = MaterialTheme.typography.bodyLarge,
                     color = GreyText,
                     textAlign = TextAlign.Center,
@@ -96,8 +106,11 @@ fun PurchaseSuccessScreen(
                 )
 
                 SummaryCard(
-                    plan = plan,
+                    mode = mode,
                     schemeName = schemeName,
+                    amount = amount,
+                    installmentDay = installmentDay,
+                    startDate = startDate,
                     modifier = Modifier.padding(top = Spacing.dp32)
                 )
             }
@@ -123,8 +136,11 @@ fun PurchaseSuccessScreen(
 
 @Composable
 private fun SummaryCard(
-    plan: PurchasePlan,
+    mode: PurchaseMode,
     schemeName: String,
+    amount: String,
+    installmentDay: Int?,
+    startDate: String?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -140,19 +156,23 @@ private fun SummaryCard(
     ) {
         SuccessRow(label = "Scheme", value = schemeName)
 
-        plan.amount.takeIf { it.isNotBlank() }?.let {
+        HorizontalDivider(thickness = Spacing.dp1, color = GreyBoxDivider)
+        SuccessRow(label = "Transaction", value = mode.transactionLabel)
+
+        amount.takeIf { it.isNotBlank() }?.let {
             HorizontalDivider(thickness = Spacing.dp1, color = GreyBoxDivider)
-            SuccessRow(label = "Amount", value = "₹$it / month")
+            SuccessRow(label = "Amount", value = "₹$it${mode.amountSuffix}")
         }
 
-        plan.installmentDay?.let {
+        // Only a monthly SIP has a debit day; the other two would show a meaningless number.
+        installmentDay?.takeIf { mode.needsInstallmentDay }?.let {
             HorizontalDivider(thickness = Spacing.dp1, color = GreyBoxDivider)
             SuccessRow(label = "Debit day", value = "$it of every month")
         }
 
-        plan.startDate?.takeIf { it.isNotBlank() }?.let {
+        startDate?.takeIf { it.isNotBlank() }?.let {
             HorizontalDivider(thickness = Spacing.dp1, color = GreyBoxDivider)
-            SuccessRow(label = "Starts on", value = it.take(ISO_DATE_LENGTH))
+            SuccessRow(label = mode.dateLabel, value = it.take(ISO_DATE_LENGTH))
         }
     }
 }
@@ -181,24 +201,87 @@ private fun SuccessRow(label: String, value: String) {
     }
 }
 
+private val PurchaseMode.successTitle: String
+    get() = when (this) {
+        PurchaseMode.DAILY -> "Daily SIP Started!"
+        PurchaseMode.MONTHLY -> "SIP Registered Successfully!"
+        PurchaseMode.ONE_TIME -> "Investment Successful!"
+    }
+
+private val PurchaseMode.successSubtitle: String
+    get() = when (this) {
+        PurchaseMode.DAILY ->
+            "Your daily instalments will be debited automatically through UPI Autopay."
+
+        PurchaseMode.MONTHLY ->
+            "Your instalments will be debited automatically through UPI Autopay."
+
+        // The money has already moved by the time a lumpsum reaches this screen, so the only
+        // thing still outstanding is the unit allotment.
+        PurchaseMode.ONE_TIME ->
+            "Your payment has gone through. Units will be allotted at the applicable NAV."
+    }
+
+private val PurchaseMode.transactionLabel: String
+    get() = when (this) {
+        PurchaseMode.DAILY -> "Daily SIP"
+        PurchaseMode.MONTHLY -> "Monthly SIP"
+        PurchaseMode.ONE_TIME -> "One-time purchase"
+    }
+
+private val PurchaseMode.amountSuffix: String
+    get() = when (this) {
+        PurchaseMode.DAILY -> " / day"
+        PurchaseMode.MONTHLY -> " / month"
+        PurchaseMode.ONE_TIME -> ""
+    }
+
+/** A SIP starts and keeps going; a lumpsum is priced on one date and then done. */
+private val PurchaseMode.dateLabel: String
+    get() = if (isSip) "Starts on" else "Scheduled for"
+
 @Preview(showBackground = true)
 @Composable
-private fun PurchaseSuccessScreenPreview() {
+private fun MonthlySipSuccessPreview() {
     JantaNiveshTheme {
         PurchaseSuccessScreen(
-            plan = PurchasePlan(
-                id = "mfpp_f3014170e9bd4d0f90f0fcfdaf77fe4f",
-                state = "confirmed",
-                scheme = "INF209K01RU9",
-                folioNumber = null,
-                amount = "2500",
-                frequency = "monthly",
-                installmentDay = 10,
-                numberOfInstallments = 12,
-                remainingInstallments = 12,
-                startDate = "2026-09-10"
-            ),
+            mode = PurchaseMode.MONTHLY,
             schemeName = "ADITYA BIRLA SUN LIFE LIQUID FUND - GROWTH",
+            amount = "2500",
+            installmentDay = 10,
+            startDate = "2026-09-10",
+            onViewHoldingsClick = {},
+            onDoneClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DailySipSuccessPreview() {
+    JantaNiveshTheme {
+        PurchaseSuccessScreen(
+            mode = PurchaseMode.DAILY,
+            schemeName = "ADITYA BIRLA SUN LIFE LIQUID FUND - GROWTH",
+            amount = "100",
+            installmentDay = null,
+            startDate = "2026-08-26",
+            onViewHoldingsClick = {},
+            onDoneClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LumpsumSuccessPreview() {
+    JantaNiveshTheme {
+        PurchaseSuccessScreen(
+            mode = PurchaseMode.ONE_TIME,
+            schemeName = "ADITYA BIRLA SUN LIFE LIQUID FUND - GROWTH",
+            amount = "10000",
+            installmentDay = null,
+            startDate = "2026-08-26T00:00:00.000Z",
             onViewHoldingsClick = {},
             onDoneClick = {}
         )
