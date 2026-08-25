@@ -33,7 +33,8 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Set
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.UploadSignatureViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerViewModel
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.ChoosePlanViewModel
+import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.RedeemViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.ExistingFundsLumpSumViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FDPortFolioDetailsViewModel
@@ -72,8 +73,27 @@ val viewModelModule = module {
     viewModel { AddNomineeViewModel(get()) }
     viewModel { SetupAutopayViewModel(get(), get()) }
 
+    viewModel { SearchOverlayViewModel(get(), get(), get(), get()) }
+
     // Plans ViewModels
-    viewModel { ChoosePlanViewModel(get(), get(), get(), get(), get()) }
+    viewModel { (mfProductId: String, isin: String, fundName: String, fundSubtitle: String) ->
+        FundPurchaseViewModel(
+            mfProductId = mfProductId,
+            isin = isin,
+            fundName = fundName,
+            fundSubtitle = fundSubtitle,
+            getSchemePlan = get(),
+            getMandates = get(),
+            createSipPlan = get(),
+            getPurchasePlan = get(),
+            requestPurchasePlanOtp = get(),
+            verifyPurchasePlanOtp = get(),
+            createMfPurchase = get(),
+            getMfPurchase = get(),
+            requestMfPurchaseOtp = get(),
+            verifyMfPurchaseOtp = get()
+        )
+    }
     viewModel { RedeemViewModel(get()) }
 
     viewModel { AllBundlesViewModel(get()) }
@@ -85,7 +105,7 @@ val viewModelModule = module {
         MutualFundSearchResultViewModel(search, fundCategory, get())
     }
 
-    viewModel { HomeScreenViewModel(get(), get()) }
+    viewModel { HomeScreenViewModel(get()) }
     viewModel { ExploreFundsViewModel(get(),get()) }
     viewModel { ProfileLanguageViewModel(get()) }
     viewModel { ProfileSettingViewModel() }

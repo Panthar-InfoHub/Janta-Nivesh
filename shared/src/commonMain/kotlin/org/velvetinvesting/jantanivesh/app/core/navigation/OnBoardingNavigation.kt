@@ -25,6 +25,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.Confir
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EmailIdScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EmailOtpScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.KycSplashScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.NomineeOptOutTermsScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.ReviewProfileScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.SetupAutopayScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.UploadSignatureScreen
@@ -376,7 +377,18 @@ fun OnboardingNavigation(
                 val state by vm.uiState.collectAsStateWithLifecycle()
                 AddNomineeScreen(
                     state = state,
-                    handleEvent = vm::handleEvent
+                    handleEvent = vm::handleEvent,
+                    onOptOutTermsClick = {
+                        navController.navigate(Route.NomineeOptOutTerms) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+
+            composable<Route.NomineeOptOutTerms> {
+                NomineeOptOutTermsScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 

@@ -33,12 +33,6 @@ sealed interface Route {
     data object MainAppGraph : Route
 
     // Plans flow
-    @Serializable
-    data object PlansHome : Route
-
-    @Serializable
-    data object ChoosePlan : Route
-
     /** Everything shown on the success screen, carried from the confirm response. */
     @Serializable
     data class PurchaseSuccess(
@@ -47,6 +41,26 @@ sealed interface Route {
         val installmentDay: Int,
         val startDate: String
     ) : Route
+
+    /**
+     * The buy screen. [mfProductId] is what the purchase endpoints take, while [isin] is what
+     * the scheme lookup — and so every threshold on the screen — is keyed on. The two name
+     * fields ride along so the header reads correctly before that lookup lands.
+     */
+    @Serializable
+    data class FundPurchase(
+        val mfProductId: String,
+        val isin: String,
+        val fundName: String = "",
+        val fundSubtitle: String = ""
+    ) : Route
+
+    /**
+     * Autopay setup reached from outside onboarding — from the purchase screen, when the user
+     * has no approved mandate to debit a SIP against. Same screen, different exit.
+     */
+    @Serializable
+    data object AddMandate : Route
 
     @Serializable
     data object Redeem : Route
@@ -220,6 +234,10 @@ sealed interface Route {
     data object OnboardingBankVerification: Route
     @Serializable
     data object OnboardingNominee: Route
+
+    /** The full opt-out declaration, opened from the link on the nominee screen. */
+    @Serializable
+    data object NomineeOptOutTerms: Route
 
     /** [email] is collected on [OnboardingEmail], which always runs immediately before this. */
     @Serializable

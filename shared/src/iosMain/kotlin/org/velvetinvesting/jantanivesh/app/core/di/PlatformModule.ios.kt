@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.core.di
 
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import org.velvetinvesting.jantanivesh.app.core.database.createIosDatabase
 import org.velvetinvesting.jantanivesh.app.core.datastore.createIosDataStore
 import org.velvetinvesting.jantanivesh.app.core.location.IosLocationProvider
 import org.velvetinvesting.jantanivesh.app.core.location.LocationProvider
@@ -18,6 +19,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.deviceinfo.DeviceInfoRetri
 
 actual val platformModule: Module = module {
     single { createIosDataStore() }
+    single { createIosDatabase() }
     single<SharedPreference> { IosSharedPreferences() }
     single<DeviceInfoRetriever> { DeviceInfoRetrieverIos() }
     single<PdfViewer>{ PdfViewerIos() }

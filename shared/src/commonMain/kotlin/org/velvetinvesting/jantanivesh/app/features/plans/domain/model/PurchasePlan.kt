@@ -18,23 +18,31 @@ data class PurchasePlan(
     val startDate: String?
 ) {
     val isConfirmed: Boolean
-        get() = state == CONFIRMED
+        get() = state.equals(CONFIRMED, ignoreCase = true)
 
     /**
-     * The gateway reviews a freshly created plan asynchronously. [CREATED] is the only state that
-     * means "still working"; anything else — review completed, failed, or a later lifecycle state
-     * such as `active` — is terminal and stops the caller waiting.
+     * The gateway reviews a freshly created plan asynchronously. [CREATED] means the review is
+     * still running.
      */
     val isUnderReview: Boolean
-        get() = state == CREATED
+        get() = state.equals(CREATED, ignoreCase = true)
+
+    /**
+     * Review finished and the plan is ready to be confirmed. This is the only state the OTP
+     * endpoints accept, so it is what the submission waits for rather than merely "not created".
+     */
+    val isReviewCompleted: Boolean
+        get() = state.equals(REVIEW_COMPLETED, ignoreCase = true)
 
     val hasFailed: Boolean
-        get() = state == FAILED
+        get() = state.equals(FAILED, ignoreCase = true) ||
+                state.equals(CANCELLED, ignoreCase = true)
 
     companion object {
         const val CREATED = "created"
         const val REVIEW_COMPLETED = "review_completed"
         const val FAILED = "failed"
+        const val CANCELLED = "cancelled"
         const val CONFIRMED = "confirmed"
     }
 }

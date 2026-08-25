@@ -19,6 +19,29 @@ data class CreatePurchasePlanBody(
 )
 
 /**
+ * `POST /mf-purchase-plan/` keyed on the product id. A monthly SIP debits on a fixed day, so it
+ * carries `installment_day`; the daily body omits the field entirely rather than sending null,
+ * which the shared Json config would serialise (`explicitNulls` is on).
+ */
+@Serializable
+data class CreateMonthlySipPlanBody(
+    val mf_product_id: String,
+    val amount: Int,
+    val frequency: String,
+    val installment_day: Int,
+    /** Blank for a fresh purchase; an existing folio number tops that folio up instead. */
+    val folio_number: String
+)
+
+/** The daily variant: no debit day, and the gateway assigns the folio. */
+@Serializable
+data class CreateDailySipPlanBody(
+    val mf_product_id: String,
+    val amount: Int,
+    val frequency: String
+)
+
+/**
  * `POST /mf-purchase-plan/` returns the gateway object directly rather than the stored record,
  * so `amount` arrives as a number here while the stored form returns it as a string. That one
  * field is why this cannot share [PurchasePlanDataDto].

@@ -45,7 +45,7 @@ import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.Profil
 fun BottomNavigation(
     navigateToSIPDetailsScreen: (MutualFundPortfolioDomain) -> Unit,
     navigateToFDDetailsScreen: (String) -> Unit,
-    navigateToMutualFundTypeSelectionScreen: () -> Unit,
+    navigateToCategoryMutualFundTypeScreen: () -> Unit,
     navigateToGoalScreen: () -> Unit,
     navigateToNotification: () -> Unit,
     navigateToCategoryFDScreen: () -> Unit,
@@ -58,11 +58,6 @@ fun BottomNavigation(
     navigateToSpecificGoalProjection: (String) -> Unit,
     navigateToFD: () -> Unit,
     navigateToTradingAccountSetup: () -> Unit,
-    navigateToPrivacyPolicy: () -> Unit,
-    navigateToTermsAndConditions: () -> Unit,
-    navigateToAboutUs: () -> Unit,
-    navigateToAboutVelvet: () -> Unit = {},
-    navigateToAboutFire: () -> Unit = {},
     navigateToKYC: () -> Unit,
     navigateToPortfolioFdDetailsScreen: (String) -> Unit,
     navigateToRequestCallBack: () -> Unit,
@@ -209,7 +204,7 @@ fun BottomNavigation(
                                 }
                             }
                             HomeScreenSideEffect.NavigateToInvestFd -> navigateToFD()
-                            HomeScreenSideEffect.NavigateToInvestMf -> navigateToMutualFundTypeSelectionScreen()
+                            HomeScreenSideEffect.NavigateToInvestMf -> navigateToCategoryMutualFundTypeScreen()
                             HomeScreenSideEffect.NavigateToKycVerification -> navigateToKYC()
                             HomeScreenSideEffect.NavigateToNotifications -> navigateToNotification()
                             is HomeScreenSideEffect.NavigateToSpecificGoal -> navigateToSpecificGoalProjection(it.goalId)
@@ -239,7 +234,7 @@ fun BottomNavigation(
                             is ExploreFundsEffect.NavigateToFixedDepositDetail -> navigateToFDDetailsScreen(it.fdId)
                             ExploreFundsEffect.NavigateToFixedDeposits -> navigateToCategoryFDScreen()
                             is ExploreFundsEffect.NavigateToMutualFundDetail -> navigateToMutualFundDetailScreen(it.fundId)
-                            ExploreFundsEffect.NavigateToMutualFunds -> navigateToMutualFundTypeSelectionScreen()
+                            ExploreFundsEffect.NavigateToMutualFunds -> navigateToCategoryMutualFundTypeScreen()
                         }
                     }
                 }
@@ -256,7 +251,7 @@ fun BottomNavigation(
                         navigateToSIPDetailsScreen(it)
                     },
                     onFDClick = navigateToPortfolioFdDetailsScreen,
-                    navigateToCategoryMutualFundScreen=navigateToMutualFundTypeSelectionScreen,
+                    navigateToCategoryMutualFundScreen=navigateToCategoryMutualFundTypeScreen,
                     navigateToCategoryFDScreen=navigateToCategoryFDScreen,
                 )
             }

@@ -272,7 +272,7 @@
     <string name="pep_confirmation">હું પુષ્ટિ કરું છું કે હું PMLA માર્ગદર્શિકા હેઠળ વ્યાખ્યાયિત \'રાજકીય રીતે ખુલ્લી વ્યક્તિ\' (PEP) નથી અથવા કોઈ PEP સાથે સંબંધિત નથી.</string>
     <string name="resident_confirmation">હું પુષ્ટિ કરું છું કે હું ભારતનો રહેવાસી, નાગરિક, જન્મેલો, રાષ્ટ્રીય અને કર નિવાસી છું અને આ પૃષ્ઠ પર આપેલી તમામ માહિતી મારી જાણકારી મુજબ સચોટ છે.</string>
     <string name="add_your_nominee_label">તમારા નોમિની ઉમેરો</string>
-    <string name="nominee_subtitle">જો કંઈક થાય, તો તમારા પૈસા કોને મળવા જોઈએ? ખાતરી કરો કે તે કોઈ વિશ્વાસુ વ્યક્તિ અથવા પરિવારના સભ્ય છે</string>
+    <string name="nominee_subtitle">તમને કંઈક થઈ જાય તો તમારા પૈસા કોને મળવા જોઈએ?</string>
     <string name="add_nominees_later">હું પછીથી નોમિની ઉમેરીશ</string>
     <string name="nominee_name">નોમિનીનું નામ</string>
     <string name="percentage_allocation">ટકાવારી ફાળવણી</string>
@@ -300,4 +300,13 @@
     <string name="account_holder_label">ખાતાધારક</string>
     <string name="account_number_label">એકાઉન્ટ નંબર</string>
     <string name="ifsc_code_label">IFSC કોડ</string>
+
+    <!-- AddNominee: opt-out -->
+    <string name="add_nominee_tab">નોમિની ઉમેરો</string>
+    <string name="opt_nominee_out_tab">નોમિની બાકાત રાખો</string>
+    <string name="nominee_opt_out_title">નોમિની ઓપ્ટ-આઉટ</string>
+    <string name="nominee_opt_out_consent">હું આથી પુષ્ટિ કરું છું કે હું આ સમયે મારા મ્યુચ્યુઅલ ફંડ ફોલિયો માટે કોઈ નોમિની નિયુક્ત કરવા માંગતો/માંગતી નથી</string>
+    <string name="nominee_opt_out_terms_link">નોમિની ઓપ્ટ-આઉટ શરતો</string>
+    <string name="nominee_opt_out_terms_screen_title">નોમિની છોડો</string>
+    <string name="nominee_opt_out_terms_body">હું આથી પુષ્ટિ કરું છું કે હું આ સમયે મારા મ્યુચ્યુઅલ ફંડ ફોલિયો માટે કોઈ નોમિની નિયુક્ત કરવા માંગતો નથી\nહું સમજું છું કે –\n(i) નોમિનેશનથી સિક્યોરિટીઝના ટ્રાન્સફર માટે વ્યક્તિની ઓળખ ઝડપથી થાય છે અને મારા અવસાન પછી મારા કાનૂની વારસદારને સિક્યોરિટીઝનું ટ્રાન્સફર ઝડપી અને સરળ બને છે\n(ii) નોમિનેશન ન હોય તો, મારા કાનૂની વારસદારોએ કેટલાક વધારાના કાનૂની અથવા કોર્ટ દ્વારા જારી કરાયેલા દસ્તાવેજો રજૂ કરવા પડી શકે છે, જેનાથી સિક્યોરિટીઝના ટ્રાન્સફરની પ્રક્રિયામાં વિલંબ થઈ શકે છે\n(iii) મારા અવસાન પછી લાંબા સમય સુધી એકાઉન્ટ/ફોલિયો પર કોઈ દાવો ન કરવામાં આવે, તો હોલ્ડિંગ્સને દાવા વગરની સંપત્તિ ગણી શકાય છે અને લાગુ નિયમનકારી માળખા અનુસાર તેને ‘ઇન્વેસ્ટર એજ્યુકેશન એન્ડ પ્રોટેક્શન ફંડ ઓથોરિટી’ (IEPF)ને ટ્રાન્સફર કરી શકાય છે\nહું પુષ્ટિ કરું છું કે મેં ઉપરની અસરો સમજી લીધી છે અને નોમિનેશનમાંથી બાકાત રહેવાનો મારો નિર્ણય સ્વૈચ્છિક છે</string>
 </resources>

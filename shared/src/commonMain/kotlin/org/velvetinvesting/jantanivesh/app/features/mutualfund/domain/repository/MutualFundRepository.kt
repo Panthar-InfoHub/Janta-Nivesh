@@ -10,7 +10,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.FullRedemptionRequestDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.PartialRedemptionRequestDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CombinedFundsDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundGraphDomain
@@ -19,10 +19,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Sip
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.UserCartDomain
 
 interface MutualFundRepository {
-    suspend fun getCategoryMutualFunds(
-        page: Int? = null,
-        limit: Int? = null
-    ): NetworkResponse<List<BundledMutualFundDomain>, ErrorDomain>
+    suspend fun getCategoryMutualFunds(): NetworkResponse<List<CategoryMutualFundDomain>, ErrorDomain>
 
     suspend fun getMutualFundsBySearch(
         search: String?,
@@ -60,8 +57,6 @@ interface MutualFundRepository {
     suspend fun checkSipPurchaseStatus(mandateId: String): NetworkResponse<SIPStatus, ErrorDomain>
 
     suspend fun purchaseSipFund(mandateId: String, sipItems: List<SipItemDomain>): NetworkResponse<String, ErrorDomain>
-
-    suspend fun getCombinedCategoryMutualFunds(): NetworkResponse<CombinedFundsDomain, ErrorDomain>
 
     suspend fun getBundleFunds(bundleKey: String): NetworkResponse<BundledMutualFundDomain, ErrorDomain>
 

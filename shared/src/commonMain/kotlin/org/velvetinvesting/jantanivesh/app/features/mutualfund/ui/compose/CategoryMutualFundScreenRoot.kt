@@ -20,7 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,72 +44,112 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.ShadowColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBar
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBarButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CombinedFundsDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.ReturnYearsRateDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SelectedReturnRatePeriod
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CategoryMutualFundViewModel
+import org.velvetinvesting.jantanivesh.app.features.search.ui.compose.SearchOverlay
+import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayEffect
+import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayViewModel
 
 @Composable
 fun CategoryMutualFundScreenRoot(
     onBackClick: () -> Unit,
     onIconClick: () -> Unit,
-    onFundClick: (String) -> Unit,
+    /** The whole fund: the buy screen needs its ISIN and name, not only its product id. */
+    onFundClick: (MutualFundDomain) -> Unit,
     onSearchClick: (String) -> Unit,
     onCategoryClick: (String) -> Unit,
     onBundleClick:() -> Unit,
-    onBundledFundClick: (String) -> Unit
+    onBundledFundClick: (String) -> Unit,
+    onStartSipClick: () -> Unit,
+    onBookFdClick: () -> Unit
 ){
 
     val viewModel: CategoryMutualFundViewModel = koinViewModel()
-    val combinedState by viewModel.mutualFunds.collectAsStateWithLifecycle()
+    val categories by viewModel.mutualFunds.collectAsStateWithLifecycle()
     val uiState by viewModel.loadingState.collectAsStateWithLifecycle()
-    val searchText by viewModel.searchText.collectAsStateWithLifecycle()
 
+    // Kept here rather than in the view model: the overlay is a presentation concern, and
+    // surviving configuration changes is all the persistence it needs.
+    var showSearchOverlay by rememberSaveable { mutableStateOf(false) }
+
+    val searchViewModel: SearchOverlayViewModel = koinViewModel()
+    val searchState by searchViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(searchViewModel.effect) {
+        searchViewModel.effect.collect { effect ->
+            when (effect) {
+                is SearchOverlayEffect.Search -> {
+                    // Close before navigating so the overlay is not left standing on the back
+                    // stack behind the results screen.
+                    showSearchOverlay = false
+                    searchViewModel.resetQuery()
+                    onSearchClick(effect.query)
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.White
     ){
-        CategoryMutualFundScreenRootContent(
-            uiState = uiState,
-            combinedState = combinedState,
-            searchText = searchText,
-            onBackClick = onBackClick,
-            onIconClick = onIconClick,
-            onFundClick = onFundClick,
-            onSearchClick = onSearchClick,
-            onCategoryClick = onCategoryClick,
-            onBundleClick = onBundleClick,
-            onBundledFundClick = onBundledFundClick,
-            onRetryClick = { viewModel.loadMutualFunds() },
-            onSearchTextChange = { viewModel.onSearchTextChange(it) }
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            CategoryMutualFundScreenRootContent(
+                uiState = uiState,
+                categories = categories,
+                onBackClick = onBackClick,
+                onIconClick = onIconClick,
+                onFundClick = onFundClick,
+                onSearchBarClick = { showSearchOverlay = true },
+                onCategoryClick = onCategoryClick,
+                onBundleClick = onBundleClick,
+                onBundledFundClick = onBundledFundClick,
+                onRetryClick = { viewModel.loadMutualFunds() }
+            )
+
+            if (showSearchOverlay) {
+                SearchOverlay(
+                    state = searchState,
+                    handleEvent = searchViewModel::handleEvent,
+                    onDismiss = {
+                        showSearchOverlay = false
+                        searchViewModel.resetQuery()
+                    },
+                    onStartSipClick = {
+                        showSearchOverlay = false
+                        onStartSipClick()
+                    },
+                    onBookFdClick = {
+                        showSearchOverlay = false
+                        onBookFdClick()
+                    }
+                )
+            }
+        }
     }
 }
 
 @Composable
 fun CategoryMutualFundScreenRootContent(
     uiState: LoadingState,
-    combinedState: CombinedFundsDomain,
-    searchText: String,
+    categories: List<CategoryMutualFundDomain>,
     onBackClick: () -> Unit,
     onIconClick: () -> Unit,
-    onFundClick: (String) -> Unit,
-    onSearchClick: (String) -> Unit,
+    onFundClick: (MutualFundDomain) -> Unit,
+    onSearchBarClick: () -> Unit,
     onCategoryClick: (String) -> Unit,
     onBundleClick: () -> Unit,
     onBundledFundClick: (String) -> Unit,
-    onRetryClick: () -> Unit,
-    onSearchTextChange: (String) -> Unit
+    onRetryClick: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -129,13 +173,10 @@ fun CategoryMutualFundScreenRootContent(
 
                 LoadingState.Success -> {
                     CategoryMutualFundScreen(
-                        bundles=combinedState.bundleFunds,
-                        funds= combinedState.categoryMutualFundDomain,
+                        funds = categories,
                         onCategoryClick = onCategoryClick,
                         onFundClick = {onFundClick(it)},
-                        searchText =searchText,
-                        onTextChange = onSearchTextChange,
-                        onSearchClick = {onSearchClick(searchText)},
+                        onSearchBarClick = onSearchBarClick,
                         onBundledFundClick = {onBundledFundClick(it)},
                         onBundleClick = {onBundleClick()}
                     )
@@ -147,12 +188,9 @@ fun CategoryMutualFundScreenRootContent(
 
 @Composable
 fun CategoryMutualFundScreen(
-    bundles: List<BundledMutualFundDomain>,
     onCategoryClick: (String) -> Unit,
-    onFundClick: (String) -> Unit,
-    searchText: String,
-    onTextChange: (String) -> Unit,
-    onSearchClick: (String) -> Unit,
+    onFundClick: (MutualFundDomain) -> Unit,
+    onSearchBarClick: () -> Unit,
     funds: List<CategoryMutualFundDomain>,
     onBundledFundClick: (String) -> Unit,
     onBundleClick: () -> Unit
@@ -165,49 +203,36 @@ fun CategoryMutualFundScreen(
         contentPadding = PaddingValues(bottom = Spacing.dp20)
     ) {
         item {
-            AppSearchBar(
-                value = searchText,
-                onTextChange = { onTextChange(it) },
-                onSearchClick = { onSearchClick(searchText) },
+            AppSearchBarButton(
+                onClick = onSearchBarClick,
+                placeholder = "Search Mutual funds.",
                 modifier = Modifier.fillMaxWidth()
             )
         }
 
-        if (bundles.isNotEmpty()){
-            item{
-                BarHeader(
-                    title = "Curated Bundles",
-                    showArrow = false,
-                    onArrowClick = {onBundleClick()},
-                    modifier = Modifier.padding(vertical = 4.dp)
+        item{
+            BarHeader(
+                title = "Curated Bundles",
+                showArrow = false,
+                onArrowClick = {onBundleClick()},
+                modifier = Modifier.padding(vertical = 4.dp)
 
-                )
-            }
+            )
+        }
 
-            item{
-                ShadowCard {
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                            .height(120.dp),
-                        contentAlignment = Alignment.Center
-                    ){
-                        Text(
-                            text = "Coming Soon !",
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                    }
+        item{
+            ShadowCard {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .height(120.dp),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "Coming Soon !",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
                 }
             }
-
-//            items(
-//                items = bundles,
-//                key = {it.key},
-//            ){bundle->
-//                BundleCardExtended(
-//                    onClick = { onBundledFundClick(bundle.key) },
-//                    bundleData = bundle,
-//                )
-//            }
         }
 
         funds.forEach {category->
@@ -228,7 +253,7 @@ fun CategoryMutualFundScreen(
                 Column(
                 ) {
                     MutualFundListCard(
-                        onClick = { onFundClick(fund.id) },
+                        onClick = { onFundClick(fund) },
                         fund = fund,
                         selectedYear = SelectedReturnRatePeriod.THREE_YEAR,
                     )
@@ -385,33 +410,18 @@ private fun CategoryMutualFundScreenRootPreview() {
         )
     )
 
-    val sampleBundle = BundledMutualFundDomain(
-        categoryName = "Velvet Preserve",
-        key = "velvet_preserve",
-        mutualFunds = emptyList(),
-        minAmount = 10000.0,
-        img_url = ""
-    )
-
-    val sampleCombinedState = CombinedFundsDomain(
-        bundleFunds = listOf(sampleBundle),
-        categoryMutualFundDomain = sampleCategories
-    )
-
     JantaNiveshTheme {
         CategoryMutualFundScreenRootContent(
             uiState = LoadingState.Success,
-            combinedState = sampleCombinedState,
-            searchText = "",
+            categories = sampleCategories,
             onBackClick = {},
             onIconClick = {},
             onFundClick = {},
-            onSearchClick = {},
+            onSearchBarClick = {},
             onCategoryClick = {},
             onBundleClick = {},
             onBundledFundClick = {},
-            onRetryClick = {},
-            onSearchTextChange = {}
+            onRetryClick = {}
         )
     }
 }

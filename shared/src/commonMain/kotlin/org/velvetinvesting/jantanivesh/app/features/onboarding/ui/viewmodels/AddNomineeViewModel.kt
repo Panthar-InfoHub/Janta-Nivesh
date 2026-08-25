@@ -56,16 +56,32 @@ data class NomineeDetails(
 }
 
 data class AddNomineeUiState(
+    /**
+     * True while the opt-out tab is selected. This is the skip: the tab, not a checkbox, is what
+     * decides whether nominees are submitted at all.
+     */
     val addLater: Boolean = false,
+    /**
+     * The opt-out declaration, ticked separately from choosing the tab. Opting out of nomination
+     * is a regulated decision, so selecting the tab is not on its own taken as consent.
+     */
+    val optOutConsent: Boolean = false,
     val nominees: List<NomineeDetails> = listOf(NomineeDetails()),
     val isLoading: Boolean = false
 ) {
     private val totalAllocation: Int
         get() = nominees.sumOf { it.percentageAllocation.toIntOrNull() ?: 0 }
 
-    /** Skipping needs no data at all; otherwise every nominee must be complete and add up to 100%. */
+    /**
+     * Opting out needs no nominee data, only the declaration. Adding nominees needs every row
+     * complete and the allocations to add up to 100%.
+     */
     val canSubmit: Boolean
-        get() = addLater || (nominees.all { it.isComplete } && totalAllocation == TOTAL_ALLOCATION)
+        get() = if (addLater) {
+            optOutConsent
+        } else {
+            nominees.all { it.isComplete } && totalAllocation == TOTAL_ALLOCATION
+        }
 
     /** Surfaced under the allocation fields so the 100% rule is visible before the button unlocks. */
     val allocationError: String?
@@ -81,7 +97,9 @@ data class AddNomineeUiState(
 }
 
 sealed interface AddNomineeEvent {
-    data class OnAddLaterChanged(val isChecked: Boolean) : AddNomineeEvent
+    /** Tab selection. Opting out is the skip; switching back resets the declaration. */
+    data class OnOptOutModeChanged(val optOut: Boolean) : AddNomineeEvent
+    data class OnOptOutConsentChanged(val isChecked: Boolean) : AddNomineeEvent
     data object OnAddAnotherNomineeClick : AddNomineeEvent
     data class OnDeleteNomineeClick(val index: Int) : AddNomineeEvent
     data class OnNameChanged(val index: Int, val name: String) : AddNomineeEvent
@@ -115,7 +133,10 @@ class AddNomineeViewModel(
 
     fun handleEvent(event: AddNomineeEvent) {
         when (event) {
-            is AddNomineeEvent.OnAddLaterChanged -> onAddLaterChanged(event.isChecked)
+            is AddNomineeEvent.OnOptOutModeChanged -> onOptOutModeChanged(event.optOut)
+            is AddNomineeEvent.OnOptOutConsentChanged -> _uiState.update {
+                it.copy(optOutConsent = event.isChecked)
+            }
             AddNomineeEvent.OnAddAnotherNomineeClick -> onAddAnotherNomineeClick()
             is AddNomineeEvent.OnDeleteNomineeClick -> onDeleteNomineeClick(event.index)
             is AddNomineeEvent.OnNameChanged -> onNameChanged(event.index, event.name)
@@ -137,8 +158,17 @@ class AddNomineeViewModel(
         }
     }
 
-    private fun onAddLaterChanged(isChecked: Boolean) {
-        _uiState.update { it.copy(addLater = isChecked) }
+    /**
+     * Leaving the opt-out tab clears the declaration, so a user who ticks it, changes their mind
+     * and comes back has to read and confirm it again rather than finding it already agreed to.
+     */
+    private fun onOptOutModeChanged(optOut: Boolean) {
+        _uiState.update { state ->
+            state.copy(
+                addLater = optOut,
+                optOutConsent = if (optOut) state.optOutConsent else false
+            )
+        }
     }
 
     private fun onAddAnotherNomineeClick() {
@@ -249,7 +279,7 @@ class AddNomineeViewModel(
         val state = _uiState.value
         if (state.isLoading || !state.canSubmit) return
 
-        // "Add nominees later" is submitted as a skip, so the collected rows are dropped.
+        // Opting out is submitted as a skip, so any rows already filled in are dropped.
         val nominees = if (state.addLater) emptyList() else state.nominees.map { it.toNominee() }
 
         viewModelScope.launch {
