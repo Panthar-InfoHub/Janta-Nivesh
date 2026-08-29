@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.bell_icon
+import jantanivesh.shared.generated.resources.change_pin
 import jantanivesh.shared.generated.resources.delete_account
 import jantanivesh.shared.generated.resources.forward
 import jantanivesh.shared.generated.resources.privacy_policy
@@ -101,47 +102,40 @@ fun ProfileSettingScreen(
 
                 }
             }
-//            item {
-//                Box(
-//                    modifier = Modifier.genericDropShadow(RoundedCornerShape(Spacing.dp8)).clip(
-//                        RoundedCornerShape(
-//                            Spacing.dp8
-//                        )
-//                    ).fillMaxWidth().clip(RoundedCornerShape(Spacing.dp8))
-//                        .background(color = Color.White)
-//                ) {
-//                    Column {
-//                        Row(modifier = Modifier.padding(16.dp)) {
-//                            Text(
-//                                "Security",
-//                                style = MaterialTheme.typography.labelLarge,
-//                                fontWeight = FontWeight.Bold
-//                            )
-//                        }
-//
-//                        HorizontalDivider(
-//                            thickness = 1.dp, color = profileDividerColor.copy(0.2f)
-//                        )
-//                        RowItemWithOutIconBackground(
-//                            icon = Res.drawable.change_pin,
-//                            subtitle = null,
-//                            onCLick = {onEvent(ProfileSettingEvent.OnChangePinClicked)},
-//                            title = "Change PIN"
-//                        )
-//                        HorizontalDivider(
-//                            thickness = 1.dp, color = profileDividerColor.copy(0.2f)
-//                        )
-//                        RowItemWithOutIconBackground(
-//                            icon = Res.drawable.biometric,
-//                            subtitle = null,
-//                            onCLick = {onEvent(ProfileSettingEvent.OnBiometricLoginClicked)},
-//                            title = "Biometric Login"
-//                        )
-//                    }
-//
-//
-//                }
-//            }
+            item {
+                Box(
+                    modifier = Modifier.genericDropShadow(RoundedCornerShape(Spacing.dp8)).clip(
+                        RoundedCornerShape(
+                            Spacing.dp8
+                        )
+                    ).fillMaxWidth().clip(RoundedCornerShape(Spacing.dp8))
+                        .background(color = Color.White)
+                ) {
+                    Column {
+                        Row(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                "Security",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        HorizontalDivider(
+                            thickness = 1.dp, color = profileDividerColor.copy(0.2f)
+                        )
+                        RowItemWithOutIconBackground(
+                            icon = Res.drawable.change_pin,
+                            subtitle = null,
+                            onCLick = {onEvent(ProfileSettingEvent.OnChangePinClicked)},
+                            title = "Change PIN"
+                        )
+                        // Biometric login has no settings toggle yet — the prompt is offered on
+                        // the lock screen itself.
+                    }
+
+
+                }
+            }
             item {
                 Box(
                     modifier = Modifier.genericDropShadow(RoundedCornerShape(Spacing.dp8)).clip(

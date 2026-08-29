@@ -33,16 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.forward
-import jantanivesh.shared.generated.resources.insurance_shield_icon
+import jantanivesh.shared.generated.resources.profile_bank
 import jantanivesh.shared.generated.resources.profile_contact_us
 import jantanivesh.shared.generated.resources.profile_help
 import jantanivesh.shared.generated.resources.profile_kyc_status
 import jantanivesh.shared.generated.resources.profile_language
 import jantanivesh.shared.generated.resources.profile_setting
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray45
@@ -55,7 +53,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.ProfileSecondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.redColor
-import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenUiState
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
@@ -218,13 +215,13 @@ fun ProfileIntroScreen(
                                 )
                             )
                     ) {
-//                            RowItem(icon = Res.drawable.profile_bank, title = "Bank Accounts", onCLick = {onEvent(
-//                                ProfileEvent.OnBankAccountsClicked)})
-//                            HorizontalDivider(
-//                                thickness = 1.dp,
-//                                color = InsuranceIconBg.copy(0.2f),
-//                                modifier = Modifier.padding(horizontal = 24.dp)
-//                            )
+                            RowItem(icon = Res.drawable.profile_bank, title = "Bank Accounts", onCLick = {onEvent(
+                                ProfileEvent.OnBankAccountsClicked)})
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                color = InsuranceIconBg.copy(0.2f),
+                                modifier = Modifier.padding(horizontal = 24.dp)
+                            )
 //                            RowItem(icon = Res.drawable.profile_clock, title = "Transction History", onCLick = {onEvent(
 //                                ProfileEvent.OnTransactionHistoryClicked)})
 //                            HorizontalDivider(
@@ -243,28 +240,6 @@ fun ProfileIntroScreen(
                                     ProfileEvent.OnKycStatusClicked
                                 )
                             })
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = InsuranceIconBg.copy(0.2f),
-                            modifier = Modifier.padding(horizontal = 24.dp)
-                        )
-                        RowItemText(
-                            Res.drawable.insurance_shield_icon,
-                            title = "Trading Account Status",
-                            text = if (state.tradingAccountVerified) "Completed" else "Pending",
-                            color = if (state.tradingAccountVerified) ProfileGreen else redColor,
-                            onCLick = {
-                                if (state.tradingAccountVerified) return@RowItemText
-                                if (!state.kycVerified){
-                                    scope.launch{ SnackBarController.showInfo("Complete Kyc First") }
-                                }
-                                else {
-                                    onEvent(
-                                        ProfileEvent.OnTradingAccountStatusClicked
-                                    )
-                                }
-                            }
-                        )
 
                     }
                 }

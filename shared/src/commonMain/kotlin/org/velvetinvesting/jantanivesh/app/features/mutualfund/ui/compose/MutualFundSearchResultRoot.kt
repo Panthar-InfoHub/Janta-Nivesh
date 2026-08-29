@@ -72,6 +72,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Mut
 import androidx.compose.ui.tooling.preview.Preview
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.InvestmentFilter
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.createInitialInvestmentFilter
@@ -378,7 +379,7 @@ fun MutualFundListCard(
                 Text(
                     text = subtitle,
 
-                    style = titlesStyle,
+                    style = tinyLabel,
                     color = titleColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

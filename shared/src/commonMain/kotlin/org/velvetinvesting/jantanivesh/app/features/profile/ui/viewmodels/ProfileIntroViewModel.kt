@@ -28,7 +28,7 @@ sealed interface ProfileEvent {
     data object OnSecondaryLanguageClicked : ProfileEvent
     data object OnSettingsClicked : ProfileEvent
 
-//    data object OnBankAccountsClicked : ProfileEvent
+    data object OnBankAccountsClicked : ProfileEvent
 //    data object OnTransactionHistoryClicked : ProfileEvent
     data object OnKycStatusClicked : ProfileEvent
 
@@ -44,7 +44,7 @@ sealed interface ProfileEffect {
     data object NavigateToSecondaryLanguage : ProfileEffect
     data object NavigateToSettings : ProfileEffect
 
-//    data object NavigateToBankAccounts : ProfileEffect
+    data object NavigateToBankAccounts : ProfileEffect
 //    data object NavigateToTransactionHistory : ProfileEffect
     data object NavigateToKycStatus : ProfileEffect
     data object NavigateToTradingAccountStatus: ProfileEffect
@@ -78,8 +78,8 @@ class ProfileViewModel(
             ProfileEvent.OnSettingsClicked ->
                 sendEffect(ProfileEffect.NavigateToSettings)
 //
-//            ProfileEvent.OnBankAccountsClicked ->
-//                sendEffect(ProfileEffect.NavigateToBankAccounts)
+            ProfileEvent.OnBankAccountsClicked ->
+                sendEffect(ProfileEffect.NavigateToBankAccounts)
 //
 //            ProfileEvent.OnTransactionHistoryClicked ->
 //                sendEffect(ProfileEffect.NavigateToTransactionHistory)

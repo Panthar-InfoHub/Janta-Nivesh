@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.core.navigation
 
 import kotlinx.serialization.Serializable
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinPurpose
 
 @Serializable
 sealed interface Route {
@@ -127,6 +128,18 @@ sealed interface Route {
     @Serializable
     data class CancelSIPReason(val id: String) : Route
 
+
+    /**
+     * PIN entry. Shown once per cold start as the app lock, and again — with [purpose] set to
+     * [EnterPinPurpose.CHANGE_PIN] — in front of [ChangePin], which is why it carries a purpose
+     * rather than being a single fixed destination.
+     */
+    @Serializable
+    data class EnterPin(val purpose: String = EnterPinPurpose.APP_LOCK) : Route
+
+    /** Sets a new PIN. Only ever entered through [EnterPin] with the change-PIN purpose. */
+    @Serializable
+    data object ChangePin : Route
 
     @Serializable
     data object BottomNav

@@ -14,7 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -54,7 +56,9 @@ fun TitledAppTextField(
     interactionSource: MutableInteractionSource? = null,
     style: AppTextFieldStyle = AppTextFieldDefaults.style(),
     mandatory: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    textAlign: TextAlign? = null
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4), modifier = modifier) {
         if(title.isNotEmpty())
@@ -72,7 +76,7 @@ fun TitledAppTextField(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             readOnly = readOnly,
-            textStyle = style.textStyle,
+            textStyle = textAlign?.let { style.textStyle.copy(textAlign = it) } ?: style.textStyle,
             placeholder = {
                 Text(
                     placeholder,
@@ -89,6 +93,7 @@ fun TitledAppTextField(
             keyboardOptions = keyboardOptions.copy(
                 keyboardType = keyboardType
             ),
+            visualTransformation = visualTransformation,
             interactionSource = interactionSource ?: remember { MutableInteractionSource() },
             shape = style.shape,
             colors = style.colors

@@ -5,6 +5,8 @@ import org.koin.dsl.module
 import org.velvetinvesting.jantanivesh.app.core.localization.repository.LanguageRepository
 import org.velvetinvesting.jantanivesh.app.core.localization.repository.LanguageRepositoryImpl
 import org.velvetinvesting.jantanivesh.app.core.networking.getHttpClient
+import org.velvetinvesting.jantanivesh.app.features.auth.data.repository.MpinRepoImpl
+import org.velvetinvesting.jantanivesh.app.features.auth.domain.repository.MpinRepo
 import org.velvetinvesting.jantanivesh.app.features.core.data.local.repository.AuthPrefsImpl
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.repository.UserDataRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
@@ -35,6 +37,7 @@ val repositoryModule = module {
     single<HttpClient> { getHttpClient(get()) }
     single<UserAuth> { UserAuthenticationRepo(get(), get(), get()) }
     single<UserDataRepo> { UserDataRepoImpl(get()) }
+    single<MpinRepo> { MpinRepoImpl(get()) }
     single<FixedDepositRepository> { FixedDepositRepo(get()) }
     single<MutualFundRepository> { MutualFundRepo(get()) }
     single<GoalsRepository> { GoalsRepositoryImpl(get()) }
