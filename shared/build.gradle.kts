@@ -44,6 +44,9 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.core)
             implementation(libs.androidx.room3.sqlite.wrapper)
+
+            implementation(libs.androidx.biometric)
+
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

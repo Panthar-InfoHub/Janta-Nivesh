@@ -220,21 +220,6 @@ fun CategoryMutualFundScreen(
             )
         }
 
-        item{
-            ShadowCard {
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .height(120.dp),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        text = "Coming Soon !",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                }
-            }
-        }
-
         funds.forEach {category->
             item {
                 BarHeader(

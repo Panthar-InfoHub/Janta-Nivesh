@@ -276,6 +276,7 @@ fun BottomNavigation(
                             ProfileEffect.NavigateToSettings -> navigateToProfileSettigns()
                             ProfileEffect.NavigateToTradingAccountStatus -> navigateToTradingAccountSetup()
                             ProfileEffect.ShowLogoutDialog -> onSignOut()
+                            ProfileEffect.NavigateToBankAccounts -> {}
                         }
                     }
                 }

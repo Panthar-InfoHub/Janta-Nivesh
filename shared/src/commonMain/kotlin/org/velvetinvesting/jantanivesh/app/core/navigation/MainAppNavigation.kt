@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.core.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,6 +15,13 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.compose.ChangePinScreen
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.compose.EnterPinScreen
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.ChangePinEffect
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.ChangePinViewModel
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinEffect
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinPurpose
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinViewModel
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
@@ -100,6 +108,14 @@ private const val PURCHASE_PAYMENT_RESULT = "purchase_payment_returned"
 /** Marks the payment web view, which pops back to the purchase screen so it can poll. */
 private const val WEBVIEW_COMPLETION_PURCHASE_PAYMENT = "mf_purchase_payment"
 private const val FD_DETAILS_WEBVIEW_RESULT = "fd_details_webview_completed"
+
+/**
+ * Whether the app lock has already been cleared since the process started. Deliberately not saved
+ * state: it dies with the process, so every cold start asks for the PIN once and every later entry
+ * into the main app — a rotation, a return from another graph — goes straight to the bottom nav.
+ */
+private var pinVerifiedThisSession = false
+
 @Composable
 fun MainAppNavigation(
     onSignOut: () -> Unit
@@ -119,10 +135,71 @@ fun MainAppNavigation(
             }
         }
     }
+    val startDestination: Any = remember {
+        if (pinVerifiedThisSession) Route.BottomNav else Route.EnterPin(EnterPinPurpose.APP_LOCK)
+    }
+
     NavHost(
         navController = navController,
-        startDestination = Route.BottomNav
+        startDestination = startDestination
     ) {
+
+        composable<Route.EnterPin> { entry ->
+            val purpose = entry.toRoute<Route.EnterPin>().purpose
+            val vm: EnterPinViewModel = koinViewModel(parameters = { parametersOf(purpose) })
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        EnterPinEffect.PinVerified -> when (purpose) {
+                            EnterPinPurpose.CHANGE_PIN -> {
+                                navController.navigate(Route.ChangePin) {
+                                    launchSingleTop = true
+                                    // Re-authentication is spent; back from the change screen
+                                    // belongs to whatever asked for the change.
+                                    popUpTo<Route.EnterPin> { inclusive = true }
+                                }
+                            }
+
+                            else -> {
+                                pinVerifiedThisSession = true
+                                navController.navigate(Route.BottomNav) {
+                                    launchSingleTop = true
+                                    // The lock is cleared for this run — going back to it would
+                                    // only strand the user on a screen they already passed.
+                                    popUpTo<Route.EnterPin> { inclusive = true }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            EnterPinScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.ChangePin> {
+            val vm: ChangePinViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        ChangePinEffect.NavigateBack,
+                        ChangePinEffect.PinUpdated -> navController.popBackStack()
+                    }
+                }
+            }
+
+            ChangePinScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
 
 
         composable<Route.MutualFundTypeSelectionScreen> {
@@ -803,6 +880,13 @@ fun MainAppNavigation(
                             browserLauncher.launch(
                                 "https://velvetinvesting.com/delete-account"
                             ){}
+                        }
+                        ProfileSettingEffect.NavigateToChangePin -> {
+                            navController.navigate(
+                                Route.EnterPin(EnterPinPurpose.CHANGE_PIN)
+                            ) {
+                                launchSingleTop = true
+                            }
                         }
                         ProfileSettingEffect.NavigateToNotification -> {
                             navController.navigate(

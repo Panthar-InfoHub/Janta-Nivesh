@@ -511,4 +511,16 @@
     <string name="nominee_opt_out_terms_link">Nominee Opt-Out terms</string>
     <string name="nominee_opt_out_terms_screen_title">Skip Nominee</string>
     <string name="nominee_opt_out_terms_body">I hereby confirm that I do not wish to appoint any nominee(s) to my mutual fund folio at this point of time.\nI understand that –\n(i) the nomination helps to quickly identify the person for transfer of securities and helps in faster and smoother transmission of my securities to my legal heir after my demise.\n(ii) in the absence of a nomination, my legal heir(s) may require the submission of certain additional legal or court-issued documents which may delay the process of transmission of securities to my legal heir(s).\n(iii) if no claim is made on the account / folio for a prolonged period after my demise, the holdings may be treated as unclaimed assets, and they may be transferred to Investor Education and Protection Fund Authority (IEPF) in accordance with the applicable regulatory framework.\nI confirm that I have understood the above implications and that my decision to opt out of nomination is voluntary.</string>
+
+    <!-- Change PIN -->
+    <string name="change_pin_screen_title">Change PIN</string>
+    <string name="update_your_security_pin">Update your security PIN</string>
+    <string name="change_pin_instruction">Please enter and confirm your new 4-digit PIN.</string>
+    <string name="new_pin">New PIN</string>
+    <string name="confirm_new_pin">Confirm New PIN</string>
+    <string name="pin_length_hint">Must be exactly 4 digits.</string>
+    <string name="pins_do_not_match">PINs do not match</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="show_pin">Show PIN</string>
+    <string name="hide_pin">Hide PIN</string>
 </resources>

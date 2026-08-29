@@ -42,7 +42,7 @@ fun NomineeOptOutTermsScreen(
         verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
     ) {
         BackHeader(
-            title = "",
+            title = "Nominee Opt Out Terms",
             onBack = onBackClick
         )
 

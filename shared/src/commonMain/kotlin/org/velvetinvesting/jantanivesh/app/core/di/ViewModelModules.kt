@@ -2,6 +2,8 @@ package org.velvetinvesting.jantanivesh.app.core.di
 
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.ChangePinViewModel
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinViewModel
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.ExploreFundsViewModel
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdViewModel
@@ -54,6 +56,9 @@ val viewModelModule = module {
     viewModel { EnterOtpViewModel(get(),get()) }
 
     viewModel { SplashScreenViewModel() }
+
+    viewModel { (purpose: String) -> EnterPinViewModel(purpose, get(), get()) }
+    viewModel { ChangePinViewModel(get()) }
 
     viewModel {(id:String)-> FdDetailsViewModel(id ,get()) }
     viewModel { ExploreFdViewModel(get()) }
