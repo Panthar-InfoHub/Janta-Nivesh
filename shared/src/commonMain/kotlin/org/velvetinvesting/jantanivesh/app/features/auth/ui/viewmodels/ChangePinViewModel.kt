@@ -11,7 +11,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.auth.domain.repository.MpinRepo
 import org.velvetinvesting.jantanivesh.app.features.auth.domain.usecase.UpdateMpinUseCase
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 
 const val MPIN_LENGTH = 4
 
@@ -22,6 +25,8 @@ data class ChangePinUiState(
     val confirmPinVisible: Boolean = false,
     /** True once the two entries have diverged; the screen owns the wording. */
     val pinsMismatch: Boolean = false,
+    val mpinEnabled: Boolean = false,
+    val mpinSetup: Boolean = false,
     val saving: Boolean = false
 ) {
     /**
@@ -40,6 +45,7 @@ sealed interface ChangePinEvent {
     data class OnConfirmPinChanged(val pin: String) : ChangePinEvent
     data object OnToggleNewPinVisibility : ChangePinEvent
     data object OnToggleConfirmPinVisibility : ChangePinEvent
+    data class OnMpinToggleChanged(val enabled: Boolean) : ChangePinEvent
     data object OnSaveClicked : ChangePinEvent
     data object OnBackClicked : ChangePinEvent
 }
@@ -56,10 +62,16 @@ sealed interface ChangePinEffect {
  * field here: the user has already proved the old PIN against `/user/verify-mpin` on the way in.
  */
 class ChangePinViewModel(
-    private val updateMpin: UpdateMpinUseCase
+    private val updateMpin: UpdateMpinUseCase,
+    private val getUserData: GetUserDataUseCase,
+    private val mpinRepo: MpinRepo,
+    private val authPrefs: AuthPrefs
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ChangePinUiState())
+    private val _uiState = MutableStateFlow(ChangePinUiState(
+        mpinEnabled = authPrefs.isMpinEnabled(),
+        mpinSetup = authPrefs.isMpinSetup()
+    ))
     val uiState: StateFlow<ChangePinUiState> = _uiState.asStateFlow()
 
     private val _effect = Channel<ChangePinEffect>()
@@ -83,9 +95,28 @@ class ChangePinViewModel(
             ChangePinEvent.OnToggleConfirmPinVisibility ->
                 _uiState.update { it.copy(confirmPinVisible = !it.confirmPinVisible) }
 
+            is ChangePinEvent.OnMpinToggleChanged -> toggleMpin(event.enabled)
+
             ChangePinEvent.OnSaveClicked -> save()
 
             ChangePinEvent.OnBackClicked -> sendEffect(ChangePinEffect.NavigateBack)
+        }
+    }
+
+    private fun toggleMpin(enabled: Boolean) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(saving = true) }
+            when (val response = mpinRepo.updateMpinStatus(enabled)) {
+                is NetworkResponse.Success -> {
+                    authPrefs.setMpinEnabled(enabled)
+                    _uiState.update { it.copy(saving = false, mpinEnabled = enabled) }
+                }
+
+                is NetworkResponse.Error -> {
+                    _uiState.update { it.copy(saving = false) }
+                    SnackBarController.showError(response.error.message)
+                }
+            }
         }
     }
 
@@ -112,7 +143,26 @@ class ChangePinViewModel(
             _uiState.update { it.copy(saving = true) }
             when (val response = updateMpin(state.newPin)) {
                 is NetworkResponse.Success -> {
-                    _uiState.update { it.copy(saving = false) }
+                    // Refresh data to get mpin_is_setup and other flags from server
+                    when (val userResponse = getUserData()) {
+                        is NetworkResponse.Success -> {
+                            val user = userResponse.data
+                            authPrefs.setMpinSetup(user.mpinIsSetup)
+                            authPrefs.setMpinEnabled(user.mpinEnabled)
+                            _uiState.update { 
+                                it.copy(
+                                    saving = false, 
+                                    mpinSetup = user.mpinIsSetup,
+                                    mpinEnabled = user.mpinEnabled
+                                ) 
+                            }
+                        }
+                        else -> {
+                            // If userdata fetch fails, we still consider the PIN updated.
+                            _uiState.update { it.copy(saving = false, mpinSetup = true) }
+                            authPrefs.setMpinSetup(true)
+                        }
+                    }
                     SnackBarController.showSuccess("PIN updated successfully")
                     _effect.send(ChangePinEffect.PinUpdated)
                 }

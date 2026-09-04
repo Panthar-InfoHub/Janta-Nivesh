@@ -321,4 +321,15 @@
     <string name="save_changes">மாற்றங்களைச் சேமிக்கவும்</string>
     <string name="show_pin">பின்னைக் காட்டு</string>
     <string name="hide_pin">பின்னை மறை</string>
+
+    <!-- Biometric Login -->
+    <string name="biometric_login">பயோமெட்ரிக் உள்நுழைவு</string>
+    <string name="biometric_login_subtitle">உங்கள் சாதனத்தின் பயோமெட்ரிக் சென்சார்கள் மூலம் உங்கள் கணக்கிற்கு வேகமான, பாதுகாப்பான அணுகல்</string>
+    <string name="enable_biometric_login">பயோமெட்ரிக் உள்நுழைவை இயக்கு</string>
+    <string name="use_face_id_or_touch_id">ஃபேஸ் ஐடி அல்லது டச் ஐடி பயன்படுத்தவும்</string>
+    <string name="enhanced_security">மேம்பட்ட பாதுகாப்பு</string>
+    <string name="enhanced_security_detail">உங்கள் பயோமெட்ரிக் தரவு குறியாக்கம் செய்யப்பட்டு உங்கள் சாதனத்தை விட்டு வெளியேறுவதில்லை</string>
+    <string name="instant_access">உடனடி அணுகல்</string>
+    <string name="instant_access_detail">பின்னை தட்டச்சு செய்யாமல் உடனடியாக உள்நுழையவும்</string>
+    <string name="biometric_disable_note">பயோமெட்ரிக் உள்நுழைவை முடக்கினால், ஒவ்வொரு முறை ஆப்ஸைத் திறக்கும்போதும் நீங்களே பின்னை உள்ளிட வேண்டும்</string>
 </resources>

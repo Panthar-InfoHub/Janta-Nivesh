@@ -83,7 +83,7 @@ fun BundleResultScreenRoot(
     heading: String,
     onBackClick: () -> Unit,
     onCartClick: () -> Unit,
-    onFundClick: (String) -> Unit
+    onFundClick: (BundledMutualFundItemDomain) -> Unit
 ) {
 
     val viewModel: BundleResultViewModel = koinViewModel {
@@ -142,7 +142,7 @@ fun BundleResultScreenContent(
     sheetState: SheetState,
     onBackClick: () -> Unit,
     onCartClick: () -> Unit,
-    onFundClick: (String) -> Unit,
+    onFundClick: (BundledMutualFundItemDomain) -> Unit,
     onRetryClick: () -> Unit,
     onCycleReturnRate: () -> Unit,
     onShowCartSheet: () -> Unit,
@@ -244,7 +244,7 @@ fun BundleResultScreen(
     data: BundledMutualFundDomain?,
     selectedYear: SelectedReturnRatePeriod,
     toggleRateYear: () -> Unit,
-    onFundClick: (String) -> Unit,
+    onFundClick: (BundledMutualFundItemDomain) -> Unit,
     modifier: Modifier
 ) {
 
@@ -284,7 +284,7 @@ fun BundleResultScreen(
                 fund = fund,
                 selectedYear = selectedYear,
                 onClick = {
-                    onFundClick(fund.id)
+                    onFundClick(fund)
                 }
             )
         }

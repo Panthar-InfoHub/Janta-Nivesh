@@ -16,10 +16,18 @@ class MpinRepoImpl(
     private val client: HttpClient
 ) : MpinRepo {
 
-    override suspend fun updateMpin(mpin: String): NetworkResponse<Unit, ErrorDomain> {
+    override suspend fun updateMpin(mpin: String, status: Boolean): NetworkResponse<Unit, ErrorDomain> {
         return safeUnitRequest {
             client.patch(getUrl("/user/")) {
-                setBody(UpdateMpinBodyDto(mpin = mpin))
+                setBody(UpdateMpinBodyDto(mpin = mpin, mpin_enabled = status))
+            }
+        }
+    }
+
+    override suspend fun updateMpinStatus(enabled: Boolean): NetworkResponse<Unit, ErrorDomain> {
+        return safeUnitRequest {
+            client.patch(getUrl("/user/")) {
+                setBody(UpdateMpinBodyDto(mpin_enabled = enabled))
             }
         }
     }

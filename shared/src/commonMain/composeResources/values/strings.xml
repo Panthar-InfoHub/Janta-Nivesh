@@ -514,8 +514,13 @@
 
     <!-- Change PIN -->
     <string name="change_pin_screen_title">Change PIN</string>
+    <string name="setup_pin_screen_title">Setup PIN</string>
     <string name="update_your_security_pin">Update your security PIN</string>
+    <string name="setup_your_security_pin">Setup your security PIN</string>
     <string name="change_pin_instruction">Please enter and confirm your new 4-digit PIN.</string>
+    <string name="setup_pin_instruction">Please enter and confirm your 4-digit security PIN.</string>
+    <string name="enable_mpin_verification">Enable MPIN Verification</string>
+    <string name="enable_mpin_verification_subtitle">Ask for PIN every time you open the app</string>
     <string name="new_pin">New PIN</string>
     <string name="confirm_new_pin">Confirm New PIN</string>
     <string name="pin_length_hint">Must be exactly 4 digits.</string>
@@ -523,4 +528,27 @@
     <string name="save_changes">Save Changes</string>
     <string name="show_pin">Show PIN</string>
     <string name="hide_pin">Hide PIN</string>
+
+    <!-- Transaction History -->
+    <string name="transactions_history">Transactions History</string>
+    <string name="mutual_funds_tab">Mutual Funds</string>
+    <string name="fixed_deposits_tab">Fixed Deposits</string>
+    <string name="search_transactions_hint">Search funds, dates, or amounts...</string>
+    <string name="search_fds_transactions_hint">Search FDs, dates, or amounts...</string>
+    <string name="filter_all">All</string>
+    <string name="filter_pending">Pending</string>
+    <string name="filter_complete">Complete</string>
+    <string name="filter_failed">Failed</string>
+    <string name="no_more_transactions">No more transactions</string>
+
+    <!-- Biometric Login -->
+    <string name="biometric_login">Biometric Login</string>
+    <string name="biometric_login_subtitle">Faster, more secure access to your account using your device's biometric sensors.</string>
+    <string name="enable_biometric_login">Enable Biometric Login</string>
+    <string name="use_face_id_or_touch_id">Use Face ID or Touch ID</string>
+    <string name="enhanced_security">Enhanced Security</string>
+    <string name="enhanced_security_detail">Your biometric data is encrypted and never leaves your device.</string>
+    <string name="instant_access">Instant Access</string>
+    <string name="instant_access_detail">Skip the PIN typing and log in instantly.</string>
+    <string name="biometric_disable_note">If you disable biometric login, you will need to enter your PIN manually each time you open the app.</string>
 </resources>

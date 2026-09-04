@@ -75,8 +75,18 @@ sealed interface Route {
     @Serializable
     data object CategoryMutualFund : Route
 
+    /**
+     * The fund list. [tag], [category] and [amountType] are the `GET /mf/funds` filters the
+     * screen opens with — set when it is entered from a category tile or one of the home
+     * micro-SIP cards, and null when the user is browsing everything.
+     */
     @Serializable
-    data class MutualFundSearchResult(val search: String = "", val fundCategory: String? = null) : Route
+    data class MutualFundSearchResult(
+        val search: String = "",
+        val tag: String? = null,
+        val category: String? = null,
+        val amountType: String? = null
+    ) : Route
 
     @Serializable
     data class MutualFundDetails(val id: String, val folioId: String? = null) : Route
@@ -140,6 +150,10 @@ sealed interface Route {
     /** Sets a new PIN. Only ever entered through [EnterPin] with the change-PIN purpose. */
     @Serializable
     data object ChangePin : Route
+
+    /** The switch controlling whether the app lock offers the biometric shortcut. */
+    @Serializable
+    data object BiometricLogin : Route
 
     @Serializable
     data object BottomNav
@@ -219,6 +233,9 @@ sealed interface Route {
 
     @Serializable
     data object ProfileSettingsScreen : Route
+
+    @Serializable
+    data object TransactionHistory : Route
 
     @Serializable
     data class WebViewScreen(

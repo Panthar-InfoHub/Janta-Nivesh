@@ -76,7 +76,8 @@ fun NotificationScreen(
         BackHeader(
             title = "Notification centre",
             showBack = true,
-            onBack = onBack
+            onBack = onBack,
+            modifier = Modifier.padding(horizontal = Spacing.dp16)
         )
 
         Box(modifier = Modifier.fillMaxSize()) {

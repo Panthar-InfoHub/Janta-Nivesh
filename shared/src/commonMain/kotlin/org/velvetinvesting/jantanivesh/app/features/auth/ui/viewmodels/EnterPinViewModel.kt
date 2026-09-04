@@ -68,6 +68,14 @@ class EnterPinViewModel(
     private val verifyMpin: VerifyMpinUseCase
 ) : ViewModel() {
 
+    /**
+     * Biometrics are on offer only for the app lock, and only while the user has left the switch
+     * on the Biometric Login screen turned on — re-authenticating to change the PIN always wants
+     * the PIN itself.
+     */
+    private val biometricsAllowed =
+        purpose != EnterPinPurpose.CHANGE_PIN && authPrefs.isBiometricLoginEnabled()
+
     private val _uiState = MutableStateFlow(
         EnterPinUiState(
             userName = authPrefs.getFullName().orEmpty(),
@@ -75,9 +83,9 @@ class EnterPinViewModel(
                 EnterPinPurpose.CHANGE_PIN -> "Enter your current PIN to continue"
                 else -> "Enter your Janta Nivesh PIN"
             },
-            biometricsAllowed = purpose != EnterPinPurpose.CHANGE_PIN,
+            biometricsAllowed = biometricsAllowed,
             // The lock prompts as soon as it appears; the tap only re-arms it.
-            biometricPromptRequested = purpose != EnterPinPurpose.CHANGE_PIN
+            biometricPromptRequested = biometricsAllowed
         )
     )
     val uiState: StateFlow<EnterPinUiState> = _uiState.asStateFlow()

@@ -21,14 +21,19 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Use
 interface MutualFundRepository {
     suspend fun getCategoryMutualFunds(): NetworkResponse<List<CategoryMutualFundDomain>, ErrorDomain>
 
-    suspend fun getMutualFundsBySearch(
-        search: String?,
-        page:Int?,
-        limit:Int?,
-        sort:String?,
-        risk:Int?,
-        category:String?,
-        fundCategory:String?
+    /**
+     * `GET /mf/funds` — the browse-and-search list.
+     *
+     * Every filter is optional and omitted from the query when null, which lets the server apply
+     * its own defaults (`tag=popular`, `category=all`) rather than this layer guessing them.
+     */
+    suspend fun getFunds(
+        tag: String? = null,
+        category: String? = null,
+        amountType: String? = null,
+        search: String? = null,
+        page: Int? = null,
+        limit: Int? = null
     ): NetworkResponse<PaginatedData<MutualFundDomain>, ErrorDomain>
 
 

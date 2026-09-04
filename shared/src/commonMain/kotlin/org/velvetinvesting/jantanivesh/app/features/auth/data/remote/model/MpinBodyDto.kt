@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class UpdateMpinBodyDto(
-    val mpin: String
+    val mpin: String? = null,
+    val mpin_enabled: Boolean? = null
 )
 
 /** Body for `POST /user/verify-mpin`. */

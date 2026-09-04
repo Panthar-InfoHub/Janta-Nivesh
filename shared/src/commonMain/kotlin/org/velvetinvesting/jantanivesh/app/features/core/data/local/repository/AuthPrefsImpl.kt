@@ -24,6 +24,10 @@ class AuthPrefsImpl(
         private const val KEY_USER_DOB = "user_dob"
         private const val KEY_USER_EMAIL = "user_email"
         private const val KEY_USER_EMAIL_VERIFIED = "user_email_verified"
+
+        private const val KEY_BIOMETRIC_LOGIN_ENABLED = "biometric_login_enabled"
+        private const val KEY_MPIN_ENABLED = "mpin_enabled"
+        private const val KEY_MPIN_SETUP = "mpin_setup"
     }
 
     override fun setBearerToken(token: String) {
@@ -114,12 +118,37 @@ class AuthPrefsImpl(
         return prefs.getBoolean(KEY_USER_EMAIL_VERIFIED) ?: false
     }
 
+    override fun setBiometricLoginEnabled(enabled: Boolean) {
+        prefs.setBoolean(KEY_BIOMETRIC_LOGIN_ENABLED, enabled)
+    }
+
+    override fun isBiometricLoginEnabled(): Boolean {
+        // Absent means the user has never visited the setting — keep the pre-existing behaviour.
+        return prefs.getBoolean(KEY_BIOMETRIC_LOGIN_ENABLED) ?: true
+    }
+
     override fun setFirstLaunch(firstLaunch: Boolean) {
         prefs.setBoolean(KEY_FIRST_LAUNCH, firstLaunch)
     }
 
     override fun isFirstLaunch(): Boolean {
         return prefs.getBoolean(KEY_FIRST_LAUNCH) ?: true
+    }
+
+    override fun setMpinEnabled(enabled: Boolean) {
+        prefs.setBoolean(KEY_MPIN_ENABLED, enabled)
+    }
+
+    override fun isMpinEnabled(): Boolean {
+        return prefs.getBoolean(KEY_MPIN_ENABLED) ?: false
+    }
+
+    override fun setMpinSetup(setup: Boolean) {
+        prefs.setBoolean(KEY_MPIN_SETUP, setup)
+    }
+
+    override fun isMpinSetup(): Boolean {
+        return prefs.getBoolean(KEY_MPIN_SETUP) ?: false
     }
 
     override fun clearAuth() {
@@ -136,5 +165,9 @@ class AuthPrefsImpl(
         prefs.remove(KEY_USER_DOB)
         prefs.remove(KEY_USER_EMAIL)
         prefs.remove(KEY_USER_EMAIL_VERIFIED)
+        // The next person to sign in on this device makes their own choice about biometrics.
+        prefs.remove(KEY_BIOMETRIC_LOGIN_ENABLED)
+        prefs.remove(KEY_MPIN_ENABLED)
+        prefs.remove(KEY_MPIN_SETUP)
     }
 }

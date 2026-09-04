@@ -321,4 +321,15 @@
     <string name="save_changes">बदल सेव्ह करा</string>
     <string name="show_pin">पिन दाखवा</string>
     <string name="hide_pin">पिन लपवा</string>
+
+    <!-- Biometric Login -->
+    <string name="biometric_login">बायोमेट्रिक लॉगिन</string>
+    <string name="biometric_login_subtitle">तुमच्या डिव्हाइसच्या बायोमेट्रिक सेन्सरने तुमच्या खात्यात जलद आणि अधिक सुरक्षित प्रवेश</string>
+    <string name="enable_biometric_login">बायोमेट्रिक लॉगिन सुरू करा</string>
+    <string name="use_face_id_or_touch_id">फेस आयडी किंवा टच आयडी वापरा</string>
+    <string name="enhanced_security">अधिक चांगली सुरक्षा</string>
+    <string name="enhanced_security_detail">तुमचा बायोमेट्रिक डेटा एन्क्रिप्टेड असतो आणि तो कधीही तुमच्या डिव्हाइसबाहेर जात नाही</string>
+    <string name="instant_access">त्वरित प्रवेश</string>
+    <string name="instant_access_detail">पिन टाइप न करता लगेच लॉगिन करा</string>
+    <string name="biometric_disable_note">तुम्ही बायोमेट्रिक लॉगिन बंद केल्यास, ॲप उघडताना दरवेळी तुम्हाला स्वतः पिन टाकावा लागेल</string>
 </resources>

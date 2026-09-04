@@ -1,123 +1,84 @@
 package org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem
 
+/**
+ * The mutual-fund filter tray, mirroring the query parameters of `GET /mf/funds`.
+ *
+ * Group ids are the parameter names and option ids are the values the endpoint accepts, so the
+ * view model can hand a selection straight to the request without a translation table.
+ */
 fun createInitialInvestmentFilter(): InvestmentFilter {
 
     return InvestmentFilter(
         groups = listOf(
-            // Risk
+            // tag — the fund sub-category section
             FilterGroup(
-                id = "risk",
-                title = "Risk",
+                id = MfFilterIds.TAG,
+                title = "Fund Type",
                 selectionType = SelectionType.SINGLE,
                 options = listOf(
-                    FilterOption(
-                        "1",
-                        "Low"
-                    ),
-                    FilterOption(
-                        "2",
-                        "Low to Moderate"
-                    ),
-                    FilterOption(
-                        "3",
-                        "Moderate"
-                    ),
-                    FilterOption(
-                        "4",
-                        "Moderately High"
-                    ),
-                    FilterOption(
-                        "5",
-                        "High"
-                    ),
-                    FilterOption(
-                        "6",
-                        "Very High"
-                    )
+                    FilterOption(MfFilterIds.TAG_POPULAR, "Popular"),
+                    FilterOption(MfFilterIds.TAG_LARGE_CAP, "Large Cap"),
+                    FilterOption(MfFilterIds.TAG_MID_CAP, "Mid Cap"),
+                    FilterOption(MfFilterIds.TAG_SMALL_CAP, "Small Cap"),
+                    FilterOption(MfFilterIds.TAG_FLEXI_CAP, "Flexi Cap"),
+                    FilterOption(MfFilterIds.TAG_MULTI_CAP, "Multi Cap"),
+                    FilterOption(MfFilterIds.TAG_DEBT, "Debt"),
+                    FilterOption(MfFilterIds.TAG_OTHERS, "Others")
                 )
             ),
-            // Category
+            // category — asset class
             FilterGroup(
-                id = "category",
+                id = MfFilterIds.CATEGORY,
                 title = "Category",
                 selectionType = SelectionType.SINGLE,
                 options = listOf(
-                    FilterOption(
-                        "1",
-                        "Equity"
-                    ),
-                    FilterOption(
-                        "2",
-                        "Debt"
-                    ),
-                    FilterOption(
-                        "3",
-                        "Hybrid"
-                    ),
-                    FilterOption(
-                        "4",
-                        "Precious Metal"
-                    ),
-                    FilterOption(
-                        "5",
-                        "Others - Commodities"
-                    ),
-                    FilterOption(
-                        "6",
-                        "Currency"
-                    ),
-                    FilterOption(
-                        "7",
-                        "Liquid"
-                    ),
-                    FilterOption(
-                        "8",
-                        "Others - Mutual Funds"
-                    ),
-                    FilterOption(
-                        "9",
-                        "Solution Oriented"
-                    )
+                    FilterOption(MfFilterIds.CATEGORY_ALL, "All"),
+                    FilterOption(MfFilterIds.CATEGORY_EQUITY, "Equity"),
+                    FilterOption(MfFilterIds.CATEGORY_DEBT, "Debt"),
+                    FilterOption(MfFilterIds.CATEGORY_LIQUID, "Liquid")
                 )
             ),
-            // Fund Category
+            // amount_type — minimum SIP installment
             FilterGroup(
-                id = "fund_category",
-                title = "Fund Category",
+                id = MfFilterIds.AMOUNT_TYPE,
+                title = "Min Investment",
                 selectionType = SelectionType.SINGLE,
                 options = listOf(
-                    FilterOption(
-                        "flexi_cap",
-                        "Flexi Cap"
-                    ),
-                    FilterOption(
-                        "large_Mid_cap",
-                        "Large & Mid Cap"
-                    ),
-                    FilterOption(
-                        "large_cap",
-                        "Large Cap"
-                    ),
-                    FilterOption(
-                        "mid_cap",
-                        "Mid Cap"
-                    ),
-                    FilterOption(
-                        "small_cap",
-                        "Small Cap"
-                    ),
-                    FilterOption(
-                        "index",
-                        "Index"
-                    ),
-                    FilterOption(
-                        "global_others",
-                        "Global / Others"
-                    )
+                    FilterOption(MfFilterIds.AMOUNT_DAILY_10, "Daily \u20B910"),
+                    FilterOption(MfFilterIds.AMOUNT_MONTHLY_100, "Monthly \u20B9100")
                 )
             )
         )
     )
+}
+
+/** Query-parameter names and values of `GET /mf/funds`, shared by the tray and the chips. */
+object MfFilterIds {
+
+    // Groups
+    const val TAG = "tag"
+    const val CATEGORY = "category"
+    const val AMOUNT_TYPE = "amount_type"
+
+    // tag
+    const val TAG_POPULAR = "popular"
+    const val TAG_LARGE_CAP = "large_cap"
+    const val TAG_MID_CAP = "mid_cap"
+    const val TAG_SMALL_CAP = "small_cap"
+    const val TAG_FLEXI_CAP = "flexi_cap"
+    const val TAG_MULTI_CAP = "multi_cap"
+    const val TAG_OTHERS = "others"
+    const val TAG_DEBT = "debt"
+
+    // category
+    const val CATEGORY_ALL = "all"
+    const val CATEGORY_EQUITY = "equity"
+    const val CATEGORY_DEBT = "debt"
+    const val CATEGORY_LIQUID = "liquid"
+
+    // amount_type
+    const val AMOUNT_DAILY_10 = "daily_10"
+    const val AMOUNT_MONTHLY_100 = "monthly_100"
 }
 
 fun createInitialFDFilters(): InvestmentFilter {

@@ -321,4 +321,15 @@
     <string name="save_changes">পরিবর্তন সেভ করুন</string>
     <string name="show_pin">পিন দেখান</string>
     <string name="hide_pin">পিন লুকান</string>
+
+    <!-- Biometric Login -->
+    <string name="biometric_login">বায়োমেট্রিক লগইন</string>
+    <string name="biometric_login_subtitle">আপনার ডিভাইসের বায়োমেট্রিক সেন্সর ব্যবহার করে অ্যাকাউন্টে দ্রুত ও আরও নিরাপদ প্রবেশ</string>
+    <string name="enable_biometric_login">বায়োমেট্রিক লগইন চালু করুন</string>
+    <string name="use_face_id_or_touch_id">ফেস আইডি বা টাচ আইডি ব্যবহার করুন</string>
+    <string name="enhanced_security">উন্নত নিরাপত্তা</string>
+    <string name="enhanced_security_detail">আপনার বায়োমেট্রিক তথ্য এনক্রিপ্ট করা থাকে এবং কখনও আপনার ডিভাইসের বাইরে যায় না</string>
+    <string name="instant_access">তাৎক্ষণিক প্রবেশ</string>
+    <string name="instant_access_detail">পিন টাইপ না করেই সঙ্গে সঙ্গে লগইন করুন</string>
+    <string name="biometric_disable_note">বায়োমেট্রিক লগইন বন্ধ করলে, অ্যাপ খোলার সময় প্রতিবার আপনাকে নিজে পিন দিতে হবে</string>
 </resources>

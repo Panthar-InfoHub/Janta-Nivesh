@@ -345,8 +345,13 @@
 
     <!-- Change PIN -->
     <string name="change_pin_screen_title">पिन बदलें</string>
+    <string name="setup_pin_screen_title">पिन सेट करें</string>
     <string name="update_your_security_pin">अपना सिक्योरिटी पिन अपडेट करें</string>
+    <string name="setup_your_security_pin">अपना सिक्योरिटी पिन सेट करें</string>
     <string name="change_pin_instruction">कृपया अपना नया 4-अंकों का पिन डालें और उसकी पुष्टि करें</string>
+    <string name="setup_pin_instruction">कृपया अपना 4-अंकों का सिक्योरिटी पिन डालें और उसकी पुष्टि करें</string>
+    <string name="enable_mpin_verification">पिन सत्यापन सक्षम करें</string>
+    <string name="enable_mpin_verification_subtitle">हर बार ऐप खोलने पर पिन मांगें</string>
     <string name="new_pin">नया पिन</string>
     <string name="confirm_new_pin">नये पिन की पुष्टि करें</string>
     <string name="pin_length_hint">संख्या ठीक 4 अंकों की होनी चाहिए</string>
@@ -354,4 +359,15 @@
     <string name="save_changes">बदलाव सेव करें</string>
     <string name="show_pin">पिन दिखाएँ</string>
     <string name="hide_pin">पिन छिपाएँ</string>
+
+    <!-- Biometric Login -->
+    <string name="biometric_login">बायोमेट्रिक लॉगिन</string>
+    <string name="biometric_login_subtitle">अपने डिवाइस के बायोमेट्रिक सेंसर से अपने अकाउंट तक तेज़ और ज़्यादा सुरक्षित पहुँच पाएँ</string>
+    <string name="enable_biometric_login">बायोमेट्रिक लॉगिन चालू करें</string>
+    <string name="use_face_id_or_touch_id">फेस आईडी या टच आईडी इस्तेमाल करें</string>
+    <string name="enhanced_security">बेहतर सुरक्षा</string>
+    <string name="enhanced_security_detail">आपका बायोमेट्रिक डेटा एन्क्रिप्टेड रहता है और कभी आपके डिवाइस से बाहर नहीं जाता</string>
+    <string name="instant_access">तुरंत पहुँच</string>
+    <string name="instant_access_detail">पिन टाइप किए बिना तुरंत लॉगिन करें</string>
+    <string name="biometric_disable_note">अगर आप बायोमेट्रिक लॉगिन बंद करते हैं, तो ऐप खोलने पर हर बार आपको अपना पिन खुद डालना होगा</string>
 </resources>

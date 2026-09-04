@@ -72,11 +72,32 @@ data class MutualFundSummaryDomain(
     val returnsPercent: Double
 )
 
+data class ActiveSipItemDomain(
+    val id: String,
+    val fundName: String,
+    val fundCategory: String, // e.g. Equity
+    val fundType: String, // e.g. Mid Cap
+    val investedAmount: Double,
+    val nextDueDate: String,
+    val iconUrl: String? = null
+)
+
+data class ActiveSipDomain(
+    val totalInvestedAmount: Double,
+    val monthlySips: List<ActiveSipItemDomain>,
+    val dailySips: List<ActiveSipItemDomain>
+) {
+    companion object {
+        val EMPTY = ActiveSipDomain(0.0, emptyList(), emptyList())
+    }
+}
+
 data class PortfolioDomain(
     val dashboard: PortfolioDashboardDomain,
     val totalInvestments: TotalInvestmentsDomain,
     val investedAmountBreakdown: InvestedAmountBreakdownDomain,
     val mutualFunds: List<MutualFundPortfolioDomain>,
     val fixedDeposits: List<FixedDepositPortfolioDomain>,
-    val mutualFundSummary: MutualFundSummaryDomain
+    val mutualFundSummary: MutualFundSummaryDomain,
+    val activeSips: ActiveSipDomain
 )

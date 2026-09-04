@@ -25,13 +25,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +48,6 @@ import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.icon_filter
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundSearchResultViewModel
@@ -61,13 +62,12 @@ import org.velvetinvesting.jantanivesh.app.core.theme.subHeading
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 import org.velvetinvesting.jantanivesh.app.core.theme.titlesStyle
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBar
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBarButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FilterChip
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.utils.LabelFilter
-import org.velvetinvesting.jantanivesh.app.features.core.utils.MutualFundLabel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import androidx.compose.ui.tooling.preview.Preview
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -78,19 +78,26 @@ import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.createInitialInvestmentFilter
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.ReturnYearsRateDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
+import org.velvetinvesting.jantanivesh.app.features.search.ui.compose.SearchOverlay
+import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayEffect
+import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayViewModel
 
 @Composable
 fun MutualFundSearchScreenRoot(
     onBackClick: () -> Unit,
-    onFundClick: (String) -> Unit,
+    /** The whole fund: the buy screen needs its ISIN and name, not only its product id. */
+    onFundClick: (MutualFundDomain) -> Unit,
     heading: String,
     searchText: String,
     onSearchClick: (String) -> Unit,
-    category: String?,
+    /** `tag`, `category` and `amount_type` of `GET /mf/funds`, when the screen was opened pre-filtered. */
+    tag: String?,
+    category: String? = null,
+    amountType: String? = null,
 ) {
 
     val viewModel: MutualFundSearchResultViewModel = koinViewModel {
-        parametersOf(searchText, category)
+        parametersOf(searchText, tag, category, amountType)
     }
     val uiState by viewModel.loadingState.collectAsStateWithLifecycle()
     val selectedYear by viewModel.selectedYear.collectAsStateWithLifecycle()
@@ -98,35 +105,73 @@ fun MutualFundSearchScreenRoot(
     val selectedFilter by viewModel.selectedFilter.collectAsStateWithLifecycle()
     val showFilterScreen by viewModel.showFilterScreen.collectAsStateWithLifecycle()
     val filterState by viewModel.filterState.collectAsStateWithLifecycle()
-    val searchTextState by viewModel.searchText.collectAsStateWithLifecycle()
     val isLoadingNext by viewModel.isLoadingNext.collectAsStateWithLifecycle()
     val hasNextPage by viewModel.hasNextPage.collectAsStateWithLifecycle()
+    val totalFunds by viewModel.totalFunds.collectAsStateWithLifecycle()
 
-    MutualFundSearchScreenContent(
-        uiState = uiState,
-        selectedYear = selectedYear,
-        sortedFunds = sortedFunds,
-        selectedFilter = selectedFilter,
-        showFilterScreen = showFilterScreen,
-        filterState = filterState,
-        searchText = searchTextState,
-        isLoadingNext = isLoadingNext,
-        hasNextPage = hasNextPage,
-        heading = heading,
-        onBackClick = onBackClick,
-        onFundClick = onFundClick,
-        onSearchClick = onSearchClick,
-        onRetryClick = { viewModel.loadFunds() },
-        loadNext = { viewModel.loadNext() },
-        toggleRateYear = { viewModel.cycleReturnRatePeriod() },
-        onFilterSelected = { viewModel.onFilterSelected(it) },
-        toggleFilterScreen = { viewModel.toggleFilterScreen() },
-        onSearchTextChange = { viewModel.onSearchTextChange(it) },
-        applyFilter = {
-            viewModel.applyFilter(it)
-            viewModel.toggleFilterScreen()
+    // Presentation-only, like the one on the category screen: the results underneath stay loaded
+    // while the overlay is open, and surviving configuration changes is all it needs to persist.
+    var showSearchOverlay by rememberSaveable { mutableStateOf(false) }
+
+    val searchViewModel: SearchOverlayViewModel = koinViewModel()
+    val searchState by searchViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(searchViewModel.effect) {
+        searchViewModel.effect.collect { effect ->
+            when (effect) {
+                is SearchOverlayEffect.Search -> {
+                    showSearchOverlay = false
+                    searchViewModel.resetQuery()
+                    // Re-enters this same screen with the new term, so the results are a fresh
+                    // destination the user can back out of to the previous ones.
+                    onSearchClick(effect.query)
+                }
+            }
         }
-    )
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        MutualFundSearchScreenContent(
+            uiState = uiState,
+            selectedYear = selectedYear,
+            sortedFunds = sortedFunds,
+            selectedFilter = selectedFilter,
+            showFilterScreen = showFilterScreen,
+            filterState = filterState,
+            searchText = searchText,
+            isLoadingNext = isLoadingNext,
+            hasNextPage = hasNextPage,
+            totalFunds = totalFunds,
+            heading = heading,
+            onBackClick = onBackClick,
+            onFundClick = onFundClick,
+            onSearchBarClick = { showSearchOverlay = true },
+            onRetryClick = { viewModel.loadFunds() },
+            loadNext = { viewModel.loadNext() },
+            toggleRateYear = { viewModel.cycleReturnRatePeriod() },
+            onFilterSelected = { viewModel.onFilterSelected(it) },
+            toggleFilterScreen = { viewModel.toggleFilterScreen() },
+            applyFilter = {
+                viewModel.applyFilter(it)
+                viewModel.toggleFilterScreen()
+            }
+        )
+
+        if (showSearchOverlay) {
+            SearchOverlay(
+                state = searchState,
+                handleEvent = searchViewModel::handleEvent,
+                onDismiss = {
+                    showSearchOverlay = false
+                    searchViewModel.resetQuery()
+                },
+                // Both shortcuts land on a fund list, which is this screen — closing the overlay
+                // is all they need to do here.
+                onStartSipClick = { showSearchOverlay = false },
+                onBookFdClick = { showSearchOverlay = false }
+            )
+        }
+    }
 }
 
 @Composable
@@ -140,16 +185,16 @@ private fun MutualFundSearchScreenContent(
     searchText: String,
     isLoadingNext: Boolean,
     hasNextPage: Boolean,
+    totalFunds: Int,
     heading: String,
     onBackClick: () -> Unit,
-    onFundClick: (String) -> Unit,
-    onSearchClick: (String) -> Unit,
+    onFundClick: (MutualFundDomain) -> Unit,
+    onSearchBarClick: () -> Unit,
     onRetryClick: () -> Unit,
     loadNext: () -> Unit,
     toggleRateYear: () -> Unit,
     onFilterSelected: (LabelFilter) -> Unit,
     toggleFilterScreen: () -> Unit,
-    onSearchTextChange: (String) -> Unit,
     applyFilter: (InvestmentFilter) -> Unit
 ) {
     Scaffold(
@@ -187,6 +232,7 @@ private fun MutualFundSearchScreenContent(
                                 onFundClick = onFundClick,
                                 isLoadingNext = isLoadingNext,
                                 hasNextPage = hasNextPage,
+                                totalFunds = totalFunds,
                                 loadNext = loadNext,
                                 toggleRateYear = toggleRateYear,
                                 selectedYear = selectedYear,
@@ -194,8 +240,7 @@ private fun MutualFundSearchScreenContent(
                                 onFilterSelected = onFilterSelected,
                                 toggleFilterScreen = toggleFilterScreen,
                                 searchText = searchText,
-                                onTextChange = onSearchTextChange,
-                                onSearchClick = onSearchClick
+                                onSearchBarClick = onSearchBarClick
                             )
                         }
                     }
@@ -240,17 +285,17 @@ private fun MutualFundSearchScreenContent(
 @Composable
 fun MutualFundSearchScreen(
     result: List<MutualFundDomain>,
-    onFundClick: (String) -> Unit,
+    onFundClick: (MutualFundDomain) -> Unit,
     selectedYear: SelectedReturnRatePeriod,
     isLoadingNext: Boolean,
     hasNextPage: Boolean,
+    totalFunds: Int,
     loadNext: () -> Unit,
     selectedFilter: LabelFilter?,
     onFilterSelected: (LabelFilter) -> Unit,
     toggleFilterScreen: () -> Unit,
     searchText: String,
-    onTextChange: (String) -> Unit,
-    onSearchClick: (String) -> Unit,
+    onSearchBarClick: () -> Unit,
     toggleRateYear: () -> Unit
 ) {
 
@@ -263,10 +308,12 @@ fun MutualFundSearchScreen(
         state = lazyListState
     ) {
         item {
-            AppSearchBar(
-                value = searchText,
-                onTextChange = { onTextChange(it) },
-                onSearchClick = { onSearchClick(searchText) },
+            AppSearchBarButton(
+                onClick = onSearchBarClick,
+                // The term that produced these results, so the bar says what is being shown.
+                placeholder = searchText.ifBlank { "Search For Funds...." },
+                trailingIcon = Res.drawable.icon_filter,
+                onTrailingIconClick = toggleFilterScreen,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
         }
@@ -275,8 +322,7 @@ fun MutualFundSearchScreen(
             FundFilterRowMF(
                 filters = defaultFilters,
                 selectedFilter = selectedFilter,
-                onFilterSelected = onFilterSelected,
-                toggleFilterScreen=toggleFilterScreen
+                onFilterSelected = onFilterSelected
             )
         }
 
@@ -285,17 +331,15 @@ fun MutualFundSearchScreen(
         item{
             YearRow(
                 selectedYear = selectedYear,
-//                incrementYear = incrementYear,
-//                decrementYear = decrementYear,
                 toggleRateYear =toggleRateYear,
-                totalFunds = result.size
+                totalFunds = totalFunds
             )
         }
 
         item{Spacer(Modifier.height(10.dp))}
 
         itemsIndexed(result, key = { _, item -> item.id }){idx, fund ->
-            MutualFundListCard(onClick = { onFundClick(fund.id) }, fund =fund,selectedYear=selectedYear,
+            MutualFundListCard(onClick = { onFundClick(fund) }, fund =fund,selectedYear=selectedYear,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 14.dp, horizontal = 16.dp))
             if (idx!=result.size-1){
                 Box(
@@ -433,8 +477,6 @@ fun MutualFundListCard(
 @Composable
 fun YearRow(
     selectedYear: SelectedReturnRatePeriod,
-//    incrementYear: () -> Unit,
-//    decrementYear: () -> Unit,
     totalFunds: Int,
     toggleRateYear: () -> Unit
 ) {
@@ -460,7 +502,6 @@ fun YearRow(
                     style = titlesStyle.copy(lineHeight = 0.sp),
                     fontSize = 16.sp,
                     color = titleColor,
-//                    modifier = Modifier.clickable { decrementYear() }
                 )
                 Text(
                     text = " ",
@@ -472,7 +513,6 @@ fun YearRow(
                     style = titlesStyle.copy(lineHeight = 0.sp),
                     color = titleColor,
                     fontSize = 16.sp,
-//                    modifier = Modifier.clickable { incrementYear() }
                 )
             }
             Text(
@@ -487,47 +527,34 @@ fun YearRow(
 
 }
 
+/**
+ * The tag chips. The tray no longer opens from here — that moved to the search bar — so this row
+ * is only the shortcuts, plus the summary chip standing in for a tray selection that no single
+ * chip covers.
+ */
 @Composable
 private fun FundFilterRowMF(
     filters: List<LabelFilter>,
     selectedFilter: LabelFilter?,
-    onFilterSelected: (LabelFilter) -> Unit,
-    toggleFilterScreen: () -> Unit
+    onFilterSelected: (LabelFilter) -> Unit
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-        item {
-            if (selectedFilter is MutualFundLabel.CustomLabel){
+        if (selectedFilter != null && filters.none { it.id == selectedFilter.id }) {
+            item {
                 FilterChip(
-                    title=selectedFilter.title,
+                    title = selectedFilter.title,
                     isSelected = true,
-                    onClick = {
-                        onFilterSelected(selectedFilter)
-                    }
+                    onClick = { onFilterSelected(selectedFilter) }
                 )
-            }else{
-                Box(
-                    modifier=Modifier.size(32.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(Color(0xFFDEE2F6).copy(0.7f))
-                        .clickable { toggleFilterScreen()  },
-                    contentAlignment = Alignment.Center
-                ){
-                    Icon(
-                        painter = painterResource(Res.drawable.icon_filter),
-                        contentDescription = null,
-                        tint= Color.Black,
-                        modifier=Modifier.size(20.dp)
-                    )
-                }
             }
         }
         items(filters) { filter ->
             FilterChip(
                 title=filter.title,
-                isSelected = selectedFilter == filter,
+                isSelected = selectedFilter?.id == filter.id,
                 onClick = { onFilterSelected(filter) }
             )
         }
@@ -581,18 +608,17 @@ fun MutualFundSearchScreenPreview() {
             searchText = "Axis",
             isLoadingNext = false,
             hasNextPage = true,
+            totalFunds = 2,
             heading = "Search Results",
             onBackClick = {},
             onFundClick = {},
-            onSearchClick = {},
+            onSearchBarClick = {},
             onRetryClick = {},
             loadNext = {},
             toggleRateYear = {},
             onFilterSelected = {},
             toggleFilterScreen = {},
-            onSearchTextChange = {},
             applyFilter = {}
         )
     }
 }
-

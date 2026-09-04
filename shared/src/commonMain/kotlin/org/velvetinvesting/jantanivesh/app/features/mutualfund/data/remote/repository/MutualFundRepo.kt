@@ -20,7 +20,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.FullRedemptionRequestDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.PartialRedemptionRequestDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.response.FundRedeemDto
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.getmf.MutualFundDto
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mffunds.MfFundsDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.initiatemfpurchase.InitiateMFPurchaseDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mfdetails.MutualFundsDetailDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mfgraph.MFGraphDto
@@ -67,24 +67,24 @@ class MutualFundRepo(
         }
     }
 
-    override suspend fun getMutualFundsBySearch(
+    override suspend fun getFunds(
+        tag: String?,
+        category: String?,
+        amountType: String?,
         search: String?,
         page: Int?,
-        limit: Int?,
-        sort: String?,
-        risk: Int?,
-        category: String?,
-        fundCategory: String?
-    ):NetworkResponse<PaginatedData<MutualFundDomain>, ErrorDomain> {
-        val response = safeRequest<MutualFundDto> {
-            client.get(getUrl("/mf")) {
-                search?.let { parameter("search", it) }
+        limit: Int?
+    ): NetworkResponse<PaginatedData<MutualFundDomain>, ErrorDomain> {
+        val response = safeRequest<MfFundsDto> {
+            client.get(getUrl("/mf/funds")) {
+                // Blank is not a filter: an empty search or tag would narrow the list to nothing
+                // server-side, so those are dropped rather than sent.
+                tag?.takeIf { it.isNotBlank() }?.let { parameter("tag", it) }
+                category?.takeIf { it.isNotBlank() }?.let { parameter("category", it) }
+                amountType?.takeIf { it.isNotBlank() }?.let { parameter("amount_type", it) }
+                search?.takeIf { it.isNotBlank() }?.let { parameter("search", it) }
                 page?.let { parameter("page", it) }
                 limit?.let { parameter("limit", it) }
-                sort?.let { parameter("sort_by", it) }
-                risk?.let { parameter("risk", it) }
-                category?.let { parameter("category", it) }
-                fundCategory?.let { parameter("fund_category", it) }
             }
         }
         return when (response) {
@@ -96,7 +96,6 @@ class MutualFundRepo(
                 NetworkResponse.Error(response.error)
             }
         }
-
     }
 
     override suspend fun getMutualFundDetails(id: String): NetworkResponse<MutualFundDetailsDomain, ErrorDomain> {

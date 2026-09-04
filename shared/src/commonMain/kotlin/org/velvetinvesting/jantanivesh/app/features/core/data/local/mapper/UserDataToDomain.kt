@@ -25,7 +25,9 @@ fun UserDataDto.toDomain(): UserDataDomain = UserDataDomain(
     dashboard = data.dashboard?.toDomain() ?: DashboardSummaryDomain(),
     investorProfile = data.investor_profile,
     investmentAccount = data.investment_account,
-    userFinance = data.user_finance
+    userFinance = data.user_finance,
+    mpinIsSetup = data.mpin_is_setup,
+    mpinEnabled = data.mpin_enabled
 )
 
 fun OnboardingStatusDto.toDomain(): OnboardingStatusDomain = OnboardingStatusDomain(

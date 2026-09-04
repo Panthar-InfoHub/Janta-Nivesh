@@ -320,4 +320,15 @@
     <string name="save_changes">మార్పులను సేవ్ చేయండి</string>
     <string name="show_pin">పిన్ చూపించు</string>
     <string name="hide_pin">పిన్ దాచు</string>
+
+    <!-- Biometric Login -->
+    <string name="biometric_login">బయోమెట్రిక్ లాగిన్</string>
+    <string name="biometric_login_subtitle">మీ పరికరంలోని బయోమెట్రిక్ సెన్సార్లతో మీ ఖాతాకు వేగవంతమైన, మరింత సురక్షితమైన ప్రవేశం</string>
+    <string name="enable_biometric_login">బయోమెట్రిక్ లాగిన్‌ను ప్రారంభించండి</string>
+    <string name="use_face_id_or_touch_id">ఫేస్ ఐడీ లేదా టచ్ ఐడీ ఉపయోగించండి</string>
+    <string name="enhanced_security">మెరుగైన భద్రత</string>
+    <string name="enhanced_security_detail">మీ బయోమెట్రిక్ డేటా ఎన్‌క్రిప్ట్ చేయబడి ఉంటుంది, అది ఎప్పుడూ మీ పరికరాన్ని వదిలి వెళ్లదు</string>
+    <string name="instant_access">తక్షణ ప్రవేశం</string>
+    <string name="instant_access_detail">పిన్ టైప్ చేయకుండానే వెంటనే లాగిన్ అవ్వండి</string>
+    <string name="biometric_disable_note">మీరు బయోమెట్రిక్ లాగిన్‌ను నిలిపివేస్తే, యాప్ తెరిచిన ప్రతిసారీ మీరే పిన్‌ను నమోదు చేయాల్సి ఉంటుంది</string>
 </resources>
