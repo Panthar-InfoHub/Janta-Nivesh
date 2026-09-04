@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.search_icon
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Border
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
@@ -96,7 +98,13 @@ fun AppSearchBar(
 fun AppSearchBarButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search For Funds...."
+    placeholder: String = "Search For Funds....",
+    /**
+     * An optional action parked at the end of the bar — the fund list hangs its filter tray
+     * here. It has its own click target, so tapping it does not also open the search.
+     */
+    trailingIcon: DrawableResource? = null,
+    onTrailingIconClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
@@ -114,6 +122,12 @@ fun AppSearchBarButton(
         horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            painter = painterResource(Res.drawable.search_icon),
+            contentDescription = null,
+            tint = GreyText,
+            modifier = Modifier.height(22.dp)
+        )
         Text(
             text = placeholder,
             style = AppTextFieldDefaults.style(shape = CircleShape).textStyle
@@ -121,11 +135,21 @@ fun AppSearchBarButton(
             color = titleColor,
             modifier = Modifier.weight(1f)
         )
-        Icon(
-            painter = painterResource(Res.drawable.search_icon),
-            contentDescription = null,
-            tint = GreyText,
-            modifier = Modifier.height(22.dp)
-        )
+
+        if (trailingIcon != null) {
+            Icon(
+                painter = painterResource(trailingIcon),
+                contentDescription = null,
+                tint = Primary,
+                modifier = Modifier
+                    .size(Spacing.dp22)
+                    .clickable(
+                        onClick = { onTrailingIconClick?.invoke() },
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        enabled = onTrailingIconClick != null
+                    )
+            )
+        }
     }
 }

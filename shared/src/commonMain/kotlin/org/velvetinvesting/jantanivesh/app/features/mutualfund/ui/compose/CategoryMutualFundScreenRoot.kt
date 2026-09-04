@@ -23,9 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,7 +48,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearc
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
@@ -207,16 +206,6 @@ fun CategoryMutualFundScreen(
                 onClick = onSearchBarClick,
                 placeholder = "Search Mutual funds.",
                 modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        item{
-            BarHeader(
-                title = "Curated Bundles",
-                showArrow = false,
-                onArrowClick = {onBundleClick()},
-                modifier = Modifier.padding(vertical = 4.dp)
-
             )
         }
 

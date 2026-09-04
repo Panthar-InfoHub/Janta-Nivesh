@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -30,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,6 +76,7 @@ import jantanivesh.shared.generated.resources.profile_in_frame_icon
 import jantanivesh.shared.generated.resources.progress_icon
 import jantanivesh.shared.generated.resources.ring_icon
 import jantanivesh.shared.generated.resources.ruppee_circle
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -114,6 +118,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderSc
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.dashedBorder
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import kotlin.time.Duration.Companion.milliseconds
 
 @Preview(showBackground = true, heightDp = 1204)
 @Composable
@@ -122,7 +127,7 @@ fun HomeScreenPreview() {
         Scaffold(modifier = Modifier.navigationBarsPadding().statusBarsPadding()) {
             HomeScreen(
                 state = HomeScreenUiState(
-                    userName = "Sharad"
+                    userName = "Sharad",
                 ),
                 onEvent = {},
                 modifier = Modifier.fillMaxSize()
@@ -237,38 +242,76 @@ fun HomeScreenContent(
         }
 
         item {
-            HomeBanner(
-                heading = "Investing Made Easy",
-                subHeading = "One investment. Infinite opportunities. Seamless journey.",
-                backgroundColor = LightBlue,
-                border = LightBlueBorder,
-                modifier = horizontalPadding
-            )
-        }
-
-        item {
-            HomeBanner(
-                heading = "Invest with purpose",
-                subHeading = "Invest wisely to achieve your personal goals with smart strategies.",
-                backgroundColor = LightGreen,
-                border = LightGreenBorder,
-                modifier = horizontalPadding
-            )
-        }
-
-        item {
-            HomeBanner(
-                heading = "Simple Fixed Deposits",
-                subHeading = "A fixed deposit plan for security, reliable returns, and growth.",
-                backgroundColor = LightOrange,
-                border = LightOrangeBorder,
-                modifier = horizontalPadding
-            )
+           BannerPager(modifier= Modifier)
         }
 
         item {
             HomeFooter()
         }
+    }
+}
+
+@Composable
+private fun BannerPager(modifier: Modifier= Modifier){
+    val banners = listOf(
+        HomeBannerData(
+            heading = "Investing Made Easy",
+            subHeading = "One investment. Infinite opportunities. Seamless journey.",
+            backgroundColor = LightBlue,
+            border = LightBlueBorder
+        ),
+
+        HomeBannerData(
+            heading = "Invest with purpose",
+            subHeading = "Invest wisely to achieve your personal goals with smart strategies.",
+            backgroundColor = LightGreen,
+            border = LightGreenBorder
+
+        ),
+
+        HomeBannerData(
+            heading = "Simple Fixed Deposits",
+            subHeading = "A fixed deposit plan for security, reliable returns, and growth.",
+            backgroundColor = LightOrange,
+            border = LightOrangeBorder
+        )
+
+    )
+
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { banners.size }
+    )
+
+
+    LaunchedEffect(pagerState) {
+        while (true) {
+            delay(3_000.milliseconds)
+
+            if (!pagerState.isScrollInProgress) {
+                val nextPage = (pagerState.currentPage + 1) % banners.size
+                pagerState.animateScrollToPage(nextPage)
+            }
+        }
+    }
+
+    HorizontalPager(
+        state = pagerState,
+        modifier = modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = Spacing.dp16),
+        pageSpacing = Spacing.dp12
+    ) { page ->
+
+        val banner = banners[page]
+
+        HomeBanner(
+            heading = banner.heading,
+            subHeading = banner.subHeading,
+            backgroundColor = banner.backgroundColor,
+            border = banner.border,
+            modifier = Modifier
+        )
+
     }
 }
 
@@ -813,7 +856,7 @@ private fun HomeBanner(
     modifier: Modifier = Modifier
 ){
     Column(
-        modifier= modifier.fillMaxWidth()
+        modifier= modifier
             .genericDropShadow(
                 shape = LocalShapes.current.roundedDp16,
                 radius = ShadowElevation.dp16
@@ -878,3 +921,10 @@ private fun HomeFooter(
         }
     }
 }
+
+data class HomeBannerData(
+    val heading: String,
+    val subHeading: String,
+    val backgroundColor: Color,
+    val border: Color
+)

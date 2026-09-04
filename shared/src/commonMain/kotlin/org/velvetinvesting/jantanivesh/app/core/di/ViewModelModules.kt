@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.core.di
 
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.BiometricSettingsViewModel
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.ChangePinViewModel
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinViewModel
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.ExploreFundsViewModel
@@ -47,6 +48,7 @@ import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.Notifi
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryViewModel
 import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenViewModel
 
 val viewModelModule = module {
@@ -58,7 +60,8 @@ val viewModelModule = module {
     viewModel { SplashScreenViewModel() }
 
     viewModel { (purpose: String) -> EnterPinViewModel(purpose, get(), get()) }
-    viewModel { ChangePinViewModel(get()) }
+    viewModel { ChangePinViewModel(get(), get(), get(), get()) }
+    viewModel { BiometricSettingsViewModel(get()) }
 
     viewModel {(id:String)-> FdDetailsViewModel(id ,get()) }
     viewModel { ExploreFdViewModel(get()) }
@@ -106,15 +109,16 @@ val viewModelModule = module {
     viewModel { CartScreenViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryMutualFundViewModel(get()) }
     viewModel { (id: String) -> MutualFundDetailsScreenViewModel(id, get(), get(), get(), get(), get(),get()) }
-    viewModel { (search: String?, fundCategory: String?) ->
-        MutualFundSearchResultViewModel(search, fundCategory, get())
+    viewModel { (search: String?, tag: String?, category: String?, amountType: String?) ->
+        MutualFundSearchResultViewModel(search, tag, category, amountType, get())
     }
 
-    viewModel { HomeScreenViewModel(get()) }
+    viewModel { HomeScreenViewModel(get(), get()) }
     viewModel { ExploreFundsViewModel(get(),get()) }
     viewModel { ProfileLanguageViewModel(get()) }
     viewModel { ProfileSettingViewModel() }
     viewModel { ProfileViewModel(get()) }
+    viewModel { TransactionHistoryViewModel(get()) }
     viewModel { InsuranceViewModel() }
     viewModel { RequestCallbackViewModel() }
 

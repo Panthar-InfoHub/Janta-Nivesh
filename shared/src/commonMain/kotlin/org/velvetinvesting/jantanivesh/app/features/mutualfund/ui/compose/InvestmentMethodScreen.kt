@@ -64,6 +64,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScr
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.InvestedAmountBreakdownDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioAllocationDomain
@@ -417,7 +418,12 @@ fun InvestmentMethodScreenPreview() {
                         investedAmount = 80000.0,
                         currentValue = 94130.0,
                         returnsAmount = 14130.0,
-                        returnsPercent = 17.66
+                        returnsPercent = 17.66,
+                    ),
+                    activeSips = ActiveSipDomain(
+                        totalInvestedAmount = 500000.0,
+                        monthlySips = emptyList(),
+                        dailySips = emptyList()
                     )
                 )
             ),

@@ -101,7 +101,13 @@ fun BaseNavigation() {
             }
 
             composable<Route.MainAppGraph> {
-                MainAppNavigation {
+                MainAppNavigation(
+                    navigateToKYC = {stage->
+                        navController.navigate(Route.OnboardingGraph(stage=stage )) {
+                            launchSingleTop = true
+                        }
+                    }
+                ) {
                     prefs.setLoggedIn(false)
                     navController.navigate(Route.LoginGraph) {
                         launchSingleTop = true

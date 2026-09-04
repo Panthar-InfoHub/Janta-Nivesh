@@ -1,48 +1,59 @@
 package org.velvetinvesting.jantanivesh.app.features.core.utils
 
+import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.MfFilterIds
+
 sealed interface LabelFilter {
     val title: String
     val id: String
 }
 
+/**
+ * The fund-list chips. Each id is a `tag` value accepted by `GET /mf/funds`, so selecting a chip
+ * is the same filter the tray applies — the two cannot drift apart.
+ */
 sealed interface MutualFundLabel : LabelFilter {
 
-
-    data object IndexOnly : MutualFundLabel {
-        override val title = "Index"
-        override val id = "index"
-    }
-
-    data object FlexiCap : MutualFundLabel {
-        override val title = "Flexi Cap"
-        override val id = "flexi_cap"
+    data object Popular : MutualFundLabel {
+        override val title = "Popular"
+        override val id = MfFilterIds.TAG_POPULAR
     }
 
     data object LargeCap : MutualFundLabel {
         override val title = "Large Cap"
-        override val id = "large_cap"
+        override val id = MfFilterIds.TAG_LARGE_CAP
     }
 
     data object MidCap : MutualFundLabel {
         override val title = "Mid Cap"
-        override val id = "mid_cap"
+        override val id = MfFilterIds.TAG_MID_CAP
     }
 
     data object SmallCap : MutualFundLabel {
         override val title = "Small Cap"
-        override val id = "small_cap"
+        override val id = MfFilterIds.TAG_SMALL_CAP
     }
 
-    data object LargeMidCap : MutualFundLabel {
-        override val title = "Large & Mid Cap"
-        override val id = "large_Mid_cap"
+    data object FlexiCap : MutualFundLabel {
+        override val title = "Flexi Cap"
+        override val id = MfFilterIds.TAG_FLEXI_CAP
     }
 
-    data object GlobalOthers : MutualFundLabel {
-        override val title = "Global / Others"
-        override val id = "global_others"
+    data object MultiCap : MutualFundLabel {
+        override val title = "Multi Cap"
+        override val id = MfFilterIds.TAG_MULTI_CAP
     }
 
+    data object Debt : MutualFundLabel {
+        override val title = "Debt"
+        override val id = MfFilterIds.TAG_DEBT
+    }
+
+    data object Others : MutualFundLabel {
+        override val title = "Others"
+        override val id = MfFilterIds.TAG_OTHERS
+    }
+
+    /** Stands in for a tray selection that no single chip represents. */
     data class CustomLabel(
         override val title: String,
         override val id: String = "custom"

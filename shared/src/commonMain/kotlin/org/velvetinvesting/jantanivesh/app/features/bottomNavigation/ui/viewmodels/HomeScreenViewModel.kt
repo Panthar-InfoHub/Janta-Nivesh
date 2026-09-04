@@ -13,6 +13,7 @@ import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 
 data class HomeScreenUiState(
@@ -41,7 +42,8 @@ data class HomeScreenUiState(
      * screen still renders a row for it; the field stays until that row is retired with the rest
      * of the trading-account flow.
      */
-    val tradingAccountVerified: Boolean = false
+    val tradingAccountVerified: Boolean = false,
+    val onboardingStage: String = ""
 )
 sealed interface HomeScreenEvent {
 
@@ -67,7 +69,7 @@ sealed interface HomeScreenSideEffect {
     data object NavigateToInvestMf : HomeScreenSideEffect
     data object NavigateToCreateGoal : HomeScreenSideEffect
     data object NavigateToInsurance : HomeScreenSideEffect
-    data object NavigateToKycVerification : HomeScreenSideEffect
+    data class NavigateToKycVerification(val onboardingStage: String) : HomeScreenSideEffect
     data object NavigateToTradingVerification : HomeScreenSideEffect
     data object NavigateToGoals : HomeScreenSideEffect
     data class NavigateToSpecificGoal(val goalId: String) : HomeScreenSideEffect
@@ -77,10 +79,11 @@ sealed interface HomeScreenSideEffect {
 
 /**
  * `GET /user/` returns the dashboard totals alongside the profile, so the home screen is one
- * call: there is no separate portfolio read to fan out to any more.
+ * call: there is no separate portfolio read to fan out to anymore.
  */
 class HomeScreenViewModel(
-    private val getUserDataUseCase: GetUserDataUseCase
+    private val getUserDataUseCase: GetUserDataUseCase,
+    private val authPrefs: AuthPrefs
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
@@ -100,7 +103,7 @@ class HomeScreenViewModel(
                 HomeScreenEvent.OnInvestInMfClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToInvestMf)
                 HomeScreenEvent.OnCreateGoalClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToCreateGoal)
                 HomeScreenEvent.OnInsuranceClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToInsurance)
-                HomeScreenEvent.OnVerifyKycClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToKycVerification)
+                HomeScreenEvent.OnVerifyKycClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToKycVerification(uiState.value.onboardingStage))
                 HomeScreenEvent.OnGoToGoalsClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToGoals)
                 HomeScreenEvent.OnCreateCustomGoalClicked -> _sideEffect.send(HomeScreenSideEffect.NavigateToCreateGoal)
                 HomeScreenEvent.LoadData -> loadData()
@@ -133,6 +136,9 @@ class HomeScreenViewModel(
                     val user = result.data
                     val dashboard = user.dashboard
 
+                    authPrefs.setMpinEnabled(user.mpinEnabled)
+                    authPrefs.setMpinSetup(user.mpinIsSetup)
+
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -149,7 +155,8 @@ class HomeScreenViewModel(
                             pnlTrend = dashboard.returnPercent.trimTo(2),
                             goals = user.goals,
                             kycVerified = user.kycVerified,
-                            showKycPrompt = user.needsOnboarding,
+                            showKycPrompt = !user.kycVerified,
+                            onboardingStage = user.onboarding.currentStage,
                         )
                     }
                 }

@@ -48,9 +48,26 @@ interface AuthPrefs {
 
     fun isEmailVerified(): Boolean
 
+    /**
+     * Whether the user has left the biometric shortcut switched on for the app lock. Defaults to
+     * on so the prompt keeps appearing for anyone who had it before the setting existed; the
+     * Biometric Login screen is the only thing that writes it.
+     */
+    fun setBiometricLoginEnabled(enabled: Boolean)
+
+    fun isBiometricLoginEnabled(): Boolean
+
     fun setFirstLaunch(firstLaunch: Boolean)
 
     fun isFirstLaunch(): Boolean
+
+    fun setMpinEnabled(enabled: Boolean)
+
+    fun isMpinEnabled(): Boolean
+
+    fun setMpinSetup(setup: Boolean)
+
+    fun isMpinSetup(): Boolean
 
     fun clearAuth()
 }

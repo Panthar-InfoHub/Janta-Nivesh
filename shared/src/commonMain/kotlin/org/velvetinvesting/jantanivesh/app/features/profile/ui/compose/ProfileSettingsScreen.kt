@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.bell_icon
+import jantanivesh.shared.generated.resources.biometric
 import jantanivesh.shared.generated.resources.change_pin
 import jantanivesh.shared.generated.resources.delete_account
 import jantanivesh.shared.generated.resources.forward
@@ -129,8 +130,15 @@ fun ProfileSettingScreen(
                             onCLick = {onEvent(ProfileSettingEvent.OnChangePinClicked)},
                             title = "Change PIN"
                         )
-                        // Biometric login has no settings toggle yet — the prompt is offered on
-                        // the lock screen itself.
+                        HorizontalDivider(
+                            thickness = 1.dp, color = profileDividerColor.copy(0.2f)
+                        )
+                        RowItemWithOutIconBackground(
+                            icon = Res.drawable.biometric,
+                            subtitle = null,
+                            onCLick = {onEvent(ProfileSettingEvent.OnBiometricLoginClicked)},
+                            title = "Biometric Login"
+                        )
                     }
 
 

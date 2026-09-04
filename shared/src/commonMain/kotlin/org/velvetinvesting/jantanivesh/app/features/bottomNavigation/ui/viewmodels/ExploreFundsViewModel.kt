@@ -16,6 +16,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.FixedTopPicksUiModel
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.MutualFundTopPicksUiModel
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPickFDUseCase
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundTopPicksUseCase
 
 data class ExploreFundsUiState(
@@ -38,8 +39,12 @@ sealed interface ExploreFundsEffect {
     object NavigateToMutualFunds : ExploreFundsEffect
     object NavigateToFixedDeposits : ExploreFundsEffect
 
-    data class NavigateToMutualFundDetail(
-        val fundId: String
+    /**
+     * Carries the whole fund, not its id: the buy screen is keyed on the ISIN and shows the name
+     * before its own lookup lands.
+     */
+    data class NavigateToMutualFund(
+        val fund: MutualFundDomain
     ) : ExploreFundsEffect
 
     data class NavigateToFixedDepositDetail(
@@ -56,6 +61,9 @@ class ExploreFundsViewModel(
 
     private val _effect = MutableSharedFlow<ExploreFundsEffect>()
     val effect = _effect.asSharedFlow()
+
+    /** The funds behind [ExploreFundsUiState.mutualFundList], kept for the navigation payload. */
+    private var topPicks: List<MutualFundDomain> = emptyList()
 
     init {
         handleEvent(ExploreFundsEvent.LoadInitialData)
@@ -83,12 +91,10 @@ class ExploreFundsViewModel(
             }
 
             is ExploreFundsEvent.OnMutualFundInvestClick -> {
+                // The row only knows its id, so the fund it stands for is looked back up here.
+                val fund = topPicks.firstOrNull { it.id == event.fundId } ?: return
                 viewModelScope.launch {
-                    _effect.emit(
-                        ExploreFundsEffect.NavigateToMutualFundDetail(
-                            fundId = event.fundId
-                        )
-                    )
+                    _effect.emit(ExploreFundsEffect.NavigateToMutualFund(fund))
                 }
             }
 
@@ -138,21 +144,32 @@ class ExploreFundsViewModel(
 
                     hasAnySuccess = true
 
+                    topPicks = data
+
                     mutualFunds = data.map { fund ->
                         MutualFundTopPicksUiModel(
                             id = fund.id,
                             icon = fund.icon,
                             name = fund.name,
-                            metadata =   fund.category +
-                                    (fund.remark?.let { " • $it" }.orEmpty()) +
-                                    (fund.riskText?.let { " • $it Risk" }.orEmpty()),
+                            // The listing endpoint carries no category or risk, so the NAV stands
+                            // in rather than leaving the row with a blank second line.
+                            metadata = listOfNotNull(
+                                fund.category.takeIf { it.isNotBlank() },
+                                fund.remark?.takeIf { it.isNotBlank() },
+                                fund.riskText?.takeIf { it.isNotBlank() }?.let { "$it Risk" }
+                            ).joinToString(" • ")
+                                .ifBlank {
+                                    fund.latestNav.takeIf { it.isNotBlank() }
+                                        ?.let { "NAV $it" }
+                                        .orEmpty()
+                                },
                             returnYears = 3,
                             percentage = fund.returnYearsRate.year3,
                         )
                     }
                 }
                 .onError {
-                    SnackBarController.showError(it.message)
+//                    SnackBarController.showError(it.message)
                     errorMessage = it.message
                 }
 
@@ -172,7 +189,7 @@ class ExploreFundsViewModel(
                     }
                 }
                 .onError {
-                    SnackBarController.showError(it.message)
+//                    SnackBarController.showError(it.message)
                     errorMessage = it.message
                 }
 
@@ -193,7 +210,7 @@ class ExploreFundsViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        showError = true,
+                        showError = false,
                         error = errorMessage
                     )
                 }

@@ -1,11 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.mapper
 
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundledfundbyid.BundledFundByIdDto
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.getmf.Metrics
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.getmf.MutualFund
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.getmf.MutualFundDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.initiatemfpurchase.Data
-import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PaginatedData
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundItemDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.FundMetricsDomain
@@ -13,54 +9,8 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Inv
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MandateStatus
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundPurchaseInitiateDomain
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.ReturnYearsRateDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
-import org.velvetinvesting.jantanivesh.app.core.utils.trimDoubleTo
 
-fun MutualFund.toDomain(): MutualFundDomain {
-    return MutualFundDomain(
-        id = id,
-        name = scheme_name.toTitleCase(),
-        icon = img_url?:"",
-        category = asset_type?:"",
-        remark = null,
-        riskText = risk_name,
-        type = scheme_type?:"",
-        returnYearsRate = metrics.toReturnDomain(),
-        latestNav = latest_nav?: "n/a",
-    )
-}
-
-fun Metrics?.toReturnDomain(): ReturnYearsRateDomain {
-    return this?.let {
-        ReturnYearsRateDomain(
-            month3 = return_90d?.trimDoubleTo(2),
-            month6 = return_6m?.trimDoubleTo(2),
-            year1 = return_1y?.trimDoubleTo(2),
-            year3 = return_3y?.trimDoubleTo(2),
-        )
-    }?: ReturnYearsRateDomain(
-        month3 = null,
-        month6 = null,
-        year1 = null,
-        year3 = null,
-    )
-}
-
-fun MutualFundDto.toPaginatedDomain(): PaginatedData<MutualFundDomain> {
-    val paginationData = data.pagination
-
-    return PaginatedData(
-        items = data.mutual_funds.map { it.toDomain() },
-
-        page = paginationData.page,
-        pageSize = paginationData.limit,
-        totalItems = paginationData.total,
-        totalPages = paginationData.totalPages,
-
-        hasNextPage = paginationData.page < paginationData.totalPages
-    )
-}
 fun BundledFundByIdDto.toDomain(): BundledMutualFundDomain {
     return BundledMutualFundDomain(
         categoryName = data.bundle_name,

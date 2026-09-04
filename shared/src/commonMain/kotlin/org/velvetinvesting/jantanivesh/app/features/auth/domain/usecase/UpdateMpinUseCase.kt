@@ -8,6 +8,6 @@ class UpdateMpinUseCase(
     private val repository: MpinRepo
 ) {
     suspend operator fun invoke(mpin: String): NetworkResponse<Unit, ErrorDomain> {
-        return repository.updateMpin(mpin)
+        return repository.updateMpin(mpin=mpin, status= true )
     }
 }

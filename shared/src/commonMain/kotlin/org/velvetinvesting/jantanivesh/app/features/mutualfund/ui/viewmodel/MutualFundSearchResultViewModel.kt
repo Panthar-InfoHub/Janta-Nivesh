@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SelectedReturnRatePeriod
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.InvestmentFilter
+import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.MfFilterIds
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.createInitialInvestmentFilter
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
@@ -20,9 +21,19 @@ import org.velvetinvesting.jantanivesh.app.features.core.utils.LabelFilter
 import org.velvetinvesting.jantanivesh.app.features.core.utils.MutualFundLabel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundSearchResultUseCase
 
+/**
+ * Backs the fund list.
+ *
+ * The filter tray is the single source of truth for what is queried: the route's own [tag],
+ * [category] and [amountType] are folded into the initial tray state rather than kept beside it,
+ * so a screen opened pre-filtered — the daily/monthly SIP cards on home, a category tile — shows
+ * that filter as selected and clearing it behaves like clearing any other.
+ */
 class MutualFundSearchResultViewModel(
     private val search: String?,
-    private val fundCategory: String?,
+    tag: String?,
+    category: String?,
+    amountType: String?,
     private val getMutualFundSearchResultUseCase: GetMutualFundSearchResultUseCase
 ) : ViewModel() {
 
@@ -43,18 +54,24 @@ class MutualFundSearchResultViewModel(
             emptyList()
         )
 
-    private val _selectedFilter = MutableStateFlow<LabelFilter?>(null)
+    private val _filterState = MutableStateFlow(
+        createInitialInvestmentFilter().withSelections(
+            MfFilterIds.TAG to tag,
+            MfFilterIds.CATEGORY to category,
+            MfFilterIds.AMOUNT_TYPE to amountType
+        )
+    )
+    val filterState: StateFlow<InvestmentFilter> = _filterState
+
+    private val _selectedFilter = MutableStateFlow(_filterState.value.toChipLabel())
     val selectedFilter: StateFlow<LabelFilter?> = _selectedFilter
 
     private val _showFilterScreen = MutableStateFlow(false)
     val showFilterScreen: StateFlow<Boolean> = _showFilterScreen
 
-    private val _filterState =
-        MutableStateFlow<InvestmentFilter>(createInitialInvestmentFilter())
-    val filterState: StateFlow<InvestmentFilter> = _filterState
-
-    private val _searchText = MutableStateFlow("")
-    val searchText: StateFlow<String> = _searchText
+    /** Total the header reports, which is the server's count and not the page in hand. */
+    private val _totalFunds = MutableStateFlow(0)
+    val totalFunds = _totalFunds.asStateFlow()
 
     private var currentPage = 1
     private var _hasNextPage = MutableStateFlow(true)
@@ -72,20 +89,21 @@ class MutualFundSearchResultViewModel(
 
             _loadingState.value = LoadingState.Loading
 
-            val (risk, category, fundCategoryFilter) = getSelectedFilters()
+            val filters = _filterState.value.toQuery()
 
             getMutualFundSearchResultUseCase(
                 search = search,
-                fundCategory = fundCategoryFilter ?: fundCategory,
-                risk = risk,
-                category = category,
+                tag = filters.tag,
+                category = filters.category,
+                amountType = filters.amountType,
                 page = 1,
-                limit = 20
+                limit = PAGE_SIZE
             )
                 .onSuccess { data ->
 
                     currentPage = data.page
                     _hasNextPage.value = data.hasNextPage
+                    _totalFunds.value = data.totalItems
 
                     _mutualFunds.value = data.items
 
@@ -108,20 +126,21 @@ class MutualFundSearchResultViewModel(
 
             val nextPage = currentPage + 1
 
-            val (risk, category, fundCategoryFilter) = getSelectedFilters()
+            val filters = _filterState.value.toQuery()
 
             getMutualFundSearchResultUseCase(
                 search = search,
-                fundCategory = fundCategoryFilter ?: fundCategory,
-                risk = risk,
-                category = category,
+                tag = filters.tag,
+                category = filters.category,
+                amountType = filters.amountType,
                 page = nextPage,
-                limit = 20
+                limit = PAGE_SIZE
             )
                 .onSuccess { data ->
 
                     currentPage = data.page
                     _hasNextPage.value = data.hasNextPage
+                    _totalFunds.value = data.totalItems
 
                     _mutualFunds.value += data.items
                 }
@@ -133,34 +152,29 @@ class MutualFundSearchResultViewModel(
         }
     }
 
+    /**
+     * A chip tap sets the `tag` filter and leaves the rest of the tray alone — the chips are a
+     * shortcut into one group, not a replacement for the whole selection.
+     */
     fun onFilterSelected(filter: LabelFilter) {
         if (filter !is MutualFundLabel) return
-        // Deselect Existing Filter
-        if (_selectedFilter.value == filter) {
-            _selectedFilter.value = null
+
+        // Tapping the standing custom chip is how the tray selection is cleared.
+        if (filter is MutualFundLabel.CustomLabel) {
             clearFilter()
             return
         }
-        _selectedFilter.value = filter
-        val freshFilter = createInitialInvestmentFilter()
-        val updatedGroups = freshFilter.groups.map { group ->
-            if (group.id != "fund_category") {
-                group
-            } else {
-                group.copy(
-                    options = group.options.map { option ->
-                        option.copy(
-                            isSelected = option.id == filter.id
-                        )
-                    }
-                )
-            }
-        }
-        _filterState.value = InvestmentFilter(updatedGroups)
-        currentPage = 1
-        _hasNextPage.value = true
-        loadFunds()
+
+        val isAlreadySelected = _filterState.value.selectedId(MfFilterIds.TAG) == filter.id
+
+        _filterState.value = _filterState.value.withSelections(
+            MfFilterIds.TAG to filter.id.takeUnless { isAlreadySelected }
+        )
+        _selectedFilter.value = _filterState.value.toChipLabel()
+
+        reload()
     }
+
     fun cycleReturnRatePeriod() {
 
         when (_selectedYear.value) {
@@ -181,115 +195,107 @@ class MutualFundSearchResultViewModel(
     fun applyFilter(newFilter: InvestmentFilter) {
 
         _filterState.value = newFilter
+        _selectedFilter.value = newFilter.toChipLabel()
 
-        currentPage = 1
-        _hasNextPage.value = true
-
-        _selectedFilter.value =
-            MutualFundLabel.CustomLabel(
-                newFilter.getActiveFundFilterLabel(), "Custom"
-            )
-
-        loadFunds()
+        reload()
     }
 
     fun clearFilter() {
 
         _filterState.value = createInitialInvestmentFilter()
+        _selectedFilter.value = null
 
-        currentPage = 1
-        _hasNextPage.value = true
-
-        loadFunds()
+        reload()
     }
 
     fun toggleFilterScreen() {
         _showFilterScreen.value = !_showFilterScreen.value
     }
 
-    fun onSearchTextChange(newText: String) {
-        _searchText.value = newText
+    private fun reload() {
+        currentPage = 1
+        _hasNextPage.value = true
+        loadFunds()
     }
 
-    private fun getSelectedFilters(): Triple<Int?, String?, String?> {
-
-        val groups = _filterState.value.groups
-
-        val risk = groups
-            .find { it.id == "risk" }
-            ?.options
-            ?.firstOrNull { it.isSelected }
-            ?.id
-            ?.toIntOrNull()
-
-        val category = groups
-            .find { it.id == "category" }
-            ?.options
-            ?.firstOrNull { it.isSelected }
-            ?.id
-
-        val fundCategory = groups
-            .find { it.id == "fund_category" }
-            ?.options
-            ?.firstOrNull { it.isSelected }
-            ?.id
-
-        return Triple(
-            risk,
-            category,
-            fundCategory
-        )
+    private companion object {
+        /** The endpoint caps `limit` at 50. */
+        const val PAGE_SIZE = 20
     }
 }
 
+/** The three query values `GET /mf/funds` filters on, null where nothing is selected. */
+data class FundQueryFilters(
+    val tag: String?,
+    val category: String?,
+    val amountType: String?
+)
 
+fun InvestmentFilter.selectedId(groupId: String): String? =
+    groups.find { it.id == groupId }
+        ?.options
+        ?.firstOrNull { it.isSelected }
+        ?.id
 
+fun InvestmentFilter.toQuery(): FundQueryFilters = FundQueryFilters(
+    tag = selectedId(MfFilterIds.TAG),
+    // "all" is the server's own default and means "no category filter", so it is not sent.
+    category = selectedId(MfFilterIds.CATEGORY)?.takeIf { it != MfFilterIds.CATEGORY_ALL },
+    amountType = selectedId(MfFilterIds.AMOUNT_TYPE)
+)
+
+/**
+ * Applies `groupId to optionId` selections, replacing whatever that group had. A null option id
+ * clears the group, and a group named here that the tray does not define is ignored.
+ */
+fun InvestmentFilter.withSelections(vararg selections: Pair<String, String?>): InvestmentFilter {
+    val bySelection = selections.toMap()
+
+    return copy(
+        groups = groups.map { group ->
+            if (!bySelection.containsKey(group.id)) return@map group
+
+            val selectedId = bySelection[group.id]
+            group.copy(
+                options = group.options.map { it.copy(isSelected = it.id == selectedId) }
+            )
+        }
+    )
+}
+
+/**
+ * The chip that stands for the current tray state: the tag chip itself when the tag is the only
+ * thing selected — so the row highlights it rather than showing a redundant custom chip — and a
+ * summary chip otherwise.
+ */
+fun InvestmentFilter.toChipLabel(): LabelFilter? {
+    val tag = selectedId(MfFilterIds.TAG)
+    val query = toQuery()
+
+    if (query.category == null && query.amountType == null) {
+        return defaultFilters.firstOrNull { it.id == tag }
+    }
+
+    return MutualFundLabel.CustomLabel(getActiveFundFilterLabel(), "custom")
+}
+
+/** The chip row, in the order the sections are presented server-side. */
 val defaultFilters: List<LabelFilter> = listOf(
-    MutualFundLabel.IndexOnly,
-    MutualFundLabel.FlexiCap,
+    MutualFundLabel.Popular,
     MutualFundLabel.LargeCap,
     MutualFundLabel.MidCap,
     MutualFundLabel.SmallCap,
-    MutualFundLabel.LargeMidCap,
-    MutualFundLabel.GlobalOthers
+    MutualFundLabel.FlexiCap,
+    MutualFundLabel.MultiCap,
+    MutualFundLabel.Debt,
+    MutualFundLabel.Others
 )
 
 fun InvestmentFilter.getActiveFundFilterLabel(): String {
 
-    val groups = groups
-
-    val risk = groups
-        .find { it.id == "risk" }
-        ?.options
-        ?.firstOrNull { it.isSelected }
-
-    val category = groups
-        .find { it.id == "category" }
-        ?.options
-        ?.firstOrNull { it.isSelected }
-
-    val fundCategory = groups
-        .find { it.id == "fund_category" }
-        ?.options
-        ?.firstOrNull { it.isSelected }
-
-    val parts = mutableListOf<String>()
-
-    risk?.let {
-        parts.add(it.title)
+    val parts = groups.mapNotNull { group ->
+        group.options.firstOrNull { it.isSelected }?.title
     }
 
-    category?.let {
-        parts.add(it.title)
-    }
-
-    fundCategory?.let {
-        parts.add(it.title)
-    }
-
-    return if (parts.isEmpty()) {
-        "All Funds"
-    } else {
-        parts.joinToString(" • ")
-    }
+    return if (parts.isEmpty()) "All Funds" else parts.joinToString(" • ")
 }

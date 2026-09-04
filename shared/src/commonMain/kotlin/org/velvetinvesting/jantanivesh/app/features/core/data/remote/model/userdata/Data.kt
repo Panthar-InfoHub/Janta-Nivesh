@@ -28,6 +28,9 @@ data class Data(
     val investment_account: String? = null,
     val investment_account_old_id: Int? = null,
 
+    val mpin_is_setup: Boolean = false,
+    val mpin_enabled: Boolean = false,
+
     val user_finance: UserFinance? = null,
     val user_assets: UserAssets? = null,
     val user_insurance: UserInsurance? = null,

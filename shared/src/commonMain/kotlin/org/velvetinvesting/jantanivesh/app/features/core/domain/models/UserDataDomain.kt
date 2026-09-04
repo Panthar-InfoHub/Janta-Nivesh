@@ -23,6 +23,8 @@ data class UserDataDomain(
     val investorProfile: String?,
     val investmentAccount: String?,
     val userFinance: UserFinance?,
+    val mpinIsSetup: Boolean,
+    val mpinEnabled: Boolean,
 ) {
     val kycVerified: Boolean
         get() = onboarding.isKycVerified

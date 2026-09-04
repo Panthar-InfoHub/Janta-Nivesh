@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.viewmodel.koinViewModel
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.component.BottomNavBar
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.compose.ExploreFundsScreen
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.compose.HomeScreen
@@ -31,9 +32,11 @@ import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenSideEffect
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
+import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.MfFilterIds
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.InsuranceIntroScreen
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.PortfolioScreenMain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
@@ -49,7 +52,8 @@ fun BottomNavigation(
     navigateToGoalScreen: () -> Unit,
     navigateToNotification: () -> Unit,
     navigateToCategoryFDScreen: () -> Unit,
-    navigateToMutualFundDetailScreen: (String) -> Unit,
+    /** The whole fund: the buy screen needs its ISIN and name, not only its product id. */
+    navigateToFundPurchase: (MutualFundDomain) -> Unit,
     navigateToHealthInsurance: () -> Unit,
     navigateToTermInsurance: () -> Unit,
     navigateToOtherInsurance: () -> Unit,
@@ -58,11 +62,17 @@ fun BottomNavigation(
     navigateToSpecificGoalProjection: (String) -> Unit,
     navigateToFD: () -> Unit,
     navigateToTradingAccountSetup: () -> Unit,
-    navigateToKYC: () -> Unit,
+    navigateToKYC: (String) -> Unit,
     navigateToPortfolioFdDetailsScreen: (String) -> Unit,
     navigateToRequestCallBack: () -> Unit,
     navigateToLanguageSettings: () -> Unit,
-    navigateToProfileSettigns: () -> Unit
+    navigateToProfileSettigns: () -> Unit,
+    navigateToTransactionHistory: () -> Unit,
+    /**
+     * The fund list filtered by minimum installment — the `amount_type` values of
+     * `GET /mf/funds`. The destination lives in the outer graph, so it is navigated from there.
+     */
+    navigateToFundsByAmountType: (String) -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -205,16 +215,17 @@ fun BottomNavigation(
                             }
                             HomeScreenSideEffect.NavigateToInvestFd -> navigateToFD()
                             HomeScreenSideEffect.NavigateToInvestMf -> navigateToCategoryMutualFundTypeScreen()
-                            HomeScreenSideEffect.NavigateToKycVerification -> navigateToKYC()
+                            is HomeScreenSideEffect.NavigateToKycVerification -> navigateToKYC(
+                                OnboardingStage.PanVerification.id
+                            )
                             HomeScreenSideEffect.NavigateToNotifications -> navigateToNotification()
                             is HomeScreenSideEffect.NavigateToSpecificGoal -> navigateToSpecificGoalProjection(it.goalId)
                             HomeScreenSideEffect.NavigateToTradingVerification -> navigateToTradingAccountSetup()
-                            HomeScreenSideEffect.NavigateToDailySip -> {
+                            HomeScreenSideEffect.NavigateToDailySip ->
+                                navigateToFundsByAmountType(MfFilterIds.AMOUNT_DAILY_10)
 
-                            }
-                            HomeScreenSideEffect.NavigateToMonthlySip -> {
-
-                            }
+                            HomeScreenSideEffect.NavigateToMonthlySip ->
+                                navigateToFundsByAmountType(MfFilterIds.AMOUNT_MONTHLY_100)
                         }
                     }
                 }
@@ -233,7 +244,7 @@ fun BottomNavigation(
                         when(it){
                             is ExploreFundsEffect.NavigateToFixedDepositDetail -> navigateToFDDetailsScreen(it.fdId)
                             ExploreFundsEffect.NavigateToFixedDeposits -> navigateToCategoryFDScreen()
-                            is ExploreFundsEffect.NavigateToMutualFundDetail -> navigateToMutualFundDetailScreen(it.fundId)
+                            is ExploreFundsEffect.NavigateToMutualFund -> navigateToFundPurchase(it.fund)
                             ExploreFundsEffect.NavigateToMutualFunds -> navigateToCategoryMutualFundTypeScreen()
                         }
                     }
@@ -271,9 +282,12 @@ fun BottomNavigation(
                                     "https://velvetinvesting.com/faqs"
                                 ){}
                             }
-                            ProfileEffect.NavigateToKycStatus -> navigateToKYC()
+                            ProfileEffect.NavigateToKycStatus -> navigateToKYC(
+                                OnboardingStage.PanVerification.id
+                            )
                             ProfileEffect.NavigateToSecondaryLanguage -> navigateToLanguageSettings()
                             ProfileEffect.NavigateToSettings -> navigateToProfileSettigns()
+                            ProfileEffect.NavigateToTransactionHistory -> navigateToTransactionHistory()
                             ProfileEffect.NavigateToTradingAccountStatus -> navigateToTradingAccountSetup()
                             ProfileEffect.ShowLogoutDialog -> onSignOut()
                             ProfileEffect.NavigateToBankAccounts -> {}

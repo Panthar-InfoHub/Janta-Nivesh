@@ -5,23 +5,29 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.compose.BiometricSettingsScreen
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.compose.ChangePinScreen
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.compose.EnterPinScreen
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.BiometricLoginEffect
+import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.BiometricSettingsViewModel
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.ChangePinEffect
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.ChangePinViewModel
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinEffect
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinPurpose
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinViewModel
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
@@ -68,6 +74,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.Bundle
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.CategoryMutualFundScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.InvestmentMethodScreen
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundItemDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundDetailsScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundSearchScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartScreen
@@ -82,10 +89,13 @@ import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.PrivacyPo
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileLanguageScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileSettingScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.TermsAndConditionsScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.TransactionHistoryScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryEffect
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryViewModel
 
 private const val KYC_CONTRACT_WEBVIEW_RESULT = "kyc_contract_webview_completed"
 private const val CART_WEBVIEW_RESULT = "cart_webview_completed"
@@ -118,10 +128,12 @@ private var pinVerifiedThisSession = false
 
 @Composable
 fun MainAppNavigation(
-    onSignOut: () -> Unit
+    navigateToKYC: (String) -> Unit,
+    onSignOut: () -> Unit,
 ) {
 
     val navController = rememberNavController()
+    val prefs: AuthPrefs = koinInject()
     LaunchedEffect(Unit) {
         AppEventsController.appEvent.collect {
             when (it) {
@@ -136,7 +148,11 @@ fun MainAppNavigation(
         }
     }
     val startDestination: Any = remember {
-        if (pinVerifiedThisSession) Route.BottomNav else Route.EnterPin(EnterPinPurpose.APP_LOCK)
+        if (!prefs.isMpinSetup() || !prefs.isMpinEnabled() || pinVerifiedThisSession) {
+            Route.BottomNav
+        } else {
+            Route.EnterPin(EnterPinPurpose.APP_LOCK)
+        }
     }
 
     NavHost(
@@ -201,6 +217,24 @@ fun MainAppNavigation(
             )
         }
 
+        composable<Route.BiometricLogin> {
+            val vm: BiometricSettingsViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        BiometricLoginEffect.NavigateBack -> navController.popBackStack()
+                    }
+                }
+            }
+
+            BiometricSettingsScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
 
         composable<Route.MutualFundTypeSelectionScreen> {
             InvestmentMethodScreen(
@@ -234,35 +268,14 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
-                onFundClick = { fund: MutualFundDomain ->
-                    val isin = fund.isin
-                    // The buy screen loads every threshold from `GET /mf-scheme/{isin}`, so a
-                    // fund without an ISIN has nothing to load; those fall back to the details
-                    // screen rather than opening a form that cannot be filled in.
-                    if (isin.isNullOrBlank()) {
-                        navController.navigate(Route.MutualFundDetails(fund.id)) {
-                            launchSingleTop = true
-                        }
-                    } else {
-                        navController.navigate(
-                            Route.FundPurchase(
-                                mfProductId = fund.id,
-                                isin = isin,
-                                fundName = fund.name,
-                                fundSubtitle = fund.purchaseSubtitle
-                            )
-                        ) {
-                            launchSingleTop = true
-                        }
-                    }
-                },
+                onFundClick = { fund: MutualFundDomain -> navController.openFund(fund) },
                 onSearchClick = { search: String ->
                     navController.navigate(Route.MutualFundSearchResult(search)) {
                         launchSingleTop = true
                     }
                 },
                 onCategoryClick = { id: String ->
-                    navController.navigate(Route.MutualFundSearchResult(fundCategory = id)) {
+                    navController.navigate(Route.MutualFundSearchResult(tag = id)) {
                         launchSingleTop = true
                     }
                 },
@@ -290,13 +303,11 @@ fun MainAppNavigation(
             val route = it.toRoute<Route.MutualFundSearchResult>()
             MutualFundSearchScreenRoot(
                 onBackClick = { navController.popBackStack() },
-                onFundClick = { id: String ->
-                    navController.navigate(Route.MutualFundDetails(id)) {
-                        launchSingleTop = true
-                    }
-                },
+                onFundClick = { fund: MutualFundDomain -> navController.openFund(fund) },
                 searchText = route.search,
-                category = route.fundCategory,
+                tag = route.tag,
+                category = route.category,
+                amountType = route.amountType,
                 onSearchClick = { search: String ->
                     navController.navigate(Route.MutualFundSearchResult(search = search))
                 },
@@ -519,10 +530,16 @@ fun MainAppNavigation(
                 onCartClick = {
                     navController.navigate(Route.CartScreen)
                 },
-                onFundClick = { id: String ->
-                    navController.navigate(Route.MutualFundDetails(id)) {
-                        launchSingleTop = true
-                    }
+                onFundClick = { fund: BundledMutualFundItemDomain ->
+                    navController.openFund(
+                        mfProductId = fund.id,
+                        isin = fund.isin,
+                        fundName = fund.scheme_name,
+                        fundSubtitle = listOf(fund.risk_name, fund.asset_type, fund.scheme_type)
+                            .filter { it.isNotBlank() }
+                            .distinct()
+                            .joinToString(" \u00B7 ")
+                    )
                 }
             )
         }
@@ -560,6 +577,13 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
+                navigateToFundsByAmountType = { amountType: String ->
+                    navController.navigate(
+                        Route.MutualFundSearchResult(amountType = amountType)
+                    ) {
+                        launchSingleTop = true
+                    }
+                },
                 navigateToCategoryFDScreen = {
                     navController.navigate(Route.FixedDepositSearchResult()) {
                         launchSingleTop = true
@@ -575,10 +599,8 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
-                navigateToMutualFundDetailScreen = {
-                    navController.navigate(Route.MutualFundDetails(it)) {
-                        launchSingleTop = true
-                    }
+                navigateToFundPurchase = { fund: MutualFundDomain ->
+                    navController.openFund(fund)
                 },
                 navigateToHealthInsurance = {
                     navController.navigate(Route.HealthInsurance) {
@@ -615,10 +637,8 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
-                navigateToKYC = {
-                    navController.navigate(Route.KycGraph) {
-                        launchSingleTop = true
-                    }
+                navigateToKYC = {stage->
+                    navigateToKYC(stage)
                 },
                 navigateToPortfolioFdDetailsScreen={id->
                     navController.navigate(Route.FDPortfolioDetailsScreen(id)){
@@ -637,6 +657,11 @@ fun MainAppNavigation(
                 },
                 navigateToProfileSettigns = {
                     navController.navigate(Route.ProfileSettingsScreen){
+                        launchSingleTop=true
+                    }
+                },
+                navigateToTransactionHistory = {
+                    navController.navigate(Route.TransactionHistory){
                         launchSingleTop=true
                     }
                 },
@@ -882,9 +907,20 @@ fun MainAppNavigation(
                             ){}
                         }
                         ProfileSettingEffect.NavigateToChangePin -> {
-                            navController.navigate(
-                                Route.EnterPin(EnterPinPurpose.CHANGE_PIN)
-                            ) {
+                            if (prefs.isMpinSetup()) {
+                                navController.navigate(
+                                    Route.EnterPin(EnterPinPurpose.CHANGE_PIN)
+                                ) {
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                navController.navigate(Route.ChangePin) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        }
+                        ProfileSettingEffect.NavigateToBiometricLogin -> {
+                            navController.navigate(Route.BiometricLogin) {
                                 launchSingleTop = true
                             }
                         }
@@ -932,16 +968,33 @@ fun MainAppNavigation(
             )
         }
 
+        composable<Route.TransactionHistory> {
+            val vm: TransactionHistoryViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        TransactionHistoryEffect.NavigateBack -> navController.popBackStack()
+                    }
+                }
+            }
+
+            TransactionHistoryScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
         //Portfolio
 
         composable<Route.ExistingFundScreen> {
             ExistingFundScreenRoot(
                 onBack = { navController.popBackStack() },
-                onFundClick = { id, folio ->
-                    navController.navigate(Route.MutualFundDetails(id, folio)) {
-                        launchSingleTop = true
-                    }
-                },
+                // The buy screen is keyed on an ISIN and has no folio, and the portfolio
+                // endpoints carry neither — so a top-up has nowhere to go while the details
+                // screen is off-limits.
+                onFundClick = { _, _ -> },
             )
         }
 
@@ -1024,11 +1077,8 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
-                onTopUp = {prod_id, actualFolio->
-                    navController.navigate(Route.MutualFundDetails(id=prod_id, folioId = actualFolio)){
-                        launchSingleTop=true
-                    }
-                },
+                // See ExistingFundScreen: a folio top-up has no destination for now.
+                onTopUp = { _, _ -> },
             )
         }
 
@@ -1146,6 +1196,34 @@ fun MainAppNavigation(
             )
         }
 
+    }
+}
+
+/** Tapping a fund anywhere in the app opens the buy screen. */
+private fun NavHostController.openFund(fund: MutualFundDomain) {
+    openFund(
+        mfProductId = fund.id,
+        isin = fund.isin.orEmpty(),
+        fundName = fund.name,
+        fundSubtitle = fund.purchaseSubtitle
+    )
+}
+
+private fun NavHostController.openFund(
+    mfProductId: String,
+    isin: String,
+    fundName: String,
+    fundSubtitle: String
+) {
+    navigate(
+        Route.FundPurchase(
+            mfProductId = mfProductId,
+            isin = isin,
+            fundName = fundName,
+            fundSubtitle = fundSubtitle
+        )
+    ) {
+        launchSingleTop = true
     }
 }
 

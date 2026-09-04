@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,12 +29,17 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.change_pin_instruction
 import jantanivesh.shared.generated.resources.change_pin_screen_title
 import jantanivesh.shared.generated.resources.confirm_new_pin
+import jantanivesh.shared.generated.resources.enable_mpin_verification
+import jantanivesh.shared.generated.resources.enable_mpin_verification_subtitle
 import jantanivesh.shared.generated.resources.hide_pin
 import jantanivesh.shared.generated.resources.ic_eye
 import jantanivesh.shared.generated.resources.new_pin
 import jantanivesh.shared.generated.resources.pin_length_hint
 import jantanivesh.shared.generated.resources.pins_do_not_match
 import jantanivesh.shared.generated.resources.save_changes
+import jantanivesh.shared.generated.resources.setup_pin_instruction
+import jantanivesh.shared.generated.resources.setup_pin_screen_title
+import jantanivesh.shared.generated.resources.setup_your_security_pin
 import jantanivesh.shared.generated.resources.show_pin
 import jantanivesh.shared.generated.resources.update_your_security_pin
 import org.jetbrains.compose.resources.painterResource
@@ -48,6 +55,7 @@ import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.ChangePin
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ToggleSwitch
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 
 /**
@@ -64,7 +72,6 @@ fun ChangePinScreen(
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
-                .padding(padding)
                 .clearFocusOnTap()
                 .padding(horizontal = Spacing.dp16),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16),
@@ -73,7 +80,11 @@ fun ChangePinScreen(
 
             item {
                 BackHeader(
-                    title = "Change PIN/ " + stringResource(Res.string.change_pin_screen_title),
+                    title = if (state.mpinSetup) {
+                        "Change PIN/ " + stringResource(Res.string.change_pin_screen_title)
+                    } else {
+                        "Setup PIN/ " + stringResource(Res.string.setup_pin_screen_title)
+                    },
                     onBack = { onEvent(ChangePinEvent.OnBackClicked) }
                 )
             }
@@ -81,15 +92,25 @@ fun ChangePinScreen(
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
-                        text = "Update your security PIN/ " +
-                            stringResource(Res.string.update_your_security_pin),
+                        text = if (state.mpinSetup) {
+                            "Update your security PIN/ " +
+                                stringResource(Res.string.update_your_security_pin)
+                        } else {
+                            "Setup your security PIN/ " +
+                                stringResource(Res.string.setup_your_security_pin)
+                        },
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
                     Text(
-                        text = "Please enter and confirm your new 4-digit PIN./ " +
-                            stringResource(Res.string.change_pin_instruction),
+                        text = if (state.mpinSetup) {
+                            "Please enter and confirm your new 4-digit PIN./ " +
+                                stringResource(Res.string.change_pin_instruction)
+                        } else {
+                            "Please enter and confirm your 4-digit security PIN./ " +
+                                stringResource(Res.string.setup_pin_instruction)
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = GreyText
                     )
@@ -122,6 +143,45 @@ fun ChangePinScreen(
                     },
                     isError = state.pinsMismatch
                 )
+            }
+
+            if (state.mpinSetup) {
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = profileDividerColor.copy(alpha = 0.2f)
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = Spacing.dp4),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Enable MPIN Verification/ " +
+                                        stringResource(Res.string.enable_mpin_verification),
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                )
+                                Text(
+                                    text = "Ask for PIN every time you open the app/ " +
+                                        stringResource(Res.string.enable_mpin_verification_subtitle),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = GreyText
+                                )
+                            }
+                            ToggleSwitch(
+                                checked = state.mpinEnabled,
+                                onCheckedChange = { onEvent(ChangePinEvent.OnMpinToggleChanged(it)) },
+                            )
+                        }
+                    }
+                }
             }
 
             item {
@@ -196,7 +256,7 @@ private fun PinField(
 fun ChangePinScreenPreview() {
     JantaNiveshTheme {
         ChangePinScreen(
-            state = ChangePinUiState(newPin = "1234", confirmPin = "12"),
+            state = ChangePinUiState(newPin = "1234", confirmPin = "12", mpinSetup = true),
             onEvent = {}
         )
     }

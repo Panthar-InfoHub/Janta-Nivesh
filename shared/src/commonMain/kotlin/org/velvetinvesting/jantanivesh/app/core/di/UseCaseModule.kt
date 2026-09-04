@@ -72,6 +72,9 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.Ge
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPendingOrdersUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.InvestMoreLumpsumUseCase
+import org.velvetinvesting.jantanivesh.app.features.profile.domain.usecase.GetNotificationsUseCase
+import org.velvetinvesting.jantanivesh.app.features.profile.domain.usecase.GetTransactionsUseCase
+import org.velvetinvesting.jantanivesh.app.features.profile.domain.usecase.MarkNotificationsAsReadUseCase
 
 val useCaseModule = module {
     factory { LoginWithNumberUseCase(get()) }
@@ -143,6 +146,9 @@ val useCaseModule = module {
 
     // Goals UseCases
     factory { GetPortfolioUseCase(get()) }
+    factory { GetNotificationsUseCase(get()) }
+    factory { GetTransactionsUseCase(get()) }
+    factory { MarkNotificationsAsReadUseCase(get()) }
 
     // Portfolio UseCases
     factory { GetPortfolioUseCase(get()) }
