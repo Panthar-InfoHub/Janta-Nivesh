@@ -551,4 +551,19 @@
     <string name="instant_access">Instant Access</string>
     <string name="instant_access_detail">Skip the PIN typing and log in instantly.</string>
     <string name="biometric_disable_note">If you disable biometric login, you will need to enter your PIN manually each time you open the app.</string>
+    <string name="redeem_otp_title">Confirm your redemption</string>
+    <string name="cancel_sip_title">Why are you cancelling?</string>
+    <string name="cancel_sip_subtitle">Pick a reason to cancel this SIP. This cannot be undone.</string>
+    <string name="cancel_sip_confirm">Cancel SIP</string>
+    <string name="cancel_sip_keep">Keep it running</string>
+    <string name="cancel_reason_amount_not_available">Funds not available</string>
+    <string name="cancel_reason_returns_not_as_expected">Returns not as expected</string>
+    <string name="cancel_reason_amc_support">AMC support not satisfactory</string>
+    <string name="cancel_reason_exit_load">Exit load not as expected</string>
+    <string name="cancel_reason_switch_scheme">Switching to another scheme</string>
+    <string name="cancel_reason_fund_manager_changed">Fund manager changed</string>
+    <string name="cancel_reason_goal_complete">Investment goal achieved</string>
+    <string name="cancel_reason_mandate_not_ready">Mandate not ready</string>
+    <string name="cancel_reason_invest_later">Want to invest later</string>
+    <string name="cancel_reason_customer_support">Customer support not satisfactory</string>
 </resources>

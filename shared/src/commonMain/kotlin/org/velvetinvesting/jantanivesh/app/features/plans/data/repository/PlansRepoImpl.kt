@@ -21,6 +21,7 @@ import org.velvetinvesting.jantanivesh.app.features.plans.data.model.CreatePurch
 import org.velvetinvesting.jantanivesh.app.features.plans.data.model.PurchasePlanListResponseDto
 import org.velvetinvesting.jantanivesh.app.features.plans.data.model.PurchasePlanResponseDto
 import org.velvetinvesting.jantanivesh.app.features.plans.data.model.SchemePlanResponseDto
+import org.velvetinvesting.jantanivesh.app.features.plans.data.model.CancelPurchasePlanBody
 import org.velvetinvesting.jantanivesh.app.features.plans.data.model.VerifyOtpBody
 import org.velvetinvesting.jantanivesh.app.features.plans.data.model.toDomain
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.MandateOption
@@ -83,6 +84,17 @@ class PlansRepoImpl(
                         type = ErrorType.SERVER
                     )
                 )
+        }
+    }
+
+    override suspend fun cancelPurchasePlan(
+        planId: String,
+        cancellationCode: String
+    ): NetworkResponse<Unit, ErrorDomain> {
+        return safeUnitRequest {
+            client.post(getUrl("/mf/purchase-plan/$planId/cancel")) {
+                setBody(CancelPurchasePlanBody(cancellation_code = cancellationCode))
+            }
         }
     }
 

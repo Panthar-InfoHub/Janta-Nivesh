@@ -32,6 +32,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateC
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserReturnLauncher
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimDoubleTo
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.ExploreFdScreen
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.FdDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.compose.SetInvestmentDetailsScreen
@@ -41,16 +42,6 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEf
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEffect
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.FundPurchaseScreen
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.PurchaseSuccessScreen
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseEffect
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.SetupAutopayScreen
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEvent
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.FinancialGoalScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.MapSchemesScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.ProjectedImpactScreen
@@ -62,28 +53,46 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.Projecte
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.GeneralInsuranceScreen
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.HealthInsuranceScreen
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.RequestCallbackScreen
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.TermInsuranceScreen
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackViewModel
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundItemDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.AllBundlesScreen
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.BundleResultScreenRoot
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.CategoryMutualFundScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.InvestmentMethodScreen
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundItemDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundDetailsScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundSearchScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.SetupAutopayScreen
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEvent
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.FundPurchaseScreen
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.PurchaseSuccessScreen
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseEffect
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.CancelSIPConfirmationScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.ExistingFundLumpSumScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.ExistingFundScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.FDPortfolioDetailsScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.FolioFundMFScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.MFPortfolioDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.RedeemOtpScreen
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.RedeemScreen
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemEffect
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemHolding
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemOtpEffect
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemOtpViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.NotificationScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.PrivacyPolicyScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileLanguageScreen
@@ -562,8 +571,10 @@ fun MainAppNavigation(
         //Bottom Navigation
         composable<Route.BottomNav> {
             BottomNavigation(
-                navigateToSIPDetailsScreen = {
-                    navController.navigate(Route.FolioFundScreen(it.folio, it.actualFolio)) {
+                navigateToSIPDetailsScreen = { holding: MutualFundPortfolioDomain ->
+                    // Straight to the order details: the portfolio already carries every figure
+                    // that screen shows, so the folio listing in between had nothing to add.
+                    navController.navigate(holding.toOrderDetailsRoute()) {
                         launchSingleTop = true
                     }
                 },
@@ -1064,7 +1075,7 @@ fun MainAppNavigation(
                         isSip = it.isSip,
                         startDate = it.startDate,
                         returnPercentage = it.returnPercentage,
-                        returnAmount = it.`return`.toInt(),
+                        returnAmount = it.`return`,
                         xirr = it.xirr,
                         currentNav = it.currentNav,
                         avgNav = it.avgNav,
@@ -1084,26 +1095,87 @@ fun MainAppNavigation(
 
         composable<Route.SIPPortfolioDetails> {
             val data = it.toRoute<Route.SIPPortfolioDetails>()
-            val sipWebViewReturned by it.savedStateHandle
-                .getStateFlow(SIP_DETAILS_WEBVIEW_RESULT, false)
-                .collectAsStateWithLifecycle()
             MFPortfolioDetailsScreen(
                 onBackClick = { navController.popBackStack() },
                 data = data,
-                onLaunchWebView = { url ->
+                onRedeemClick = {
                     navController.navigate(
-                        Route.WebViewScreen(
-                            url = url,
-                            exitUrlPatterns = emptyList(),
-                            title = "Withdraw Fund",
-                            completionRouteKey = "sip_details"
+                        Route.Redeem(
+                            holdingId = data.holdingId,
+                            scheme = data.title,
+                            folioNumber = data.actualFolio.ifBlank { data.folio },
+                            availableUnits = data.balanceUnits,
+                            currentValue = data.currentValue
+                                .takeIf { value -> value != 0.0 }
+                                ?: (data.amount + data.returnAmount),
+                            isSip = data.isSip
                         )
+                    ) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        composable<Route.Redeem> { entry ->
+            val route = entry.toRoute<Route.Redeem>()
+            val vm: RedeemViewModel = koinViewModel {
+                parametersOf(
+                    RedeemHolding(
+                        holdingId = route.holdingId,
+                        scheme = route.scheme,
+                        folioNumber = route.folioNumber,
+                        availableUnits = route.availableUnits,
+                        currentValue = route.currentValue,
+                        isSip = route.isSip
                     )
-                },
-                webViewReturned = sipWebViewReturned,
-                onWebViewConsumed = {
-                    it.savedStateHandle[SIP_DETAILS_WEBVIEW_RESULT] = false
-                },
+                )
+            }
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        is RedeemEffect.NavigateToOtp -> navController.navigate(
+                            Route.RedeemOtp(effect.redemptionId)
+                        ) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+            }
+
+            RedeemScreen(
+                state = state,
+                handleEvent = vm::handleEvent,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<Route.RedeemOtp> { entry ->
+            val route = entry.toRoute<Route.RedeemOtp>()
+            val vm: RedeemOtpViewModel = koinViewModel {
+                parametersOf(route.redemptionId)
+            }
+            val otpState by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        RedeemOtpEffect.RedemptionConfirmed -> {
+                            // The holding the user just redeemed from is stale, so the portfolio
+                            // reloads as they land back on it.
+                            AppEventsController.sendPortfolioRefreshEvent()
+                            navController.popBackStack(Route.BottomNav, inclusive = false)
+                        }
+                    }
+                }
+            }
+
+            RedeemOtpScreen(
+                state = otpState,
+                handleEvent = vm::handleEvent,
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -1198,6 +1270,33 @@ fun MainAppNavigation(
 
     }
 }
+
+/**
+ * A portfolio holding as the order-details route. Every figure the screen shows comes from here,
+ * which is why that screen has no call of its own.
+ */
+private fun MutualFundPortfolioDomain.toOrderDetailsRoute() = Route.SIPPortfolioDetails(
+    id = schemeId,
+    holdingId = id,
+    title = title,
+    category = category,
+    amount = amount,
+    isSip = isSip,
+    // Not on the portfolio payload; the screen no longer shows either.
+    startDate = "",
+    returnPercentage = returnPercentage,
+    returnAmount = returnAmount,
+    xirr = xirr.toString(),
+    currentNav = currentNav.trimDoubleTo(3),
+    avgNav = avgNav.trimDoubleTo(3),
+    folio = folio,
+    balanceUnits = balanceUnits,
+    img_url = icon,
+    orderId = "",
+    actualFolio = actualFolio,
+    currentValue = currentValue,
+    status = if (isSip) "ACTIVE" else "COMPLETED"
+)
 
 /** Tapping a fund anywhere in the app opens the buy screen. */
 private fun NavHostController.openFund(fund: MutualFundDomain) {

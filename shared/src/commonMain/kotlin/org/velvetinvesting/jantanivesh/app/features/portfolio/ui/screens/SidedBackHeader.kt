@@ -48,7 +48,7 @@ internal fun SidedBackHeader(
         }
         Text(
             text = heading,
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.headlineSmall,
             color = Primary,
             modifier = Modifier.weight(1f)
         )

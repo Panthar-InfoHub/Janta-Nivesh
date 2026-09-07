@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.forward
-import jantanivesh.shared.generated.resources.profile_clock
 import jantanivesh.shared.generated.resources.profile_contact_us
 import jantanivesh.shared.generated.resources.profile_help
 import jantanivesh.shared.generated.resources.profile_kyc_status
@@ -215,19 +214,19 @@ fun ProfileIntroScreen(
                                 )
                             )
                     ) {
-                        RowItem(
-                            icon = Res.drawable.profile_clock,
-                            title = "Transaction History",
-                            onCLick = {
-                                onEvent(
-                                    ProfileEvent.OnTransactionHistoryClicked
-                                )
-                            })
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = InsuranceIconBg.copy(0.2f),
-                            modifier = Modifier.padding(horizontal = 24.dp)
-                        )
+//                        RowItem(
+//                            icon = Res.drawable.profile_clock,
+//                            title = "Transaction History",
+//                            onCLick = {
+//                                onEvent(
+//                                    ProfileEvent.OnTransactionHistoryClicked
+//                                )
+//                            })
+//                        HorizontalDivider(
+//                            thickness = 1.dp,
+//                            color = InsuranceIconBg.copy(0.2f),
+//                            modifier = Modifier.padding(horizontal = 24.dp)
+//                        )
                         RowItemText(
                             Res.drawable.profile_kyc_status,
                             title = "KYC Status",

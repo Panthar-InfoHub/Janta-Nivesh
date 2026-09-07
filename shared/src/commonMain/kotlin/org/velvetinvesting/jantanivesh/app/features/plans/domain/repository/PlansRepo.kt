@@ -34,6 +34,15 @@ interface PlansRepo {
     /** Reads back a single plan by its gateway id, after creation and before confirming it. */
     suspend fun getPurchasePlan(planId: String): NetworkResponse<PurchasePlan, ErrorDomain>
 
+    /**
+     * Stops a running SIP. The gateway requires one of its own cancellation codes rather than
+     * free text, so the caller picks from `SipCancellationReason`.
+     */
+    suspend fun cancelPurchasePlan(
+        planId: String,
+        cancellationCode: String
+    ): NetworkResponse<Unit, ErrorDomain>
+
     suspend fun requestPurchasePlanOtp(planId: String): NetworkResponse<Unit, ErrorDomain>
 
     suspend fun verifyPurchasePlanOtp(

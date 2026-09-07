@@ -34,10 +34,8 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,7 +60,6 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.sharad.velvetinvestment.presentation.portfolio.models.SelectedPortfolio
 import org.sharad.velvetinvestment.presentation.portfolio.models.label
-import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
@@ -100,7 +97,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.Port
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDashboardDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.TotalInvestmentsDomain
-import jantanivesh.shared.generated.resources.progress_icon
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
 import kotlin.math.abs
 
 @Composable
@@ -120,7 +117,7 @@ fun PortfolioScreenMain(
     val isExportingPortfolio by viewModel.isExportingPortfolio.collectAsStateWithLifecycle()
 
     val pendingOrders by viewModel.pendingOrders.collectAsStateWithLifecycle()
-    val pagerState = rememberPagerState(pageCount = { 4 })
+    val pagerState = rememberPagerState(pageCount = { SelectedPortfolio.tabs.size })
 
     Box(
         modifier=Modifier.fillMaxSize(),
@@ -227,12 +224,19 @@ fun PortfolioScreen(
                         fixedDeposits = portfolioData.fixedDeposits,
                         onSeeAllMF = {
                             changeTab(SelectedPortfolio.MutualFunds)
-                            scope.launch { pagerState.animateScrollToPage(1) }
+                            scope.launch {
+                                pagerState.animateScrollToPage(
+                                    SelectedPortfolio.tabs.indexOf(SelectedPortfolio.MutualFunds)
+                                )
+                            }
                         },
                         onSeeAllFD = {
                             changeTab(SelectedPortfolio.FixedDeposits)
-                            scope.launch { pagerState.animateScrollToPage(2) }
-
+                            scope.launch {
+                                pagerState.animateScrollToPage(
+                                    SelectedPortfolio.tabs.indexOf(SelectedPortfolio.FixedDeposits)
+                                )
+                            }
                         },
                         onSIPClick = onSIPClick,
                         onFDClick = onFDClick,
@@ -256,14 +260,16 @@ fun PortfolioScreen(
                         onCancelPendingOrder = onCancelPendingOrder
                     )
                 }
+                // Active SIP has no data on this endpoint yet — restore this page, and the tab
+                // in SelectedPortfolio.tabs, together.
+//                2-> {
+//                    ActiveSipPortfolio(
+//                        activeSip = portfolioData.activeSips,
+//                        reload = reload,
+//                        onSipClick = { /* Handle SIP click if needed */ }
+//                    )
+//                }
                 2-> {
-                    ActiveSipPortfolio(
-                        activeSip = portfolioData.activeSips,
-                        reload = reload,
-                        onSipClick = { /* Handle SIP click if needed */ }
-                    )
-                }
-                3-> {
                     FixedDepositPortfolio(
                         fixedDeposits = portfolioData.fixedDeposits,
                         onFDClick = onFDClick,
@@ -277,6 +283,10 @@ fun PortfolioScreen(
 
 }
 
+/*
+ * The active-SIP tab, parked until `GET /user/portfolio` reports active SIPs. Uncomment
+ * alongside SelectedPortfolio.ActiveSIP and the pager page that used it.
+ *
 @Composable
 fun ActiveSipPortfolio(
     activeSip: ActiveSipDomain,
@@ -448,6 +458,7 @@ fun ActiveSipCard(
         }
     }
 }
+ */
 
 @Composable
 fun DashboardPortfolio(
@@ -542,16 +553,16 @@ fun MutualFundPortfolio(
                     )
                 }
 
-                item {
-                    PdfReportsRow(
-                        onDownloadCapitalReport = onDownloadCapitalReport,
-                        onDownloadTaxReport = onDownloadTaxReport,
-                        onDownloadPortfolioReport=onDownloadPortfolioReport,
-                        isExportingPortfolio= isExportingPortfolio,
-                        isExportingCapital = isExportingCapital,
-                        isExportingTax = isExportingTax
-                    )
-                }
+//                item {
+//                    PdfReportsRow(
+//                        onDownloadCapitalReport = onDownloadCapitalReport,
+//                        onDownloadTaxReport = onDownloadTaxReport,
+//                        onDownloadPortfolioReport=onDownloadPortfolioReport,
+//                        isExportingPortfolio= isExportingPortfolio,
+//                        isExportingCapital = isExportingCapital,
+//                        isExportingTax = isExportingTax
+//                    )
+//                }
 
                 if (mutualFund.isNotEmpty()){ item { BarHeader(title = "Mutual Funds") } }
                 items(mutualFund, key = { it.folio}) { item ->
@@ -1060,6 +1071,7 @@ fun MutualFundPortfolioPreview() {
     }
 }
 
+/*
 @Preview(showBackground = true, backgroundColor = 0xffffff)
 @Composable
 fun ActiveSipPortfolioPreview() {
@@ -1071,6 +1083,7 @@ fun ActiveSipPortfolioPreview() {
         )
     }
 }
+*/
 
 @Preview(showBackground = true, backgroundColor = 0xffffff)
 @Composable

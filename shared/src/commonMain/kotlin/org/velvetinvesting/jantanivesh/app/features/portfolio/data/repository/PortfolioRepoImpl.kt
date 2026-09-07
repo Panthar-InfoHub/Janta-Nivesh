@@ -10,6 +10,7 @@ import org.velvetinvesting.jantanivesh.app.core.networking.ErrorType
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.networking.getUrl
 import org.velvetinvesting.jantanivesh.app.core.networking.safeRequest
+import org.velvetinvesting.jantanivesh.app.core.networking.safeUnitRequest
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.mapper.toDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.cancelorder.CancelOrderRequestDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.cancelorder.CancelOrderResponseDto
@@ -21,10 +22,16 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.fdredir
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.investmore.InvestMoreLumpsumResponseDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.pendingorders.PendingOrdersDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.portfolio.FolioFundsDto
-import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.portfolio.UserPortFolioDto
+import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redemption.CreateRedemptionByAmountBody
+import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redemption.CreateRedemptionByUnitsBody
+import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redemption.CreateRedemptionResponseDto
+import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redemption.RedemptionStatusResponseDto
+import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redemption.VerifyRedemptionOtpBody
+import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.userportfolio.UserPortfolioResponseDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.report.ReportExportDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositTransactionDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FolioFundDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MfRedemption
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PendingOrderDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.repository.PortfolioRepo
@@ -35,7 +42,7 @@ class PortfolioRepoImpl(
 ): PortfolioRepo {
 
     override suspend fun getPortfolio(): NetworkResponse<PortfolioDomain, ErrorDomain> {
-        val response= safeRequest<UserPortFolioDto> {
+        val response= safeRequest<UserPortfolioResponseDto> {
             client.get(getUrl("/user/portfolio"))
         }
 
@@ -201,6 +208,85 @@ class PortfolioRepoImpl(
                 NetworkResponse.Success(Unit)
             }
         }
+    }
+
+    // ── Redemption ───────────────────────────────────────────────────────────────────────────
+
+    override suspend fun createRedemptionByAmount(
+        holdingId: String,
+        amount: Double
+    ): NetworkResponse<MfRedemption, ErrorDomain> {
+        val response = safeRequest<CreateRedemptionResponseDto> {
+            client.post(getUrl("/mf/redemption/")) {
+                setBody(CreateRedemptionByAmountBody(mf_holding_id = holdingId, amount = amount))
+            }
+        }
+        return response.toCreatedRedemption()
+    }
+
+    override suspend fun createRedemptionByUnits(
+        holdingId: String,
+        units: Double
+    ): NetworkResponse<MfRedemption, ErrorDomain> {
+        val response = safeRequest<CreateRedemptionResponseDto> {
+            client.post(getUrl("/mf/redemption/")) {
+                setBody(CreateRedemptionByUnitsBody(mf_holding_id = holdingId, units = units))
+            }
+        }
+        return response.toCreatedRedemption()
+    }
+
+    override suspend fun getRedemption(
+        redemptionId: String
+    ): NetworkResponse<MfRedemption, ErrorDomain> {
+        val response = safeRequest<RedemptionStatusResponseDto> {
+            client.get(getUrl("/mf/redemption/$redemptionId"))
+        }
+
+        return when (response) {
+            is NetworkResponse.Error -> NetworkResponse.Error(response.error)
+
+            is NetworkResponse.Success -> response.data.toDomain()
+                ?.let { NetworkResponse.Success(it) }
+                ?: NetworkResponse.Error(REDEMPTION_NOT_READABLE)
+        }
+    }
+
+    override suspend fun requestRedemptionOtp(
+        redemptionId: String
+    ): NetworkResponse<Unit, ErrorDomain> {
+        return safeUnitRequest {
+            client.post(getUrl("/mf/redemption/$redemptionId/confirm/request-otp"))
+        }
+    }
+
+    override suspend fun verifyRedemptionOtp(
+        redemptionId: String,
+        otp: String
+    ): NetworkResponse<Unit, ErrorDomain> {
+        return safeUnitRequest {
+            client.post(getUrl("/mf/redemption/$redemptionId/confirm/verify-otp")) {
+                setBody(VerifyRedemptionOtpBody(otp = otp))
+            }
+        }
+    }
+
+    /** A create with no `fp_id` cannot be polled or confirmed, so it is not a success. */
+    private fun NetworkResponse<CreateRedemptionResponseDto, ErrorDomain>.toCreatedRedemption():
+            NetworkResponse<MfRedemption, ErrorDomain> = when (this) {
+        is NetworkResponse.Error -> NetworkResponse.Error(error)
+
+        is NetworkResponse.Success -> data.toDomain()
+            ?.let { NetworkResponse.Success(it) }
+            ?: NetworkResponse.Error(REDEMPTION_NOT_READABLE)
+    }
+
+    private companion object {
+        val REDEMPTION_NOT_READABLE = ErrorDomain(
+            code = -1,
+            message = "Could not read the redemption. Please try again.",
+            type = ErrorType.UNKNOWN
+        )
     }
 
 }

@@ -69,8 +69,26 @@ sealed interface Route {
     @Serializable
     data object AddMandate : Route
 
+    /**
+     * The redeem screen. Everything it needs travels on the route — it is reached from the order
+     * details, which already holds the figures, so it loads nothing of its own.
+     */
     @Serializable
-    data object Redeem : Route
+    data class Redeem(
+        val holdingId: String,
+        val scheme: String,
+        val folioNumber: String,
+        val availableUnits: Double,
+        val currentValue: Double,
+        val isSip: Boolean
+    ) : Route
+
+    /**
+     * Confirms a redemption that is already placed with the gateway. [redemptionId] is the
+     * `fp_id` from `POST /mf/redemption/`.
+     */
+    @Serializable
+    data class RedeemOtp(val redemptionId: String) : Route
 
     @Serializable
     data object CategoryMutualFund : Route
@@ -112,16 +130,22 @@ sealed interface Route {
     @Serializable
     data class FolioFundScreen(val folioId: String, val actualFolio: String): Route
 
+    /**
+     * The order-details screen, for a SIP holding and a lumpsum one alike. Everything it renders
+     * rides on the route: it is opened from the portfolio, which already has the numbers.
+     */
     @Serializable
     data class SIPPortfolioDetails(
         val id: Int,
+        /** `mf_holding_id` — what the redemption endpoints are keyed on. */
+        val holdingId: String = "",
         val title: String,
         val category: String,
         val amount: Double,
         val isSip: Boolean,
         val startDate: String,
         val returnPercentage: String,
-        val returnAmount: Int,
+        val returnAmount: Double,
         val xirr: String,
         val currentNav: Double,
         val avgNav: Double,
@@ -129,7 +153,17 @@ sealed interface Route {
         val balanceUnits: Double,
         val img_url: String? = "",
         val orderId: String,
-        val actualFolio: String
+        val actualFolio: String,
+        /** Falls back to invested + return when the caller has no separate figure. */
+        val currentValue: Double = 0.0,
+        /**
+         * Today's movement. The portfolio payload reports it for the whole mutual-fund book but
+         * not per holding, so these read zero until it does.
+         */
+        val dayReturn: Double = 0.0,
+        val dayReturnPercent: Double = 0.0,
+        /** The badge on the header card. */
+        val status: String = "ACTIVE"
     ):Route
 
     @Serializable

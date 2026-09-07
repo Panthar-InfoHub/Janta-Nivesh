@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -139,7 +140,7 @@ fun OtpVerificationScreen(
  */
 @Composable
 fun ColumnScope.OtpSentToSubtitle(
-    destination: String,
+    destination: String? = null,
     text: String = stringResource(Res.string.verification_code_sent)
 ) {
     Text(
@@ -147,9 +148,13 @@ fun ColumnScope.OtpSentToSubtitle(
         color = GreyText,
         style = MaterialTheme.typography.titleSmall
     )
-    Text(
-        text = destination,
-        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+    destination?.let{
+        Text(
+            text = destination,
+            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+        )
+    }
+    Spacer(
         modifier = Modifier.padding(bottom = Spacing.dp24, top = Spacing.dp4)
     )
 }

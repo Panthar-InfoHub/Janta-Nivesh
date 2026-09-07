@@ -332,4 +332,19 @@
     <string name="instant_access">તાત્કાલિક પ્રવેશ</string>
     <string name="instant_access_detail">પિન ટાઇપ કર્યા વગર તરત લૉગિન કરો</string>
     <string name="biometric_disable_note">જો તમે બાયોમેટ્રિક લૉગિન બંધ કરશો, તો ઍપ ખોલતી વખતે દર વખતે તમારે જાતે પિન દાખલ કરવો પડશે</string>
+    <string name="redeem_otp_title">તમારા રિડેમ્પશનની પુષ્ટિ કરો</string>
+    <string name="cancel_sip_title">તમે શા માટે રદ કરી રહ્યા છો?</string>
+    <string name="cancel_sip_subtitle">આ SIP રદ કરવાનું કારણ પસંદ કરો. આ પાછું લઈ શકાતું નથી.</string>
+    <string name="cancel_sip_confirm">SIP રદ કરો</string>
+    <string name="cancel_sip_keep">તેને ચાલુ રાખો</string>
+    <string name="cancel_reason_amount_not_available">ભંડોળ ઉપલબ્ધ નથી</string>
+    <string name="cancel_reason_returns_not_as_expected">વળતર અપેક્ષા મુજબ નથી</string>
+    <string name="cancel_reason_amc_support">AMC સપોર્ટ સંતોષકારક નથી</string>
+    <string name="cancel_reason_exit_load">એક્ઝિટ લોડ અપેક્ષા મુજબ નથી</string>
+    <string name="cancel_reason_switch_scheme">બીજી યોજનામાં જઈ રહ્યા છીએ</string>
+    <string name="cancel_reason_fund_manager_changed">ફંડ મેનેજર બદલાયા</string>
+    <string name="cancel_reason_goal_complete">રોકાણનું લક્ષ્ય પૂર્ણ થયું</string>
+    <string name="cancel_reason_mandate_not_ready">મેન્ડેટ તૈયાર નથી</string>
+    <string name="cancel_reason_invest_later">પછીથી રોકાણ કરવા માંગું છું</string>
+    <string name="cancel_reason_customer_support">ગ્રાહક સપોર્ટ સંતોષકારક નથી</string>
 </resources>

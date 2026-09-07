@@ -332,4 +332,19 @@
     <string name="instant_access">உடனடி அணுகல்</string>
     <string name="instant_access_detail">பின்னை தட்டச்சு செய்யாமல் உடனடியாக உள்நுழையவும்</string>
     <string name="biometric_disable_note">பயோமெட்ரிக் உள்நுழைவை முடக்கினால், ஒவ்வொரு முறை ஆப்ஸைத் திறக்கும்போதும் நீங்களே பின்னை உள்ளிட வேண்டும்</string>
+    <string name="redeem_otp_title">உங்கள் மீட்பை உறுதிப்படுத்தவும்</string>
+    <string name="cancel_sip_title">நீங்கள் ஏன் ரத்து செய்கிறீர்கள்?</string>
+    <string name="cancel_sip_subtitle">இந்த SIP-ஐ ரத்து செய்வதற்கான காரணத்தைத் தேர்ந்தெடுக்கவும். இதை மாற்ற முடியாது.</string>
+    <string name="cancel_sip_confirm">SIP ரத்து செய்</string>
+    <string name="cancel_sip_keep">இதைத் தொடரவும்</string>
+    <string name="cancel_reason_amount_not_available">நிதி இல்லை</string>
+    <string name="cancel_reason_returns_not_as_expected">வருவாய் எதிர்பார்த்தபடி இல்லை</string>
+    <string name="cancel_reason_amc_support">AMC ஆதரவு திருப்திகரமாக இல்லை</string>
+    <string name="cancel_reason_exit_load">வெளியேறும் கட்டணம் எதிர்பார்த்தபடி இல்லை</string>
+    <string name="cancel_reason_switch_scheme">வேறு திட்டத்திற்கு மாறுகிறேன்</string>
+    <string name="cancel_reason_fund_manager_changed">நிதி மேலாளர் மாறிவிட்டார்</string>
+    <string name="cancel_reason_goal_complete">முதலீட்டு இலக்கு எட்டப்பட்டது</string>
+    <string name="cancel_reason_mandate_not_ready">ஆணை தயாராக இல்லை</string>
+    <string name="cancel_reason_invest_later">பின்னர் முதலீடு செய்ய விரும்புகிறேன்</string>
+    <string name="cancel_reason_customer_support">வாடிக்கையாளர் ஆதரவு திருப்திகரமாக இல்லை</string>
 </resources>

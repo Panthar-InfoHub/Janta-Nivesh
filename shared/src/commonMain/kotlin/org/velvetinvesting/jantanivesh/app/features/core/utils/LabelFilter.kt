@@ -60,6 +60,24 @@ sealed interface MutualFundLabel : LabelFilter {
     ) : MutualFundLabel
 }
 
+/**
+ * The minimum-installment chips. A different `GET /mf/funds` parameter from [MutualFundLabel]
+ * (`amount_type`, not `tag`), so the two can be selected at the same time and the view model
+ * routes a chip tap by which of these it is.
+ */
+sealed interface AmountTypeLabel : LabelFilter {
+
+    data object DailyTen : AmountTypeLabel {
+        override val title = "Daily \u20B910"
+        override val id = MfFilterIds.AMOUNT_DAILY_10
+    }
+
+    data object MonthlyHundred : AmountTypeLabel {
+        override val title = "Monthly \u20B9100"
+        override val id = MfFilterIds.AMOUNT_MONTHLY_100
+    }
+}
+
 sealed interface FDLabel : LabelFilter {
 
     data object PublicBank : FDLabel {

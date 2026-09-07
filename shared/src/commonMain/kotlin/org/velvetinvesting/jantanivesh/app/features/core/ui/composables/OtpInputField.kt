@@ -78,7 +78,7 @@ fun OtpInputField(
 
             Box(
                 modifier = Modifier
-                    .size(Spacing.dp53)
+                    .size(Spacing.dp48)
                     .clip(shape)
                     .border(
                         width = Spacing.dp1,

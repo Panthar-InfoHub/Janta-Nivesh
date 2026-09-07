@@ -75,6 +75,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.InvestmentFilter
+import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.MfFilterIds
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.createInitialInvestmentFilter
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.ReturnYearsRateDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
@@ -102,7 +103,8 @@ fun MutualFundSearchScreenRoot(
     val uiState by viewModel.loadingState.collectAsStateWithLifecycle()
     val selectedYear by viewModel.selectedYear.collectAsStateWithLifecycle()
     val sortedFunds by viewModel.sortedFunds.collectAsStateWithLifecycle()
-    val selectedFilter by viewModel.selectedFilter.collectAsStateWithLifecycle()
+    val selectedChipIds by viewModel.selectedChipIds.collectAsStateWithLifecycle()
+    val customFilter by viewModel.customFilter.collectAsStateWithLifecycle()
     val showFilterScreen by viewModel.showFilterScreen.collectAsStateWithLifecycle()
     val filterState by viewModel.filterState.collectAsStateWithLifecycle()
     val isLoadingNext by viewModel.isLoadingNext.collectAsStateWithLifecycle()
@@ -135,7 +137,8 @@ fun MutualFundSearchScreenRoot(
             uiState = uiState,
             selectedYear = selectedYear,
             sortedFunds = sortedFunds,
-            selectedFilter = selectedFilter,
+            selectedChipIds = selectedChipIds,
+            customFilter = customFilter,
             showFilterScreen = showFilterScreen,
             filterState = filterState,
             searchText = searchText,
@@ -179,7 +182,8 @@ private fun MutualFundSearchScreenContent(
     uiState: LoadingState,
     selectedYear: SelectedReturnRatePeriod,
     sortedFunds: List<MutualFundDomain>,
-    selectedFilter: LabelFilter?,
+    selectedChipIds: Set<String>,
+    customFilter: LabelFilter?,
     showFilterScreen: Boolean,
     filterState: InvestmentFilter,
     searchText: String,
@@ -236,7 +240,8 @@ private fun MutualFundSearchScreenContent(
                                 loadNext = loadNext,
                                 toggleRateYear = toggleRateYear,
                                 selectedYear = selectedYear,
-                                selectedFilter = selectedFilter,
+                                selectedChipIds = selectedChipIds,
+                                customFilter = customFilter,
                                 onFilterSelected = onFilterSelected,
                                 toggleFilterScreen = toggleFilterScreen,
                                 searchText = searchText,
@@ -291,7 +296,8 @@ fun MutualFundSearchScreen(
     hasNextPage: Boolean,
     totalFunds: Int,
     loadNext: () -> Unit,
-    selectedFilter: LabelFilter?,
+    selectedChipIds: Set<String>,
+    customFilter: LabelFilter?,
     onFilterSelected: (LabelFilter) -> Unit,
     toggleFilterScreen: () -> Unit,
     searchText: String,
@@ -321,7 +327,8 @@ fun MutualFundSearchScreen(
         item {
             FundFilterRowMF(
                 filters = defaultFilters,
-                selectedFilter = selectedFilter,
+                selectedChipIds = selectedChipIds,
+                customFilter = customFilter,
                 onFilterSelected = onFilterSelected
             )
         }
@@ -528,33 +535,37 @@ fun YearRow(
 }
 
 /**
- * The tag chips. The tray no longer opens from here — that moved to the search bar — so this row
- * is only the shortcuts, plus the summary chip standing in for a tray selection that no single
- * chip covers.
+ * The filter chips. The tray no longer opens from here — that moved to the search bar — so this
+ * row is the shortcuts alone, plus [customFilter] standing in for a tray selection no chip
+ * covers.
+ *
+ * More than one can be lit: the minimum-installment chips and the fund-type chips drive
+ * different query parameters, so picking one does not clear the other.
  */
 @Composable
 private fun FundFilterRowMF(
     filters: List<LabelFilter>,
-    selectedFilter: LabelFilter?,
+    selectedChipIds: Set<String>,
+    customFilter: LabelFilter?,
     onFilterSelected: (LabelFilter) -> Unit
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-        if (selectedFilter != null && filters.none { it.id == selectedFilter.id }) {
+        if (customFilter != null) {
             item {
                 FilterChip(
-                    title = selectedFilter.title,
+                    title = customFilter.title,
                     isSelected = true,
-                    onClick = { onFilterSelected(selectedFilter) }
+                    onClick = { onFilterSelected(customFilter) }
                 )
             }
         }
         items(filters) { filter ->
             FilterChip(
                 title=filter.title,
-                isSelected = selectedFilter?.id == filter.id,
+                isSelected = filter.id in selectedChipIds,
                 onClick = { onFilterSelected(filter) }
             )
         }
@@ -602,7 +613,8 @@ fun MutualFundSearchScreenPreview() {
                     latestNav = "120.3"
                 )
             ),
-            selectedFilter = null,
+            selectedChipIds = setOf(MfFilterIds.AMOUNT_DAILY_10),
+            customFilter = null,
             showFilterScreen = false,
             filterState = createInitialInvestmentFilter(),
             searchText = "Axis",

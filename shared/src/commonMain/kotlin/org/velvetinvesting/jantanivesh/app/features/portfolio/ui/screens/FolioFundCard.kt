@@ -117,6 +117,13 @@ fun FolioFundCard(fundItem: MutualFundPortfolioDomain, onClick: () -> Unit) {
                         )
                     }
                 }
+                // Same slot as MutualFundsFolioCard: top-aligned at the end of the title row.
+                Text(
+                    text = if (fundItem.isSip) "SIP" else "Lumpsum",
+                    color = titleColor,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.align(Alignment.Top)
+                )
             }
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 20.dp),

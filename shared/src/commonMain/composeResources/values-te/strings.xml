@@ -331,4 +331,19 @@
     <string name="instant_access">తక్షణ ప్రవేశం</string>
     <string name="instant_access_detail">పిన్ టైప్ చేయకుండానే వెంటనే లాగిన్ అవ్వండి</string>
     <string name="biometric_disable_note">మీరు బయోమెట్రిక్ లాగిన్‌ను నిలిపివేస్తే, యాప్ తెరిచిన ప్రతిసారీ మీరే పిన్‌ను నమోదు చేయాల్సి ఉంటుంది</string>
+    <string name="redeem_otp_title">మీ రిడెంప్షన్‌ను నిర్ధారించండి</string>
+    <string name="cancel_sip_title">మీరు ఎందుకు రద్దు చేస్తున్నారు?</string>
+    <string name="cancel_sip_subtitle">ఈ SIPని రద్దు చేయడానికి కారణాన్ని ఎంచుకోండి. దీన్ని రద్దు చేయలేరు.</string>
+    <string name="cancel_sip_confirm">SIP రద్దు చేయండి</string>
+    <string name="cancel_sip_keep">దీన్ని కొనసాగించండి</string>
+    <string name="cancel_reason_amount_not_available">నిధులు అందుబాటులో లేవు</string>
+    <string name="cancel_reason_returns_not_as_expected">రాబడి ఆశించినట్లు లేదు</string>
+    <string name="cancel_reason_amc_support">AMC మద్దతు సంతృప్తికరంగా లేదు</string>
+    <string name="cancel_reason_exit_load">ఎగ్జిట్ లోడ్ ఆశించినట్లు లేదు</string>
+    <string name="cancel_reason_switch_scheme">మరో పథకానికి మారుతున్నాను</string>
+    <string name="cancel_reason_fund_manager_changed">ఫండ్ మేనేజర్ మారారు</string>
+    <string name="cancel_reason_goal_complete">పెట్టుబడి లక్ష్యం చేరుకుంది</string>
+    <string name="cancel_reason_mandate_not_ready">మాండేట్ సిద్ధంగా లేదు</string>
+    <string name="cancel_reason_invest_later">తర్వాత పెట్టుబడి పెట్టాలనుకుంటున్నాను</string>
+    <string name="cancel_reason_customer_support">కస్టమర్ సపోర్ట్ సంతృప్తికరంగా లేదు</string>
 </resources>

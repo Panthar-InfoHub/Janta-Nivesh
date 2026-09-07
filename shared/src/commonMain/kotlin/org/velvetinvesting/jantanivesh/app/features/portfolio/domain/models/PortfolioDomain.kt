@@ -15,7 +15,20 @@ data class MutualFundPortfolioDomain(
     val minSipAmount: Long,
     val minLumpSumAmount: Long,
     val schemeId: Int,
-    val balanceUnits: Double
+    val balanceUnits: Double,
+
+    /**
+     * Whether the holding was built by a SIP. The portfolio payload does not report this yet, so
+     * it reads false until it does — the card's tag is driven by it.
+     */
+    val isSip: Boolean = false,
+    val subCategory: String = "",
+    val xirr: Double = 0.0,
+    val navAsOn: String? = null,
+    /** Every folio rolled into this row; [folio] is the one shown. */
+    val folios: List<String> = emptyList(),
+    val currentNav: Double = 0.0,
+    val avgNav: Double = 0.0
 )
 
 data class FixedDepositPortfolioDomain(
@@ -48,7 +61,14 @@ data class PortfolioAllocationDomain(
 
 data class PortfolioAllocationItemDomain(
     val value: Double,
-    val percent: Double
+    val percent: Double,
+    /** Reported for the mutual-fund slice only; the fixed-deposit slice is value and percent. */
+    val investedAmount: Double = 0.0,
+    val totalReturns: Double = 0.0,
+    val returnPercent: Double = 0.0,
+    val oneDayReturn: Double = 0.0,
+    val oneDayReturnPercent: Double = 0.0,
+    val xirr: Double = 0.0
 )
 
 data class TotalInvestmentsDomain(
@@ -69,7 +89,10 @@ data class MutualFundSummaryDomain(
     val investedAmount: Double,
     val currentValue: Double,
     val returnsAmount: Double,
-    val returnsPercent: Double
+    val returnsPercent: Double,
+    val oneDayReturn: Double = 0.0,
+    val oneDayReturnPercent: Double = 0.0,
+    val xirr: Double = 0.0
 )
 
 data class ActiveSipItemDomain(

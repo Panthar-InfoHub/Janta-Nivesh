@@ -8,6 +8,15 @@ data class VerifyOtpBody(
     val otp: String
 )
 
+/**
+ * `POST /mf/purchase-plan/{id}/cancel`. [cancellation_code] is one of the gateway's fixed codes —
+ * see `SipCancellationReason`, which owns the list and its display copy.
+ */
+@Serializable
+data class CancelPurchasePlanBody(
+    val cancellation_code: String
+)
+
 @Serializable
 data class CreatePurchasePlanBody(
     val scheme: String,

@@ -131,3 +131,15 @@ class GetMandatesUseCase(
         return plansRepo.getMandates()
     }
 }
+
+/** Stops a running SIP, with one of the gateway's cancellation codes as the stated reason. */
+class CancelPurchasePlanUseCase(
+    private val plansRepo: PlansRepo
+) {
+    suspend operator fun invoke(
+        planId: String,
+        cancellationCode: String
+    ): NetworkResponse<Unit, ErrorDomain> {
+        return plansRepo.cancelPurchasePlan(planId, cancellationCode)
+    }
+}

@@ -9,32 +9,30 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelLumpSumOrderUseCase
-import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelSipOrderUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CancelPurchasePlanUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.models.SipCancellationReason
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportSoaReportUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.DownloadPdfByUrlUseCase
-import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.RedemptionInputType
-import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.RedemptionType
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.FullRedemptionRequestDto
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.PartialRedemptionRequestDto
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemFullFundUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemPartialFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.SIPDetailsDomain
 
 sealed interface MFPortfolioSideEffects{
-    data class openRedeemptionUrl(val url: String): MFPortfolioSideEffects
     data object OrderCancelled : MFPortfolioSideEffects
 }
+
+/**
+ * Backs the order-details screen, which renders entirely from its route: all that is left here
+ * is the statement download and cancelling the order. Redeeming moved to its own screen and its
+ * own view model.
+ */
 class MFPortfolioDetailsViewModel(
-    private val partialRedemptionUseCase: RedeemPartialFundUseCase,
-    private val redeemFullFundUseCase: RedeemFullFundUseCase,
     private val soaReportUseCase: ExportSoaReportUseCase,
     private val downloadPdfByUrlUseCase: DownloadPdfByUrlUseCase,
     private val cancelLumpSumOrderUseCase: CancelLumpSumOrderUseCase,
-    private val cancelSipOrderUseCase: CancelSipOrderUseCase
+    private val cancelPurchasePlanUseCase: CancelPurchasePlanUseCase
 ): ViewModel() {
 
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Success)
@@ -46,135 +44,24 @@ class MFPortfolioDetailsViewModel(
     private val _sipDetails = MutableStateFlow<SIPDetailsDomain?>(null)
     val sipDetails: StateFlow<SIPDetailsDomain?> = _sipDetails.asStateFlow()
 
-    private val _showRedemptionSheet = MutableStateFlow(false)
-    val showRedemptionSheet = _showRedemptionSheet.asStateFlow()
-
-    private val _selectedRedemptionType = MutableStateFlow(RedemptionType.PARTIAL)
-    val selectedRedemptionType = _selectedRedemptionType.asStateFlow()
-
-    private val _selectedInputType = MutableStateFlow(RedemptionInputType.UNITS)
-    val selectedInputType = _selectedInputType.asStateFlow()
-
-    private val _redemptionUnits = MutableStateFlow("")
-    val redemptionUnits = _redemptionUnits.asStateFlow()
-
-    private val _redemptionAmount = MutableStateFlow("")
-    val redemptionAmount = _redemptionAmount.asStateFlow()
-
+    /** Raised while a cancellation is in flight. */
     private val _isSubmitting = MutableStateFlow(false)
     val isSubmitting = _isSubmitting.asStateFlow()
+
+    /**
+     * The reason sheet. The gateway will not take a cancellation without one of its codes, so
+     * the reason is collected before the request rather than after a bare "are you sure?".
+     */
+    private val _showCancelSheet = MutableStateFlow(false)
+    val showCancelSheet = _showCancelSheet.asStateFlow()
+
+    private val _selectedCancelReason = MutableStateFlow<SipCancellationReason?>(null)
+    val selectedCancelReason = _selectedCancelReason.asStateFlow()
 
     private val _soaDownloading = MutableStateFlow(false)
     val soaDownloading = _soaDownloading.asStateFlow()
 
 
-    fun onRedemptionTypeChange(type: RedemptionType) {
-        _selectedRedemptionType.value = type
-    }
-
-    fun onInputTypeChange(type: RedemptionInputType) {
-        _selectedInputType.value = type
-    }
-
-    fun onUnitsChange(units: String) {
-        _redemptionUnits.value = units
-    }
-
-    fun onAmountChange(amount: String) {
-        _redemptionAmount.value = amount
-    }
-
-    fun onDismissRedemptionSheet() {
-        _showRedemptionSheet.value = false
-    }
-
-    fun onShowRedemptionSheet() {
-        _showRedemptionSheet.value = true
-    }
-
-    fun submitRedemption(
-        schemeId: Int,
-        folioNo: String,
-    ) {
-        viewModelScope.launch {
-            _isSubmitting.value = true
-           when(_selectedRedemptionType.value){
-               RedemptionType.FULL ->{
-                   redeemFullFundUseCase(
-                       data = FullRedemptionRequestDto(
-                           schemeId = schemeId,
-                           folioNo = folioNo
-                       )
-                   )
-                       .onSuccess {url->
-                           _sideEffects.emit(MFPortfolioSideEffects.openRedeemptionUrl(url))
-                       }
-                       .onError {
-                           SnackBarController.showError(it.message)
-                       }
-               }
-               RedemptionType.PARTIAL -> {
-
-                   val units = _redemptionUnits.value.toDoubleOrNull()
-                   val amount = _redemptionAmount.value.toIntOrNull()
-
-                   when (_selectedInputType.value) {
-
-                       RedemptionInputType.UNITS -> {
-                           if (units == null) {
-                               SnackBarController.showError(
-                                   "Enter valid redemption units"
-                               )
-                               _isSubmitting.value = false
-                               return@launch
-                           }
-                       }
-
-                       RedemptionInputType.AMOUNT -> {
-                           if (amount == null) {
-                               SnackBarController.showError(
-                                   "Enter valid redemption amount"
-                               )
-                               _isSubmitting.value = false
-                               return@launch
-                           }
-                       }
-                   }
-
-                   partialRedemptionUseCase(
-                       data = PartialRedemptionRequestDto(
-                           schemeId = schemeId,
-                           folioNo = folioNo,
-                           redemptionUnits = if (
-                               _selectedInputType.value == RedemptionInputType.UNITS
-                           ) {
-                               units
-                           } else {
-                               null
-                           },
-                           redemptionAmount = if (
-                               _selectedInputType.value == RedemptionInputType.AMOUNT
-                           ) {
-                               amount
-                           } else {
-                               null
-                           },
-                       )
-                   )
-                       .onSuccess { url ->
-                           _sideEffects.emit(
-                               MFPortfolioSideEffects.openRedeemptionUrl(url)
-                           )
-                       }
-                       .onError {
-                           SnackBarController.showError(it.message)
-                       }
-               }
-           }
-            _isSubmitting.value = false
-            _showRedemptionSheet.value = false
-        }
-    }
     fun downloadSOA(
         folio: String,
     ){
@@ -222,16 +109,36 @@ class MFPortfolioDetailsViewModel(
         }
     }
 
-    fun cancelSipOrder(xsipRegNo: String) {
+    fun onShowCancelSheet() {
+        _showCancelSheet.value = true
+    }
+
+    fun onDismissCancelSheet() {
+        _showCancelSheet.value = false
+        // Reopening starts from nothing selected: a reason carried over from a sheet the user
+        // backed out of is not a choice they made.
+        _selectedCancelReason.value = null
+    }
+
+    fun onCancelReasonSelected(reason: SipCancellationReason) {
+        _selectedCancelReason.value = reason
+    }
+
+    fun cancelSipPlan(planId: String) {
+        val reason = _selectedCancelReason.value ?: return
+
         viewModelScope.launch {
             _isSubmitting.value = true
-            cancelSipOrderUseCase(xsipRegNo)
+            cancelPurchasePlanUseCase(planId, reason.code)
                 .onSuccess {
                     _isSubmitting.value = false
+                    _showCancelSheet.value = false
+                    _selectedCancelReason.value = null
                     SnackBarController.showSuccess("SIP cancelled successfully")
                     _sideEffects.emit(MFPortfolioSideEffects.OrderCancelled)
                 }
                 .onError {
+                    // The sheet stays open on failure so the choice is not lost on a retry.
                     _isSubmitting.value = false
                     SnackBarController.showError(it.message)
                 }

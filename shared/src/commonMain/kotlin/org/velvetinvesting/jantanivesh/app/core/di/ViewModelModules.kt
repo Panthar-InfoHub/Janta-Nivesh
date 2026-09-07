@@ -38,7 +38,9 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Ver
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerViewModel
 import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayViewModel
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.RedeemViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemHolding
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemOtpViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.ExistingFundsLumpSumViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FDPortFolioDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FolioFundsMFViewModel
@@ -102,7 +104,8 @@ val viewModelModule = module {
             verifyMfPurchaseOtp = get()
         )
     }
-    viewModel { RedeemViewModel(get()) }
+    viewModel { (holding: RedeemHolding) -> RedeemViewModel(holding, get(), get(), get()) }
+    viewModel { (redemptionId: String) -> RedeemOtpViewModel(redemptionId, get(), get(), get(), get()) }
 
     viewModel { AllBundlesViewModel(get()) }
     viewModel { (bundleKey: String) -> BundleResultViewModel(bundleKey, get(), get(), get()) }
@@ -131,7 +134,7 @@ val viewModelModule = module {
     viewModel { (folioId: String) -> FolioFundsMFViewModel(folioId, get()) }
     viewModel { PortfolioScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (fdId: String) -> FDPortFolioDetailsViewModel(get(), get(), fdId) }
-    viewModel { MFPortfolioDetailsViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { MFPortfolioDetailsViewModel(get(), get(), get(), get()) }
     viewModel { ExistingFundsLumpSumViewModel(get(), get()) }
     viewModel { NotificationViewModel(get(),get()) }
 }

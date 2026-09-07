@@ -332,4 +332,19 @@
     <string name="instant_access">তাৎক্ষণিক প্রবেশ</string>
     <string name="instant_access_detail">পিন টাইপ না করেই সঙ্গে সঙ্গে লগইন করুন</string>
     <string name="biometric_disable_note">বায়োমেট্রিক লগইন বন্ধ করলে, অ্যাপ খোলার সময় প্রতিবার আপনাকে নিজে পিন দিতে হবে</string>
+    <string name="redeem_otp_title">আপনার রিডেম্পশন নিশ্চিত করুন</string>
+    <string name="cancel_sip_title">আপনি কেন বাতিল করছেন?</string>
+    <string name="cancel_sip_subtitle">এই SIP বাতিল করার একটি কারণ বেছে নিন। এটি ফেরানো যাবে না।</string>
+    <string name="cancel_sip_confirm">SIP বাতিল করুন</string>
+    <string name="cancel_sip_keep">এটি চালু রাখুন</string>
+    <string name="cancel_reason_amount_not_available">তহবিল উপলব্ধ নেই</string>
+    <string name="cancel_reason_returns_not_as_expected">রিটার্ন প্রত্যাশা অনুযায়ী নয়</string>
+    <string name="cancel_reason_amc_support">AMC সহায়তা সন্তোষজনক নয়</string>
+    <string name="cancel_reason_exit_load">এক্সিট লোড প্রত্যাশা অনুযায়ী নয়</string>
+    <string name="cancel_reason_switch_scheme">অন্য স্কিমে যাচ্ছি</string>
+    <string name="cancel_reason_fund_manager_changed">ফান্ড ম্যানেজার পরিবর্তিত হয়েছে</string>
+    <string name="cancel_reason_goal_complete">বিনিয়োগের লক্ষ্য পূরণ হয়েছে</string>
+    <string name="cancel_reason_mandate_not_ready">ম্যান্ডেট প্রস্তুত নয়</string>
+    <string name="cancel_reason_invest_later">পরে বিনিয়োগ করতে চাই</string>
+    <string name="cancel_reason_customer_support">গ্রাহক সহায়তা সন্তোষজনক নয়</string>
 </resources>

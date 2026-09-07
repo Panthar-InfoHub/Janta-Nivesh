@@ -17,6 +17,7 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AmountTypeLabel
 import org.velvetinvesting.jantanivesh.app.features.core.utils.LabelFilter
 import org.velvetinvesting.jantanivesh.app.features.core.utils.MutualFundLabel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundSearchResultUseCase
@@ -63,8 +64,16 @@ class MutualFundSearchResultViewModel(
     )
     val filterState: StateFlow<InvestmentFilter> = _filterState
 
-    private val _selectedFilter = MutableStateFlow(_filterState.value.toChipLabel())
-    val selectedFilter: StateFlow<LabelFilter?> = _selectedFilter
+    /**
+     * The chips that read as on. Tag and amount type are separate query parameters, so both can
+     * be lit at once — a single "selected filter" could not express that.
+     */
+    private val _selectedChipIds = MutableStateFlow(_filterState.value.toSelectedChipIds())
+    val selectedChipIds: StateFlow<Set<String>> = _selectedChipIds
+
+    /** Stands in for a tray selection no chip covers; null when the chips say it all. */
+    private val _customFilter = MutableStateFlow(_filterState.value.toCustomChipLabel())
+    val customFilter: StateFlow<LabelFilter?> = _customFilter
 
     private val _showFilterScreen = MutableStateFlow(false)
     val showFilterScreen: StateFlow<Boolean> = _showFilterScreen
@@ -103,7 +112,7 @@ class MutualFundSearchResultViewModel(
 
                     currentPage = data.page
                     _hasNextPage.value = data.hasNextPage
-                    _totalFunds.value = data.totalItems
+                    _totalFunds.value = data.items.size
 
                     _mutualFunds.value = data.items
 
@@ -153,24 +162,29 @@ class MutualFundSearchResultViewModel(
     }
 
     /**
-     * A chip tap sets the `tag` filter and leaves the rest of the tray alone — the chips are a
-     * shortcut into one group, not a replacement for the whole selection.
+     * A chip tap sets one group and leaves the rest of the tray alone — the chips are shortcuts
+     * into a single group each, not a replacement for the whole selection. Tapping a lit chip
+     * clears its group.
      */
     fun onFilterSelected(filter: LabelFilter) {
-        if (filter !is MutualFundLabel) return
-
         // Tapping the standing custom chip is how the tray selection is cleared.
         if (filter is MutualFundLabel.CustomLabel) {
             clearFilter()
             return
         }
 
-        val isAlreadySelected = _filterState.value.selectedId(MfFilterIds.TAG) == filter.id
+        val group = when (filter) {
+            is AmountTypeLabel -> MfFilterIds.AMOUNT_TYPE
+            is MutualFundLabel -> MfFilterIds.TAG
+            else -> return
+        }
+
+        val isAlreadySelected = _filterState.value.selectedId(group) == filter.id
 
         _filterState.value = _filterState.value.withSelections(
-            MfFilterIds.TAG to filter.id.takeUnless { isAlreadySelected }
+            group to filter.id.takeUnless { isAlreadySelected }
         )
-        _selectedFilter.value = _filterState.value.toChipLabel()
+        syncChips()
 
         reload()
     }
@@ -195,7 +209,7 @@ class MutualFundSearchResultViewModel(
     fun applyFilter(newFilter: InvestmentFilter) {
 
         _filterState.value = newFilter
-        _selectedFilter.value = newFilter.toChipLabel()
+        syncChips()
 
         reload()
     }
@@ -203,9 +217,14 @@ class MutualFundSearchResultViewModel(
     fun clearFilter() {
 
         _filterState.value = createInitialInvestmentFilter()
-        _selectedFilter.value = null
+        syncChips()
 
         reload()
+    }
+
+    private fun syncChips() {
+        _selectedChipIds.value = _filterState.value.toSelectedChipIds()
+        _customFilter.value = _filterState.value.toCustomChipLabel()
     }
 
     fun toggleFilterScreen() {
@@ -263,24 +282,29 @@ fun InvestmentFilter.withSelections(vararg selections: Pair<String, String?>): I
     )
 }
 
-/**
- * The chip that stands for the current tray state: the tag chip itself when the tag is the only
- * thing selected — so the row highlights it rather than showing a redundant custom chip — and a
- * summary chip otherwise.
- */
-fun InvestmentFilter.toChipLabel(): LabelFilter? {
-    val tag = selectedId(MfFilterIds.TAG)
-    val query = toQuery()
+/** Which chips are lit: the selected tag and the selected amount type, each if there is one. */
+fun InvestmentFilter.toSelectedChipIds(): Set<String> = setOfNotNull(
+    selectedId(MfFilterIds.TAG),
+    selectedId(MfFilterIds.AMOUNT_TYPE)
+)
 
-    if (query.category == null && query.amountType == null) {
-        return defaultFilters.firstOrNull { it.id == tag }
-    }
+/**
+ * Category is the one tray group with no chip of its own, so a category selection is shown as a
+ * summary chip; tapping it clears the tray. Everything else the chips already say.
+ */
+fun InvestmentFilter.toCustomChipLabel(): LabelFilter? {
+    if (toQuery().category == null) return null
 
     return MutualFundLabel.CustomLabel(getActiveFundFilterLabel(), "custom")
 }
 
-/** The chip row, in the order the sections are presented server-side. */
+/**
+ * The chip row. The two minimum-installment chips lead — they are the cheapest way in for a new
+ * investor, and the home screen's micro-SIP cards land on this list already filtered by one.
+ */
 val defaultFilters: List<LabelFilter> = listOf(
+    AmountTypeLabel.DailyTen,
+    AmountTypeLabel.MonthlyHundred,
     MutualFundLabel.Popular,
     MutualFundLabel.LargeCap,
     MutualFundLabel.MidCap,

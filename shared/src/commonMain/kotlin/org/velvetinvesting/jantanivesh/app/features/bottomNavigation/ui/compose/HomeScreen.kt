@@ -490,7 +490,7 @@ private fun StartInvestingSmallCards(
         InvestingCard(
             icon = Res.drawable.icon_callender,
             heading = "Monthly SIP",
-            subHeading = "Invest ₹500/month.",
+            subHeading = "Invest ₹100/month.",
             onClick = onMonthlySipClick,
             modifier = Modifier.weight(1f)
         )

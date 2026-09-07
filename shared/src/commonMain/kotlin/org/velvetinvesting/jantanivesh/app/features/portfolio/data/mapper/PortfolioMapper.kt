@@ -22,6 +22,11 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.Port
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.TotalInvestmentsDomain
 
+/**
+ * Maps the **previous** portfolio payload. Superseded by
+ * [org.velvetinvesting.jantanivesh.app.features.portfolio.data.mapper.toDomain] on
+ * `UserPortfolioResponseDto`, which is what the repository calls now.
+ */
 fun UserPortFolioDto.toDomain(): PortfolioDomain {
 
     val totalInvestments = data.total_investments

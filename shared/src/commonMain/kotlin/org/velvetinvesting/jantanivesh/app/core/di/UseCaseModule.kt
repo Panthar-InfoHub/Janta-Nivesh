@@ -57,6 +57,7 @@ import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetMfP
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetSchemePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.RequestMfPurchaseOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyMfPurchaseOtpUseCase
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CancelPurchasePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.RequestPurchasePlanOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyPurchasePlanOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelLumpSumOrderUseCase
@@ -68,7 +69,11 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.Ex
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportTaxReportUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFDPortfolioByIdUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFDRedirectUrlUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.AwaitMfRedemptionUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CreateMfRedemptionUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFolioFundsUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.RequestMfRedemptionOtpUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.VerifyMfRedemptionOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPendingOrdersUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.InvestMoreLumpsumUseCase
@@ -119,6 +124,7 @@ val useCaseModule = module {
     factory { RequestMfPurchaseOtpUseCase(get()) }
     factory { VerifyMfPurchaseOtpUseCase(get()) }
     factory { GetPurchasePlanUseCase(get()) }
+    factory { CancelPurchasePlanUseCase(get()) }
     factory { RequestPurchasePlanOtpUseCase(get()) }
     factory { VerifyPurchasePlanOtpUseCase(get()) }
 
@@ -153,6 +159,10 @@ val useCaseModule = module {
     // Portfolio UseCases
     factory { GetPortfolioUseCase(get()) }
     factory { GetFolioFundsUseCase(get()) }
+    factory { CreateMfRedemptionUseCase(get()) }
+    factory { AwaitMfRedemptionUseCase(get()) }
+    factory { RequestMfRedemptionOtpUseCase(get()) }
+    factory { VerifyMfRedemptionOtpUseCase(get()) }
     factory { CancelSipOrderUseCase(get()) }
     factory { ExportSoaReportUseCase(get()) }
     factory { ExportTaxReportUseCase(get()) }

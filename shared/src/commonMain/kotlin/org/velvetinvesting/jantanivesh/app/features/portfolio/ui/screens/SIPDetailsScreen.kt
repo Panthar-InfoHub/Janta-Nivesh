@@ -2,7 +2,6 @@ package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,24 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,24 +35,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.SubcomposeAsyncImageContent
-import jantanivesh.shared.generated.resources.Res
-import jantanivesh.shared.generated.resources.document_kyc_icon
-import jantanivesh.shared.generated.resources.download_ic
-import jantanivesh.shared.generated.resources.ic_graph
-import jantanivesh.shared.generated.resources.ic_jagged_arrow
-import jantanivesh.shared.generated.resources.ic_menu
-import jantanivesh.shared.generated.resources.ic_percent
-import jantanivesh.shared.generated.resources.icon_callender
-import jantanivesh.shared.generated.resources.icon_clock
-import jantanivesh.shared.generated.resources.icon_mf
-import jantanivesh.shared.generated.resources.info_icon
-import jantanivesh.shared.generated.resources.rupeesign
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPortfolioDetailsViewModel
-import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPortfolioSideEffects
 import org.velvetinvesting.jantanivesh.app.core.navigation.Route
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -74,6 +50,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.subHeadingMedium
 import org.velvetinvesting.jantanivesh.app.core.theme.titlesStyle
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
 import org.velvetinvesting.jantanivesh.app.core.utils.formatWithCommas
+import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ContinueBackButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
@@ -82,46 +59,32 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFu
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPortfolioDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPortfolioSideEffects
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MFPortfolioDetailsScreen(
     onBackClick: () -> Unit,
     data: Route.SIPPortfolioDetails,
-    onLaunchWebView: (String) -> Unit = {},
-    webViewReturned: Boolean = false,
-    onWebViewConsumed: () -> Unit = {},
+    /** Redeeming is its own screen now, reached with the figures this one already has. */
+    onRedeemClick: () -> Unit,
 ) {
 
     val viewModel: MFPortfolioDetailsViewModel = koinViewModel()
     val screenState by viewModel.loadingState.collectAsStateWithLifecycle()
-    val showRedemptionSheet by viewModel.showRedemptionSheet.collectAsStateWithLifecycle()
-    val selectedRedemptionType by viewModel.selectedRedemptionType.collectAsStateWithLifecycle()
-    val selectedInputType by viewModel.selectedInputType.collectAsStateWithLifecycle()
-    val redemptionUnits by viewModel.redemptionUnits.collectAsStateWithLifecycle()
-    val redemptionAmount by viewModel.redemptionAmount.collectAsStateWithLifecycle()
-    val isSubmitting by viewModel.isSubmitting.collectAsStateWithLifecycle()
     val soaDownloading by viewModel.soaDownloading.collectAsStateWithLifecycle()
-    var showCancelDialog by remember {
-        mutableStateOf(false)
-    }
+    val showCancelSheet by viewModel.showCancelSheet.collectAsStateWithLifecycle()
+    val selectedCancelReason by viewModel.selectedCancelReason.collectAsStateWithLifecycle()
+    val isSubmitting by viewModel.isSubmitting.collectAsStateWithLifecycle()
+    val cancelSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(webViewReturned) {
-        if (webViewReturned) {
-            onWebViewConsumed()
-            AppEventsController.sendPortfolioRefreshEvent()
-            onBackClick()
-        }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect {
             when (it) {
-                is MFPortfolioSideEffects.openRedeemptionUrl -> {
-                    onLaunchWebView(it.url)
-                }
-
                 MFPortfolioSideEffects.OrderCancelled -> {
                     scope.launch {
                         AppEventsController.sendPortfolioRefreshEvent()
@@ -132,61 +95,57 @@ fun MFPortfolioDetailsScreen(
         }
     }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         SidedBackHeader(
-            heading = "Withdraw Fund",
+            heading = "Order details",
             showBack = true,
             onBackClick = onBackClick,
             trailingContent = {
-                Row(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Secondary.copy(alpha = 0.1f))
-                        .clickable { viewModel.downloadSOA(data.folio) }
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "SOA",
-                        style = TextStyle(
-                            fontFamily = InterFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = Secondary
-                        )
-                    )
-                    if (soaDownloading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(12.dp),
-                            strokeWidth = 1.dp,
-                            color = Secondary
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(Res.drawable.download_ic),
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = Secondary
-                        )
-                    }
-                }
+//                Row(
+//                    modifier = Modifier
+//                        .clip(RoundedCornerShape(8.dp))
+//                        .background(Secondary.copy(alpha = 0.1f))
+//                        .clickable { viewModel.downloadSOA(data.folio) }
+//                        .padding(horizontal = 16.dp, vertical = 8.dp),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+//                ) {
+//                    Text(
+//                        text = "SOA",
+//                        style = TextStyle(
+//                            fontFamily = InterFontFamily,
+//                            fontWeight = FontWeight.Medium,
+//                            fontSize = 12.sp,
+//                            color = Secondary
+//                        )
+//                    )
+//                    if (soaDownloading) {
+//                        CircularProgressIndicator(
+//                            modifier = Modifier.size(12.dp),
+//                            strokeWidth = 1.dp,
+//                            color = Secondary
+//                        )
+//                    } else {
+//                        Icon(
+//                            painter = painterResource(Res.drawable.download_ic),
+//                            contentDescription = null,
+//                            modifier = Modifier.size(14.dp),
+//                            tint = Secondary
+//                        )
+//                    }
+//                }
             }
         )
 
         Box(modifier = Modifier.weight(1f)) {
             when (screenState) {
                 is LoadingState.Error -> {
-                    ErrorScreen((screenState as LoadingState.Error).error, onRetryClick = {
-                        viewModel.submitRedemption(
-                            schemeId = data.id,
-                            folioNo = data.actualFolio
-                        )
-                    })
+                    ErrorScreen(
+                        (screenState as LoadingState.Error).error,
+                        onRetryClick = onBackClick
+                    )
                 }
 
                 LoadingState.Loading -> {
@@ -196,69 +155,36 @@ fun MFPortfolioDetailsScreen(
                 LoadingState.Success -> {
                     SIPDetailsLoadedScreen(
                         data = data,
-                        onWithdrawClick = { viewModel.onShowRedemptionSheet() },
-                        onCancelClick= {
-                            showCancelDialog=true
-                        }
+                        onRedeem = onRedeemClick,
+                        onCancelClick = viewModel::onShowCancelSheet
                     )
                 }
             }
         }
     }
 
-    if (showRedemptionSheet) {
-        RedemptionBottomSheet(
-            sheetState = sheetState,
-            onDismiss = { viewModel.onDismissRedemptionSheet() },
-            schemeId = data.id,
-            folioNo = data.folio,
-            selectedRedemptionType = selectedRedemptionType,
-            selectedInputType = selectedInputType,
-            redemptionUnits = redemptionUnits,
-            redemptionAmount = redemptionAmount,
-            maxUnits = data.balanceUnits,
-            maxAmount = data.amount,
-            onRedemptionTypeChange = viewModel::onRedemptionTypeChange,
-            onInputTypeChange = viewModel::onInputTypeChange,
-            onUnitsChange = viewModel::onUnitsChange,
-            onAmountChange = viewModel::onAmountChange,
-            onSubmit = {
-                viewModel.submitRedemption(
-                    schemeId = data.id, folioNo = data.actualFolio
-                )
-            },
-            loading = isSubmitting
-        )
-    }
-
-    if (showCancelDialog) {
-        CancelConfirmationDialog(
-            onDismiss = {
-                showCancelDialog = false
-            },
-            onConfirm = {
-                viewModel.cancelSipOrder(data.orderId)
-                showCancelDialog = false
-
-            }
+    if (showCancelSheet) {
+        CancelSipReasonSheet(
+            sheetState = cancelSheetState,
+            selectedReason = selectedCancelReason,
+            isSubmitting = isSubmitting,
+            onReasonSelected = viewModel::onCancelReasonSelected,
+            onConfirm = { viewModel.cancelSipPlan(data.holdingId) },
+            onDismiss = viewModel::onDismissCancelSheet
         )
     }
 }
 
+/**
+ * The order screen: who the holding is, then what it is worth.
+ *
+ * Both cards are rendered straight from the route — the portfolio screen that opens this already
+ * holds every number, so there is nothing to fetch here.
+ */
 @Composable
 fun SIPDetailsLoadedScreen(
     data: Route.SIPPortfolioDetails,
-    onWithdrawClick: () -> Unit,
-    folioIcon: DrawableResource = Res.drawable.document_kyc_icon,
-    calendarIcon: DrawableResource = Res.drawable.icon_callender,
-    returnPercentIcon: DrawableResource = Res.drawable.icon_mf,
-    returnAmountIcon: DrawableResource = Res.drawable.rupeesign,
-    xirrIcon: DrawableResource = Res.drawable.ic_percent,
-    currentNavIcon: DrawableResource = Res.drawable.ic_jagged_arrow,
-    avgNavIcon: DrawableResource = Res.drawable.ic_graph,
-    balanceUnitsIcon: DrawableResource = Res.drawable.icon_clock,
-    investmentTypeIcon: DrawableResource = Res.drawable.ic_menu,
-    infoIcon: DrawableResource = Res.drawable.info_icon,
+    onRedeem: () -> Unit,
     onCancelClick: () -> Unit
 ) {
     Column(
@@ -272,68 +198,117 @@ fun SIPDetailsLoadedScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item { Spacer(modifier = Modifier.height(8.dp)) }
+            item { FundHeaderCard(data = data) }
             item { FundSummaryCard(data = data) }
-
-            item {
-                Text(
-                    text = "Fund details",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
-
-            item {
-                ShadowCard {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        FundDetailItem(folioIcon, "Folio", data.actualFolio)
-                        HorizontalDivider(color = Color.LightGray.copy(0.2f))
-                        FundDetailItem(calendarIcon, "Start date", data.startDate)
-                        HorizontalDivider(color = Color.LightGray.copy(0.2f))
-                        FundDetailItem(returnPercentIcon, "Return %", data.returnPercentage, valueColor = if (data.returnPercentage.contains("-")) appRed else appGreen)
-                        HorizontalDivider(color = Color.LightGray.copy(0.2f))
-                        FundDetailItem(returnAmountIcon, "Return amount", "₹${formatWithCommas(data.returnAmount.toLong())}", valueColor = if (data.returnAmount>0) appGreen else appRed)
-                        HorizontalDivider(color = Color.LightGray.copy(0.2f))
-                        FundDetailItem(xirrIcon, "XIRR", data.xirr)
-                        HorizontalDivider(color = Color.LightGray.copy(0.2f))
-                        FundDetailItem(currentNavIcon, "Current NAV", "₹${data.currentNav}")
-                        HorizontalDivider(color = Color.LightGray.copy(0.2f))
-                        FundDetailItem(avgNavIcon, "Average NAV", "₹${data.avgNav}")
-                        HorizontalDivider(color = Color.LightGray.copy(0.2f))
-                        FundDetailItem(balanceUnitsIcon, "Balance units", data.balanceUnits.toString())
-                        HorizontalDivider(color = Color.LightGray.copy(0.2f))
-                        FundDetailItem(investmentTypeIcon, "Investment type", if (data.isSip) "SIP" else "Lumpsum")
-                    }
-                }
-            }
-
-            item {
-                BottomNotice(infoIcon)
-            }
-
             item { Spacer(Modifier.height(16.dp)) }
         }
 
         if (data.isSip){
             ContinueBackButtonFooter(
-                continueText = "Withdraw",
+                continueText = "Redeem",
                 backText = "Cancel",
-                onContinue = onWithdrawClick,
+                onContinue = onRedeem,
                 onBack = onCancelClick
             )
         }
         else{
             NextButtonFooter(
                 value = "Proceed to withdraw",
-                onClick = onWithdrawClick,
+                onClick = onRedeem,
             )
         }
     }
 }
 
+/** Icon, scheme name, and the two badges that say what kind of order this is. */
+@Composable
+fun FundHeaderCard(
+    data: Route.SIPPortfolioDetails,
+) {
+    ShadowCard(
+        modifier = Modifier.border(
+            width = 1.dp,
+            color = Color.LightGray.copy(alpha = 0.5f),
+            shape = LocalShapes.current.roundedDp15
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SubcomposeAsyncImage(
+                modifier = Modifier.size(44.dp)
+                    .clip(LocalShapes.current.roundedDp12)
+                    .background(Color.White),
+                model = data.img_url,
+                contentDescription = null,
+                loading = { MutualFundIcon(schemeName = data.title, size = 44.dp) },
+                error = { MutualFundIcon(schemeName = data.title, size = 44.dp) },
+                success = { SubcomposeAsyncImageContent() }
+            )
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(
+                    text = data.title,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.Black
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    StatusChip(status = data.status)
+                    Text(
+                        text = if (data.isSip) "SIP" else "Lumpsum",
+                        style = titlesStyle,
+                        color = TextGray
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatusChip(status: String) {
+    if (status.isBlank()) return
+
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(Secondary.copy(alpha = 0.12f))
+            .padding(horizontal = 8.dp, vertical = 3.dp)
+    ) {
+        Text(
+            text = status.uppercase(),
+            style = TextStyle(
+                fontFamily = InterFontFamily,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = Secondary
+            )
+        )
+    }
+}
+
+/**
+ * Current value up top, the six supporting figures in a two-column grid under it, and the
+ * invested amount last — the one number that is not a derived one.
+ */
 @Composable
 fun FundSummaryCard(
     data: Route.SIPPortfolioDetails,
 ) {
+    // The portfolio reports a current value; older callers only carry invested + return.
+    val currentValue = data.currentValue.takeIf { it != 0.0 } ?: (data.amount + data.returnAmount)
+    val returnPercent = data.returnPercentage.toPercentOrNull()
+
     ShadowCard(
         modifier = Modifier.border(
             width = 1.dp,
@@ -344,227 +319,188 @@ fun FundSummaryCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.Top,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                SubcomposeAsyncImage(
-                    modifier = Modifier.size(48.dp)
-                        .clip(LocalShapes.current.roundedDp12)
-                        .background(Color.White),
-                    model = data.img_url,
-                    contentDescription = null,
-
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = data.title, size = 48.dp
-                        )
-                    },
-
-                    error = {
-                        MutualFundIcon(
-                            schemeName = data.title, size = 48.dp
-                        )
-                    },
-
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    text = "Current Value",
+                    style = TextStyle(
+                        fontFamily = InterFontFamily,
+                        fontSize = 12.sp,
+                        color = Color.DarkGray
+                    )
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
-                        text = data.title,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.Black
+                        text = currentValue.asMoneyLabel().withInterRupee(),
+                        style = TextStyle(
+                            fontFamily = InterFontFamily,
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Secondary
+                        )
                     )
-                    Text(
-                        text = data.category,
-                        style = titlesStyle,
-                        color = TextGray
-                    )
+                    if (returnPercent != null) {
+                        Text(
+                            text = returnPercent.asPercentLabel(),
+                            style = TextStyle(
+                                fontFamily = InterFontFamily,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = returnPercent.signColor()
+                            )
+                        )
+                    }
                 }
             }
 
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 20.dp),
-                thickness = 1.dp,
-                color = Color.LightGray.copy(alpha = 0.5f)
-            )
+            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.4f))
 
-            Row(modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween) {
-                Column(modifier = Modifier) {
-                    Text(
-                        text = "Invested amount",
-                        style = TextStyle(
-                            fontFamily = InterFontFamily,
-                            fontSize = 12.sp,
-                            color = Color.DarkGray
+            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                StatRow(
+                    left = {
+                        StatCell(
+                            label = "Returns Amount",
+                            value = data.returnAmount.asMoneyLabel(),
+                            valueColor = data.dayReturn.signColor(),
                         )
-                    )
-                    Text(
-                        text = "₹${formatWithCommas(data.amount.toLong())}".withInterRupee(),
-                        style = subHeadingMedium,
-                        color = Primary
-                    )
-                }
-                Column(modifier= Modifier) {
-                    Text(
-                        text = "Current value",
-                        style = TextStyle(
-                            fontFamily = InterFontFamily,
-                            fontSize = 12.sp,
-                            color = Color.DarkGray
+                    },
+                    right = {
+                        StatCell(
+                            label = "XIRR",
+                            value = data.xirr.toPercentOrNull()?.asPercentLabel()
+                                ?: NOT_AVAILABLE,
+                            valueColor = data.xirr.toPercentOrNull()?.signColor() ?: Color.Black
                         )
-                    )
-                    Text(
-                        text = "₹${formatWithCommas((data.amount + data.returnAmount).toLong())}".withInterRupee(),
-                        style = subHeadingMedium,
-                        color = Secondary
-                    )
-                }
+                    }
+                )
+                StatRow(
+                    left = { StatCell(label = "Current NAV", value = data.currentNav.toString()) },
+                    right = { StatCell(label = "Avg NAV", value = data.avgNav.toString()) }
+                )
+                StatRow(
+                    left = {
+                        StatCell(label = "Balance Units", value = data.balanceUnits.toString())
+                    },
+                    right = {
+                        StatCell(
+                            label = "Folio no.",
+                            value = data.actualFolio.ifBlank { data.folio }
+                        )
+                    }
+                )
+            }
+
+            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.4f))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Invested Amount",
+                    style = subHeadingMedium,
+                    color = Color.Black
+                )
+                Text(
+                    text = data.amount.asMoneyLabel().withInterRupee(),
+                    style = subHeadingMedium,
+                    color = Primary
+                )
             }
         }
     }
 }
 
 @Composable
-fun FundDetailItem(
-    icon: DrawableResource,
+private fun StatRow(
+    left: @Composable () -> Unit,
+    right: @Composable () -> Unit
+) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.weight(1f)) { left() }
+        Box(modifier = Modifier.weight(1f)) { right() }
+    }
+}
+
+/** One figure in the grid, optionally with a smaller companion beside it (the day-return %). */
+@Composable
+private fun StatCell(
     label: String,
     value: String,
-    valueColor: Color = Color.Black
+    valueColor: Color = Color.Black,
+    trailing: String? = null,
+    trailingColor: Color = Color.Black
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp, horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Primary.copy(alpha = 0.05f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                modifier = Modifier.size(18.dp),
-                tint = Primary
-            )
-        }
-        Spacer(modifier = Modifier.width(12.dp))
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(
             text = label,
             style = TextStyle(
                 fontFamily = InterFontFamily,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color.Gray
-            ),
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = value.withInterRupee(),
-            style = TextStyle(
-                fontFamily = InterFontFamily,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = valueColor
+                fontSize = 12.sp,
+                color = Color.DarkGray
             )
         )
-
-    }
-}
-
-@Composable
-fun CancelConfirmationDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-
-        title = {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
             Text(
-                text = "Cancel Withdrawal?",
-                style = MaterialTheme.typography.headlineSmall
+                text = value.withInterRupee(),
+                style = TextStyle(
+                    fontFamily = InterFontFamily,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = valueColor
+                )
             )
-        },
-
-        text = {
-            Text(
-                text = "Are you sure you want to cancel? Any unsaved progress will be lost.",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        },
-
-        dismissButton = {
-            Text(
-                text = "No",
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable(onClick = onDismiss)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                color = Primary,
-                fontWeight = FontWeight.Medium
-            )
-        },
-
-        confirmButton = {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(appRed)
-                    .clickable(onClick = onConfirm)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
+            if (trailing != null) {
                 Text(
-                    text = "Yes, Cancel",
-                    color = Color.White,
-                    fontWeight = FontWeight.SemiBold
+                    text = trailing,
+                    style = TextStyle(
+                        fontFamily = InterFontFamily,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = trailingColor
+                    )
                 )
             }
         }
-    )
-}
-
-@Composable
-fun BottomNotice(icon: DrawableResource) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(Primary.copy(alpha = 0.05f))
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            modifier = Modifier.size(16.dp),
-            tint = Primary
-        )
-        Text(
-            text = "All redemptions are processed as per AMC timelines.",
-            style = TextStyle(
-                fontFamily = InterFontFamily,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black.copy(alpha = 0.7f)
-            )
-        )
     }
 }
+
+private const val NOT_AVAILABLE = "-"
+
+/** Percentages reach this screen as strings, sometimes already carrying the sign or the %. */
+private fun String.toPercentOrNull(): Double? =
+    removeSuffix("%").trim().toDoubleOrNull()
+
+private fun Double.asPercentLabel(): String = "${trimTo(2)}%"
+
+/**
+ * "₹6,010.15", sign kept inside so `withInterRupee` can move it in front of the symbol. Money on
+ * this screen is shown to the paisa — a day return rounded to the rupee is usually just "₹0".
+ */
+private fun Double.asMoneyLabel(): String {
+    val absolute = abs(this)
+
+    var whole = absolute.toLong()
+    var paise = ((absolute - whole) * 100).roundToInt()
+    if (paise == 100) {
+        whole += 1
+        paise = 0
+    }
+
+    val sign = if (this < 0) "-" else ""
+    return "₹$sign${formatWithCommas(whole)}.${paise.toString().padStart(2, '0')}"
+}
+
+private fun Double.signColor(): Color = if (this < 0) appRed else appGreen
 
 @Preview(showBackground = true)
 @Composable
@@ -579,7 +515,7 @@ fun SIPDetailsLoadedScreenPreview() {
                 isSip = true,
                 startDate = "28-Sep-2020",
                 returnPercentage = "56.18%",
-                returnAmount = -390424,
+                returnAmount = -390424.44,
                 xirr = "15.29%",
                 currentNav = 82.693,
                 avgNav = 52.947,
@@ -587,8 +523,12 @@ fun SIPDetailsLoadedScreenPreview() {
                 balanceUnits = 13125.567,
                 orderId = "",
                 actualFolio = "HUDHUW9877",
+                currentValue = 6010.15,
+                dayReturn = -40.05,
+                dayReturnPercent = -4.09,
             ),
-            {}
-        ) {}
+            onRedeem = {},
+            onCancelClick = {}
+        )
     }
 }

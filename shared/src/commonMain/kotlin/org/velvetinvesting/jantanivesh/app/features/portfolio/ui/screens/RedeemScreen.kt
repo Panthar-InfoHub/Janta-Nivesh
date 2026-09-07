@@ -1,4 +1,4 @@
-package org.velvetinvesting.jantanivesh.app.features.plans.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,14 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.info_filled_icon
-import jantanivesh.shared.generated.resources.monument_icon
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
@@ -44,15 +41,23 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.core.theme.appRed
+import org.velvetinvesting.jantanivesh.app.core.utils.formatWithCommas
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.RedeemEvent
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.RedeemHolding
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.RedeemMode
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.RedeemUiState
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemEvent
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemHolding
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemMode
+import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemUiState
 
+/**
+ * How much of one holding to take out.
+ *
+ * The holding arrives from the order-details screen, so there is nothing to load and nothing to
+ * choose between — the screen opens straight on the controls.
+ */
 @Composable
 fun RedeemScreen(
     state: RedeemUiState,
@@ -75,66 +80,34 @@ fun RedeemScreen(
                 .padding(horizontal = Spacing.dp20)
         )
 
-        when {
-            state.isLoading -> LoadingHoldings(modifier = Modifier.weight(1f))
-
-            state.isEmpty -> Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = Spacing.dp20),
-                verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
-            ) {
-                SelectHoldingBanner()
-                EmptyHoldings(modifier = Modifier.weight(1f))
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(horizontal = Spacing.dp20),
+            verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
+            contentPadding = PaddingValues(bottom = Spacing.dp16)
+        ) {
+            item {
+                InfoBanner(
+                    text = "Money goes back to your registered bank account only."
+                )
             }
 
-            else -> LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = Spacing.dp20),
-                verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
-                contentPadding = PaddingValues(bottom = Spacing.dp16)
-            ) {
-                item { SelectHoldingBanner() }
+            item { HoldingCard(holding = state.holding) }
 
-                items(state.holdings.size) { index ->
-                    val holding = state.holdings[index]
-                    HoldingCard(
-                        holding = holding,
-                        isSelected = holding.planId == state.selectedHolding?.planId,
-                        // A single holding is implicitly the one being redeemed.
-                        isSelectable = state.holdings.size > 1,
-                        onClick = { handleEvent(RedeemEvent.OnHoldingSelected(holding.planId)) }
-                    )
-                }
+            item {
+                RedeemByPicker(
+                    selected = state.mode,
+                    onSelected = { handleEvent(RedeemEvent.OnModeSelected(it)) }
+                )
+            }
 
-                // Without a folio there is nothing to redeem from, so the controls stay hidden
-                // and the reason is stated instead.
-                if (state.canRedeemSelected) {
-                    item {
-                        RedeemByPicker(
-                            selected = state.mode,
-                            onSelected = { handleEvent(RedeemEvent.OnModeSelected(it)) }
-                        )
-                    }
-
-                    item {
-                        RedeemInput(
-                            state = state,
-                            handleEvent = handleEvent
-                        )
-                    }
-                } else {
-                    item {
-                        InfoBanner(
-                            text = "This SIP does not have a folio yet, so there is nothing to " +
-                                    "redeem from. A folio is assigned once the first instalment " +
-                                    "is processed."
-                        )
-                    }
-                }
+            item {
+                RedeemInput(
+                    state = state,
+                    handleEvent = handleEvent
+                )
             }
         }
 
@@ -157,7 +130,8 @@ private fun RedeemInput(
     state: RedeemUiState,
     handleEvent: (RedeemEvent) -> Unit
 ) {
-    val holding = state.selectedHolding ?: return
+    val holding = state.holding
+    val error = state.inputError
 
     when (state.mode) {
         RedeemMode.AMOUNT -> TitledAppTextField(
@@ -167,8 +141,15 @@ private fun RedeemInput(
             placeholder = "0",
             mandatory = true,
             keyboardType = KeyboardType.Decimal,
+            isError = error != null,
             prefix = {
                 Text("₹ ", style = MaterialTheme.typography.titleMedium, color = Black)
+            },
+            supportingText = {
+                FieldHint(
+                    error = error,
+                    hint = "Available: ₹${formatWithCommas(holding.currentValue.toLong())}"
+                )
             }
         )
 
@@ -179,31 +160,29 @@ private fun RedeemInput(
             placeholder = "0.000",
             mandatory = true,
             keyboardType = KeyboardType.Decimal,
-            // The unit balance is not on this endpoint, so no "available" hint is shown.
-            supportingText = holding.availableUnits?.let { units ->
-                {
-                    Text(
-                        text = "Available: $units",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = GreyText
-                    )
-                }
+            isError = error != null,
+            supportingText = {
+                FieldHint(
+                    error = error,
+                    hint = "Available: ${holding.availableUnits} units"
+                )
             }
         )
 
         RedeemMode.ALL_UNITS -> InfoBanner(
-            text = holding.availableUnits
-                ?.let { "Redeeming all $it units from folio ${holding.folioNumber}." }
-                ?: "Redeeming all units from folio ${holding.folioNumber}."
+            text = "Redeeming all ${holding.availableUnits} units from folio " +
+                    "${holding.folioNumber}."
         )
     }
 }
 
+/** The limit while the field is fine, the reason it is not once it isn't. */
 @Composable
-private fun SelectHoldingBanner() {
-    InfoBanner(
-        text = "Select the holding you want to redeem from. Money goes back to your registered " +
-                "bank account only."
+private fun FieldHint(error: String?, hint: String) {
+    Text(
+        text = error ?: hint,
+        style = MaterialTheme.typography.labelSmall,
+        color = if (error != null) appRed else GreyText
     )
 }
 
@@ -232,23 +211,18 @@ private fun InfoBanner(text: String) {
     }
 }
 
+/** What is being redeemed from, restated so the user is not working from memory. */
 @Composable
-private fun HoldingCard(
-    holding: RedeemHolding,
-    isSelected: Boolean,
-    isSelectable: Boolean,
-    onClick: () -> Unit
-) {
+private fun HoldingCard(holding: RedeemHolding) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(Spacing.dp12))
             .border(
-                width = if (isSelected && isSelectable) Spacing.dp2 else Spacing.dp1,
-                color = if (isSelected && isSelectable) Secondary else BoxBorder,
+                width = Spacing.dp1,
+                color = BoxBorder,
                 shape = RoundedCornerShape(Spacing.dp12)
             )
-            .then(if (isSelectable) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(Spacing.dp20),
         verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
     ) {
@@ -258,19 +232,18 @@ private fun HoldingCard(
             color = Black
         )
 
-        StatePill(state = holding.state)
+        // The pill now says what kind of holding this is, which is the thing the user cares
+        // about here — the gateway's own state has no bearing on redeeming.
+        StatePill(state = if (holding.isSip) "SIP" else "LUMPSUM")
 
         HorizontalDivider(thickness = Spacing.dp1, color = GreyBoxDivider)
 
-        // Folio always shows — its absence is the reason redeeming is blocked, so it is worth
-        // stating. The remaining rows are drawn only when the endpoint returned them.
+        HoldingRow(label = "Folio Number", value = holding.folioNumber)
+        HoldingRow(label = "Available Units", value = holding.availableUnits.toString())
         HoldingRow(
-            label = "Folio Number",
-            value = holding.folioNumber ?: FOLIO_NOT_AVAILABLE
+            label = "Current Value",
+            value = "₹${formatWithCommas(holding.currentValue.toLong())}"
         )
-        HoldingRow(label = "Available Units", value = holding.availableUnits)
-        HoldingRow(label = "Monthly SIP", value = holding.monthlyAmount)
-        HoldingRow(label = "Current Value", value = holding.currentValue)
     }
 }
 
@@ -292,13 +265,9 @@ private fun StatePill(state: String) {
     }
 }
 
-/** Shown in place of a folio the gateway has not assigned yet. */
-private const val FOLIO_NOT_AVAILABLE = "Not available"
-
-/** Renders nothing when the endpoint had no value for this field. */
 @Composable
-private fun HoldingRow(label: String, value: String?) {
-    if (value.isNullOrBlank()) return
+private fun HoldingRow(label: String, value: String) {
+    if (value.isBlank()) return
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -362,70 +331,21 @@ private fun RedeemByPicker(
     }
 }
 
-@Composable
-private fun LoadingHoldings(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(color = Primary)
-    }
-}
-
-@Composable
-private fun EmptyHoldings(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp12, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier
-                .size(Spacing.dp58)
-                .clip(RoundedCornerShape(Spacing.dp16))
-                .background(GoalIconBg),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.monument_icon),
-                contentDescription = null,
-                tint = Primary,
-                modifier = Modifier.size(Spacing.dp24)
-            )
-        }
-        Text(
-            text = "No holdings yet",
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-            color = Black
-        )
-        Text(
-            text = "Start a SIP and your holdings will show up here once the first instalment " +
-                    "is processed.",
-            style = MaterialTheme.typography.labelMedium,
-            color = GreyText,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = Spacing.dp24)
-        )
-    }
-}
-
-/** Mirrors what the endpoint really returns today: a plan with no folio assigned yet. */
 private val sampleHolding = RedeemHolding(
-    planId = "cmsjk25uf0000lsriagsp9kmz",
-    scheme = "INF209K01RU9",
-    folioNumber = null,
-    availableUnits = null,
-    currentValue = null,
-    monthlyAmount = "₹2500",
-    state = "created"
+    holdingId = "cmtl875r60000bbri2ce7qpa9",
+    scheme = "Aditya Birla Sun Life Gold Fund-Growth",
+    folioNumber = "1051586674",
+    availableUnits = 2.311,
+    currentValue = 100.0,
+    isSip = true
 )
 
 @Preview(showBackground = true)
 @Composable
-private fun RedeemScreenEmptyPreview() {
+private fun RedeemScreenPreview() {
     JantaNiveshTheme {
         RedeemScreen(
-            state = RedeemUiState(),
+            state = RedeemUiState(holding = sampleHolding),
             handleEvent = {},
             onBack = {}
         )
@@ -434,12 +354,11 @@ private fun RedeemScreenEmptyPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun RedeemScreenPopulatedPreview() {
+private fun RedeemScreenByAmountPreview() {
     JantaNiveshTheme {
         RedeemScreen(
             state = RedeemUiState(
-                holdings = listOf(sampleHolding.copy(folioNumber = "910123456789")),
-                selectedPlanId = sampleHolding.planId,
+                holding = sampleHolding,
                 mode = RedeemMode.AMOUNT,
                 amountInput = "1000"
             ),
