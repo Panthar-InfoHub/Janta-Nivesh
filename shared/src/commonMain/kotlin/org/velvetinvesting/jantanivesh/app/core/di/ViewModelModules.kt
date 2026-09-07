@@ -46,6 +46,8 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FDPor
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FolioFundsMFViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPortfolioDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ActiveMandatesViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.NotificationViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
@@ -122,6 +124,8 @@ val viewModelModule = module {
     viewModel { ProfileSettingViewModel() }
     viewModel { ProfileViewModel(get()) }
     viewModel { TransactionHistoryViewModel(get()) }
+    viewModel { ActiveMandatesViewModel(get()) }
+    viewModel { MyOrdersViewModel(get()) }
     viewModel { InsuranceViewModel() }
     viewModel { RequestCallbackViewModel() }
 
@@ -132,7 +136,7 @@ val viewModelModule = module {
 
     // Portfolio ViewModels
     viewModel { (folioId: String) -> FolioFundsMFViewModel(folioId, get()) }
-    viewModel { PortfolioScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { PortfolioScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (fdId: String) -> FDPortFolioDetailsViewModel(get(), get(), fdId) }
     viewModel { MFPortfolioDetailsViewModel(get(), get(), get(), get()) }
     viewModel { ExistingFundsLumpSumViewModel(get(), get()) }

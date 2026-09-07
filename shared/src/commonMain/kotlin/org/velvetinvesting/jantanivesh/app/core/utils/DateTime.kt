@@ -360,8 +360,13 @@ object DateTimeUtils {
 
 fun String.isoUtcToDisplayDate(): String {
     return try {
-        val instant = Instant.parse(this)
-        val localDate = instant.toLocalDateTime(TimeZone.UTC).date
+        // Not every endpoint sends a full instant: some date-only fields arrive as "2026-08-07",
+        // which is a calendar date already and parses as a LocalDate but not as an Instant.
+        val localDate = try {
+            Instant.parse(this).toLocalDateTime(TimeZone.UTC).date
+        } catch (_: Exception) {
+            LocalDate.parse(this)
+        }
 
         val day = localDate.day.toString().padStart(2, '0')
         val month = localDate.month.name
@@ -514,4 +519,25 @@ fun formatMillisToIsoDate(millis: Long?): String {
     return "${date.year.toString().padStart(4, '0')}-" +
             "${date.month.number.toString().padStart(2, '0')}-" +
             date.day.toString().padStart(2, '0')
+}
+
+/**
+ * "2026-08-07T00:00:00.000Z" -> "Aug 07, 2026". Read in UTC, which is how the gateway states a
+ * mandate's start date: it is a calendar date, not a moment, so shifting it into the device's zone
+ * would only risk moving it a day.
+ */
+fun String.isoUtcToMonthDayYear(): String = try {
+    val date = Instant.parse(this).toLocalDateTime(TimeZone.UTC).date
+    date.format(
+        LocalDate.Format {
+            monthName(MonthNames.ENGLISH_ABBREVIATED)
+            char(' ')
+            day(padding = Padding.ZERO)
+            char(',')
+            char(' ')
+            year()
+        }
+    )
+} catch (_: Exception) {
+    this
 }

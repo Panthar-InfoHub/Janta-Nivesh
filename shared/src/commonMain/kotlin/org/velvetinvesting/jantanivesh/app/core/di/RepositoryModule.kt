@@ -30,9 +30,9 @@ import org.velvetinvesting.jantanivesh.app.features.search.data.repository.Recen
 import org.velvetinvesting.jantanivesh.app.features.search.domain.repository.RecentSearchRepo
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.repository.PlansRepo
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.repository.PortfolioRepo
+import org.velvetinvesting.jantanivesh.app.features.orders.data.repository.OrdersRepo
+import org.velvetinvesting.jantanivesh.app.features.orders.domain.repository.OrdersRepository
 
-import org.velvetinvesting.jantanivesh.app.features.profile.data.repository.TransactionRepoImpl
-import org.velvetinvesting.jantanivesh.app.features.profile.domain.repository.TransactionRepo
 
 val repositoryModule = module {
     single<LanguageRepository> { LanguageRepositoryImpl(get()) }
@@ -48,7 +48,7 @@ val repositoryModule = module {
     single<PortfolioRepo> { PortfolioRepoImpl(get()) }
     single<KycNewOnboardingRepo> { KycNewOnboardingRepoImpl(get(),get()) }
     single<PlansRepo> { PlansRepoImpl(get()) }
-    single<TransactionRepo> { TransactionRepoImpl(get()) }
+    single<OrdersRepository> { OrdersRepo(get()) }
 
     // The database itself is provided per platform; only the DAOs are pulled out here.
     single { get<JantaNiveshDatabase>().recentSearchDao() }

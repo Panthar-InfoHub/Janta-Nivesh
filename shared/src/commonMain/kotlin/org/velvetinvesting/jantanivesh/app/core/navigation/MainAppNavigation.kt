@@ -4,12 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -93,6 +95,13 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.Redee
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemOtpEffect
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemViewModel
+import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.toDetailsRoute
+import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.toOrderDomain
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.compose.MyOrdersScreen
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.compose.OrderDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersEffect
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ActiveMandatesScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.NotificationScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.PrivacyPolicyScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileLanguageScreen
@@ -103,6 +112,8 @@ import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.Profil
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ActiveMandatesEffect
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ActiveMandatesViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryViewModel
 
@@ -676,6 +687,16 @@ fun MainAppNavigation(
                         launchSingleTop=true
                     }
                 },
+                navigateToMyOrders = {
+                    navController.navigate(Route.MyOrders){
+                        launchSingleTop=true
+                    }
+                },
+                navigateToActiveMandates = {
+                    navController.navigate(Route.ActiveMandates){
+                        launchSingleTop=true
+                    }
+                },
                 onSignOut = onSignOut
             )
         }
@@ -976,6 +997,76 @@ fun MainAppNavigation(
         composable<Route.Notifications> {
             NotificationScreen(
                 onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<Route.MyOrders> {
+            val vm: MyOrdersViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        MyOrdersEffect.NavigateBack -> navController.popBackStack()
+                        is MyOrdersEffect.NavigateToDetails ->
+                            navController.navigate(effect.order.toDetailsRoute()) {
+                                launchSingleTop = true
+                            }
+                    }
+                }
+            }
+
+            MyOrdersScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.OrderDetails> { entry ->
+            val order = entry.toRoute<Route.OrderDetails>()
+            val scope = rememberCoroutineScope()
+
+            OrderDetailsScreen(
+                order = order.toOrderDomain(),
+                payoutAccount = order.payoutAccount,
+                onBack = { navController.popBackStack() },
+                onRetryOrder = {
+                    navController.navigate(
+                        Route.FundPurchase(
+                            mfProductId = order.mfProductId,
+                            isin = order.isin,
+                            fundName = order.fundName,
+                            fundSubtitle = order.fundCategory
+                        )
+                    ) { launchSingleTop = true }
+                },
+                // TODO: point at the receipt endpoint once the backend exposes one.
+                onDownloadReceipt = {
+                    scope.launch {
+                        SnackBarController.showInfo("Receipts will be available here soon.")
+                    }
+                },
+                onNeedHelp = {
+                    navController.navigate(Route.RequestCallBack) { launchSingleTop = true }
+                }
+            )
+        }
+
+        composable<Route.ActiveMandates> {
+            val vm: ActiveMandatesViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        ActiveMandatesEffect.NavigateBack -> navController.popBackStack()
+                    }
+                }
+            }
+
+            ActiveMandatesScreen(
+                state = state,
+                onEvent = vm::handleEvent
             )
         }
 

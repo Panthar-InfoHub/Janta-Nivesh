@@ -1,7 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.profile.ui.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,21 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.check_circle_outline_icon
-import jantanivesh.shared.generated.resources.front_arrow_icon
 import jantanivesh.shared.generated.resources.ic_cross_circled
 import jantanivesh.shared.generated.resources.icon_clock
-import jantanivesh.shared.generated.resources.icon_cross
-import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.painterResource
-import org.velvetinvesting.jantanivesh.app.core.theme.Border
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.IconBackgroundBlue
@@ -51,13 +48,14 @@ import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.ProfileGreen
-import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.appRed
 import org.velvetinvesting.jantanivesh.app.core.theme.bgColor3
+import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBar
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.TransactionGroup
@@ -117,41 +115,49 @@ fun TransactionHistoryScreen(
                 modifier = Modifier.padding(bottom = Spacing.dp16)
             )
 
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                contentPadding = PaddingValues(bottom = Spacing.dp24),
-                verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
-            ) {
-                state.transactionGroups.forEach { group ->
-                    item {
-                        Text(
-                            text = group.dateHeader,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = GreyText,
-                            modifier = Modifier.padding(horizontal = Spacing.dp16)
-                        )
-                    }
+            Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                when {
+                    state.isLoading -> CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
 
-                    items(group.transactions, key = { it.id }) { transaction ->
-                        TransactionItem(
-                            item = transaction,
-                            onClick = { /* Handle click */ },
-                            modifier = Modifier.padding(horizontal = Spacing.dp16)
-                        )
-                    }
-                }
+                    state.error != null -> Text(
+                        text = state.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = appRed,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(horizontal = Spacing.dp24)
+                    )
 
-                if (state.transactionGroups.isEmpty() && !state.isLoading) {
-                    item {
-                        Box(
-                            modifier = Modifier.fillMaxWidth().padding(top = 100.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "No more transactions",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = GreyText
-                            )
+                    state.transactionGroups.isEmpty() -> Text(
+                        text = "No transactions to show",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = GreyText,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+
+                    else -> LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = Spacing.dp24),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.dp20)
+                    ) {
+                        state.transactionGroups.forEach { group ->
+                            item(key = "header_${group.header}") {
+                                Text(
+                                    text = group.header,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = GreyText,
+                                    modifier = Modifier.padding(horizontal = Spacing.dp16)
+                                )
+                            }
+
+                            items(group.transactions, key = { it.id }) { transaction ->
+                                TransactionItem(
+                                    item = transaction,
+                                    modifier = Modifier.padding(horizontal = Spacing.dp16)
+                                )
+                            }
                         }
                     }
                 }
@@ -261,7 +267,6 @@ private fun TransactionFilterChip(
 @Composable
 private fun TransactionItem(
     item: TransactionHistoryItem,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -270,115 +275,107 @@ private fun TransactionItem(
             .genericDropShadow(LocalShapes.current.roundedDp12)
             .clip(LocalShapes.current.roundedDp12)
             .background(White)
-            .clickable(onClick = onClick)
             .padding(Spacing.dp16)
     ) {
         Row(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
         ) {
-            TransactionIcon(
-                type = item.type,
-                title = item.title
-            )
+            TransactionIcon(iconUrl = item.iconUrl, title = item.title)
 
             Column(modifier = Modifier.weight(1f)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
                     verticalAlignment = Alignment.Top
                 ) {
                     Text(
                         text = item.title,
-                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                         modifier = Modifier.weight(1f),
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
-                        text = item.amount,
+                        text = item.amount.withInterRupee(),
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                         textAlign = TextAlign.End
                     )
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = item.subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = GreyText
-                    )
-                    Text(
-                        text = item.date,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = GreyText
-                    )
+                // A holding carries neither a subtitle-worthy date nor a state, so this row is
+                // laid out around whatever is actually present.
+                if (item.subtitle.isNotBlank() || item.date.isNotBlank()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp2),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = item.subtitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = GreyText,
+                            modifier = Modifier.weight(1f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        if (item.date.isNotBlank()) {
+                            Text(
+                                text = item.date,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = GreyText
+                            )
+                        }
+                    }
                 }
 
-                Box(modifier = Modifier.height(Spacing.dp12))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    StatusTag(status = item.status)
-                    Icon(
-                        painter = painterResource(Res.drawable.front_arrow_icon),
-                        contentDescription = null,
-                        modifier = Modifier.size(Spacing.dp12),
-                        tint = FilterChipUnselected
-                    )
+                if (item.status != null) {
+                    Box(modifier = Modifier.height(Spacing.dp12))
+                    StatusTag(status = item.status, label = item.statusLabel)
                 }
             }
         }
     }
 }
 
+/** The scheme or issuer logo when the payload has one, and its initials when it does not. */
 @Composable
-private fun TransactionIcon(
-    type: TransactionType,
-    title: String
-) {
-    val backgroundColor = if (type == TransactionType.MUTUAL_FUND) IconBackgroundBlue else Color(0xFFEEF2FF)
-    val textColor = Primary
-    val text = if (type == TransactionType.MUTUAL_FUND) {
-        title.take(1).uppercase()
-    } else {
-        "BF" // As seen in image, maybe Bank Fixed?
-    }
-
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(RoundedCornerShape(Spacing.dp8))
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-            color = textColor
+private fun TransactionIcon(iconUrl: String, title: String) {
+    val fallback: @Composable () -> Unit = {
+        MutualFundIcon(
+            schemeName = title,
+            size = 40.dp,
+            cornerRadius = Spacing.dp8,
+            backgroundColor = IconBackgroundBlue,
+            textColor = Primary
         )
     }
+
+    if (iconUrl.isBlank()) {
+        fallback()
+        return
+    }
+
+    SubcomposeAsyncImage(
+        model = iconUrl,
+        contentDescription = null,
+        modifier = Modifier.size(40.dp).clip(RoundedCornerShape(Spacing.dp8)),
+        loading = { fallback() },
+        error = { fallback() },
+        success = { SubcomposeAsyncImageContent() }
+    )
 }
 
 @Composable
-private fun StatusTag(status: TransactionStatus) {
-    val (color, text, icon) = when (status) {
-        TransactionStatus.SUCCESSFUL -> Triple(
-            ProfileGreen,
-            "SUCCESSFUL",
-            Res.drawable.check_circle_outline_icon
-        )
-
-        TransactionStatus.PENDING -> Triple(bgColor3, "PENDING", Res.drawable.icon_clock)
-        TransactionStatus.FAILED -> Triple(appRed, "FAILED", Res.drawable.ic_cross_circled)
+private fun StatusTag(status: TransactionStatus, label: String) {
+    val (color, icon) = when (status) {
+        TransactionStatus.SUCCESSFUL -> ProfileGreen to Res.drawable.check_circle_outline_icon
+        TransactionStatus.PENDING -> bgColor3 to Res.drawable.icon_clock
+        TransactionStatus.FAILED -> appRed to Res.drawable.ic_cross_circled
     }
+    // The source's own wording ("Payment Pending", "FD Created") says more than the three
+    // buckets it is coloured by, so it is what the tag reads.
+    val text = label.ifBlank { status.name }.uppercase()
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -413,39 +410,34 @@ fun TransactionHistoryScreenPreview() {
             state = TransactionHistoryUiState(
                 transactionGroups = listOf(
                     TransactionGroup(
-                        dateHeader = "TODAY",
+                        header = "PENDING ORDERS",
                         transactions = listOf(
                             TransactionHistoryItem(
-                                id = "1",
-                                title = "HDFC Small Cap Fund",
-                                subtitle = "SIP • Direct Growth",
+                                id = "order_1",
+                                title = "SBI BLUECHIP FUND - DIRECT PLAN - GROWTH",
+                                subtitle = "Sip • SBI Mutual Fund",
                                 amount = "₹5,000",
-                                date = "12 Oct 2023",
-                                status = TransactionStatus.SUCCESSFUL,
-                                type = TransactionType.MUTUAL_FUND
-                            ),
-                            TransactionHistoryItem(
-                                id = "2",
-                                title = "ICICI Pru Bluechip",
-                                subtitle = "Lumpsum • Direct Growth",
-                                amount = "₹25,000",
-                                date = "14 Oct 2023",
+                                date = "25 Oct 2023",
                                 status = TransactionStatus.PENDING,
-                                type = TransactionType.MUTUAL_FUND
+                                statusLabel = "Payment Pending",
+                                type = TransactionType.MUTUAL_FUND,
+                                iconUrl = ""
                             )
                         )
                     ),
                     TransactionGroup(
-                        dateHeader = "YESTERDAY",
+                        header = "HOLDINGS",
                         transactions = listOf(
                             TransactionHistoryItem(
-                                id = "3",
-                                title = "Axis Midcap Fund",
-                                subtitle = "SIP • Direct Growth",
-                                amount = "₹3,000",
-                                date = "10 Oct 2023",
-                                status = TransactionStatus.FAILED,
-                                type = TransactionType.MUTUAL_FUND
+                                id = "mf_1",
+                                title = "HDFC Small Cap Fund",
+                                subtitle = "Equity • Folio 12345678",
+                                amount = "₹25,000",
+                                date = "",
+                                status = null,
+                                statusLabel = "",
+                                type = TransactionType.MUTUAL_FUND,
+                                iconUrl = ""
                             )
                         )
                     )

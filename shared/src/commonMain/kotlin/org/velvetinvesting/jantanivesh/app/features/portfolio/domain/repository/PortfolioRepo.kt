@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.features.portfolio.domain.repository
 
 import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositTransactionDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FolioFundDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MfRedemption
@@ -23,6 +24,12 @@ interface PortfolioRepo {
     ): NetworkResponse<String, ErrorDomain>
 
     suspend fun getPendingOrders(): NetworkResponse<List<PendingOrderDomain>, ErrorDomain>
+
+    /**
+     * The running SIPs, from `GET /mf/purchase-plan`. Separate from [getPortfolio] because the
+     * portfolio payload reports holdings, not standing instructions.
+     */
+    suspend fun getActiveSips(): NetworkResponse<ActiveSipDomain, ErrorDomain>
 
     suspend fun getFolioFunds(folioId: String): NetworkResponse<List<FolioFundDomain>, ErrorDomain>
 

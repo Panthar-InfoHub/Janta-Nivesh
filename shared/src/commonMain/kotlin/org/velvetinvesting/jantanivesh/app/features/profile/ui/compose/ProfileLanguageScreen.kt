@@ -41,7 +41,7 @@ fun ProfileLanguageScreen(
     Scaffold(
         containerColor = White
     ) {
-        Column(modifier = Modifier.fillMaxSize().padding(Spacing.dp16)) {
+        Column(modifier = Modifier.fillMaxSize().padding(start=Spacing.dp16, end=Spacing.dp16,bottom=Spacing.dp16)) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 verticalArrangement = Arrangement.spacedBy(16.dp), contentPadding = PaddingValues(

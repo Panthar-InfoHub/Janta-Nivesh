@@ -9,11 +9,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.networking.onError
+import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.PendingOrderDomain
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
 import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.TransactionGroup
 import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.TransactionHistoryItem
 import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.TransactionStatus
 import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.TransactionType
-import org.velvetinvesting.jantanivesh.app.features.profile.domain.usecase.GetTransactionsUseCase
+import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.toTransactionItem
 
 data class TransactionHistoryUiState(
     val isLoading: Boolean = false,
@@ -40,8 +46,17 @@ sealed interface TransactionHistoryEffect {
     data object NavigateBack : TransactionHistoryEffect
 }
 
+/**
+ * Transaction history, built from the same portfolio reads the portfolio screen uses.
+ *
+ * There is no transaction endpoint, so the rows come from what the portfolio does report: pending
+ * orders and mutual-fund holdings on one tab, fixed deposits on the other. Both reads happen once
+ * and the tab, filter and search then work on what is already in memory, so switching a tab does
+ * not go back to the network.
+ */
 class TransactionHistoryViewModel(
-    private val getTransactionsUseCase: GetTransactionsUseCase
+    private val getPortfolioUseCase: GetPortfolioUseCase,
+//    private val getPendingOrdersUseCase: GetPendingOrdersUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TransactionHistoryUiState())
@@ -50,147 +65,88 @@ class TransactionHistoryViewModel(
     private val _effect = Channel<TransactionHistoryEffect>()
     val effect = _effect.receiveAsFlow()
 
+    private var pendingOrders: List<PendingOrderDomain> = emptyList()
+    private var mutualFunds: List<MutualFundPortfolioDomain> = emptyList()
+    private var fixedDeposits: List<FixedDepositPortfolioDomain> = emptyList()
+
     init {
-        loadMockData()
+        loadData()
     }
 
     fun handleEvent(event: TransactionHistoryEvent) {
         when (event) {
-            TransactionHistoryEvent.LoadData -> loadMockData()
-            is TransactionHistoryEvent.OnTabSelected -> {
-                _uiState.update { it.copy(selectedTab = event.type) }
-                loadMockData()
-            }
-            is TransactionHistoryEvent.OnFilterSelected -> {
-                _uiState.update { it.copy(selectedFilter = event.filter) }
-                // In a real app, this might trigger a local filter or a new API call
-            }
-            is TransactionHistoryEvent.OnSearchQueryChanged -> {
-                _uiState.update { it.copy(searchQuery = event.query) }
-            }
-            TransactionHistoryEvent.OnBackClicked -> {
+            TransactionHistoryEvent.LoadData -> loadData()
+
+            is TransactionHistoryEvent.OnTabSelected ->
+                _uiState.update { it.copy(selectedTab = event.type).withGroups() }
+
+            is TransactionHistoryEvent.OnFilterSelected ->
+                _uiState.update { it.copy(selectedFilter = event.filter).withGroups() }
+
+            is TransactionHistoryEvent.OnSearchQueryChanged ->
+                _uiState.update { it.copy(searchQuery = event.query).withGroups() }
+
+            TransactionHistoryEvent.OnBackClicked ->
                 viewModelScope.launch { _effect.send(TransactionHistoryEffect.NavigateBack) }
-            }
         }
     }
 
-    private fun loadMockData() {
-        val tab = _uiState.value.selectedTab
-        val mockTransactions = if (tab == TransactionType.MUTUAL_FUND) {
-            listOf(
-                TransactionGroup(
-                    dateHeader = "TODAY",
-                    transactions = listOf(
-                        TransactionHistoryItem(
-                            id = "1",
-                            title = "HDFC Small Cap Fund",
-                            subtitle = "SIP • Direct Growth",
-                            amount = "₹5,000",
-                            date = "12 Oct 2023",
-                            status = TransactionStatus.SUCCESSFUL,
-                            type = TransactionType.MUTUAL_FUND
-                        ),
-                        TransactionHistoryItem(
-                            id = "2",
-                            title = "ICICI Pru Bluechip",
-                            subtitle = "Lumpsum • Direct Growth",
-                            amount = "₹25,000",
-                            date = "14 Oct 2023",
-                            status = TransactionStatus.PENDING,
-                            type = TransactionType.MUTUAL_FUND
-                        )
-                    )
-                ),
-                TransactionGroup(
-                    dateHeader = "TODAY",
-                    transactions = listOf(
-                        TransactionHistoryItem(
-                            id = "3",
-                            title = "Axis Midcap Fund",
-                            subtitle = "SIP • Direct Growth",
-                            amount = "₹3,000",
-                            date = "10 Oct 2023",
-                            status = TransactionStatus.FAILED,
-                            type = TransactionType.MUTUAL_FUND
-                        ),
-                        TransactionHistoryItem(
-                            id = "4",
-                            title = "SBI Liquid Fund",
-                            subtitle = "Withdrawal",
-                            amount = "- ₹10,000",
-                            date = "05 Oct 2023",
-                            status = TransactionStatus.SUCCESSFUL,
-                            type = TransactionType.MUTUAL_FUND
-                        )
-                    )
-                )
+    private fun loadData() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+
+            // Pending orders are supplementary: the tab is still worth showing without them, so a
+            // failure there is left silent rather than blanking the holdings behind an error.
+//            getPendingOrdersUseCase().onSuccess { pendingOrders = it }
+
+            getPortfolioUseCase()
+                .onSuccess { portfolio ->
+                    mutualFunds = portfolio.mutualFunds
+                    fixedDeposits = portfolio.fixedDeposits
+                    _uiState.update { it.copy(isLoading = false, error = null).withGroups() }
+                }
+                .onError { error ->
+                    _uiState.update { it.copy(isLoading = false, error = error.message) }
+                }
+        }
+    }
+
+    /** Rebuilds the visible rows from the cached reads for the current tab, filter and query. */
+    private fun TransactionHistoryUiState.withGroups(): TransactionHistoryUiState {
+        val groups = when (selectedTab) {
+            TransactionType.MUTUAL_FUND -> listOf(
+                "PENDING ORDERS" to pendingOrders.map { it.toTransactionItem() },
+                "HOLDINGS" to mutualFunds.map { it.toTransactionItem() }
             )
-        } else {
-            listOf(
-                TransactionGroup(
-                    dateHeader = "TODAY",
-                    transactions = listOf(
-                        TransactionHistoryItem(
-                            id = "5",
-                            title = "SBI Fixed Deposit",
-                            subtitle = "FD Booking • 7.10% p.a.",
-                            amount = "₹5,00,000",
-                            date = "Today",
-                            status = TransactionStatus.SUCCESSFUL,
-                            type = TransactionType.FIXED_DEPOSIT
-                        ),
-                        TransactionHistoryItem(
-                            id = "6",
-                            title = "HDFC Bank FD",
-                            subtitle = "Maturity Processing",
-                            amount = "₹1,50,000",
-                            date = "Today",
-                            status = TransactionStatus.PENDING,
-                            type = TransactionType.FIXED_DEPOSIT
-                        )
-                    )
-                ),
-                TransactionGroup(
-                    dateHeader = "YESTERDAY, 12 OCT",
-                    transactions = listOf(
-                        TransactionHistoryItem(
-                            id = "7",
-                            title = "Bajaj Finance FD",
-                            subtitle = "Interest Credit",
-                            amount = "+₹12,450",
-                            date = "12 Oct 2023",
-                            status = TransactionStatus.SUCCESSFUL,
-                            type = TransactionType.FIXED_DEPOSIT,
-                            isCredit = true
-                        ),
-                        TransactionHistoryItem(
-                            id = "8",
-                            title = "ICICI Bank FD",
-                            subtitle = "FD Booking - Auto Pay Failed",
-                            amount = "₹2,00,000",
-                            date = "12 Oct 2023",
-                            status = TransactionStatus.FAILED,
-                            type = TransactionType.FIXED_DEPOSIT
-                        )
-                    )
-                ),
-                TransactionGroup(
-                    dateHeader = "05 OCT 2023",
-                    transactions = listOf(
-                        TransactionHistoryItem(
-                            id = "9",
-                            title = "Axis Bank FD",
-                            subtitle = "FD Booking • 6.80% p.a.",
-                            amount = "₹1,00,000",
-                            date = "05 Oct 2023",
-                            status = TransactionStatus.SUCCESSFUL,
-                            type = TransactionType.FIXED_DEPOSIT
-                        )
-                    )
-                )
+
+            TransactionType.FIXED_DEPOSIT -> listOf(
+                "FIXED DEPOSITS" to fixedDeposits.map { it.toTransactionItem() }
             )
         }
 
-        _uiState.update { it.copy(transactionGroups = mockTransactions, isLoading = false) }
+        val visible = groups.mapNotNull { (header, items) ->
+            val kept = items.filter { it.matchesFilter(selectedFilter) && it.matches(searchQuery) }
+            if (kept.isEmpty()) null else TransactionGroup(header, kept)
+        }
+
+        return copy(transactionGroups = visible)
+    }
+
+    /**
+     * A row the source reports no state for — a settled holding — can only be answered for under
+     * "All"; claiming it as complete would be reading something into the payload.
+     */
+    private fun TransactionHistoryItem.matchesFilter(filter: TransactionFilter): Boolean =
+        when (filter) {
+            TransactionFilter.ALL -> true
+            TransactionFilter.PENDING -> status == TransactionStatus.PENDING
+            TransactionFilter.COMPLETE -> status == TransactionStatus.SUCCESSFUL
+            TransactionFilter.FAILED -> status == TransactionStatus.FAILED
+        }
+
+    private fun TransactionHistoryItem.matches(query: String): Boolean {
+        if (query.isBlank()) return true
+        return listOf(title, subtitle, amount, date, statusLabel)
+            .any { it.contains(query.trim(), ignoreCase = true) }
     }
 }

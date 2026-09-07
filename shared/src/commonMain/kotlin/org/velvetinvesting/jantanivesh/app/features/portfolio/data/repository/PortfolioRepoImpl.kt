@@ -11,6 +11,7 @@ import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.networking.getUrl
 import org.velvetinvesting.jantanivesh.app.core.networking.safeRequest
 import org.velvetinvesting.jantanivesh.app.core.networking.safeUnitRequest
+import org.velvetinvesting.jantanivesh.app.features.portfolio.data.mapper.toActiveSipDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.mapper.toDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.cancelorder.CancelOrderRequestDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.cancelorder.CancelOrderResponseDto
@@ -21,6 +22,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.fdredir
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.fdredirect.RedirectBody
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.investmore.InvestMoreLumpsumResponseDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.pendingorders.PendingOrdersDto
+import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.purchaseplan.MfPurchasePlansDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.portfolio.FolioFundsDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redemption.CreateRedemptionByAmountBody
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redemption.CreateRedemptionByUnitsBody
@@ -29,6 +31,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redempt
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.redemption.VerifyRedemptionOtpBody
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.userportfolio.UserPortfolioResponseDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.report.ReportExportDto
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositTransactionDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FolioFundDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MfRedemption
@@ -145,6 +148,18 @@ class PortfolioRepoImpl(
                     response.data.data?.pending_orders?.map { it.toDomain() } ?: emptyList()
                 )
             }
+        }
+    }
+
+    override suspend fun getActiveSips(): NetworkResponse<ActiveSipDomain, ErrorDomain> {
+        val response = safeRequest<MfPurchasePlansDto> {
+            client.get(getUrl("/mf/purchase-plan"))
+        }
+        return when (response) {
+            is NetworkResponse.Error -> NetworkResponse.Error(response.error)
+            is NetworkResponse.Success -> NetworkResponse.Success(
+                response.data.toActiveSipDomain()
+            )
         }
     }
 

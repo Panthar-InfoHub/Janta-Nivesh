@@ -68,6 +68,8 @@ fun BottomNavigation(
     navigateToLanguageSettings: () -> Unit,
     navigateToProfileSettigns: () -> Unit,
     navigateToTransactionHistory: () -> Unit,
+    navigateToMyOrders: () -> Unit,
+    navigateToActiveMandates: () -> Unit,
     /**
      * The fund list filtered by minimum installment — the `amount_type` values of
      * `GET /mf/funds`. The destination lives in the outer graph, so it is navigated from there.
@@ -288,6 +290,8 @@ fun BottomNavigation(
                             ProfileEffect.NavigateToSecondaryLanguage -> navigateToLanguageSettings()
                             ProfileEffect.NavigateToSettings -> navigateToProfileSettigns()
                             ProfileEffect.NavigateToTransactionHistory -> navigateToTransactionHistory()
+                            ProfileEffect.NavigateToMyOrders -> navigateToMyOrders()
+                            ProfileEffect.NavigateToActiveMandates -> navigateToActiveMandates()
                             ProfileEffect.NavigateToTradingAccountStatus -> navigateToTradingAccountSetup()
                             ProfileEffect.ShowLogoutDialog -> onSignOut()
                             ProfileEffect.NavigateToBankAccounts -> {}

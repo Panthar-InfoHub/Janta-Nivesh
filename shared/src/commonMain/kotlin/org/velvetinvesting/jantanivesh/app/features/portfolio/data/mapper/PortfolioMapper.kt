@@ -102,8 +102,7 @@ fun UserPortFolioDto.toDomain(): PortfolioDomain {
             currentValue = mutualFundCurrentValue,
             returnsAmount = mutualFundReturnsAmount,
             returnsPercent = mutualFundReturnsPercent
-        ),
-        activeSips = org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipDomain.EMPTY
+        )
     )
 }
 

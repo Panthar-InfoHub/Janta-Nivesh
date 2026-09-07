@@ -35,12 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.back_arrow
-import jantanivesh.shared.generated.resources.cart_icon
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.ShadowColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
@@ -48,7 +46,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearc
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.ReturnYearsRateDomain
@@ -269,23 +266,23 @@ private fun ScreenHeader(onIconClick: () -> Unit, onBackClick: () -> Unit) {
             ).align(Alignment.CenterStart)
         )
 
-        Box(
-            modifier=Modifier
-                .size(52.dp)
-                .genericDropShadow(CircleShape)
-                .clip(CircleShape)
-                .background(Color.White)
-                .clickable(
-                    onClick = onIconClick
-                ).align(Alignment.CenterEnd)
-        ){
-            Icon(
-                painter = painterResource(Res.drawable.cart_icon),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp).align(Alignment.Center),
-                tint= Secondary
-            )
-        }
+//        Box(
+//            modifier=Modifier
+//                .size(52.dp)
+//                .genericDropShadow(CircleShape)
+//                .clip(CircleShape)
+//                .background(Color.White)
+//                .clickable(
+//                    onClick = onIconClick
+//                ).align(Alignment.CenterEnd)
+//        ){
+//            Icon(
+//                painter = painterResource(Res.drawable.cart_icon),
+//                contentDescription = null,
+//                modifier = Modifier.size(24.dp).align(Alignment.Center),
+//                tint= Secondary
+//            )
+//        }
     }
 }
 

@@ -272,6 +272,58 @@ sealed interface Route {
     data object TransactionHistory : Route
 
     @Serializable
+    data object MyOrders : Route
+
+    /**
+     * One order, opened from the listing.
+     *
+     * There is no per-order endpoint, so everything the screen renders rides on the route — the
+     * listing already holds it. The figures are non-null with zero defaults because the
+     * navigation argument types have no nullable primitives; zero therefore stands for "the
+     * payload did not report this", which is exactly what the screen shows as "--".
+     */
+    @Serializable
+    data class OrderDetails(
+        /** An [org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderPlanType] name. */
+        val planType: String = "",
+        /** An [org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderState] name. */
+        val state: String = "",
+        val stateLabel: String = "",
+        val systematic: Boolean = false,
+        val fundName: String = "",
+        val fundIconUrl: String = "",
+        val fundCategory: String = "",
+        /** Product identity, so a failed order can be placed again from the details screen. */
+        val mfProductId: String = "",
+        val isin: String = "",
+        val folioNumber: String = "",
+        val orderId: String = "",
+        val transactionId: String = "",
+        val amount: Double = 0.0,
+        val units: Double = 0.0,
+        val allottedUnits: Double = 0.0,
+        val purchasedAmount: Double = 0.0,
+        val purchasedPrice: Double = 0.0,
+        val latestNav: Double = 0.0,
+        val paymentMethod: String = "",
+        val frequency: String = "",
+        val reason: String = "",
+        val createdAt: String = "",
+        val submittedAt: String = "",
+        val succeededAt: String = "",
+        val failedAt: String = "",
+        val allottedNavDate: String = "",
+        /**
+         * The account a redemption pays out to. The order payload does not resolve it, so this
+         * is blank today and the payout card is simply left off until it is filled.
+         */
+        val payoutAccount: String = ""
+    ) : Route
+
+    @Serializable
+    data object ActiveMandates : Route
+
+    @Serializable
     data class WebViewScreen(
         val url: String,
         val exitUrlPatterns: List<String> = emptyList(),

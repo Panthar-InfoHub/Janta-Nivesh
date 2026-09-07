@@ -95,21 +95,48 @@ data class MutualFundSummaryDomain(
     val xirr: Double = 0.0
 )
 
+/**
+ * One running purchase plan, from `GET /mf/purchase-plan`.
+ *
+ * That endpoint describes the *instruction*, not a holding: it reports what is debited each
+ * cycle and when the next debit falls, but nothing about what the plan has accumulated so far.
+ * The model therefore carries [installmentAmount] rather than an invested total, and leaves the
+ * installment counts null for a perpetual SIP that has none.
+ */
 data class ActiveSipItemDomain(
     val id: String,
     val fundName: String,
-    val fundCategory: String, // e.g. Equity
-    val fundType: String, // e.g. Mid Cap
-    val investedAmount: Double,
+    /** e.g. "Equity". */
+    val fundCategory: String,
+    /** e.g. "Equity Fund". */
+    val fundType: String,
+    /** Debited each cycle. */
+    val installmentAmount: Double,
+    /** "Monthly", "Daily" — title-cased for display. */
+    val frequency: String,
+    /** "05 Oct 2026", or blank when the gateway has not scheduled the next debit. */
     val nextDueDate: String,
-    val iconUrl: String? = null
+    val folioNumber: String,
+    val isin: String,
+    val totalInstallments: Int?,
+    val remainingInstallments: Int?,
+    val latestNav: Double,
+    val iconUrl: String = ""
 )
 
+/**
+ * The plans split the way the tab's two sub-tabs ask for them. The endpoint's `frequency` is
+ * free-form, so anything that is not daily lands in [monthlySips] — a weekly plan is closer to a
+ * monthly one than to a daily one, and hiding it entirely would be worse than filing it here.
+ */
 data class ActiveSipDomain(
-    val totalInvestedAmount: Double,
+    /** Sum of every plan's per-cycle amount — what the SIPs commit, not what they have built. */
+    val totalInstallmentAmount: Double,
     val monthlySips: List<ActiveSipItemDomain>,
     val dailySips: List<ActiveSipItemDomain>
 ) {
+    val isEmpty: Boolean get() = monthlySips.isEmpty() && dailySips.isEmpty()
+
     companion object {
         val EMPTY = ActiveSipDomain(0.0, emptyList(), emptyList())
     }
@@ -121,6 +148,5 @@ data class PortfolioDomain(
     val investedAmountBreakdown: InvestedAmountBreakdownDomain,
     val mutualFunds: List<MutualFundPortfolioDomain>,
     val fixedDeposits: List<FixedDepositPortfolioDomain>,
-    val mutualFundSummary: MutualFundSummaryDomain,
-    val activeSips: ActiveSipDomain
+    val mutualFundSummary: MutualFundSummaryDomain
 )

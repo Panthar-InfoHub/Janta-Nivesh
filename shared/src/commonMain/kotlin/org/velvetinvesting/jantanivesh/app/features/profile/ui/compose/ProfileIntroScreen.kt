@@ -33,11 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.forward
+import jantanivesh.shared.generated.resources.profile_bank
+import jantanivesh.shared.generated.resources.profile_clock
 import jantanivesh.shared.generated.resources.profile_contact_us
 import jantanivesh.shared.generated.resources.profile_help
 import jantanivesh.shared.generated.resources.profile_kyc_status
 import jantanivesh.shared.generated.resources.profile_language
 import jantanivesh.shared.generated.resources.profile_setting
+import jantanivesh.shared.generated.resources.receipt_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
@@ -214,19 +217,46 @@ fun ProfileIntroScreen(
                                 )
                             )
                     ) {
-//                        RowItem(
-//                            icon = Res.drawable.profile_clock,
-//                            title = "Transaction History",
-//                            onCLick = {
-//                                onEvent(
-//                                    ProfileEvent.OnTransactionHistoryClicked
-//                                )
-//                            })
-//                        HorizontalDivider(
-//                            thickness = 1.dp,
-//                            color = InsuranceIconBg.copy(0.2f),
-//                            modifier = Modifier.padding(horizontal = 24.dp)
-//                        )
+                        RowItem(
+                            icon = Res.drawable.profile_clock,
+                            title = "Transaction History",
+                            onCLick = {
+                                onEvent(
+                                    ProfileEvent.OnTransactionHistoryClicked
+                                )
+                            })
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = InsuranceIconBg.copy(0.2f),
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
+                        // TODO: replace with the dedicated My Orders icon once it is exported.
+                        RowItem(
+                            icon = Res.drawable.receipt_icon,
+                            title = "My Orders",
+                            onCLick = {
+                                onEvent(
+                                    ProfileEvent.OnMyOrdersClicked
+                                )
+                            })
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = InsuranceIconBg.copy(0.2f),
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
+                        RowItem(
+                            icon = Res.drawable.profile_bank,
+                            title = "Active Mandates",
+                            onCLick = {
+                                onEvent(
+                                    ProfileEvent.OnActiveMandatesClicked
+                                )
+                            })
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = InsuranceIconBg.copy(0.2f),
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
                         RowItemText(
                             Res.drawable.profile_kyc_status,
                             title = "KYC Status",

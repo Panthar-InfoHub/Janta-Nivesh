@@ -7,10 +7,8 @@ sealed interface SelectedPortfolio {
     data object FixedDeposits: SelectedPortfolio
 
     companion object {
-        // ActiveSIP is out of the tab strip until `GET /user/portfolio` reports active SIPs —
-        // the tab it drives has nothing to show. Put it back between MutualFunds and
-        // FixedDeposits when it does; the pager reads its page count from this list.
-        val tabs = listOf(Dashboard, MutualFunds, /* ActiveSIP, */ FixedDeposits)
+        /** The pager reads its page count from this list, so order here is page order there. */
+        val tabs = listOf(Dashboard, MutualFunds, ActiveSIP, FixedDeposits)
     }
 }
 

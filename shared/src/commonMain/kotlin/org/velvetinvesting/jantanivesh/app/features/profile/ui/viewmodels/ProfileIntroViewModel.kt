@@ -30,6 +30,8 @@ sealed interface ProfileEvent {
 
     data object OnBankAccountsClicked : ProfileEvent
     data object OnTransactionHistoryClicked : ProfileEvent
+    data object OnMyOrdersClicked : ProfileEvent
+    data object OnActiveMandatesClicked : ProfileEvent
     data object OnKycStatusClicked : ProfileEvent
 
     data object OnHelpFaqClicked : ProfileEvent
@@ -46,6 +48,8 @@ sealed interface ProfileEffect {
 
     data object NavigateToBankAccounts : ProfileEffect
     data object NavigateToTransactionHistory : ProfileEffect
+    data object NavigateToMyOrders : ProfileEffect
+    data object NavigateToActiveMandates : ProfileEffect
     data object NavigateToKycStatus : ProfileEffect
     data object NavigateToTradingAccountStatus: ProfileEffect
 
@@ -83,6 +87,12 @@ class ProfileViewModel(
 
             ProfileEvent.OnTransactionHistoryClicked ->
                 sendEffect(ProfileEffect.NavigateToTransactionHistory)
+
+            ProfileEvent.OnMyOrdersClicked ->
+                sendEffect(ProfileEffect.NavigateToMyOrders)
+
+            ProfileEvent.OnActiveMandatesClicked ->
+                sendEffect(ProfileEffect.NavigateToActiveMandates)
 
             ProfileEvent.OnKycStatusClicked ->
                 sendEffect(ProfileEffect.NavigateToKycStatus)

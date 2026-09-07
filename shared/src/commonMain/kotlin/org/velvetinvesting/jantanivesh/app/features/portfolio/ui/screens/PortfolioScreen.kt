@@ -34,8 +34,10 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +56,7 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.download_ic
 import jantanivesh.shared.generated.resources.holdings_ic
 import jantanivesh.shared.generated.resources.icon_download
+import jantanivesh.shared.generated.resources.progress_icon
 import jantanivesh.shared.generated.resources.tax_savings_ic
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
@@ -117,6 +120,8 @@ fun PortfolioScreenMain(
     val isExportingPortfolio by viewModel.isExportingPortfolio.collectAsStateWithLifecycle()
 
     val pendingOrders by viewModel.pendingOrders.collectAsStateWithLifecycle()
+    val activeSips by viewModel.activeSips.collectAsStateWithLifecycle()
+    val isLoadingActiveSips by viewModel.isLoadingActiveSips.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(pageCount = { SelectedPortfolio.tabs.size })
 
     Box(
@@ -130,7 +135,9 @@ fun PortfolioScreenMain(
             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 UiStateContainer(
                     uiState = screenState,
-                    onRetry = viewModel::loadPortfolio
+                    // Retry is the whole screen's retry: the SIP and pending-order reads sit
+                    // behind the same error state, so bringing one back has to bring all back.
+                    onRetry = viewModel::refresh
                 ) { data ->
                     PortfolioScreen(
                         selectedTab = selectedTab,
@@ -140,7 +147,7 @@ fun PortfolioScreenMain(
                         onFDClick = onFDClick,
                         navigateToCategoryFDScreen = navigateToCategoryFDScreen,
                         navigateToCategoryMutualFundScreen = navigateToCategoryMutualFundScreen,
-                        reload = viewModel::loadPortfolio,
+                        reload = viewModel::refresh,
                         onDownloadPortfolioReport = viewModel::downloadPortfolioReport,
                         onDownloadCapitalReport = viewModel::downloadCapitalReport,
                         onCancelPendingOrder = viewModel::cancelPendingOrder,
@@ -149,6 +156,13 @@ fun PortfolioScreenMain(
                         isExportingCapital = isExportingCapital,
                         isExportingTax = isExportingTax,
                         pendingOrders = pendingOrders,
+                        activeSips = activeSips,
+                        isLoadingActiveSips = isLoadingActiveSips,
+                        // Resolved against the holdings this screen already has, so a SIP opens
+                        // the same details screen — with the same figures — its fund does.
+                        onActiveSipClick = { sip ->
+                            onFolioItemClick(sip.resolveHolding(data.mutualFunds))
+                        },
                         pagerState = pagerState
                     )
                 }
@@ -174,6 +188,9 @@ fun PortfolioScreen(
     isExportingCapital: Boolean,
     isExportingTax: Boolean,
     pendingOrders: List<PendingOrderDomain>,
+    activeSips: ActiveSipDomain,
+    isLoadingActiveSips: Boolean,
+    onActiveSipClick: (ActiveSipItemDomain) -> Unit,
     pagerState: PagerState,
     onCancelPendingOrder: (PendingOrderDomain) -> Unit
 ) {
@@ -260,16 +277,16 @@ fun PortfolioScreen(
                         onCancelPendingOrder = onCancelPendingOrder
                     )
                 }
-                // Active SIP has no data on this endpoint yet — restore this page, and the tab
-                // in SelectedPortfolio.tabs, together.
-//                2-> {
-//                    ActiveSipPortfolio(
-//                        activeSip = portfolioData.activeSips,
-//                        reload = reload,
-//                        onSipClick = { /* Handle SIP click if needed */ }
-//                    )
-//                }
                 2-> {
+                    ActiveSipPortfolio(
+                        activeSip = activeSips,
+                        isLoading = isLoadingActiveSips,
+                        reload = reload,
+                        onSipClick = onActiveSipClick,
+                        onBrowseClick = navigateToCategoryMutualFundScreen
+                    )
+                }
+                3-> {
                     FixedDepositPortfolio(
                         fixedDeposits = portfolioData.fixedDeposits,
                         onFDClick = onFDClick,
@@ -283,18 +300,40 @@ fun PortfolioScreen(
 
 }
 
-/*
- * The active-SIP tab, parked until `GET /user/portfolio` reports active SIPs. Uncomment
- * alongside SelectedPortfolio.ActiveSIP and the pager page that used it.
+/**
+ * The Active SIP tab.
  *
+ * Its rows come from `GET /mf/purchase-plan`, which describes standing instructions rather than
+ * holdings: what is debited each cycle and when the next debit falls. Nothing here is an
+ * accumulated total, so the card says "SIP Amount" rather than "Invested" — the invested figure
+ * for the same fund lives on the Mutual Funds tab, which is where tapping a row goes.
+ */
 @Composable
 fun ActiveSipPortfolio(
     activeSip: ActiveSipDomain,
+    isLoading: Boolean,
     reload: () -> Unit,
-    onSipClick: (ActiveSipItemDomain) -> Unit
+    onSipClick: (ActiveSipItemDomain) -> Unit,
+    onBrowseClick: () -> Unit
 ) {
     var selectedSubTab by remember { mutableStateOf(0) }
     val subTabs = listOf("Monthly SIP", "Daily SIP")
+
+    if (isLoading && activeSip.isEmpty) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    if (activeSip.isEmpty) {
+        EmptyFundScreen(
+            onBrowseClick = onBrowseClick,
+            text = "You have no running SIPs. Start one to invest a fixed amount automatically, every month.",
+            buttonText = "Browse SIP"
+        )
+        return
+    }
 
     PullToRefreshBox(
         isRefreshing = false,
@@ -305,7 +344,12 @@ fun ActiveSipPortfolio(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             item { Spacer(modifier = Modifier.height(4.dp)) }
-            item { ActiveSipSummaryCard(activeSip.totalInvestedAmount) }
+            item {
+                ActiveSipSummaryCard(
+                    totalInstallmentAmount = activeSip.totalInstallmentAmount,
+                    sipCount = activeSip.monthlySips.size + activeSip.dailySips.size
+                )
+            }
 
             item {
                 GenericTabSwitcher(
@@ -350,7 +394,7 @@ fun ActiveSipPortfolio(
 }
 
 @Composable
-fun ActiveSipSummaryCard(totalInvested: Double) {
+fun ActiveSipSummaryCard(totalInstallmentAmount: Double, sipCount: Int) {
     val shapes = LocalShapes.current
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -363,14 +407,14 @@ fun ActiveSipSummaryCard(totalInvested: Double) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Column {
-                Text(text = "TOTAL INVESTED AMOUNT", style = titlesStyle, color = titleColor)
+                Text(text = "TOTAL SIP AMOUNT", style = titlesStyle, color = titleColor)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "₹${formatMoneyAfterL(totalInvested.toLong())}".withInterRupee(),
+                        text = "₹${formatMoneyAfterL(totalInstallmentAmount.toLong())}".withInterRupee(),
                         style = subHeading.copy(fontSize = 32.sp, fontWeight = FontWeight.ExtraBold),
                         color = Primary,
                         modifier = Modifier.weight(1f)
@@ -382,6 +426,11 @@ fun ActiveSipSummaryCard(totalInvested: Double) {
                         tint = appGreen
                     )
                 }
+                Text(
+                    text = if (sipCount == 1) "Across 1 active SIP" else "Across $sipCount active SIPs",
+                    style = tinyLabel,
+                    color = titleColor
+                )
             }
             HorizontalDivider(color = PathGray.copy(alpha = 0.5f), thickness = 1.dp)
         }
@@ -410,55 +459,136 @@ fun ActiveSipCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                MutualFundIcon(
-                    schemeName = item.fundName,
-                    size = 40.dp,
-                    cornerRadius = 8.dp,
-                    backgroundColor = Color(0xFFF3F4F6),
-                    textColor = Primary
+                SubcomposeAsyncImage(
+                    modifier = Modifier.size(40.dp).clip(RoundedCornerShape(8.dp)),
+                    model = item.iconUrl,
+                    contentDescription = null,
+                    loading = {
+                        MutualFundIcon(
+                            schemeName = item.fundName,
+                            size = 40.dp,
+                            cornerRadius = 8.dp,
+                            backgroundColor = Color(0xFFF3F4F6),
+                            textColor = Primary
+                        )
+                    },
+                    error = {
+                        MutualFundIcon(
+                            schemeName = item.fundName,
+                            size = 40.dp,
+                            cornerRadius = 8.dp,
+                            backgroundColor = Color(0xFFF3F4F6),
+                            textColor = Primary
+                        )
+                    },
+                    success = { SubcomposeAsyncImageContent() }
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = item.fundName,
+                        text = item.fundName.toTitleCase(),
                         style = subHeadingMedium.copy(fontSize = 14.sp),
                         color = Color.Black,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Text(
-                        text = "${item.fundCategory} • ${item.fundType}",
-                        style = tinyLabel,
-                        color = titleColor
-                    )
+                    val subtitle = listOf(item.fundCategory, item.fundType)
+                        .filter { it.isNotBlank() }
+                        .distinct()
+                        .joinToString(" • ")
+                    if (subtitle.isNotBlank()) {
+                        Text(text = subtitle, style = tinyLabel, color = titleColor)
+                    }
                 }
             }
+
+            HorizontalDivider(color = PathGray.copy(alpha = 0.5f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
                 Column {
-                    Text(text = "Invested", style = tinyLabel, color = titleColor)
+                    Text(text = "SIP Amount", style = tinyLabel, color = titleColor)
                     Text(
-                        text = "₹${formatMoneyAfterL(item.investedAmount.toLong())}".withInterRupee(),
+                        text = "₹${formatMoneyAfterL(item.installmentAmount.toLong())}".withInterRupee(),
                         style = subHeadingMedium,
                         color = Color.Black
                     )
+                    if (item.frequency.isNotBlank()) {
+                        Text(text = item.frequency, style = tinyLabel, color = titleColor)
+                    }
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(text = "Next Due", style = tinyLabel, color = titleColor)
                     Text(
-                        text = item.nextDueDate,
+                        text = item.nextDueDate.ifBlank { "--" },
                         style = subHeadingMedium,
                         color = Color.Black
                     )
+                    // A perpetual plan reports no counts, so this line only appears for the
+                    // fixed-term ones that actually have a remaining figure.
+                    val remaining = item.remainingInstallments
+                    val total = item.totalInstallments
+                    if (remaining != null && total != null) {
+                        Text(
+                            text = "$remaining of $total left",
+                            style = tinyLabel,
+                            color = titleColor
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+/**
+ * The holding a running SIP is building, so tapping a SIP lands on the same order-details screen
+ * a Mutual Funds row does.
+ *
+ * Folio first — it identifies the position exactly, once the gateway's "12345/0" is reduced to
+ * the folio number itself — then the fund name, which is all a SIP shares with the portfolio
+ * when it is held under a folio the two payloads write differently.
  */
+private fun ActiveSipItemDomain.resolveHolding(
+    holdings: List<MutualFundPortfolioDomain>
+): MutualFundPortfolioDomain {
+    val folioKey = folioNumber.folioKey()
+
+    val matched = holdings.firstOrNull { holding ->
+        folioKey.isNotBlank() && (
+            holding.folio.folioKey() == folioKey ||
+                holding.actualFolio.folioKey() == folioKey ||
+                holding.folios.any { it.folioKey() == folioKey }
+            )
+    } ?: holdings.firstOrNull { it.title.trim().equals(fundName.trim(), ignoreCase = true) }
+
+    // A SIP whose first installment has not been allotted yet has no holding to match. The
+    // details screen still opens, on what the plan itself reports, with the figures it has not
+    // earned left at zero rather than invented.
+    return matched ?: MutualFundPortfolioDomain(
+        id = id,
+        title = fundName,
+        category = fundCategory,
+        amount = 0.0,
+        currentValue = 0.0,
+        returnAmount = 0.0,
+        returnPercentage = "",
+        folio = folioNumber,
+        actualFolio = folioNumber,
+        icon = iconUrl,
+        minSipAmount = 0L,
+        minLumpSumAmount = 0L,
+        schemeId = 0,
+        balanceUnits = 0.0,
+        isSip = true,
+        subCategory = fundType,
+        currentNav = latestNav
+    )
+}
+
+private fun String.folioKey(): String = substringBefore('/').trim()
 
 @Composable
 fun DashboardPortfolio(
@@ -1040,6 +1170,9 @@ fun DashboardPortfolioPreview() {
             isExportingCapital = false,
             isExportingTax = false,
             pendingOrders = samplePendingOrders,
+            activeSips = previewActiveSips,
+            isLoadingActiveSips = false,
+            onActiveSipClick = {},
             pagerState=pagerState,{}
         )
     }
@@ -1066,24 +1199,27 @@ fun MutualFundPortfolioPreview() {
             isExportingCapital = false,
             isExportingTax = false,
             pendingOrders = samplePendingOrders,
+            activeSips = previewActiveSips,
+            isLoadingActiveSips = false,
+            onActiveSipClick = {},
             pagerState=pagerState,{}
         )
     }
 }
 
-/*
 @Preview(showBackground = true, backgroundColor = 0xffffff)
 @Composable
 fun ActiveSipPortfolioPreview() {
     JantaNiveshTheme {
         ActiveSipPortfolio(
-            activeSip = previewPortfolioData.activeSips,
+            activeSip = previewActiveSips,
+            isLoading = false,
             reload = {},
-            onSipClick = {}
+            onSipClick = {},
+            onBrowseClick = {}
         )
     }
 }
-*/
 
 @Preview(showBackground = true, backgroundColor = 0xffffff)
 @Composable
@@ -1326,21 +1462,44 @@ private val previewPortfolioData = PortfolioDomain(
         currentValue = 94130.0,
         returnsAmount = 14130.0,
         returnsPercent = 17.66
-    ),
-    activeSips = ActiveSipDomain(
-        totalInvestedAmount = 450000.0,
-        monthlySips = listOf(
-            ActiveSipItemDomain(
-                id = "sip1",
-                fundName = "HDFC Mid-Cap Opportunities",
-                fundCategory = "Equity",
-                fundType = "Mid Cap",
-                investedAmount = 75000.0,
-                nextDueDate = "15th Nov"
-            )
-        ),
-        dailySips = emptyList()
     )
+)
+
+private val previewActiveSips = ActiveSipDomain(
+    totalInstallmentAmount = 3000.0,
+    monthlySips = listOf(
+        ActiveSipItemDomain(
+            id = "sip1",
+            fundName = "Axis Bluechip Fund - Regular Growth",
+            fundCategory = "Equity",
+            fundType = "Equity Fund",
+            installmentAmount = 1000.0,
+            frequency = "Monthly",
+            nextDueDate = "05 Oct 2026",
+            folioNumber = "12345/0",
+            isin = "INF846K01164",
+            totalInstallments = 12,
+            remainingInstallments = 11,
+            latestNav = 52.41,
+            iconUrl = ""
+        ),
+        ActiveSipItemDomain(
+            id = "sip2",
+            fundName = "HDFC Mid-Cap Opportunities",
+            fundCategory = "Equity",
+            fundType = "Mid Cap",
+            installmentAmount = 2000.0,
+            frequency = "Monthly",
+            nextDueDate = "15 Oct 2026",
+            folioNumber = "98765/0",
+            isin = "INF179K01YV8",
+            totalInstallments = null,
+            remainingInstallments = null,
+            latestNav = 118.2,
+            iconUrl = ""
+        )
+    ),
+    dailySips = emptyList()
 )
 
 

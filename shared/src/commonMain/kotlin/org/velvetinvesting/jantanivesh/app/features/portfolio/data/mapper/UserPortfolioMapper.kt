@@ -3,7 +3,6 @@ package org.velvetinvesting.jantanivesh.app.features.portfolio.data.mapper
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.userportfolio.PortfolioFixedDepositDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.userportfolio.PortfolioMutualFundDto
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.userportfolio.UserPortfolioResponseDto
-import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositPortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.InvestedAmountBreakdownDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
@@ -78,10 +77,7 @@ fun UserPortfolioResponseDto.toDomain(): PortfolioDomain {
             oneDayReturn = summary?.one_day_return ?: 0.0,
             oneDayReturnPercent = summary?.one_day_return_percent ?: 0.0,
             xirr = summary?.xirr ?: 0.0
-        ),
-
-        // The active-SIP tab is not in this response, and its UI is commented out until it is.
-        activeSips = ActiveSipDomain.EMPTY
+        )
     )
 }
 
