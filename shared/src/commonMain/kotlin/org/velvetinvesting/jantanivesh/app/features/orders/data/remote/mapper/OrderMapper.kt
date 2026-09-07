@@ -70,14 +70,10 @@ private fun String?.toPlanType(): OrderPlanType = when (this?.uppercase()) {
     else -> OrderPlanType.UNKNOWN
 }
 
-/**
- * SUBMITTED and ACTIVE are not outcomes the user is waiting on in the same way, but they are
- * both "placed, not settled" as far as this screen is concerned — a registered SIP counts as
- * done, an order still with the gateway does not.
- */
+
 private fun String?.toOrderState(): OrderState = when (this?.uppercase()) {
-    "SUCCESSFUL", "SUCCESS", "COMPLETED", "ACTIVE" -> OrderState.SUCCESSFUL
-    "PENDING", "SUBMITTED", "CREATED", "INITIATED", "PROCESSING" -> OrderState.PENDING
+    "SUCCESSFUL", "SUCCESS","SUBMITTED", "COMPLETED", "ACTIVE" -> OrderState.SUCCESSFUL
+    "PENDING", "CREATED", "INITIATED", "PROCESSING" -> OrderState.PENDING
     "FAILED", "REJECTED", "EXPIRED" -> OrderState.FAILED
     "CANCELLED", "CANCELED", "REVOKED" -> OrderState.CANCELLED
     else -> OrderState.UNKNOWN
