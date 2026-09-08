@@ -229,11 +229,6 @@ private fun InvestmentDetailsCard(order: OrderDomain) {
             "Amount" to order.amountLabel(),
             "NAV" to order.navLabel()
         )
-        Spacer(Modifier.height(Spacing.dp20))
-        FactRow(
-            "Units Allotted" to order.allottedUnitsLabel(),
-            "Folio Number" to order.folioNumber.ifBlank { ABSENT }
-        )
     }
 }
 
