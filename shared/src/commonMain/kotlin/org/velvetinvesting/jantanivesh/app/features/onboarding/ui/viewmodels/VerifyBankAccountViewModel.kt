@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -13,6 +14,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.toCapital
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.AccountType
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.BankAccount
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetPennyDropStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitPennyDropUseCase
 
 data class BankAccountDetails(
@@ -71,7 +73,8 @@ sealed interface VerifyBankAccountEffect {
 }
 
 class VerifyBankAccountViewModel(
-    private val submitPennyDrop: SubmitPennyDropUseCase
+    private val submitPennyDrop: SubmitPennyDropUseCase,
+    private val getPennyDropStatus: GetPennyDropStatusUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(VerifyBankAccountUiState())
     val uiState = _uiState.asStateFlow()
@@ -148,13 +151,50 @@ class VerifyBankAccountViewModel(
             try {
                 when (val result = submitPennyDrop(bankAccount)) {
                     is NetworkResponse.Error -> SnackBarController.showError(result.error.message)
-                    is NetworkResponse.Success ->
-                        sendEffect(VerifyBankAccountEffect.PennyDropCompleted)
+                    is NetworkResponse.Success -> awaitPennyDropVerification(state.accountNumber)
                 }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
         }
+    }
+
+    /**
+     * The bank verifies the deposit out of band, so the submission succeeding only means the
+     * request was accepted. This reads the status back until the account turns verified, and only
+     * then lets the user move on — the screen stays in its loading state throughout.
+     */
+    private suspend fun awaitPennyDropVerification(accountNumber: String) {
+        repeat(STATUS_POLL_ATTEMPTS) { attempt ->
+            // The first read happens immediately; the bank has often answered by then.
+            if (attempt > 0) delay(STATUS_POLL_INTERVAL_MS)
+
+            when (val result = getPennyDropStatus(accountNumber)) {
+                is NetworkResponse.Error -> {
+                    SnackBarController.showError(result.error.message)
+                    return
+                }
+
+                is NetworkResponse.Success -> {
+                    val status = result.data
+                    when {
+                        status.isVerified -> {
+                            sendEffect(VerifyBankAccountEffect.PennyDropCompleted)
+                            return
+                        }
+
+                        status.isFailed -> {
+                            SnackBarController.showError(
+                                status.reason ?: VERIFICATION_FAILED_MESSAGE
+                            )
+                            return
+                        }
+                    }
+                }
+            }
+        }
+
+        SnackBarController.showError(VERIFICATION_PENDING_MESSAGE)
     }
 
     private fun onChangeBankAccountClick() {
@@ -167,5 +207,17 @@ class VerifyBankAccountViewModel(
 
     private fun sendEffect(effect: VerifyBankAccountEffect) {
         viewModelScope.launch { _effect.send(effect) }
+    }
+
+    private companion object {
+        /** Five reads with 5-second gaps — about 20 seconds for the bank to answer. */
+        const val STATUS_POLL_ATTEMPTS = 5
+        const val STATUS_POLL_INTERVAL_MS = 5_000L
+
+        const val VERIFICATION_FAILED_MESSAGE =
+            "We could not verify this bank account. Please check the details and try again."
+
+        const val VERIFICATION_PENDING_MESSAGE =
+            "Your bank account is still being verified. Please try again in a moment."
     }
 }

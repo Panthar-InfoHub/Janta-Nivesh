@@ -286,6 +286,21 @@ class PortfolioRepoImpl(
         }
     }
 
+    override suspend fun getPortfolioReport(): NetworkResponse<ByteArray, ErrorDomain> {
+        return safeRequest<ByteArray>{
+            client.get(getUrl("/report/portfolio/pdf")) {
+            }
+        }
+    }
+
+    override suspend fun getFolioSpecificReport(folio: String): NetworkResponse<ByteArray, ErrorDomain> {
+        return safeRequest<ByteArray>{
+            client.get(getUrl("/report/fund-holding/pdf")) {
+                parameter("folio", folio)
+            }
+        }
+    }
+
     /** A create with no `fp_id` cannot be polled or confirmed, so it is not a success. */
     private fun NetworkResponse<CreateRedemptionResponseDto, ErrorDomain>.toCreatedRedemption():
             NetworkResponse<MfRedemption, ErrorDomain> = when (this) {

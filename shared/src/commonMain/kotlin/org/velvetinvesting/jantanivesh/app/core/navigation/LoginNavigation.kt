@@ -3,13 +3,22 @@ package org.velvetinvesting.jantanivesh.app.core.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
+import org.velvetinvesting.jantanivesh.app.core.platform.PermissionCallback
+import org.velvetinvesting.jantanivesh.app.core.platform.PermissionStatus
+import org.velvetinvesting.jantanivesh.app.core.platform.PermissionType
+import org.velvetinvesting.jantanivesh.app.core.platform.createPermissionsManager
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.login.ui.screens.EnterOtpScreen
 import org.velvetinvesting.jantanivesh.app.features.login.ui.screens.LoginWithPhoneNumberScreen
 import org.velvetinvesting.jantanivesh.app.features.login.ui.screens.OnboardingChooseLanguage
@@ -46,6 +55,37 @@ fun LoginNavigation(
                         }
                     }
                 }
+            }
+
+            val prefs: AuthPrefs = koinInject()
+            var shouldAskPermission by remember {
+                mutableStateOf(prefs.isFirstLaunch())
+            }
+
+            val permissionManager = createPermissionsManager(
+                callback = object : PermissionCallback {
+                    override fun onPermissionStatus(
+                        permissionType: PermissionType,
+                        status: PermissionStatus
+                    ) {
+                        when (status) {
+                            PermissionStatus.GRANTED -> {
+                                prefs.setFirstLaunch(true)
+                                shouldAskPermission = false
+                            }
+                            PermissionStatus.DENIED -> {
+                                prefs.setFirstLaunch(true)
+                                shouldAskPermission = false
+                            }
+                            PermissionStatus.SHOW_RATIONALE -> {
+                            }
+                        }
+                    }
+                }
+            )
+
+            if (shouldAskPermission) {
+                permissionManager.askPermission(PermissionType.NOTIFICATION)
             }
 
             SplashScreen(

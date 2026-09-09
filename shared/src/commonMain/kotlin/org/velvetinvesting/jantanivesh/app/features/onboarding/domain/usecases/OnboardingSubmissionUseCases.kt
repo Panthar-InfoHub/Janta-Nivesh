@@ -5,6 +5,7 @@ import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.BankAccount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.InvestorProfile
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Nominee
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PennyDropStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.repository.OnboardingRepo
 
 class SubmitPennyDropUseCase(
@@ -12,6 +13,16 @@ class SubmitPennyDropUseCase(
 ) {
     suspend operator fun invoke(bankAccount: BankAccount): NetworkResponse<Unit, ErrorDomain> {
         return onboardingRepo.submitPennyDrop(bankAccount)
+    }
+}
+
+class GetPennyDropStatusUseCase(
+    private val onboardingRepo: OnboardingRepo
+) {
+    suspend operator fun invoke(
+        accountNumber: String
+    ): NetworkResponse<PennyDropStatus, ErrorDomain> {
+        return onboardingRepo.getPennyDropStatus(accountNumber)
     }
 }
 

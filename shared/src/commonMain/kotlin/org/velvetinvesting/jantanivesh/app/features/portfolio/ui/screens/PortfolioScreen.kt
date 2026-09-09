@@ -115,8 +115,8 @@ fun PortfolioScreenMain(
     val screenState by viewModel.uiState.collectAsStateWithLifecycle()
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
 
-    val isExportingCapital by viewModel.isExportingCapital.collectAsStateWithLifecycle()
-    val isExportingTax by viewModel.isExportingTax.collectAsStateWithLifecycle()
+//    val isExportingCapital by viewModel.isExportingCapital.collectAsStateWithLifecycle()
+//    val isExportingTax by viewModel.isExportingTax.collectAsStateWithLifecycle()
     val isExportingPortfolio by viewModel.isExportingPortfolio.collectAsStateWithLifecycle()
 
     val pendingOrders by viewModel.pendingOrders.collectAsStateWithLifecycle()
@@ -149,15 +149,15 @@ fun PortfolioScreenMain(
                         navigateToCategoryMutualFundScreen = navigateToCategoryMutualFundScreen,
                         reload = viewModel::refresh,
                         onDownloadPortfolioReport = viewModel::downloadPortfolioReport,
-                        onDownloadCapitalReport = viewModel::downloadCapitalReport,
                         onCancelPendingOrder = viewModel::cancelPendingOrder,
-                        onDownloadTaxReport = { viewModel.downloadTaxReport() },
                         isExportingPortfolio = isExportingPortfolio,
-                        isExportingCapital = isExportingCapital,
-                        isExportingTax = isExportingTax,
                         pendingOrders = pendingOrders,
                         activeSips = activeSips,
                         isLoadingActiveSips = isLoadingActiveSips,
+//                        isExportingCapital = isExportingCapital,
+//                        onDownloadTaxReport = { viewModel.downloadTaxReport() },
+//                        isExportingTax = isExportingTax,
+//                        onDownloadCapitalReport = viewModel::downloadCapitalReport,
                         // Resolved against the holdings this screen already has, so a SIP opens
                         // the same details screen — with the same figures — its fund does.
                         onActiveSipClick = { sip ->
@@ -182,11 +182,11 @@ fun PortfolioScreen(
     navigateToCategoryMutualFundScreen: () -> Unit,
     reload: () -> Unit,
     onDownloadPortfolioReport: () -> Unit,
-    onDownloadCapitalReport: () -> Unit,
-    onDownloadTaxReport: () -> Unit,
     isExportingPortfolio: Boolean,
-    isExportingCapital: Boolean,
-    isExportingTax: Boolean,
+//    onDownloadCapitalReport: () -> Unit,
+//    onDownloadTaxReport: () -> Unit,
+//    isExportingCapital: Boolean,
+//    isExportingTax: Boolean,
     pendingOrders: List<PendingOrderDomain>,
     activeSips: ActiveSipDomain,
     isLoadingActiveSips: Boolean,
@@ -267,10 +267,10 @@ fun PortfolioScreen(
                         onFundClick = onSIPClick,
                         onEmptyButtonClick = navigateToCategoryMutualFundScreen,
                         reload = reload,
-                        onDownloadCapitalReport = onDownloadCapitalReport,
-                        onDownloadTaxReport = onDownloadTaxReport,
-                        isExportingCapital = isExportingCapital,
-                        isExportingTax = isExportingTax,
+//                        onDownloadCapitalReport = onDownloadCapitalReport,
+//                        onDownloadTaxReport = onDownloadTaxReport,
+//                        isExportingCapital = isExportingCapital,
+//                        isExportingTax = isExportingTax,
                         onDownloadPortfolioReport = onDownloadPortfolioReport,
                         isExportingPortfolio = isExportingPortfolio,
                         pendingOrders = pendingOrders,
@@ -651,10 +651,10 @@ fun MutualFundPortfolio(
     onFundClick: (MutualFundPortfolioDomain) -> Unit,
     onEmptyButtonClick: () -> Unit,
     reload: () -> Unit,
-    onDownloadCapitalReport: () -> Unit,
-    onDownloadTaxReport: () -> Unit,
-    isExportingCapital: Boolean,
-    isExportingTax: Boolean,
+//    onDownloadCapitalReport: () -> Unit,
+//    onDownloadTaxReport: () -> Unit,
+//    isExportingCapital: Boolean,
+//    isExportingTax: Boolean,
     onDownloadPortfolioReport: () -> Unit,
     isExportingPortfolio: Boolean,
     pendingOrders: List<PendingOrderDomain>,
@@ -683,16 +683,16 @@ fun MutualFundPortfolio(
                     )
                 }
 
-//                item {
-//                    PdfReportsRow(
-//                        onDownloadCapitalReport = onDownloadCapitalReport,
+                item {
+                    PdfReportsRow(
+                        onDownloadPortfolioReport=onDownloadPortfolioReport,
+                        isExportingPortfolio= isExportingPortfolio,
 //                        onDownloadTaxReport = onDownloadTaxReport,
-//                        onDownloadPortfolioReport=onDownloadPortfolioReport,
-//                        isExportingPortfolio= isExportingPortfolio,
+//                        onDownloadCapitalReport = onDownloadCapitalReport,
 //                        isExportingCapital = isExportingCapital,
 //                        isExportingTax = isExportingTax
-//                    )
-//                }
+                    )
+                }
 
                 if (mutualFund.isNotEmpty()){ item { BarHeader(title = "Mutual Funds") } }
                 items(mutualFund, key = { it.folio}) { item ->
@@ -717,10 +717,10 @@ fun MutualFundPortfolio(
 
 @Composable
 private fun PdfReportsRow(
-    onDownloadCapitalReport: () -> Unit,
-    onDownloadTaxReport: () -> Unit,
-    isExportingCapital: Boolean,
-    isExportingTax: Boolean,
+//    onDownloadCapitalReport: () -> Unit,
+//    onDownloadTaxReport: () -> Unit,
+//    isExportingCapital: Boolean,
+//    isExportingTax: Boolean,
     onDownloadPortfolioReport: () -> Unit,
     isExportingPortfolio: Boolean
 ) {
@@ -731,23 +731,23 @@ private fun PdfReportsRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
         )
     {
-        PdfDownloadCard(
-            text = "Holdings PDF",
-            loading = isExportingCapital,
-            onClick = onDownloadCapitalReport,
-            iconTint = Color(0xff1FAE6E),
-            icon= Res.drawable.holdings_ic,
-            modifier = Modifier.weight(1f).fillMaxHeight()
-        )
-
-        PdfDownloadCard(
-            text = "Capital PDF",
-            loading = isExportingTax,
-            onClick = onDownloadTaxReport,
-            iconTint = Color(0xff006495),
-            icon= Res.drawable.tax_savings_ic,
-            modifier = Modifier.weight(1f).fillMaxHeight()
-        )
+//        PdfDownloadCard(
+//            text = "Holdings PDF",
+//            loading = isExportingCapital,
+//            onClick = onDownloadCapitalReport,
+//            iconTint = Color(0xff1FAE6E),
+//            icon= Res.drawable.holdings_ic,
+//            modifier = Modifier.weight(1f).fillMaxHeight()
+//        )
+//
+//        PdfDownloadCard(
+//            text = "Capital PDF",
+//            loading = isExportingTax,
+//            onClick = onDownloadTaxReport,
+//            iconTint = Color(0xff006495),
+//            icon= Res.drawable.tax_savings_ic,
+//            modifier = Modifier.weight(1f).fillMaxHeight()
+//        )
 
         PdfDownloadCard(
             text = "Portfolio PDF",
@@ -1164,16 +1164,17 @@ fun DashboardPortfolioPreview() {
             navigateToCategoryMutualFundScreen = {},
             reload = {},
             onDownloadPortfolioReport = {},
-            onDownloadCapitalReport = {},
-            onDownloadTaxReport = {},
+//            onDownloadCapitalReport = {},
+//            onDownloadTaxReport = {},
             isExportingPortfolio = false,
-            isExportingCapital = false,
-            isExportingTax = false,
+//            isExportingCapital = false,
+//            isExportingTax = false,
             pendingOrders = samplePendingOrders,
             activeSips = previewActiveSips,
             isLoadingActiveSips = false,
             onActiveSipClick = {},
-            pagerState=pagerState,{}
+            pagerState = pagerState,
+            onCancelPendingOrder = {}
         )
     }
 }
@@ -1193,11 +1194,11 @@ fun MutualFundPortfolioPreview() {
             navigateToCategoryMutualFundScreen = {},
             reload = {},
             onDownloadPortfolioReport = {},
-            onDownloadCapitalReport = {},
-            onDownloadTaxReport = {},
             isExportingPortfolio = false,
-            isExportingCapital = false,
-            isExportingTax = false,
+//            onDownloadCapitalReport = {},
+//            onDownloadTaxReport = {},
+//            isExportingCapital = false,
+//            isExportingTax = false,
             pendingOrders = samplePendingOrders,
             activeSips = previewActiveSips,
             isLoadingActiveSips = false,

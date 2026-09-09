@@ -187,29 +187,19 @@ class PortfolioScreenViewModel(
     fun downloadPortfolioReport() {
         viewModelScope.launch {
             _isExportingPortfolio.value = true
-            exportPortfolioReportUseCase()
-                .onSuccess { url ->
-                    downloadPdfByUrlUseCase(
-                        url = url,
-                        fileName = "Portfolio_Report",
-                        onSuccess = {
-                            _isExportingPortfolio.value = false
-                            viewModelScope.launch {
-                                SnackBarController.showSuccess("Portfolio report downloaded successfully")
-                            }
-                        },
-                        onFailure = {
-                            _isExportingPortfolio.value = false
-                            viewModelScope.launch {
-                                SnackBarController.showError("Failed to download portfolio report")
-                            }
-                        }
-                    )
-                }
-                .onError {
+            exportPortfolioReportUseCase(
+                onSuccess = {
                     _isExportingPortfolio.value = false
-                    SnackBarController.showError(it.message)
+                    viewModelScope.launch { SnackBarController.showSuccess("Report Downloaded") }
+                },
+                onFailed = {
+                    _isExportingPortfolio.value = false
+                    viewModelScope.launch { SnackBarController.showError(it) }
                 }
+            ).onError {
+                _isExportingPortfolio.value
+                SnackBarController.showError(it.message)
+            }
         }
     }
 

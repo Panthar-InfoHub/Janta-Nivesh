@@ -39,6 +39,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.PANVer
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.toDomain
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.OnboardingStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.PennyDropBody
+import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.PennyDropStatusResponseDto
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.SkipNomineeRequestBody
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.toDomain
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.BankAccount
@@ -51,6 +52,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Mand
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.MandateStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Nominee
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PANVerificationError
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PennyDropStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.repository.OnboardingRepo
 
 class OnboardingRepoImpl(
@@ -269,6 +271,20 @@ class OnboardingRepoImpl(
             persistStage(OnboardingStage.EmailVerification)
         }
         return response
+    }
+
+    override suspend fun getPennyDropStatus(
+        accountNumber: String
+    ): NetworkResponse<PennyDropStatus, ErrorDomain> {
+        val response = safeRequest<PennyDropStatusResponseDto> {
+            client.get(getUrl("/onboarding/pan-verification/status"))
+        }
+        return when (response) {
+            is NetworkResponse.Success ->
+                NetworkResponse.Success(response.data.toDomain(accountNumber))
+
+            is NetworkResponse.Error -> NetworkResponse.Error(response.error)
+        }
     }
 
     override suspend fun requestEmailOtp(

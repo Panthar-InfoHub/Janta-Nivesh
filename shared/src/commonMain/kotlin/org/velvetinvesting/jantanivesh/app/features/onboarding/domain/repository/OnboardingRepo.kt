@@ -13,6 +13,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Mand
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.MandateStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Nominee
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PANVerificationError
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PennyDropStatus
 
 interface OnboardingRepo  {
 
@@ -39,6 +40,14 @@ interface OnboardingRepo  {
     ) : NetworkResponse<Unit, ErrorDomain>
 
     suspend fun submitPennyDrop(bankAccount: BankAccount) : NetworkResponse<Unit, ErrorDomain>
+
+    /**
+     * The bank's verdict on the account [accountNumber] was submitted for. Verification is
+     * asynchronous, so this is polled after [submitPennyDrop] until the status settles.
+     */
+    suspend fun getPennyDropStatus(
+        accountNumber: String
+    ) : NetworkResponse<PennyDropStatus, ErrorDomain>
 
     /**
      * Mails a 4-digit code to [email]. Also used to resend it, since the server treats a repeat

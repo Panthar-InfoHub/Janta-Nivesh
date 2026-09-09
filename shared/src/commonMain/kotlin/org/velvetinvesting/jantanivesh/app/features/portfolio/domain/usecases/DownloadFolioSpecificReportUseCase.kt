@@ -5,19 +5,20 @@ import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.platform.PdfDownloadManager
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.repository.PortfolioRepo
 
-class ExportPortfolioReportUseCase(
+class DownloadFolioSpecificReportUseCase(
     private val repository: PortfolioRepo,
     private val downloadManager: PdfDownloadManager
 ) {
     suspend operator fun invoke(
+        folio: String,
         onSuccess: () -> Unit,
         onFailed: (String) -> Unit
     ): NetworkResponse<Unit, ErrorDomain> {
-        return when (val response = repository.getPortfolioReport()) {
+        return when (val response = repository.getFolioSpecificReport(folio)) {
             is NetworkResponse.Success -> {
                 downloadManager.downloadPdf(
                     pdfBytes = response.data,
-                    fileName = "Portfolio_Report.pdf",
+                    fileName = "Fund_Holding_Report_$folio.pdf",
                     onSuccess = {
                         onSuccess()
                     },

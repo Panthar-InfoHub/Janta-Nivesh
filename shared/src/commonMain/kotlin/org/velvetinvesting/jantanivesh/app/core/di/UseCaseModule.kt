@@ -41,6 +41,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.S
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitBasicDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitInvestorProfileUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitNomineesUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetPennyDropStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitPennyDropUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.UploadKycFormSignatureUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.VerifyEmailOtpUseCase
@@ -65,7 +66,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.Ca
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.DownloadPdfByUrlUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportCapitalReportUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportPortfolioReportUseCase
-import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportSoaReportUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.DownloadFolioSpecificReportUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportTaxReportUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFDPortfolioByIdUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetFDRedirectUrlUseCase
@@ -102,6 +103,7 @@ val useCaseModule = module {
     factory { GetKycFormStatusUseCase(get()) }
     factory { UploadKycFormSignatureUseCase(get()) }
     factory { SubmitPennyDropUseCase(get()) }
+    factory { GetPennyDropStatusUseCase(get()) }
     factory { RequestEmailOtpUseCase(get()) }
     factory { VerifyEmailOtpUseCase(get()) }
     factory { SubmitInvestorProfileUseCase(get()) }
@@ -165,7 +167,7 @@ val useCaseModule = module {
     factory { RequestMfRedemptionOtpUseCase(get()) }
     factory { VerifyMfRedemptionOtpUseCase(get()) }
     factory { CancelSipOrderUseCase(get()) }
-    factory { ExportSoaReportUseCase(get()) }
+    factory { DownloadFolioSpecificReportUseCase(get(), get()) }
     factory { ExportTaxReportUseCase(get()) }
     factory { DownloadPdfByUrlUseCase(get()) }
     factory { GetFDRedirectUrlUseCase(get()) }
@@ -175,5 +177,5 @@ val useCaseModule = module {
     factory { CancelLumpSumOrderUseCase(get()) }
     factory { GetFDPortfolioByIdUseCase(get()) }
     factory { ExportCapitalReportUseCase(get()) }
-    factory { ExportPortfolioReportUseCase(get()) }
+    factory { ExportPortfolioReportUseCase(get(),get()) }
 }

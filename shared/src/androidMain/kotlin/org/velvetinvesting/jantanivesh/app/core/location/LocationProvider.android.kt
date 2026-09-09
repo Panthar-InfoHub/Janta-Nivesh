@@ -14,6 +14,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Backed by the platform [LocationManager] rather than Play Services, so the app keeps working on
@@ -53,9 +54,9 @@ class AndroidLocationProvider(
         val provider = manager.firstEnabledProvider()
             ?: return LocationResult.Failed("No location provider is available")
 
-        val location = withTimeoutOrNull(timeoutMillis) {
+        val location = withTimeoutOrNull(timeoutMillis.milliseconds) {
             manager.awaitSingleUpdate(provider)
-        } ?: return LocationResult.Failed("Timed out while getting your location")
+        } ?: return LocationResult.Failed("Timed out while getting your location. Please retry.")
 
         return LocationResult.Success(location.toCoordinates())
     }

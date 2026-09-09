@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.CancelLumpSumOrderUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CancelPurchasePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.models.SipCancellationReason
-import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.ExportSoaReportUseCase
+import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.DownloadFolioSpecificReportUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.DownloadPdfByUrlUseCase
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
@@ -29,7 +29,7 @@ sealed interface MFPortfolioSideEffects{
  * own view model.
  */
 class MFPortfolioDetailsViewModel(
-    private val soaReportUseCase: ExportSoaReportUseCase,
+    private val downloadFolioSpecificReportUseCase: DownloadFolioSpecificReportUseCase,
     private val downloadPdfByUrlUseCase: DownloadPdfByUrlUseCase,
     private val cancelLumpSumOrderUseCase: CancelLumpSumOrderUseCase,
     private val cancelPurchasePlanUseCase: CancelPurchasePlanUseCase
@@ -58,36 +58,28 @@ class MFPortfolioDetailsViewModel(
     private val _selectedCancelReason = MutableStateFlow<SipCancellationReason?>(null)
     val selectedCancelReason = _selectedCancelReason.asStateFlow()
 
-    private val _soaDownloading = MutableStateFlow(false)
-    val soaDownloading = _soaDownloading.asStateFlow()
+    private val _reportDownloading = MutableStateFlow(false)
+    val soaDownloading = _reportDownloading.asStateFlow()
 
 
     fun downloadSOA(
         folio: String,
     ){
         viewModelScope.launch {
-            _soaDownloading.value = true
-            soaReportUseCase(
+            _reportDownloading.value = true
+            downloadFolioSpecificReportUseCase(
                 folio = folio,
-            )
-                .onSuccess { url ->
-                    downloadPdfByUrlUseCase(
-                        url = url,
-                        fileName = "SOA_$folio.pdf",
-                        onSuccess = {
-                            _soaDownloading.value = false
-                            viewModelScope.launch{
-                                SnackBarController.showSuccess("Statement downloaded successfully")
-                            }                        },
-                        onFailure = {
-                            _soaDownloading.value = false
-                            viewModelScope.launch{
-                                SnackBarController.showError("Failed to download statement")
-                            }                        }
-                    )
+                onSuccess = {
+                    _reportDownloading.value = false
+                    viewModelScope.launch { SnackBarController.showSuccess("Report Downloaded") }
+                },
+                onFailed = {
+                    _reportDownloading.value = false
+                    viewModelScope.launch { SnackBarController.showError(it) }
                 }
+            )
                 .onError { 
-                    _soaDownloading.value = false
+                    _reportDownloading.value = false
                     SnackBarController.showError(it.message)
                 }
         }

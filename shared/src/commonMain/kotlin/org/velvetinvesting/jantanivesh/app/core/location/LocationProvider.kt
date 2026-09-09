@@ -37,6 +37,6 @@ interface LocationProvider {
     suspend fun getCurrentLocation(timeoutMillis: Long = DEFAULT_TIMEOUT_MILLIS): LocationResult
 
     companion object {
-        const val DEFAULT_TIMEOUT_MILLIS = 15_000L
+        const val DEFAULT_TIMEOUT_MILLIS = 25_000L
     }
 }

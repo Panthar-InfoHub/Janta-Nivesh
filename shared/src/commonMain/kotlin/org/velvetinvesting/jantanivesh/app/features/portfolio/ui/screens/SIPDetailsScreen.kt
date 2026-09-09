@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -35,7 +38,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.SubcomposeAsyncImageContent
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.download_ic
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.navigation.Route
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
@@ -103,39 +109,39 @@ fun MFPortfolioDetailsScreen(
             showBack = true,
             onBackClick = onBackClick,
             trailingContent = {
-//                Row(
-//                    modifier = Modifier
-//                        .clip(RoundedCornerShape(8.dp))
-//                        .background(Secondary.copy(alpha = 0.1f))
-//                        .clickable { viewModel.downloadSOA(data.folio) }
-//                        .padding(horizontal = 16.dp, vertical = 8.dp),
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-//                ) {
-//                    Text(
-//                        text = "SOA",
-//                        style = TextStyle(
-//                            fontFamily = InterFontFamily,
-//                            fontWeight = FontWeight.Medium,
-//                            fontSize = 12.sp,
-//                            color = Secondary
-//                        )
-//                    )
-//                    if (soaDownloading) {
-//                        CircularProgressIndicator(
-//                            modifier = Modifier.size(12.dp),
-//                            strokeWidth = 1.dp,
-//                            color = Secondary
-//                        )
-//                    } else {
-//                        Icon(
-//                            painter = painterResource(Res.drawable.download_ic),
-//                            contentDescription = null,
-//                            modifier = Modifier.size(14.dp),
-//                            tint = Secondary
-//                        )
-//                    }
-//                }
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Secondary.copy(alpha = 0.1f))
+                        .clickable { viewModel.downloadSOA(data.folio) }
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Report",
+                        style = TextStyle(
+                            fontFamily = InterFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 12.sp,
+                            color = Secondary
+                        )
+                    )
+                    if (soaDownloading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(12.dp),
+                            strokeWidth = 1.dp,
+                            color = Secondary
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(Res.drawable.download_ic),
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = Secondary
+                        )
+                    }
+                }
             }
         )
 

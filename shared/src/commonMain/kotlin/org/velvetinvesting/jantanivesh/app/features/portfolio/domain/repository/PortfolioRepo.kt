@@ -61,4 +61,8 @@ interface PortfolioRepo {
         redemptionId: String,
         otp: String
     ): NetworkResponse<Unit, ErrorDomain>
+
+    suspend fun getPortfolioReport(): NetworkResponse<ByteArray, ErrorDomain>
+    suspend fun getFolioSpecificReport(folio: String): NetworkResponse<ByteArray, ErrorDomain>
+
 }
