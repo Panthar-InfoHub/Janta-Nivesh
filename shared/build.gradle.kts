@@ -47,6 +47,8 @@ kotlin {
 
             implementation(libs.androidx.biometric)
 
+            implementation(libs.play.services.location)
+
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

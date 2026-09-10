@@ -17,12 +17,22 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Nomi
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeRelation
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
+const val Max_Nominee_Count = 3
+const val TOTAL_ALLOCATION = 100
+
+
+enum class AllocationSource {
+    AUTOMATIC,
+    MANUAL
+}
+
 data class NomineeDetails(
     val name: String = "",
     val relationship: NomineeRelation? = null,
     val percentageAllocation: String = "",
     val dateOfBirth: String = "",
     val identityType: NomineeDocumentType? = null,
+    val allocationSource: AllocationSource = AllocationSource.AUTOMATIC,
     val panCard: String = "",
     val email: String = "",
     val phone: String = "",
@@ -36,15 +46,15 @@ data class NomineeDetails(
         get() = OnboardingInput.isFilled(name) &&
                 relationship != null &&
                 (percentageAllocation.toIntOrNull() ?: 0) > 0 &&
-                OnboardingInput.isValidIsoDate(dateOfBirth) &&
                 identityType != null &&
-                isDocumentNumberValid &&
-                OnboardingInput.isValidEmail(email) &&
-                OnboardingInput.isValidPhone(phone) &&
-                OnboardingInput.isFilled(addressLine1) &&
-                OnboardingInput.isFilled(city) &&
-                OnboardingInput.isFilled(state) &&
-                OnboardingInput.isValidPincode(postalCode)
+                isDocumentNumberValid
+//                OnboardingInput.isValidIsoDate(dateOfBirth) &&
+//                OnboardingInput.isValidEmail(email) &&
+//                OnboardingInput.isValidPhone(phone) &&
+//                OnboardingInput.isFilled(addressLine1) &&
+//                OnboardingInput.isFilled(city) &&
+//                OnboardingInput.isFilled(state) &&
+//                OnboardingInput.isValidPincode(postalCode)
 
     /** PAN has a checkable format and Aadhaar is exactly its last four digits. */
     val isDocumentNumberValid: Boolean
@@ -66,7 +76,11 @@ data class AddNomineeUiState(
      * is a regulated decision, so selecting the tab is not on its own taken as consent.
      */
     val optOutConsent: Boolean = false,
-    val nominees: List<NomineeDetails> = listOf(NomineeDetails()),
+    val nominees: List<NomineeDetails> = listOf(
+        NomineeDetails(
+            percentageAllocation = TOTAL_ALLOCATION.toString()
+        )
+    ),
     val isLoading: Boolean = false
 ) {
     private val totalAllocation: Int
@@ -87,13 +101,16 @@ data class AddNomineeUiState(
     val allocationError: String?
         get() = when {
             addLater -> null
-            totalAllocation == TOTAL_ALLOCATION -> null
-            else -> "Allocation across nominees must total 100% (currently $totalAllocation%)"
-        }
 
-    private companion object {
-        const val TOTAL_ALLOCATION = 100
-    }
+            nominees.any {
+                (it.percentageAllocation.toIntOrNull() ?: 0) <= 0
+            } -> "Allocation cannot be 0%"
+
+            totalAllocation != TOTAL_ALLOCATION ->
+                "Allocation across nominees must total 100% (currently $totalAllocation%)"
+
+            else -> null
+        }
 }
 
 sealed interface AddNomineeEvent {
@@ -173,16 +190,119 @@ class AddNomineeViewModel(
 
     private fun onAddAnotherNomineeClick() {
         _uiState.update { state ->
-            state.copy(nominees = state.nominees + NomineeDetails())
+            val updatedNominees = addNomineeWithAllocation(state.nominees)
+            state.copy(nominees = updatedNominees)
+        }
+    }
+
+    private fun addNomineeWithAllocation(
+        nominees: List<NomineeDetails>
+    ): List<NomineeDetails> {
+        if (nominees.isEmpty()) {
+            return listOf(
+                NomineeDetails(
+                    percentageAllocation = "100"
+                )
+            )
+        }
+
+        val manuallyAllocated = nominees
+            .filter { it.allocationSource == AllocationSource.MANUAL }
+            .sumOf { it.percentageAllocation.toIntOrNull() ?: 0 }
+
+        val automaticNominees = nominees.filter {
+            it.allocationSource == AllocationSource.AUTOMATIC
+        }
+
+        val remainingAllocation = TOTAL_ALLOCATION - manuallyAllocated
+
+        val nomineesToDistribute = automaticNominees.size + 1
+
+        val allocations = distributeAllocation(
+            total = remainingAllocation,
+            count = nomineesToDistribute
+        )
+
+        var allocationIndex = 0
+
+        val updatedExistingNominees = nominees.map { nominee ->
+            if (nominee.allocationSource == AllocationSource.AUTOMATIC) {
+                nominee.copy(
+                    percentageAllocation = allocations[allocationIndex++].toString()
+                )
+            } else {
+                nominee
+            }
+        }
+
+        val newNominee = NomineeDetails(
+            percentageAllocation = allocations[allocationIndex].toString()
+        )
+        return updatedExistingNominees + newNominee
+    }
+
+    private fun distributeAllocation(
+        total: Int,
+        count: Int
+    ): List<Int> {
+        if (count <= 0) return emptyList()
+
+        val base = total / count
+        val remainder = total % count
+
+        return List(count) { index ->
+            base + if (index < remainder) 1 else 0
         }
     }
 
     private fun onDeleteNomineeClick(index: Int) {
         _uiState.update { state ->
-            val updatedList = state.nominees.toMutableList().apply {
-                if (size > 1) removeAt(index)
+            if (state.nominees.size <= 1) {
+                return@update state
             }
-            state.copy(nominees = updatedList)
+
+            val removed = state.nominees[index]
+
+            val remaining = state.nominees.toMutableList().apply {
+                removeAt(index)
+            }
+
+            val automaticNominees = remaining.filter {
+                it.allocationSource == AllocationSource.AUTOMATIC
+            }
+
+            if (automaticNominees.isEmpty()) {
+                return@update state.copy(nominees = remaining)
+            }
+
+            val removedAllocation =
+                removed.percentageAllocation.toIntOrNull() ?: 0
+
+            val automaticTotal = automaticNominees.sumOf {
+                it.percentageAllocation.toIntOrNull() ?: 0
+            }
+
+            val totalToRedistribute = automaticTotal + removedAllocation
+
+            val allocations = distributeAllocation(
+                total = totalToRedistribute,
+                count = automaticNominees.size
+            )
+
+            var allocationIndex = 0
+
+            val updated = remaining.map { nominee ->
+                if (nominee.allocationSource == AllocationSource.AUTOMATIC) {
+                    nominee.copy(
+                        percentageAllocation =
+                            allocations[allocationIndex++].toString()
+                    )
+                } else {
+                    nominee
+                }
+            }
+
+            state.copy(nominees = updated)
         }
     }
 
@@ -201,7 +321,10 @@ class AddNomineeViewModel(
         index: Int,
         percentage: String
     ) = updateNominee(index) {
-        it.copy(percentageAllocation = OnboardingInput.sanitizePercentage(percentage))
+        it.copy(
+            percentageAllocation = OnboardingInput.sanitizePercentage(percentage),
+            allocationSource = AllocationSource.MANUAL
+        )
     }
 
     /** Always `yyyy-MM-dd` from the date picker; the field itself is read-only. */

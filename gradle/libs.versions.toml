@@ -23,6 +23,7 @@ kotlinxDatetime = "0.8.0"
 kotlinx-serialization = "1.11.0"
 koin = "4.2.1"
 
+playServicesLocation = "21.4.0"
 room3 = "3.0.1"
 sqlite = "2.7.0"
 ksp = "2.3.11"
@@ -78,6 +79,7 @@ androidx-room3-runtime = { module = "androidx.room3:room3-runtime", version.ref 
 androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room3" }
 androidx-room3-sqlite-wrapper = { module = "androidx.room3:room3-sqlite-wrapper", version.ref = "room3" }
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric"}
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 
 [plugins]

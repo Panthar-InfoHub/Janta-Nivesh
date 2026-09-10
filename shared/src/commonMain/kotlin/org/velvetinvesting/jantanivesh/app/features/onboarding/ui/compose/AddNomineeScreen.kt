@@ -60,6 +60,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Add
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeDocumentType
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeRelation
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Max_Nominee_Count
 
 /** Shared by every free-text name-like field on this screen. */
 private val wordsKeyboardOptions = KeyboardOptions(
@@ -241,12 +242,12 @@ fun AddNomineeScreen(
                             Text("%", style = MaterialTheme.typography.bodyLarge, color = Gray444)
                         }
                     )
-                    TitledDateField(
-                        title = "Date of Birth/ " + stringResource(Res.string.date_of_birth),
-                        value = nominee.dateOfBirth,
-                        onClick = { datePickerIndex = index },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+//                    TitledDateField(
+//                        title = "Date of Birth/ " + stringResource(Res.string.date_of_birth),
+//                        value = nominee.dateOfBirth,
+//                        onClick = { datePickerIndex = index },
+//                        modifier = Modifier.fillMaxWidth()
+//                    )
                     DropDownSelector(
                         title = "Identity Type / " +stringResource(Res.string.identity_type),
                         value = nominee.identityType?.let { nomineeDocumentLabel(it) } ?: "",
@@ -281,84 +282,84 @@ fun AddNomineeScreen(
                         ),
                         isError = nominee.panCard.isNotEmpty() && !nominee.isDocumentNumberValid
                     )
-                    TitledAppTextField(
-                        title = "Email/ " + stringResource(Res.string.email),
-                        value = nominee.email,
-                        onValueChange = { handleEvent(AddNomineeEvent.OnEmailChanged(index, it)) },
-                        keyboardType = KeyboardType.Email,
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.None,
-                            autoCorrectEnabled = false,
-                            imeAction = ImeAction.Next
-                        ),
-                        placeholder = "name@example.com",
-                        mandatory = true,
-                        isError = nominee.email.isNotEmpty() &&
-                                !OnboardingInput.isValidEmail(nominee.email)
-                    )
-                    TitledAppTextField(
-                        title = "Phone/ " + stringResource(Res.string.phone_label),
-                        value = nominee.phone,
-                        onValueChange = { handleEvent(AddNomineeEvent.OnPhoneChanged(index, it)) },
-                        keyboardType = KeyboardType.Phone,
-                        placeholder = "9876543210",
-                        mandatory = true,
-                        prefix = { Text("+91 ") },
-                        isError = nominee.phone.isNotEmpty() &&
-                                !OnboardingInput.isValidPhone(nominee.phone)
-                    )
-                    TitledAppTextField(
-                        title = "Address Line 1/ " + stringResource(Res.string.address_line_1_nominee),
-                        value = nominee.addressLine1,
-                        onValueChange = { handleEvent(AddNomineeEvent.OnAddressLine1Changed(index, it)) },
-                        placeholder = "\n\n\n",
-                        mandatory = true,
-                        keyboardOptions = wordsKeyboardOptions
-                    )
-                    TitledAppTextField(
-                        title = "Address Line 2/ " + stringResource(Res.string.address_line_2_nominee),
-                        value = nominee.addressLine2,
-                        onValueChange = { handleEvent(AddNomineeEvent.OnAddressLine2Changed(index, it)) },
-                        placeholder = "\n\n\n",
-                        keyboardOptions = wordsKeyboardOptions
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        TitledAppTextField(
-                            title = "City/ " + stringResource(Res.string.city),
-                            value = nominee.city,
-                            onValueChange = { handleEvent(AddNomineeEvent.OnCityChanged(index, it)) },
-                            placeholder = "",
-                            mandatory = true,
-                            keyboardOptions = wordsKeyboardOptions,
-                            modifier = Modifier.weight(1f)
-                        )
-                        TitledAppTextField(
-                            title = "State/ " + stringResource(Res.string.state),
-                            value = nominee.state,
-                            onValueChange = { handleEvent(AddNomineeEvent.OnStateChanged(index, it)) },
-                            placeholder = "",
-                            mandatory = true,
-                            keyboardOptions = wordsKeyboardOptions,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                    TitledAppTextField(
-                        title = "Postal Code/ " + stringResource(Res.string.pincode),
-                        value = nominee.postalCode,
-                        onValueChange = {
-                            handleEvent(AddNomineeEvent.OnPostalCodeChanged(index, it))
-                        },
-                        placeholder = "560001",
-                        mandatory = true,
-                        keyboardType = KeyboardType.Number,
-                        isError = nominee.postalCode.isNotEmpty() &&
-                                !OnboardingInput.isValidPincode(nominee.postalCode)
-                    )
+//                    TitledAppTextField(
+//                        title = "Email/ " + stringResource(Res.string.email),
+//                        value = nominee.email,
+//                        onValueChange = { handleEvent(AddNomineeEvent.OnEmailChanged(index, it)) },
+//                        keyboardType = KeyboardType.Email,
+//                        keyboardOptions = KeyboardOptions(
+//                            capitalization = KeyboardCapitalization.None,
+//                            autoCorrectEnabled = false,
+//                            imeAction = ImeAction.Next
+//                        ),
+//                        placeholder = "name@example.com",
+//                        mandatory = true,
+//                        isError = nominee.email.isNotEmpty() &&
+//                                !OnboardingInput.isValidEmail(nominee.email)
+//                    )
+//                    TitledAppTextField(
+//                        title = "Phone/ " + stringResource(Res.string.phone_label),
+//                        value = nominee.phone,
+//                        onValueChange = { handleEvent(AddNomineeEvent.OnPhoneChanged(index, it)) },
+//                        keyboardType = KeyboardType.Phone,
+//                        placeholder = "9876543210",
+//                        mandatory = true,
+//                        prefix = { Text("+91 ") },
+//                        isError = nominee.phone.isNotEmpty() &&
+//                                !OnboardingInput.isValidPhone(nominee.phone)
+//                    )
+//                    TitledAppTextField(
+//                        title = "Address Line 1/ " + stringResource(Res.string.address_line_1_nominee),
+//                        value = nominee.addressLine1,
+//                        onValueChange = { handleEvent(AddNomineeEvent.OnAddressLine1Changed(index, it)) },
+//                        placeholder = "\n\n\n",
+//                        mandatory = true,
+//                        keyboardOptions = wordsKeyboardOptions
+//                    )
+//                    TitledAppTextField(
+//                        title = "Address Line 2/ " + stringResource(Res.string.address_line_2_nominee),
+//                        value = nominee.addressLine2,
+//                        onValueChange = { handleEvent(AddNomineeEvent.OnAddressLine2Changed(index, it)) },
+//                        placeholder = "\n\n\n",
+//                        keyboardOptions = wordsKeyboardOptions
+//                    )
+//                    Row(
+//                        horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
+//                        modifier = Modifier.fillMaxWidth()
+//                    ) {
+//                        TitledAppTextField(
+//                            title = "City/ " + stringResource(Res.string.city),
+//                            value = nominee.city,
+//                            onValueChange = { handleEvent(AddNomineeEvent.OnCityChanged(index, it)) },
+//                            placeholder = "",
+//                            mandatory = true,
+//                            keyboardOptions = wordsKeyboardOptions,
+//                            modifier = Modifier.weight(1f)
+//                        )
+//                        TitledAppTextField(
+//                            title = "State/ " + stringResource(Res.string.state),
+//                            value = nominee.state,
+//                            onValueChange = { handleEvent(AddNomineeEvent.OnStateChanged(index, it)) },
+//                            placeholder = "",
+//                            mandatory = true,
+//                            keyboardOptions = wordsKeyboardOptions,
+//                            modifier = Modifier.weight(1f)
+//                        )
+//                    }
+//                    TitledAppTextField(
+//                        title = "Postal Code/ " + stringResource(Res.string.pincode),
+//                        value = nominee.postalCode,
+//                        onValueChange = {
+//                            handleEvent(AddNomineeEvent.OnPostalCodeChanged(index, it))
+//                        },
+//                        placeholder = "560001",
+//                        mandatory = true,
+//                        keyboardType = KeyboardType.Number,
+//                        isError = nominee.postalCode.isNotEmpty() &&
+//                                !OnboardingInput.isValidPincode(nominee.postalCode)
+//                    )
 
-                    if (index == state.nominees.lastIndex) {
+                    if (index == state.nominees.lastIndex && index < Max_Nominee_Count-1) {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
                             modifier = Modifier
