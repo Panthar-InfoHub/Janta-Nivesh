@@ -321,13 +321,14 @@ fun MainAppNavigation(
 
         composable<Route.MutualFundSearchResult> {
             val route = it.toRoute<Route.MutualFundSearchResult>()
+            val amountType = route.amountType
             MutualFundSearchScreenRoot(
                 onBackClick = { navController.popBackStack() },
-                onFundClick = { fund: MutualFundDomain -> navController.openFund(fund) },
+                onFundClick = { fund: MutualFundDomain -> navController.openFund(fund, amountType) },
                 searchText = route.search,
                 tag = route.tag,
                 category = route.category,
-                amountType = route.amountType,
+                amountType = amountType,
                 onSearchClick = { search: String ->
                     navController.navigate(Route.MutualFundSearchResult(search = search))
                 },
@@ -380,7 +381,8 @@ fun MainAppNavigation(
                     route.mfProductId,
                     route.isin,
                     route.fundName,
-                    route.fundSubtitle
+                    route.fundSubtitle,
+                    route.amountType
                 )
             }
 
@@ -1395,12 +1397,13 @@ private fun MutualFundPortfolioDomain.toOrderDetailsRoute() = Route.SIPPortfolio
 )
 
 /** Tapping a fund anywhere in the app opens the buy screen. */
-private fun NavHostController.openFund(fund: MutualFundDomain) {
+private fun NavHostController.openFund(fund: MutualFundDomain, amountType: String? = null) {
     openFund(
         mfProductId = fund.id,
         isin = fund.isin.orEmpty(),
         fundName = fund.name,
-        fundSubtitle = fund.purchaseSubtitle
+        fundSubtitle = fund.purchaseSubtitle,
+        amountType= amountType
     )
 }
 
@@ -1408,14 +1411,16 @@ private fun NavHostController.openFund(
     mfProductId: String,
     isin: String,
     fundName: String,
-    fundSubtitle: String
+    fundSubtitle: String,
+    amountType: String? = null
 ) {
     navigate(
         Route.FundPurchase(
             mfProductId = mfProductId,
             isin = isin,
             fundName = fundName,
-            fundSubtitle = fundSubtitle
+            fundSubtitle = fundSubtitle,
+            amountType= amountType
         )
     ) {
         launchSingleTop = true

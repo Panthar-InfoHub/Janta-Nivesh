@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,13 +23,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.back_arrow
@@ -37,6 +44,7 @@ import jantanivesh.shared.generated.resources.dropdown_icon
 import jantanivesh.shared.generated.resources.ic_graph
 import jantanivesh.shared.generated.resources.icon_arrow_right
 import jantanivesh.shared.generated.resources.wallet_icon
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
@@ -61,6 +69,7 @@ import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SipThresh
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseEvent
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseUiState
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.KEYPAD_BACKSPACE
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * One screen for all three ways of buying a fund. The mode tabs change what the middle of the
@@ -343,29 +352,59 @@ private fun AmountCard(
             color = GreyText
         )
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "₹",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = Primary
-            )
-            Text(
-                // An empty field still reads as an amount rather than as a blank line.
-                text = amount.ifEmpty { "0" },
-                style = MaterialTheme.typography.displayMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 44.sp
-                ),
-                color = if (amount.isEmpty()) Secondary else Primary
-            )
-        }
+        AmountDisplay(amount = amount)
 
         AmountChips(
             amounts = suggestedAmounts,
             selectedAmount = amount.toIntOrNull(),
             onClick = onSuggestedAmountClick
+        )
+    }
+}
+
+@Composable
+private fun AmountDisplay(
+    amount: String
+) {
+    var cursorVisible by remember { mutableStateOf(true) }
+
+    LaunchedEffect(amount) {
+        cursorVisible = true
+
+        while (true) {
+            delay(500.milliseconds)
+            cursorVisible = !cursorVisible
+        }
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "₹ ",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = Primary
+        )
+
+        Text(
+            text = amount.ifEmpty { "0" },
+            style = MaterialTheme.typography.displayMedium.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = 44.sp
+            ),
+            color = if (amount.isEmpty()) Secondary else Primary
+        )
+
+        // Cursor
+        Box(
+            modifier = Modifier
+                .padding(start = Spacing.dp1)
+                .width(1.5.dp)
+                .height(40.dp)
+                .alpha(if (cursorVisible) 1f else 0f)
+                .background(Primary)
         )
     }
 }

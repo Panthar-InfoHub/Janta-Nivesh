@@ -76,6 +76,16 @@ sealed interface AmountTypeLabel : LabelFilter {
         override val title = "Monthly \u20B9100"
         override val id = MfFilterIds.AMOUNT_MONTHLY_100
     }
+
+    companion object {
+        fun getType(id:String?) : AmountTypeLabel?{
+            return when(id){
+                MfFilterIds.AMOUNT_DAILY_10 -> DailyTen
+                MfFilterIds.AMOUNT_MONTHLY_100 -> MonthlyHundred
+                else -> null
+            }
+        }
+    }
 }
 
 sealed interface FDLabel : LabelFilter {

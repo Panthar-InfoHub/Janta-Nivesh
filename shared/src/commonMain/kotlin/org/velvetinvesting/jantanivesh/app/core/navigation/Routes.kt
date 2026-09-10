@@ -59,7 +59,8 @@ sealed interface Route {
         val mfProductId: String,
         val isin: String,
         val fundName: String = "",
-        val fundSubtitle: String = ""
+        val fundSubtitle: String = "",
+        val amountType: String? = null
     ) : Route
 
     /**

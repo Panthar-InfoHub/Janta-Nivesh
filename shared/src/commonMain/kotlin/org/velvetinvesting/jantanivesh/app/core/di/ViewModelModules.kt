@@ -88,12 +88,13 @@ val viewModelModule = module {
     viewModel { SearchOverlayViewModel(get(), get(), get(), get()) }
 
     // Plans ViewModels
-    viewModel { (mfProductId: String, isin: String, fundName: String, fundSubtitle: String) ->
+    viewModel { (mfProductId: String, isin: String, fundName: String, fundSubtitle: String, fundAmountType: String?) ->
         FundPurchaseViewModel(
             mfProductId = mfProductId,
             isin = isin,
             fundName = fundName,
             fundSubtitle = fundSubtitle,
+            fundAmountType = fundAmountType,
             getSchemePlan = get(),
             getMandates = get(),
             createSipPlan = get(),

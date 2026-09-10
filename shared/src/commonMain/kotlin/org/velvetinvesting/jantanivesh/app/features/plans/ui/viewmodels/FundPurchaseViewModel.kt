@@ -16,6 +16,7 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AmountTypeLabel
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.MandateOption
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SchemePlan
@@ -31,6 +32,7 @@ import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.Reques
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyMfPurchaseOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyPurchasePlanOtpUseCase
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 
 /** How long the resend link stays disabled after an OTP goes out, in seconds. */
 const val OTP_RESEND_SECONDS = 24
@@ -282,8 +284,9 @@ class FundPurchaseViewModel(
      */
     private val mfProductId: String,
     private val isin: String,
-    fundName: String,
-    fundSubtitle: String,
+    private val fundName: String,
+    private val fundSubtitle: String,
+    private val fundAmountType: String?,
     private val getSchemePlan: GetSchemePlanUseCase,
     private val getMandates: GetMandatesUseCase,
     private val createSipPlan: CreateSipPlanUseCase,
@@ -296,8 +299,24 @@ class FundPurchaseViewModel(
     private val verifyMfPurchaseOtp: VerifyMfPurchaseOtpUseCase
 ) : ViewModel() {
 
+    private val initialAmountType = AmountTypeLabel.getType(fundAmountType)
+
     private val _uiState = MutableStateFlow(
-        FundPurchaseUiState(fundName = fundName, fundSubtitle = fundSubtitle)
+        FundPurchaseUiState(
+            fundName = fundName,
+            fundSubtitle = fundSubtitle,
+            mode = when (initialAmountType) {
+                AmountTypeLabel.DailyTen -> PurchaseMode.DAILY
+                AmountTypeLabel.MonthlyHundred -> PurchaseMode.MONTHLY
+                null -> PurchaseMode.MONTHLY
+
+            },
+            amount = when (initialAmountType) {
+                AmountTypeLabel.DailyTen -> "10"
+                AmountTypeLabel.MonthlyHundred -> "100"
+                null -> ""
+            }
+        )
     )
     val uiState = _uiState.asStateFlow()
 
@@ -387,9 +406,16 @@ class FundPurchaseViewModel(
                     val scheme = result.data
                     // Land on a mode the scheme actually offers, then seed the debit day from
                     // that mode's own allowed days.
-                    val mode = listOf(PurchaseMode.MONTHLY, PurchaseMode.DAILY, PurchaseMode.ONE_TIME)
-                        .firstOrNull { scheme.thresholdFor(it) != null }
-                        ?: state.mode
+                    val mode = when {
+                        scheme.thresholdFor(state.mode) != null -> state.mode
+
+                        else -> listOf(
+                            PurchaseMode.MONTHLY,
+                            PurchaseMode.DAILY,
+                            PurchaseMode.ONE_TIME
+                        ).firstOrNull { scheme.thresholdFor(it) != null }
+                            ?: state.mode
+                    }
 
                     state.copy(
                         scheme = scheme,
@@ -570,7 +596,7 @@ class FundPurchaseViewModel(
 
         repeat(POLL_ATTEMPTS) { attempt ->
             // The first read happens immediately; the order is often reviewed by then.
-            if (attempt > 0) delay(POLL_INTERVAL_MS)
+            if (attempt > 0) delay(POLL_INTERVAL_MS.milliseconds)
 
             when (readOrderStatus(purchaseId, mode)) {
                 OrderStatus.READY -> return true
@@ -712,7 +738,7 @@ class FundPurchaseViewModel(
             setStage(SipSubmissionStage.AWAITING_PAYMENT)
 
             repeat(POLL_ATTEMPTS) { attempt ->
-                if (attempt > 0) delay(POLL_INTERVAL_MS)
+                if (attempt > 0) delay(POLL_INTERVAL_MS.milliseconds)
 
                 when (val result = getMfPurchase(purchaseId)) {
                     is NetworkResponse.Error -> {
@@ -806,7 +832,7 @@ class FundPurchaseViewModel(
             _uiState.update { it.copy(resendSecondsLeft = OTP_RESEND_SECONDS) }
 
             while (_uiState.value.resendSecondsLeft > 0) {
-                delay(SECOND_MS)
+                delay(SECOND_MS.milliseconds)
                 _uiState.update { it.copy(resendSecondsLeft = it.resendSecondsLeft - 1) }
             }
         }
