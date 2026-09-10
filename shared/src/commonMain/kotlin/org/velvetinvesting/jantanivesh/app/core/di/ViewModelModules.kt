@@ -136,7 +136,7 @@ val viewModelModule = module {
 
     // Portfolio ViewModels
     viewModel { (folioId: String) -> FolioFundsMFViewModel(folioId, get()) }
-    viewModel { PortfolioScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { PortfolioScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (fdId: String) -> FDPortFolioDetailsViewModel(get(), get(), fdId) }
     viewModel { MFPortfolioDetailsViewModel(get(), get(), get(), get()) }
     viewModel { ExistingFundsLumpSumViewModel(get(), get()) }

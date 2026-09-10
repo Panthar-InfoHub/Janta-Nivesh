@@ -541,3 +541,18 @@ fun String.isoUtcToMonthDayYear(): String = try {
 } catch (_: Exception) {
     this
 }
+
+/**
+ * "1995-08-14T00:00:00.000Z" -> "1995-08-14", the `yyyy-MM-dd` shape the onboarding forms and
+ * APIs speak in. Read in UTC for the same reason as [isoUtcToMonthDayYear]: a date of birth is a
+ * calendar date, not a moment, so the device's zone must not shift it a day. A value that is
+ * already a plain date, or anything unparseable, is handed back untouched.
+ */
+fun String.isoUtcToIsoDate(): String = try {
+    val date = Instant.parse(this).toLocalDateTime(TimeZone.UTC).date
+    "${date.year.toString().padStart(4, '0')}-" +
+            "${date.month.number.toString().padStart(2, '0')}-" +
+            date.day.toString().padStart(2, '0')
+} catch (_: Exception) {
+    this
+}

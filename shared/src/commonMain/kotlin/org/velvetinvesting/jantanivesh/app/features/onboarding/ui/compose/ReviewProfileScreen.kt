@@ -2,6 +2,7 @@ package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -51,7 +52,9 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.Agreemen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InvertedAppButton
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
@@ -70,6 +73,32 @@ private val nameKeyboardOptions = KeyboardOptions(
 
 @Composable
 fun ReviewProfileScreen(
+    state: ReviewProfileUiState,
+    handleEvent: (ReviewProfileEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // The form is prefilled from `GET /user/`, so there is nothing to show until that read lands.
+    Box(modifier = Modifier.fillMaxSize().background(White)) {
+        when {
+            state.isScreenLoading -> LoaderScreen(modifier = modifier.fillMaxSize())
+
+            state.showError -> ErrorScreen(
+                modifier = modifier.fillMaxSize(),
+                errorMessage = state.error,
+                onRetryClick = { handleEvent(ReviewProfileEvent.OnRetryLoad) }
+            )
+
+            else -> ReviewProfileContent(
+                state = state,
+                handleEvent = handleEvent,
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReviewProfileContent(
     state: ReviewProfileUiState,
     handleEvent: (ReviewProfileEvent) -> Unit,
     modifier: Modifier = Modifier
@@ -391,7 +420,7 @@ private fun LocationSection(
 private fun ReviewProfileScreenPreview() {
     JantaNiveshTheme {
         ReviewProfileScreen(
-            state = ReviewProfileUiState(),
+            state = ReviewProfileUiState(isScreenLoading = false),
             handleEvent = {}
         )
     }

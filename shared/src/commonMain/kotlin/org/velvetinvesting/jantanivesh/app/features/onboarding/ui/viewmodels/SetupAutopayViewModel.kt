@@ -17,7 +17,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.C
 
 data class SetupAutopayUiState(
     val autopayType: String = "UPI Autopay",
-    val autopayLimit: String = "₹1,00,000 / debit",
+    val autopayLimit: String = "₹10,000 / debit",
     val bankDetails: String = "HDFC BANK ••1193",
     val isLoading: Boolean = false
 )
@@ -137,7 +137,7 @@ class SetupAutopayViewModel(
 
     private companion object {
         /** Fixed per-debit ceiling; mirrors the limit shown on the screen. */
-        const val MANDATE_LIMIT = 100_000L
+        const val MANDATE_LIMIT = 10000L
 
         /** No server-side postback is wired up yet, so the API is sent an empty URL. */
         const val PAYMENT_POSTBACK_URL = "https://yourapp.com/payment_confirmation"

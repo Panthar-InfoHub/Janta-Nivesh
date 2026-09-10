@@ -88,7 +88,7 @@ fun SplashScreen(
                             Image(
                                 painter = painterResource(pagerImageList[page].image),
                                 contentDescription = "Pager Image",
-                                contentScale = ContentScale.Crop,
+                                contentScale = ContentScale.FillBounds,
                                 modifier = Modifier.size(ImageSize.dp320)
                             )
                         }

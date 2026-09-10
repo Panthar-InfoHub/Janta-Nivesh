@@ -38,6 +38,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.utils.rememberBrowserRe
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.InsuranceIntroScreen
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.PortfolioScreenMain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileIntroScreen
@@ -69,6 +70,8 @@ fun BottomNavigation(
     navigateToProfileSettigns: () -> Unit,
     navigateToTransactionHistory: () -> Unit,
     navigateToMyOrders: () -> Unit,
+    /** One order from the Portfolio screen's Orders tab, straight to its details. */
+    navigateToOrderDetails: (OrderDomain) -> Unit,
     navigateToActiveMandates: () -> Unit,
     /**
      * The fund list filtered by minimum installment — the `amount_type` values of
@@ -266,6 +269,7 @@ fun BottomNavigation(
                     onFDClick = navigateToPortfolioFdDetailsScreen,
                     navigateToCategoryMutualFundScreen=navigateToCategoryMutualFundTypeScreen,
                     navigateToCategoryFDScreen=navigateToCategoryFDScreen,
+                    onOrderClick = navigateToOrderDetails,
                 )
             }
             composable<Route.Profile> {

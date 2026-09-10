@@ -217,33 +217,33 @@ fun ProfileIntroScreen(
                                 )
                             )
                     ) {
-                        RowItem(
-                            icon = Res.drawable.profile_clock,
-                            title = "Transaction History",
-                            onCLick = {
-                                onEvent(
-                                    ProfileEvent.OnTransactionHistoryClicked
-                                )
-                            })
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = InsuranceIconBg.copy(0.2f),
-                            modifier = Modifier.padding(horizontal = 24.dp)
-                        )
+//                        RowItem(
+//                            icon = Res.drawable.profile_clock,
+//                            title = "Transaction History",
+//                            onCLick = {
+//                                onEvent(
+//                                    ProfileEvent.OnTransactionHistoryClicked
+//                                )
+//                            })
+//                        HorizontalDivider(
+//                            thickness = 1.dp,
+//                            color = InsuranceIconBg.copy(0.2f),
+//                            modifier = Modifier.padding(horizontal = 24.dp)
+//                        )
                         // TODO: replace with the dedicated My Orders icon once it is exported.
-                        RowItem(
-                            icon = Res.drawable.receipt_icon,
-                            title = "My Orders",
-                            onCLick = {
-                                onEvent(
-                                    ProfileEvent.OnMyOrdersClicked
-                                )
-                            })
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = InsuranceIconBg.copy(0.2f),
-                            modifier = Modifier.padding(horizontal = 24.dp)
-                        )
+//                        RowItem(
+//                            icon = Res.drawable.receipt_icon,
+//                            title = "My Orders",
+//                            onCLick = {
+//                                onEvent(
+//                                    ProfileEvent.OnMyOrdersClicked
+//                                )
+//                            })
+//                        HorizontalDivider(
+//                            thickness = 1.dp,
+//                            color = InsuranceIconBg.copy(0.2f),
+//                            modifier = Modifier.padding(horizontal = 24.dp)
+//                        )
                         RowItem(
                             icon = Res.drawable.profile_bank,
                             title = "Active Mandates",

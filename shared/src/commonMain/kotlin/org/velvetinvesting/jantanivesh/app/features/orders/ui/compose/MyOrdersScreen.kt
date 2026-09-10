@@ -149,13 +149,16 @@ private fun MyOrdersHeader(onBack: () -> Unit) {
     }
 }
 
+/** Shared with the Portfolio screen's Orders tab, which renders the same chips. */
 @Composable
-private fun OrderFilterRow(
+internal fun OrderFilterRow(
     selected: OrderFilter,
     onFilterSelected: (OrderFilter) -> Unit
 ) {
     LazyRow(
-        modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.dp8),
+        modifier = Modifier.fillMaxWidth()
+            .background(White)
+            .padding(vertical = Spacing.dp12),
         horizontalArrangement = Arrangement.spacedBy(Spacing.dp10),
         contentPadding = PaddingValues(horizontal = Spacing.dp16)
     ) {
@@ -175,7 +178,7 @@ private fun OrderFilterRow(
  * exclusive choice with no empty state to fall back to, so the selection is shown by fill alone.
  */
 @Composable
-private fun OrderFilterChip(
+internal fun OrderFilterChip(
     title: String,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -194,8 +197,9 @@ private fun OrderFilterChip(
     )
 }
 
+/** Shared with the Portfolio screen's Orders tab, which lists the same rows. */
 @Composable
-private fun OrderCard(
+internal fun OrderCard(
     order: OrderDomain,
     onClick: () -> Unit
 ) {

@@ -13,7 +13,8 @@ import org.velvetinvesting.jantanivesh.app.core.location.LocationProvider
 import org.velvetinvesting.jantanivesh.app.core.location.LocationResult
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
-import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
+import org.velvetinvesting.jantanivesh.app.core.utils.isoUtcToIsoDate
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimDoubleTo
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Gender
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.GeoLocation
@@ -59,6 +60,10 @@ data class ReviewProfileUiState(
     val isPepConfirmed: Boolean = false,
     val isResidentConfirmed: Boolean = false,
     val isLoading: Boolean = false,
+    /** Covers the initial `GET /user/` read that prefills the form — the whole screen is a loader. */
+    val isScreenLoading: Boolean = true,
+    val showError: Boolean = false,
+    val error: String = "",
     /** Only ever set from a GPS fix — the coordinate fields are display-only. */
     val coordinates: GeoCoordinates? = null,
     val isFetchingLocation: Boolean = false,
@@ -99,6 +104,9 @@ data class ReviewProfileUiState(
 }
 
 sealed interface ReviewProfileEvent {
+    /** Retries the initial profile read after it failed. */
+    data object OnRetryLoad : ReviewProfileEvent
+
     data class OnFullNameChange(val value: String) : ReviewProfileEvent
     data class OnEmailChange(val value: String) : ReviewProfileEvent
     data class OnDobChange(val value: String) : ReviewProfileEvent
@@ -138,22 +146,57 @@ class ReviewProfileViewModel(
     private val submitInvestorProfile: SubmitInvestorProfileUseCase,
     private val getKycFormStatus: GetKycFormStatusUseCase,
     private val locationProvider: LocationProvider,
-    /** Source of the name, date of birth and email captured earlier in onboarding. */
-    private val authPrefs: AuthPrefs
+    private val getUserData: GetUserDataUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(
-        // Anything the earlier steps did not store simply comes through as empty and is typed here.
-        ReviewProfileUiState(
-            fullName = authPrefs.getFullName().orEmpty(),
-            dob = authPrefs.getDob().orEmpty(),
-            email = authPrefs.getEmail().orEmpty(),
-            isEmailLocked = authPrefs.isEmailVerified() && !authPrefs.getEmail().isNullOrBlank()
-        )
-    )
+    private val _uiState = MutableStateFlow(ReviewProfileUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _effect = Channel<ReviewProfileEffect>()
     val effect = _effect.receiveAsFlow()
+
+    init {
+        loadUserData()
+    }
+
+    /**
+     * Nothing on the form is usable until this lands, so the whole screen is a loader until it
+     * does. Anything the backend does not have yet arrives blank and is typed in here.
+     */
+    private fun loadUserData() {
+        viewModelScope.launch {
+            update { it.copy(isScreenLoading = true, showError = false, error = "") }
+
+            when (val result = getUserData()) {
+                is NetworkResponse.Error -> update {
+                    it.copy(
+                        isScreenLoading = false,
+                        showError = true,
+                        error = result.error.message
+                    )
+                }
+
+                is NetworkResponse.Success -> {
+                    val user = result.data
+                    update {
+                        it.copy(
+                            isScreenLoading = false,
+                            showError = false,
+                            error = "",
+                            fullName = user.name,
+                            // The API states the date of birth as a UTC timestamp; the form and
+                            // the submit payload both want a plain `yyyy-MM-dd`.
+                            dob = user.dob.isoUtcToIsoDate(),
+                            email = user.email,
+                            // A verified email is settled: the field is then neither shown nor
+                            // editable.
+                            isEmailLocked = user.onboarding.isEmailVerified &&
+                                    user.email.isNotBlank()
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     fun handleEvent(event: ReviewProfileEvent) {
         when (event) {
@@ -220,6 +263,7 @@ class ReviewProfileViewModel(
             is ReviewProfileEvent.OnLocationPermissionResult ->
                 onLocationPermissionResult(event.granted)
 
+            ReviewProfileEvent.OnRetryLoad -> loadUserData()
             ReviewProfileEvent.OnProceedClick -> onProceedClick()
             ReviewProfileEvent.OnESignReturned -> onESignReturned()
             is ReviewProfileEvent.OnSpouseNameChange -> {

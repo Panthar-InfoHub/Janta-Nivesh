@@ -514,12 +514,12 @@ private fun NomineeOptOutCard(
     }
 }
 
-@Preview(locale = "hi", heightDp = 1800, showBackground = true)
+@Preview(locale = "hi", heightDp = 2000, showBackground = true)
 @Composable
 private fun AddNomineeScreenPreview() {
     JantaNiveshTheme {
         AddNomineeScreen(
-            state = AddNomineeUiState(addLater = true),
+            state = AddNomineeUiState(addLater = false),
             handleEvent = {},
             onOptOutTermsClick = {}
         )

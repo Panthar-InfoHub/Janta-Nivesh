@@ -57,7 +57,6 @@ import jantanivesh.shared.generated.resources.download_ic
 import jantanivesh.shared.generated.resources.holdings_ic
 import jantanivesh.shared.generated.resources.icon_download
 import jantanivesh.shared.generated.resources.progress_icon
-import jantanivesh.shared.generated.resources.tax_savings_ic
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -88,6 +87,9 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFu
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
+import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderDomain
+import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderFilter
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersUiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipItemDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositPortfolioDomain
@@ -109,19 +111,19 @@ fun PortfolioScreenMain(
     onFolioItemClick: (MutualFundPortfolioDomain) -> Unit,
     onFDClick: (String) -> Unit,
     navigateToCategoryMutualFundScreen: () -> Unit,
-    navigateToCategoryFDScreen: () -> Unit
+    navigateToCategoryFDScreen: () -> Unit,
+    onOrderClick: (OrderDomain) -> Unit
 ) {
 
     val screenState by viewModel.uiState.collectAsStateWithLifecycle()
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
 
-//    val isExportingCapital by viewModel.isExportingCapital.collectAsStateWithLifecycle()
-//    val isExportingTax by viewModel.isExportingTax.collectAsStateWithLifecycle()
     val isExportingPortfolio by viewModel.isExportingPortfolio.collectAsStateWithLifecycle()
 
     val pendingOrders by viewModel.pendingOrders.collectAsStateWithLifecycle()
     val activeSips by viewModel.activeSips.collectAsStateWithLifecycle()
     val isLoadingActiveSips by viewModel.isLoadingActiveSips.collectAsStateWithLifecycle()
+    val ordersState by viewModel.ordersState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(pageCount = { SelectedPortfolio.tabs.size })
 
     Box(
@@ -154,16 +156,14 @@ fun PortfolioScreenMain(
                         pendingOrders = pendingOrders,
                         activeSips = activeSips,
                         isLoadingActiveSips = isLoadingActiveSips,
-//                        isExportingCapital = isExportingCapital,
-//                        onDownloadTaxReport = { viewModel.downloadTaxReport() },
-//                        isExportingTax = isExportingTax,
-//                        onDownloadCapitalReport = viewModel::downloadCapitalReport,
-                        // Resolved against the holdings this screen already has, so a SIP opens
-                        // the same details screen — with the same figures — its fund does.
                         onActiveSipClick = { sip ->
                             onFolioItemClick(sip.resolveHolding(data.mutualFunds))
                         },
-                        pagerState = pagerState
+                        pagerState = pagerState,
+                        ordersState = ordersState,
+                        onOrderFilterSelected = viewModel::onOrderFilterSelected,
+                        onOrderClick = onOrderClick,
+                        onLoadNextOrders = viewModel::loadNextOrders
                     )
                 }
             }
@@ -183,16 +183,16 @@ fun PortfolioScreen(
     reload: () -> Unit,
     onDownloadPortfolioReport: () -> Unit,
     isExportingPortfolio: Boolean,
-//    onDownloadCapitalReport: () -> Unit,
-//    onDownloadTaxReport: () -> Unit,
-//    isExportingCapital: Boolean,
-//    isExportingTax: Boolean,
     pendingOrders: List<PendingOrderDomain>,
     activeSips: ActiveSipDomain,
     isLoadingActiveSips: Boolean,
     onActiveSipClick: (ActiveSipItemDomain) -> Unit,
     pagerState: PagerState,
-    onCancelPendingOrder: (PendingOrderDomain) -> Unit
+    onCancelPendingOrder: (PendingOrderDomain) -> Unit,
+    ordersState: MyOrdersUiState,
+    onOrderFilterSelected: (OrderFilter) -> Unit,
+    onOrderClick: (OrderDomain) -> Unit,
+    onLoadNextOrders: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -267,10 +267,6 @@ fun PortfolioScreen(
                         onFundClick = onSIPClick,
                         onEmptyButtonClick = navigateToCategoryMutualFundScreen,
                         reload = reload,
-//                        onDownloadCapitalReport = onDownloadCapitalReport,
-//                        onDownloadTaxReport = onDownloadTaxReport,
-//                        isExportingCapital = isExportingCapital,
-//                        isExportingTax = isExportingTax,
                         onDownloadPortfolioReport = onDownloadPortfolioReport,
                         isExportingPortfolio = isExportingPortfolio,
                         pendingOrders = pendingOrders,
@@ -292,6 +288,16 @@ fun PortfolioScreen(
                         onFDClick = onFDClick,
                         onEmptyButtonClick = navigateToCategoryFDScreen,
                         reload = reload
+                    )
+                }
+                4-> {
+                    OrdersPortfolio(
+                        state = ordersState,
+                        onFilterSelected = onOrderFilterSelected,
+                        onOrderClick = onOrderClick,
+                        onLoadNext = onLoadNextOrders,
+                        reload = reload,
+                        onBrowseClick = navigateToCategoryMutualFundScreen
                     )
                 }
             }
@@ -1152,7 +1158,7 @@ private fun ReportDownloadItem(
 @Preview(showBackground = true, backgroundColor = 0xffffff)
 @Composable
 fun DashboardPortfolioPreview() {
-    val pagerState= rememberPagerState(initialPage = 0) { 3 }
+    val pagerState= rememberPagerState(initialPage = 0) { SelectedPortfolio.tabs.size }
     JantaNiveshTheme {
         PortfolioScreen(
             selectedTab = SelectedPortfolio.Dashboard,
@@ -1174,7 +1180,11 @@ fun DashboardPortfolioPreview() {
             isLoadingActiveSips = false,
             onActiveSipClick = {},
             pagerState = pagerState,
-            onCancelPendingOrder = {}
+            onCancelPendingOrder = {},
+            ordersState = MyOrdersUiState(),
+            onOrderFilterSelected = {},
+            onOrderClick = {},
+            onLoadNextOrders = {}
         )
     }
 }
@@ -1182,7 +1192,7 @@ fun DashboardPortfolioPreview() {
 @Preview(showBackground = true, backgroundColor = 0xffffff)
 @Composable
 fun MutualFundPortfolioPreview() {
-    val pagerState= rememberPagerState(initialPage = 1) { 3 }
+    val pagerState= rememberPagerState(initialPage = 1) { SelectedPortfolio.tabs.size }
     JantaNiveshTheme {
         PortfolioScreen(
             selectedTab = SelectedPortfolio.MutualFunds,
@@ -1203,7 +1213,12 @@ fun MutualFundPortfolioPreview() {
             activeSips = previewActiveSips,
             isLoadingActiveSips = false,
             onActiveSipClick = {},
-            pagerState=pagerState,{}
+            pagerState = pagerState,
+            onCancelPendingOrder = {},
+            ordersState = MyOrdersUiState(),
+            onOrderFilterSelected = {},
+            onOrderClick = {},
+            onLoadNextOrders = {}
         )
     }
 }

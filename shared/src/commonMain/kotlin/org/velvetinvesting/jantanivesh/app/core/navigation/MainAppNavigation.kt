@@ -692,6 +692,11 @@ fun MainAppNavigation(
                         launchSingleTop=true
                     }
                 },
+                navigateToOrderDetails = { order ->
+                    navController.navigate(order.toDetailsRoute()) {
+                        launchSingleTop = true
+                    }
+                },
                 navigateToActiveMandates = {
                     navController.navigate(Route.ActiveMandates){
                         launchSingleTop=true
