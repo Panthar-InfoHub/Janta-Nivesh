@@ -34,3 +34,16 @@ sealed class TenureRangeList {
         }
     }
 }
+
+/**
+ * The tenure paying the most, which is the rate [FixedDepositDomain.baseInterest] already reports —
+ * this resolves the slab behind that figure so the list can name the term it belongs to.
+ */
+val FixedDepositDomain.bestTenure: FixedDepositTenureDomain?
+    get() = tenures.maxByOrNull { it.interestRate }
+
+/** Whole years stay years; anything else reads in months, or days for a slab under a month. */
+fun TenureRangeList.label(): String = when (this) {
+    is TenureRangeList.Years -> "${years}Y"
+    is TenureRangeList.Days -> if (days >= 30) "${days / 30}M" else "${days}D"
+}

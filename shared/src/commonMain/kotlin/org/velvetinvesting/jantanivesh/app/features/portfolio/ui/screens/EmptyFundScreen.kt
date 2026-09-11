@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,10 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.graphics_portfolio_empty
 import org.jetbrains.compose.resources.painterResource
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 import org.velvetinvesting.jantanivesh.app.core.theme.titlesStyle
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
@@ -26,7 +30,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 fun EmptyFundScreen(onBrowseClick: () -> Unit, text:String, buttonText:String) {
 
     Box(
-        modifier=Modifier.fillMaxSize(),
+        modifier=Modifier.fillMaxSize().background(White),
         contentAlignment = Alignment.Center
     ){
 
@@ -58,9 +62,18 @@ fun EmptyFundScreen(onBrowseClick: () -> Unit, text:String, buttonText:String) {
                 text = buttonText,
                 onClick = onBrowseClick
             )
-
         }
-
     }
+}
 
+@Preview
+@Composable
+private fun EmptyFundPreview(){
+    JantaNiveshTheme {
+        EmptyFundScreen(
+            onBrowseClick = {},
+            text = "",
+            buttonText = ""
+        )
+    }
 }

@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import org.velvetinvesting.jantanivesh.app.core.constants.WebUrls
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
@@ -936,9 +937,7 @@ fun MainAppNavigation(
                     when(it){
                         ProfileSettingEffect.NavigateBack -> navController.popBackStack()
                         ProfileSettingEffect.NavigateToDeleteAccount -> {
-                            browserLauncher.launch(
-                                "https://velvetinvesting.com/delete-account"
-                            ){}
+                            browserLauncher.launch(WebUrls.DATA_DELETION){}
                         }
                         ProfileSettingEffect.NavigateToChangePin -> {
                             if (prefs.isMpinSetup()) {

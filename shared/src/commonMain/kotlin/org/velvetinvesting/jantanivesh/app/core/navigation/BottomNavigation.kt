@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.viewmodel.koinViewModel
+import org.velvetinvesting.jantanivesh.app.core.constants.WebUrls
 import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.component.BottomNavBar
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.compose.ExploreFundsScreen
@@ -276,14 +277,10 @@ fun BottomNavigation(
                     vm.effect.collect {
                         when (it) {
                             ProfileEffect.NavigateToContactUs -> {
-                                browserLauncher.launch(
-                                    "https://velvetinvesting.com/contact"
-                                ){}
+                                browserLauncher.launch(WebUrls.CONTACT){}
                             }
                             ProfileEffect.NavigateToHelpFaq -> {
-                                browserLauncher.launch(
-                                    "https://velvetinvesting.com/faqs"
-                                ){}
+                                browserLauncher.launch(WebUrls.FAQS){}
                             }
                             ProfileEffect.NavigateToKycStatus -> navigateToKYC(
                                 OnboardingStage.PanVerification.id

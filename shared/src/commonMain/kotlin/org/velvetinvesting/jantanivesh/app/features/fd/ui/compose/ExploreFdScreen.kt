@@ -43,7 +43,12 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderSc
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositTenureDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.TenureRangeList
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.bestTenure
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.label
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdUiState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundIcon
@@ -226,19 +231,20 @@ private fun FundListItem(
             }
         }
 
-        // Right Side: Returns
+        // Right Side: the best rate on offer, over the term that actually pays it.
+        val bestTenure = item.bestTenure
         Column(
             modifier = Modifier.weight(0.3f),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(Spacing.dp4)
         ) {
             Text(
-                text = "${item.baseInterest}%",
+                text = "${(bestTenure?.interestRate ?: item.baseInterest).trimTo(2)}%",
                 style = MaterialTheme.typography.labelLarge,
                 color = Primary
             )
             Text(
-                text =  "3Y Return",
+                text = bestTenure?.let { "${it.tenure.label()} Return" } ?: "Returns",
                 style = MaterialTheme.typography.titleSmall,
                 color = GreyText
             )
@@ -257,9 +263,24 @@ fun ExploreFdScreenPreview() {
                 bankName = "SBI Bank",
                 bankLogoUrl = "https://picsum.photos/200",
                 riskLevel = RiskLevel.LOW,
-                baseInterest = 6.39,
+                baseInterest = 7.25,
                 minDeposit = 10000,
-                tenures = emptyList(),
+                tenures = listOf(
+                    FixedDepositTenureDomain(
+                        tenure = TenureRangeList.fromDays(365),
+                        tenureDays = 365,
+                        interestRate = 7.25,
+                        receiveMin = 0L,
+                        receiveMax = 0L
+                    ),
+                    FixedDepositTenureDomain(
+                        tenure = TenureRangeList.fromDays(1095),
+                        tenureDays = 1095,
+                        interestRate = 6.39,
+                        receiveMin = 0L,
+                        receiveMax = 0L
+                    )
+                ),
                 bankTag = "S",
                 tags = listOf("Public Bank")
             )
