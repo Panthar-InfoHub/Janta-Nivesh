@@ -15,11 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +43,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.splashscreen.domain.models.pagerImageList
 import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenEvent
-import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenUiState
 
 @Composable
 fun SplashScreen(
@@ -88,7 +84,7 @@ fun SplashScreen(
                             Image(
                                 painter = painterResource(pagerImageList[page].image),
                                 contentDescription = "Pager Image",
-                                contentScale = ContentScale.FillBounds,
+                                contentScale = ContentScale.Fit,
                                 modifier = Modifier.size(ImageSize.dp320)
                             )
                         }
@@ -106,7 +102,7 @@ fun SplashScreen(
                             color = SplashGrey,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = Spacing.dp16)
-                                .padding(top = Spacing.dp12)
+                                .padding(top = Spacing.dp4)
                         )
                     }
                 }

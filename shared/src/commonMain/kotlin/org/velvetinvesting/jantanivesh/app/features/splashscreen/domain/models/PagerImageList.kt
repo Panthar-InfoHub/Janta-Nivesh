@@ -15,17 +15,17 @@ data class PagerImage(
 val pagerImageList = listOf(
     PagerImage(
         Res.drawable.img_first_pager,
-        title = "Invest Smarter, Grow with Purpose",
-        subtitle = "Explore Mutual funds and fixed deposits designed to support your wealth-building journey."
+        title = "निवेश, अब बिल्कुल आसान",
+        subtitle = "छोटी शुरुआत करें और अपने कल के लिए निवेश करें।"
     ),
     PagerImage(
         Res.drawable.img_secondpager,
-        title = "Keep your money safe!",
-        subtitle = "Discover mutual funds and fixed deposits tailored to enhance your wealth-building journey."
+        title = "निवेश, अपनी भाषा में",
+        subtitle = "अपनी भाषा में समझें और आसानी से निवेश करें।"
     ),
     PagerImage(
         Res.drawable.img_thirdpager,
-        title = "Choose own native language",
-        subtitle = "Discover mutual funds and fixed deposits that can enhance your wealth!"
+        title = "निवेश, हर किसी के लिए",
+        subtitle = "आप जो भी काम करते हैं, आप भी अपने सपनों के लिए निवेश कर सकते हैं।"
     )
 )

@@ -55,8 +55,10 @@ import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.download_ic
 import jantanivesh.shared.generated.resources.holdings_ic
+import jantanivesh.shared.generated.resources.icon_arrow_right
 import jantanivesh.shared.generated.resources.icon_download
 import jantanivesh.shared.generated.resources.progress_icon
+import jantanivesh.shared.generated.resources.receipt_icon
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -64,10 +66,12 @@ import org.sharad.velvetinvestment.presentation.portfolio.models.SelectedPortfol
 import org.sharad.velvetinvestment.presentation.portfolio.models.label
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
+import org.velvetinvesting.jantanivesh.app.core.theme.LightBlueBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.PathGray
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
 import org.velvetinvesting.jantanivesh.app.core.theme.appRed
 import org.velvetinvesting.jantanivesh.app.core.theme.subHeading
@@ -80,16 +84,12 @@ import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.GenericTabSwitcher
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
-import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderDomain
-import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderFilter
-import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersUiState
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.ActiveSipItemDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositPortfolioDomain
@@ -112,7 +112,7 @@ fun PortfolioScreenMain(
     onFDClick: (String) -> Unit,
     navigateToCategoryMutualFundScreen: () -> Unit,
     navigateToCategoryFDScreen: () -> Unit,
-    onOrderClick: (OrderDomain) -> Unit
+    navigateToMyOrders: () -> Unit
 ) {
 
     val screenState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -123,7 +123,6 @@ fun PortfolioScreenMain(
     val pendingOrders by viewModel.pendingOrders.collectAsStateWithLifecycle()
     val activeSips by viewModel.activeSips.collectAsStateWithLifecycle()
     val isLoadingActiveSips by viewModel.isLoadingActiveSips.collectAsStateWithLifecycle()
-    val ordersState by viewModel.ordersState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(pageCount = { SelectedPortfolio.tabs.size })
 
     Box(
@@ -133,7 +132,7 @@ fun PortfolioScreenMain(
         Column(
             modifier=Modifier.fillMaxSize()
         ){
-            BackHeader("Portfolio", onBack = {}, showBack = false )
+            PortfolioHeader("Portfolio", onOrdersClick = navigateToMyOrders)
             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 UiStateContainer(
                     uiState = screenState,
@@ -159,11 +158,7 @@ fun PortfolioScreenMain(
                         onActiveSipClick = { sip ->
                             onFolioItemClick(sip.resolveHolding(data.mutualFunds))
                         },
-                        pagerState = pagerState,
-                        ordersState = ordersState,
-                        onOrderFilterSelected = viewModel::onOrderFilterSelected,
-                        onOrderClick = onOrderClick,
-                        onLoadNextOrders = viewModel::loadNextOrders
+                        pagerState = pagerState
                     )
                 }
             }
@@ -171,6 +166,72 @@ fun PortfolioScreenMain(
     }
 
 }
+
+@Composable
+private fun PortfolioHeader(
+    title: String,
+    onOrdersClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.dp8)
+            .background(Color.White)
+            .padding(horizontal = Spacing.dp16),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+        )
+
+        Row(
+            modifier= Modifier
+                .clip(LocalShapes.current.roundedDp12)
+                .clickable(
+                    onClick = {
+                        onOrdersClick()
+                    }
+                )
+                .border(
+                    shape = LocalShapes.current.roundedDp12,
+                    width = 1.dp,
+                    color = LightBlueBorder
+                )
+                .padding(horizontal = Spacing.dp16, vertical = Spacing.dp10),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+        ){
+            Icon(
+                painter = painterResource(Res.drawable.receipt_icon),
+                contentDescription = null,
+                tint=Primary
+            )
+            Text(
+                text="My Orders",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Icon(
+                painter = painterResource(Res.drawable.icon_arrow_right),
+                contentDescription = null,
+                tint=Primary
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HeaderPrev(){
+    JantaNiveshTheme {
+        PortfolioHeader("Portfolio",{})
+    }
+}
+
+
 @Composable
 fun PortfolioScreen(
     selectedTab: SelectedPortfolio,
@@ -188,11 +249,7 @@ fun PortfolioScreen(
     isLoadingActiveSips: Boolean,
     onActiveSipClick: (ActiveSipItemDomain) -> Unit,
     pagerState: PagerState,
-    onCancelPendingOrder: (PendingOrderDomain) -> Unit,
-    ordersState: MyOrdersUiState,
-    onOrderFilterSelected: (OrderFilter) -> Unit,
-    onOrderClick: (OrderDomain) -> Unit,
-    onLoadNextOrders: () -> Unit
+    onCancelPendingOrder: (PendingOrderDomain) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -288,16 +345,6 @@ fun PortfolioScreen(
                         onFDClick = onFDClick,
                         onEmptyButtonClick = navigateToCategoryFDScreen,
                         reload = reload
-                    )
-                }
-                4-> {
-                    OrdersPortfolio(
-                        state = ordersState,
-                        onFilterSelected = onOrderFilterSelected,
-                        onOrderClick = onOrderClick,
-                        onLoadNext = onLoadNextOrders,
-                        reload = reload,
-                        onBrowseClick = navigateToCategoryMutualFundScreen
                     )
                 }
             }
@@ -1180,11 +1227,7 @@ fun DashboardPortfolioPreview() {
             isLoadingActiveSips = false,
             onActiveSipClick = {},
             pagerState = pagerState,
-            onCancelPendingOrder = {},
-            ordersState = MyOrdersUiState(),
-            onOrderFilterSelected = {},
-            onOrderClick = {},
-            onLoadNextOrders = {}
+            onCancelPendingOrder = {}
         )
     }
 }
@@ -1214,11 +1257,7 @@ fun MutualFundPortfolioPreview() {
             isLoadingActiveSips = false,
             onActiveSipClick = {},
             pagerState = pagerState,
-            onCancelPendingOrder = {},
-            ordersState = MyOrdersUiState(),
-            onOrderFilterSelected = {},
-            onOrderClick = {},
-            onLoadNextOrders = {}
+            onCancelPendingOrder = {}
         )
     }
 }
