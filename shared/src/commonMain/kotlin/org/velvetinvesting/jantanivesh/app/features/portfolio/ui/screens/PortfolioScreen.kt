@@ -55,6 +55,7 @@ import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.download_ic
 import jantanivesh.shared.generated.resources.holdings_ic
+import jantanivesh.shared.generated.resources.ic_pointer_right
 import jantanivesh.shared.generated.resources.icon_arrow_right
 import jantanivesh.shared.generated.resources.icon_download
 import jantanivesh.shared.generated.resources.progress_icon
@@ -64,6 +65,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.sharad.velvetinvestment.presentation.portfolio.models.SelectedPortfolio
 import org.sharad.velvetinvestment.presentation.portfolio.models.label
+import org.velvetinvesting.jantanivesh.app.core.theme.IconSize
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LightBlueBorder
@@ -176,7 +178,7 @@ private fun PortfolioHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = Spacing.dp8)
+            .padding(vertical = Spacing.dp12)
             .background(Color.White)
             .padding(horizontal = Spacing.dp16),
         verticalAlignment = Alignment.CenterVertically,
@@ -190,34 +192,36 @@ private fun PortfolioHeader(
 
         Row(
             modifier= Modifier
-                .clip(LocalShapes.current.roundedDp12)
+                .clip(LocalShapes.current.roundedDp8)
                 .clickable(
                     onClick = {
                         onOrdersClick()
                     }
                 )
                 .border(
-                    shape = LocalShapes.current.roundedDp12,
+                    shape = LocalShapes.current.roundedDp8,
                     width = 1.dp,
                     color = LightBlueBorder
                 )
-                .padding(horizontal = Spacing.dp16, vertical = Spacing.dp10),
+                .padding(horizontal = Spacing.dp10, vertical = Spacing.dp10),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+            horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
         ){
             Icon(
                 painter = painterResource(Res.drawable.receipt_icon),
                 contentDescription = null,
-                tint=Primary
+                tint=Primary,
+                modifier= Modifier.size(IconSize.dp16)
             )
             Text(
                 text="My Orders",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
             )
             Icon(
-                painter = painterResource(Res.drawable.icon_arrow_right),
+                painter = painterResource(Res.drawable.ic_pointer_right),
                 contentDescription = null,
-                tint=Primary
+                tint=Primary,
+                modifier= Modifier.size(IconSize.dp12)
             )
         }
     }

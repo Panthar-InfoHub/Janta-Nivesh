@@ -24,7 +24,13 @@ data class FDTenureUiModel(
     val tenureDays: Int,
     val interestRate: Double,
     val annualYield: Double,
-    val isDefault: Boolean,
+    /**
+     * Whether this slab pays the best rate on offer for its payout mode. Worked out from the rates
+     * themselves rather than taken from the gateway's `is_default_selection`, which marks the slab
+     * the issuer wants pre-picked and is not always the one that pays most. Ties are kept: when
+     * several terms share the top rate, every one of them is flagged.
+     */
+    val isMaxReturn: Boolean,
     val payoutFrequency: PayoutType,
     val maturityAmount: Long
 )
@@ -44,6 +50,17 @@ data class FdDetailsUiState(
             selectedPayoutMode == null ||
                     tenure.payoutFrequency.id == selectedPayoutMode.id
         }.reversed()
+
+    /**
+     * The slab the header card quotes its interest and tenure from.
+     *
+     * It is read off the same list the table below shows, so the two can never disagree. Where
+     * several terms tie at the best rate the shortest wins: the same return, reached sooner, is
+     * the one worth advertising.
+     */
+    val headlineTenure: FDTenureUiModel?
+        get() = filteredTenures.filter { it.isMaxReturn }.minByOrNull { it.tenureDays }
+            ?: filteredTenures.maxByOrNull { it.interestRate }
 }
 
 enum class FDModalType {
@@ -167,6 +184,12 @@ class FdDetailsViewModel(
         if (details == null) return emptyList()
         val currentPayout = payoutType ?: details.selectedPayout ?: PayoutType.Cumulative
 
+        // The table is narrowed to a single payout mode before it is shown, so the best rate is
+        // decided within each mode — whichever list the user is looking at names its own best.
+        val bestRateByPayout = details.interestRates
+            .groupBy { it.payoutFrequency.id }
+            .mapValues { (_, rates) -> rates.maxOf { it.interestRate } }
+
         return details.interestRates.map { tenure ->
             val maturity = calculateMaturity(
                 principal = details.invest,
@@ -180,7 +203,11 @@ class FdDetailsViewModel(
                 tenureDays = tenure.tenureDays,
                 interestRate = tenure.interestRate,
                 annualYield = tenure.annualYield,
-                isDefault = tenure.isDefault,
+                // Rates are parsed from strings, so equal slabs land on the same Double; the
+                // tolerance only guards against a value that arrives fractionally off.
+                isMaxReturn = bestRateByPayout[tenure.payoutFrequency.id]
+                    ?.let { best -> tenure.interestRate >= best - RATE_EQUALITY_TOLERANCE }
+                    ?: false,
                 payoutFrequency = tenure.payoutFrequency,
                 maturityAmount = maturity.toLong()
             )
@@ -220,5 +247,10 @@ class FdDetailsViewModel(
         viewModelScope.launch {
             _effect.send(effect)
         }
+    }
+
+    private companion object {
+        /** Two rates within this of each other are the same rate as far as the badge is concerned. */
+        const val RATE_EQUALITY_TOLERANCE = 0.0001
     }
 }

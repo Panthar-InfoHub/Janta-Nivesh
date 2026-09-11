@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 data class JantaNiveshShapes(
+    val roundedDp8: Shape = RoundedCornerShape(size = Spacing.dp8),
     val roundedDp12: Shape = RoundedCornerShape(Spacing.dp12),
     val roundedDp16: Shape = RoundedCornerShape(size = Spacing.dp16),
     val roundedDp20: Shape = RoundedCornerShape(size = Spacing.dp20),

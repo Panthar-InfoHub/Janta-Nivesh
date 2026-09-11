@@ -68,7 +68,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.TagMaxReturnText
 import org.velvetinvesting.jantanivesh.app.core.theme.TagPopularBg
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.filterDigits
-import org.velvetinvesting.jantanivesh.app.core.utils.math.toYearsFormatKmp
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldDefaults
@@ -84,6 +83,8 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FDTenureDoma
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.KeyFeatureDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.toTenureLabel
+import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FDTenureUiModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsUiState
@@ -167,7 +168,10 @@ fun FdDetailsContent(
             ) {
                 // Header Card
                 item {
-                    HeaderCard(details = state.details)
+                    HeaderCard(
+                        details = state.details,
+                        headlineTenure = state.headlineTenure
+                    )
                 }
                 // Investment Config Card
                 item {
@@ -265,7 +269,10 @@ private fun TopBar(onBack: () -> Unit, onShare: () -> Unit, modifier: Modifier =
 }
 
 @Composable
-private fun HeaderCard(details: FDDetailsDomain) {
+private fun HeaderCard(
+    details: FDDetailsDomain,
+    headlineTenure: FDTenureUiModel?
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth().genericDropShadow(RoundedCornerShape(Spacing.dp12))
@@ -333,17 +340,16 @@ private fun HeaderCard(details: FDDetailsDomain) {
             ) {
                 MetricBox(
                     title = "INTEREST",
-                    value = "${details.maxInterestRate}%",
+                    value = "${(headlineTenure?.interestRate ?: details.maxInterestRate).trimTo(2)}%",
                     suffix = " p.a.",
                     modifier = Modifier.weight(1f),
                     valueColor = SelectedBoxBorder
                 )
-                val defaultTenure =
-                    details.interestRates.firstOrNull { it.isDefault }?.tenureDays?.toYearsFormatKmp()
-                        .toString()
                 MetricBox(
                     title = "TENURE",
-                    value = defaultTenure,
+                    // No tenure to name rather than the literal "null" the old default read as
+                    // when the gateway marked none.
+                    value = headlineTenure?.tenureDays?.toTenureLabel() ?: "--",
                     modifier = Modifier.weight(1f)
                 )
                 MetricBox(
@@ -613,7 +619,7 @@ private fun TenureOptionsCard(
             HorizontalDivider(color = GreyBoxDivider)
 
             options.forEachIndexed { index, option ->
-                val bgColor = if (option.isDefault) HighlightRowBg else White
+                val bgColor = if (option.isMaxReturn) HighlightRowBg else White
 
                 Row(
                     modifier = Modifier
@@ -624,7 +630,7 @@ private fun TenureOptionsCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
                 ) {
-                    if (option.isDefault)
+                    if (option.isMaxReturn)
                         VerticalDivider(
                             thickness = Spacing.dp4,
                             color = Primary,
@@ -644,7 +650,7 @@ private fun TenureOptionsCard(
                             style = MaterialTheme.typography.labelMedium,
                             color = Primary
                         )
-                        if (option.isDefault) {
+                        if (option.isMaxReturn) {
                             TagChip(
                                 text = "MAX RETURN",
                                 bgColor = TagMaxReturnBg,
@@ -655,7 +661,7 @@ private fun TenureOptionsCard(
                     Text(
                         text = "${option.interestRate}%",
                         style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = if (option.isDefault) FontWeight.Bold else FontWeight.Normal
+                            fontWeight = if (option.isMaxReturn) FontWeight.Bold else FontWeight.Normal
                         ),
                         color = Primary,
                         modifier = Modifier.weight(1f),
@@ -664,7 +670,7 @@ private fun TenureOptionsCard(
                     Text(
                         text = "₹ ${option.maturityAmount}",
                         style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = if (option.isDefault) FontWeight.Bold else FontWeight.Normal
+                            fontWeight = if (option.isMaxReturn) FontWeight.Bold else FontWeight.Normal
                         ),
                         color = Primary,
                         modifier = Modifier.weight(1f),
