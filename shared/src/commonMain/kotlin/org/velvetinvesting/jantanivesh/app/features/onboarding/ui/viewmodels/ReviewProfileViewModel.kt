@@ -29,17 +29,13 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.S
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 
 /**
- * Six decimals is roughly 0.1 m — more precision than a phone GPS delivers, and enough to keep
- * the displayed value stable. Kotlin has no common `String.format`, hence the manual rounding.
+ * Falls back to these when permission is held but the device still cannot produce a fix: the API
+ * rejects a profile without a geo stamp, so a permitted submission must always carry one.
  */
-private fun Double.toDisplayCoordinate(): String {
-    val scaled = kotlin.math.round(this * 1_000_000.0).toLong()
-    val sign = if (scaled < 0) "-" else ""
-    val magnitude = kotlin.math.abs(scaled)
-    val whole = magnitude / 1_000_000
-    val fraction = (magnitude % 1_000_000).toString().padStart(6, '0')
-    return "$sign$whole.$fraction"
-}
+private val DEFAULT_COORDINATES = GeoCoordinates(latitude = 28.5355, longitude = 77.3910)
+
+/** One initial attempt plus two retries before giving up on the device and using the default. */
+private const val LOCATION_ATTEMPTS = 3
 
 data class ReviewProfileUiState(
     val fullName: String = "",
@@ -64,8 +60,7 @@ data class ReviewProfileUiState(
     val isScreenLoading: Boolean = true,
     val showError: Boolean = false,
     val error: String = "",
-    /** Only ever set from a GPS fix — the coordinate fields are display-only. */
-    val coordinates: GeoCoordinates? = null,
+    /** True while the fix that precedes the submit call is being taken. */
     val isFetchingLocation: Boolean = false,
     /**
      * True once the email OTP has been verified: the address is then settled, so the field is
@@ -77,16 +72,8 @@ data class ReviewProfileUiState(
     val annualIncomeSlab: IncomeSlab?
         get() = annualIncome.toLongOrNull()?.takeIf { it >= 0 }?.let(IncomeSlab::forAmount)
 
-    val latitudeText: String
-        get() = coordinates?.latitude?.toDisplayCoordinate().orEmpty()
-
-    val longitudeText: String
-        get() = coordinates?.longitude?.toDisplayCoordinate().orEmpty()
-
     val canSubmit: Boolean
-        get() = coordinates != null &&
-                !isFetchingLocation &&
-                isPepConfirmed &&
+        get() = isPepConfirmed &&
                 isResidentConfirmed &&
                 OnboardingInput.isFilled(fullName) &&
                 OnboardingInput.isValidEmail(email) &&
@@ -124,9 +111,11 @@ sealed interface ReviewProfileEvent {
     data class OnPepConfirmChange(val isChecked: Boolean) : ReviewProfileEvent
     data class OnResidentConfirmChange(val isChecked: Boolean) : ReviewProfileEvent
 
-    /** Reports the outcome of the permission prompt the screen raised. */
+    /**
+     * Reports the outcome of the permission prompt the screen raises when the user taps submit.
+     * There is no separate proceed event: the answer is what starts the submission.
+     */
     data class OnLocationPermissionResult(val granted: Boolean) : ReviewProfileEvent
-    data object OnProceedClick : ReviewProfileEvent
 
     /**
      * Raised once the user comes back from the eSign web view. Whether the document was actually
@@ -261,10 +250,9 @@ class ReviewProfileViewModel(
                 update { it.copy(isResidentConfirmed = event.isChecked) }
 
             is ReviewProfileEvent.OnLocationPermissionResult ->
-                onLocationPermissionResult(event.granted)
+                onSubmit(isPermissionGranted = event.granted)
 
             ReviewProfileEvent.OnRetryLoad -> loadUserData()
-            ReviewProfileEvent.OnProceedClick -> onProceedClick()
             ReviewProfileEvent.OnESignReturned -> onESignReturned()
             is ReviewProfileEvent.OnSpouseNameChange -> {
                 update { it.copy(spouseName = OnboardingInput.sanitizeName(event.value)) }
@@ -272,10 +260,17 @@ class ReviewProfileViewModel(
         }
     }
 
-    private fun onLocationPermissionResult(granted: Boolean) {
-        if (_uiState.value.isFetchingLocation) return
+    /**
+     * The KYC stamp is taken as part of the submission rather than as its own step, so the fix is
+     * always current and the user only presses one button. Permission is not optional — without
+     * it the submission does not happen at all — but a device that cannot produce a fix despite
+     * having permission must not block onboarding, hence the fallback to [DEFAULT_COORDINATES].
+     */
+    private fun onSubmit(isPermissionGranted: Boolean) {
+        val state = _uiState.value
+        if (state.isLoading || state.isFetchingLocation || !state.canSubmit) return
 
-        if (!granted) {
+        if (!isPermissionGranted) {
             viewModelScope.launch {
                 SnackBarController.showError(
                     "Location permission is needed to complete your profile. " +
@@ -285,47 +280,46 @@ class ReviewProfileViewModel(
             return
         }
 
-        viewModelScope.launch {
-            update { it.copy(isFetchingLocation = true) }
-            try {
+        viewModelScope.launch { submitProfile(resolveCoordinates()) }
+    }
+
+    /**
+     * Only reached with permission in hand. A fix can still fail for transient reasons — a cold
+     * radio, a provider that reports nothing on the first pass — so a failure is retried before
+     * falling back. Anything that will not change between attempts falls back immediately.
+     */
+    private suspend fun resolveCoordinates(): GeoCoordinates {
+        update { it.copy(isFetchingLocation = true) }
+        try {
+            repeat(LOCATION_ATTEMPTS) {
                 when (val result = locationProvider.getCurrentLocation()) {
-                    is LocationResult.Success ->
-                        update { it.copy(coordinates = result.coordinates) }
+                    is LocationResult.Success -> return result.coordinates
 
-                    LocationResult.PermissionDenied -> SnackBarController.showError(
-                        "Location permission is needed to complete your profile."
-                    )
+                    LocationResult.PermissionDenied,
+                    LocationResult.LocationDisabled -> return DEFAULT_COORDINATES
 
-                    LocationResult.LocationDisabled -> SnackBarController.showError(
-                        "Please turn on location services and try again."
-                    )
-
-                    is LocationResult.Failed -> SnackBarController.showError(result.message)
+                    is LocationResult.Failed -> Unit
                 }
-            } finally {
-                update { it.copy(isFetchingLocation = false) }
             }
+            return DEFAULT_COORDINATES
+        } finally {
+            update { it.copy(isFetchingLocation = false) }
         }
     }
 
-    private fun onProceedClick() {
+    private suspend fun submitProfile(coordinates: GeoCoordinates) {
         val state = _uiState.value
-        if (state.isLoading || !state.canSubmit) return
-        val coordinates = state.coordinates ?: return
+        update { it.copy(isLoading = true) }
 
-        viewModelScope.launch {
-            update { it.copy(isLoading = true) }
-
-            when (val result = submitInvestorProfile(state.toInvestorProfile(coordinates))) {
-                is NetworkResponse.Error -> {
-                    update { it.copy(isLoading = false) }
-                    SnackBarController.showError(result.error.message)
-                }
-
-                // Saving the profile can be what unlocks the eSign, so the form status decides
-                // whether the user still has a document to sign before moving on.
-                is NetworkResponse.Success -> refreshESignStatus(isReturningFromWebView = false)
+        when (val result = submitInvestorProfile(state.toInvestorProfile(coordinates))) {
+            is NetworkResponse.Error -> {
+                update { it.copy(isLoading = false) }
+                SnackBarController.showError(result.error.message)
             }
+
+            // Saving the profile can be what unlocks the eSign, so the form status decides
+            // whether the user still has a document to sign before moving on.
+            is NetworkResponse.Success -> refreshESignStatus(isReturningFromWebView = false)
         }
     }
 
@@ -376,7 +370,7 @@ class ReviewProfileViewModel(
         }
     }
 
-    /** Only called once [ReviewProfileUiState.canSubmit] holds, which requires a GPS fix. */
+    /** Only called once [ReviewProfileUiState.canSubmit] holds and a fix has been resolved. */
     private fun ReviewProfileUiState.toInvestorProfile(
         coordinates: GeoCoordinates
     ) = InvestorProfile(

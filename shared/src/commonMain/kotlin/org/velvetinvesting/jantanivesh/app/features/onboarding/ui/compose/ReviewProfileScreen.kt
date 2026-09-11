@@ -53,7 +53,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InvertedAppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
@@ -104,7 +103,7 @@ private fun ReviewProfileContent(
     modifier: Modifier = Modifier
 ) {
     // The prompt has to be raised from the UI layer, so the screen owns the requester and the
-    // view model only ever hears the answer.
+    // view model only ever hears the answer — which is also what starts the submission.
     val requestLocationPermission = rememberLocationPermissionRequester { granted ->
         handleEvent(ReviewProfileEvent.OnLocationPermissionResult(granted))
     }
@@ -325,14 +324,6 @@ private fun ReviewProfileContent(
                 )
             }
             item {
-                LocationSection(
-                    latitude = state.latitudeText,
-                    longitude = state.longitudeText,
-                    isFetching = state.isFetchingLocation,
-                    onFetchClick = { requestLocationPermission.request() }
-                )
-            }
-            item {
                 AgreementCheckBoxCard(
                     text = "I confirm that I am not a Politically Exposed Person (PEP) or related to any PEP as defined under PMLA guidelines/" + stringResource(
                         Res.string.pep_confirmation
@@ -352,65 +343,17 @@ private fun ReviewProfileContent(
             }
         }
         AppButton(
-            text = stringResource(Res.string.confirm_and_proceed),
-            onClick = { handleEvent(ReviewProfileEvent.OnProceedClick) },
-            loading = state.isLoading,
+            // The location fix is taken on this tap, before the profile call, so the label says
+            // which of the two the user is waiting on.
+            text = when {
+                state.isFetchingLocation -> "Fetching location..."
+                state.isLoading -> "Submitting..."
+                else -> stringResource(Res.string.confirm_and_proceed)
+            },
+            onClick = { requestLocationPermission.request() },
+            loading = state.isFetchingLocation || state.isLoading,
             enabled = state.canSubmit,
             modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24).genericDropShadow()
-        )
-    }
-}
-
-/**
- * Coordinates are display-only: they are filled in solely by a GPS fix, so both fields are
- * disabled and the button is the only way to populate them.
- */
-@Composable
-private fun LocationSection(
-    latitude: String,
-    longitude: String,
-    isFetching: Boolean,
-    onFetchClick: () -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            TitledAppTextField(
-                title = "Latitude",
-                value = latitude,
-                onValueChange = { },
-                placeholder = "--",
-                mandatory = true,
-                enabled = false,
-                readOnly = true,
-                modifier = Modifier.weight(1f)
-            )
-            TitledAppTextField(
-                title = "Longitude",
-                value = longitude,
-                onValueChange = { },
-                placeholder = "--",
-                mandatory = true,
-                enabled = false,
-                readOnly = true,
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        InvertedAppButton(
-            text = if (latitude.isEmpty()) "Fetch current location" else "Refresh location",
-            onClick = onFetchClick,
-            loading = isFetching,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Text(
-            text = "We record your location once, as required for KYC verification.",
-            style = MaterialTheme.typography.labelSmall,
-            color = Gray444
         )
     }
 }

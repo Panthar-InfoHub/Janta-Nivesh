@@ -14,6 +14,7 @@ import androidx.navigation.toRoute
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
+import org.velvetinvesting.jantanivesh.app.core.location.rememberLocationPermissionRequester
 import org.velvetinvesting.jantanivesh.app.core.platform.PermissionCallback
 import org.velvetinvesting.jantanivesh.app.core.platform.PermissionStatus
 import org.velvetinvesting.jantanivesh.app.core.platform.PermissionType
@@ -32,6 +33,12 @@ import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWit
 import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.compose.SplashScreen
 import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenEffect
 import org.velvetinvesting.jantanivesh.app.features.splashscreen.ui.viewmodels.SplashScreenViewModel
+
+/**
+ * The prompts raised once per install on the splash screen. They run one after another because a
+ * platform only shows one system dialog at a time, and the ask is spent once both are answered.
+ */
+private enum class LaunchPermissionStep { NOTIFICATION, LOCATION, DONE }
 
 @Composable
 fun LoginNavigation(
@@ -58,8 +65,20 @@ fun LoginNavigation(
             }
 
             val prefs: AuthPrefs = koinInject()
-            var shouldAskPermission by remember {
-                mutableStateOf(prefs.isFirstLaunch())
+            var permissionStep by remember {
+                mutableStateOf(
+                    if (prefs.isFirstLaunch()) LaunchPermissionStep.NOTIFICATION
+                    else LaunchPermissionStep.DONE
+                )
+            }
+
+            // Location has to be asked for from the UI layer on both platforms, so the splash owns
+            // the requester rather than going through the permission manager.
+            val requestLocationPermission = rememberLocationPermissionRequester {
+                // The answer itself does not matter here: this is only the up-front ask, and the
+                // screens that need a fix prompt again when they actually need one.
+                prefs.setFirstLaunch(false)
+                permissionStep = LaunchPermissionStep.DONE
             }
 
             val permissionManager = createPermissionsManager(
@@ -69,13 +88,9 @@ fun LoginNavigation(
                         status: PermissionStatus
                     ) {
                         when (status) {
-                            PermissionStatus.GRANTED -> {
-                                prefs.setFirstLaunch(true)
-                                shouldAskPermission = false
-                            }
+                            PermissionStatus.GRANTED,
                             PermissionStatus.DENIED -> {
-                                prefs.setFirstLaunch(true)
-                                shouldAskPermission = false
+                                permissionStep = LaunchPermissionStep.LOCATION
                             }
                             PermissionStatus.SHOW_RATIONALE -> {
                             }
@@ -84,8 +99,15 @@ fun LoginNavigation(
                 }
             )
 
-            if (shouldAskPermission) {
-                permissionManager.askPermission(PermissionType.NOTIFICATION)
+            when (permissionStep) {
+                LaunchPermissionStep.NOTIFICATION ->
+                    permissionManager.askPermission(PermissionType.NOTIFICATION)
+
+                LaunchPermissionStep.LOCATION -> LaunchedEffect(Unit) {
+                    requestLocationPermission.request()
+                }
+
+                LaunchPermissionStep.DONE -> Unit
             }
 
             SplashScreen(

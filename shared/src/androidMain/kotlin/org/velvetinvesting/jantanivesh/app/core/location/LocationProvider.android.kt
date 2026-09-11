@@ -9,6 +9,13 @@ import android.location.LocationManager
 import android.os.Looper
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -17,8 +24,9 @@ import kotlin.coroutines.resume
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Backed by the platform [LocationManager] rather than Play Services, so the app keeps working on
- * devices without Google services and needs no extra dependency.
+ * Prefers the fused provider from Play Services, which fuses GPS, Wi-Fi and cell signals and is
+ * both faster and more accurate than any single platform provider. Devices without Google
+ * services fall back to the platform [LocationManager] so the app keeps working there.
  */
 class AndroidLocationProvider(
     private val context: Context
@@ -26,6 +34,17 @@ class AndroidLocationProvider(
 
     private val locationManager: LocationManager?
         get() = ContextCompat.getSystemService(context, LocationManager::class.java)
+
+    private val fusedClient: FusedLocationProviderClient?
+        get() = if (isPlayServicesAvailable()) {
+            runCatching { LocationServices.getFusedLocationProviderClient(context) }.getOrNull()
+        } else {
+            null
+        }
+
+    private fun isPlayServicesAvailable(): Boolean =
+        GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context) ==
+                ConnectionResult.SUCCESS
 
     override fun hasLocationPermission(): Boolean {
         return PERMISSIONS.any { permission ->
@@ -45,6 +64,60 @@ class AndroidLocationProvider(
         val manager = locationManager ?: return LocationResult.Failed("Location is unavailable")
         if (!LocationManagerCompat.isLocationEnabled(manager)) return LocationResult.LocationDisabled
 
+        val client = fusedClient
+            ?: return getCurrentLocationLegacy(manager, timeoutMillis)
+
+        // A fused fix can still fail on a device where Play Services is installed but the module
+        // is misbehaving, so treat a null result as a cue to try the platform providers — with
+        // whatever is left of the caller's budget, so the two attempts together honour it.
+        val startedAt = System.currentTimeMillis()
+        val fused = withTimeoutOrNull(timeoutMillis.milliseconds) {
+            client.awaitCurrentLocation(timeoutMillis)
+        }
+        if (fused != null) return LocationResult.Success(fused.toCoordinates())
+
+        val remaining = timeoutMillis - (System.currentTimeMillis() - startedAt)
+        if (remaining <= 0L) {
+            return LocationResult.Failed("Timed out while getting your location. Please retry.")
+        }
+
+        return getCurrentLocationLegacy(manager, remaining)
+    }
+
+    /**
+     * Asks the fused provider for a fresh fix, letting it serve a recent cached one when it has
+     * something new enough — that avoids making the user wait for the radio to warm up.
+     */
+    private suspend fun FusedLocationProviderClient.awaitCurrentLocation(
+        timeoutMillis: Long
+    ): Location? = suspendCancellableCoroutine { continuation ->
+        val cancellationSource = CancellationTokenSource()
+        val request = CurrentLocationRequest.Builder()
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .setMaxUpdateAgeMillis(MAX_CACHE_AGE_MILLIS)
+            .setDurationMillis(timeoutMillis)
+            .build()
+
+        try {
+            getCurrentLocation(request, cancellationSource.token)
+                .addOnSuccessListener { location ->
+                    if (continuation.isActive) continuation.resume(location)
+                }
+                .addOnFailureListener {
+                    if (continuation.isActive) continuation.resume(null)
+                }
+        } catch (e: SecurityException) {
+            if (continuation.isActive) continuation.resume(null)
+            return@suspendCancellableCoroutine
+        }
+
+        continuation.invokeOnCancellation { cancellationSource.cancel() }
+    }
+
+    private suspend fun getCurrentLocationLegacy(
+        manager: LocationManager,
+        timeoutMillis: Long
+    ): LocationResult {
         // A recent cached fix is good enough for a KYC stamp and avoids making the user wait for
         // the radio to warm up; anything older falls through to a live request.
         manager.freshestCachedLocation()?.let {
