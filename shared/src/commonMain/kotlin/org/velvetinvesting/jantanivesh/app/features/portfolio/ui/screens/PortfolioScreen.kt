@@ -381,9 +381,10 @@ fun ActiveSipPortfolio(
 
     if (activeSip.isEmpty) {
         EmptyFundScreen(
-            onBrowseClick = onBrowseClick,
-            text = "You have no running SIPs. Start one to invest a fixed amount automatically, every month.",
-            buttonText = "Browse SIP"
+            title = "Start your first SIP",
+            subtitle = "You have no running SIPs. Start one to invest a fixed amount automatically, every month.",
+            buttonText = "Explore SIP Funds",
+            onActionClick = onBrowseClick
         )
         return
     }
@@ -715,9 +716,10 @@ fun MutualFundPortfolio(
 ) {
     if (mutualFund.isEmpty() && pendingOrders.isEmpty()) {
         EmptyFundScreen(
-            onBrowseClick = onEmptyButtonClick,
-            text = "Grow your wealth with Mutual Funds through SIPs for steady investing or Lumpsum for one-time opportunities.",
-            buttonText = "Browse SIP"
+            title = "Your investment journey starts here",
+            subtitle = "Grow your wealth with Mutual Funds through SIPs for steady investing or Lumpsum for one-time opportunities.",
+            buttonText = "Explore Mutual Funds",
+            onActionClick = onEmptyButtonClick
         )
     } else {
         PullToRefreshBox(
@@ -896,9 +898,10 @@ fun FixedDepositPortfolio(
 ) {
     if (fixedDeposits.isEmpty()) {
         EmptyFundScreen(
-            onBrowseClick = onEmptyButtonClick,
-            text = "Lock in your savings with Fixed Deposits and earn stable, guaranteed returns over time.",
-            buttonText = "Browse FD"
+            title = "Grow your savings safely",
+            subtitle = "Lock in your savings with Fixed Deposits and earn stable, guaranteed returns over time.",
+            buttonText = "Book Fixed Deposit",
+            onActionClick = onEmptyButtonClick
         )
     } else {
         PullToRefreshBox(

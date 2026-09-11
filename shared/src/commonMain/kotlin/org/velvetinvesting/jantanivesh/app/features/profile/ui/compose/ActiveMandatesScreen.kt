@@ -90,9 +90,10 @@ fun ActiveMandatesScreen(
                 )
 
                 state.mandates.isEmpty() -> EmptyFundScreen(
-                    onBrowseClick = { onEvent(ActiveMandatesEvent.OnBackClicked) },
-                    text = "You don't have any mandates yet",
-                    buttonText = "Go Back"
+                    title = "No active mandates",
+                    subtitle = "You don't have any mandates yet. Set one up while starting a SIP to let instalments be debited automatically.",
+                    buttonText = "Go Back",
+                    onActionClick = { onEvent(ActiveMandatesEvent.OnBackClicked) }
                 )
 
                 else -> LazyColumn(

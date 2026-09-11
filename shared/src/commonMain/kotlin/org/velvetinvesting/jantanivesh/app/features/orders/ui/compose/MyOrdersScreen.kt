@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.SubcomposeAsyncImageContent
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.receipt_icon
 import org.velvetinvesting.jantanivesh.app.core.theme.GrayScreenBackGround
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -98,12 +100,18 @@ fun MyOrdersScreen(
                 )
 
                 state.orders.isEmpty() -> EmptyFundScreen(
-                    onBrowseClick = { onEvent(MyOrdersEvent.OnBackClicked) },
-                    text = when (state.selectedFilter) {
-                        OrderFilter.ALL -> "You haven't placed any orders yet"
+                    title = when (state.selectedFilter) {
+                        OrderFilter.ALL -> "No orders yet"
                         else -> "No ${state.selectedFilter.title().lowercase()} orders"
                     },
-                    buttonText = "Go Back"
+                    subtitle = when (state.selectedFilter) {
+                        OrderFilter.ALL ->
+                            "Every purchase and redemption you place will appear here, with its status and units."
+                        else -> "Nothing under this filter right now. Try another one to see your other orders."
+                    },
+                    buttonText = "Go Back",
+                    onActionClick = { onEvent(MyOrdersEvent.OnBackClicked) },
+                    icon = Res.drawable.receipt_icon
                 )
 
                 else -> LazyColumn(

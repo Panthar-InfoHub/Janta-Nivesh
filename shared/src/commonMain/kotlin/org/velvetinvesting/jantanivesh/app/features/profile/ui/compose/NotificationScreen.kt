@@ -91,9 +91,11 @@ fun NotificationScreen(
                 )
             } else if (state.notifications.isEmpty()) {
                 EmptyFundScreen(
-                    onBrowseClick = onBack,
-                    text = "You don't have any notifications yet",
-                    buttonText = "Go Back"
+                    title = "You're all caught up",
+                    subtitle = "You don't have any notifications yet. Alerts about your orders and investments will show up here.",
+                    buttonText = "Go Back",
+                    onActionClick = onBack,
+                    icon = Res.drawable.bell_icon
                 )
             } else {
                 LazyColumn(
@@ -273,9 +275,11 @@ fun NotificationScreenEmptyPreview() {
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 EmptyFundScreen(
-                    onBrowseClick = {},
-                    text = "You don't have any notifications yet",
-                    buttonText = "Go Back"
+                    title = "You're all caught up",
+                    subtitle = "You don't have any notifications yet. Alerts about your orders and investments will show up here.",
+                    buttonText = "Go Back",
+                    onActionClick = {},
+                    icon = Res.drawable.bell_icon
                 )
             }
         }
