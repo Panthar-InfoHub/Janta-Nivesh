@@ -52,6 +52,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundSearchResultViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SelectedReturnRatePeriod
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.forPeriod
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.defaultFilters
 import org.velvetinvesting.jantanivesh.app.shared.compose.PaginationEffect
 import org.velvetinvesting.jantanivesh.app.shared.compose.PaginationFooter
@@ -444,12 +445,7 @@ fun MutualFundListCard(
             modifier = Modifier.padding(start = 4.dp)
         ) {
 
-            val rate= when(selectedYear){
-                SelectedReturnRatePeriod.SIX_MONTH -> fund.returnYearsRate.month6
-                SelectedReturnRatePeriod.THREE_MONTH -> fund.returnYearsRate.month3
-                SelectedReturnRatePeriod.ONE_YEAR -> fund.returnYearsRate.year1
-                SelectedReturnRatePeriod.THREE_YEAR -> fund.returnYearsRate.year3
-            }
+            val rate = fund.returnYearsRate.forPeriod(selectedYear)
 
             val text= when(selectedYear){
                 SelectedReturnRatePeriod.SIX_MONTH -> "6M"

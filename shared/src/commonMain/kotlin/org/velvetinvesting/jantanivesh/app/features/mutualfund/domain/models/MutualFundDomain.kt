@@ -24,3 +24,16 @@ data class ReturnYearsRateDomain(
     val year5:Double? = null,
     val navChangePct:Double? = null,
 )
+
+/**
+ * The return figure for one period, or null where the gateway reports none for it.
+ *
+ * The list card and the ranking behind it read the same value through here, so a fund can never
+ * be placed by one figure while showing another.
+ */
+fun ReturnYearsRateDomain.forPeriod(period: SelectedReturnRatePeriod): Double? = when (period) {
+    SelectedReturnRatePeriod.THREE_MONTH -> month3
+    SelectedReturnRatePeriod.SIX_MONTH -> month6
+    SelectedReturnRatePeriod.ONE_YEAR -> year1
+    SelectedReturnRatePeriod.THREE_YEAR -> year3
+}

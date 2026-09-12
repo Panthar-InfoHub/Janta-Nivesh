@@ -18,7 +18,7 @@ class DownloadFolioSpecificReportUseCase(
             is NetworkResponse.Success -> {
                 downloadManager.downloadPdf(
                     pdfBytes = response.data,
-                    fileName = "Fund_Holding_Report_$folio.pdf",
+                    fileName = "Fund_Holding_Report_$folio",
                     onSuccess = {
                         onSuccess()
                     },

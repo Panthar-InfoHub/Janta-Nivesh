@@ -6,10 +6,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SelectedReturnRatePeriod
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.forPeriod
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.InvestmentFilter
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.MfFilterIds
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.createInitialInvestmentFilter
@@ -41,14 +43,24 @@ class MutualFundSearchResultViewModel(
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Loading)
     val loadingState: StateFlow<LoadingState> = _loadingState.asStateFlow()
 
-    private val _mutualFunds = MutableStateFlow<List<MutualFundDomain>>(emptyList())
-    val mutualFunds = _mutualFunds.asStateFlow()
+    /**
+     * The results as blocks rather than one list, each block ranked within itself.
+     *
+     * A page that arrives from pagination is ranked on its own and parked after what is already
+     * on screen instead of being merged into it. Merging would scatter the new funds through a
+     * list the user has already scrolled, moving rows out from under them; kept as a block, the
+     * new arrivals read as exactly that. The blocks collapse into one on the next period change,
+     * which re-ranks everything together.
+     */
+    private val _fundPages = MutableStateFlow<List<List<MutualFundDomain>>>(emptyList())
 
     private val _selectedYear =
         MutableStateFlow<SelectedReturnRatePeriod>(SelectedReturnRatePeriod.ONE_YEAR)
     val selectedYear = _selectedYear.asStateFlow()
 
-    val sortedFunds: StateFlow<List<MutualFundDomain>> = _mutualFunds
+    /** Every block in arrival order, which is the order the list renders in. */
+    val sortedFunds: StateFlow<List<MutualFundDomain>> = _fundPages
+        .map { pages -> pages.flatten() }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
@@ -114,7 +126,9 @@ class MutualFundSearchResultViewModel(
                     _hasNextPage.value = data.hasNextPage
                     _totalFunds.value = data.items.size
 
-                    _mutualFunds.value = data.items
+                    // The first page is the whole list so far, ranked by the period already
+                    // selected — the list opens sorted rather than sorting on the first tap.
+                    _fundPages.value = listOf(data.items.rankedBy(_selectedYear.value))
 
                     _loadingState.value = LoadingState.Success
                 }
@@ -151,7 +165,8 @@ class MutualFundSearchResultViewModel(
                     _hasNextPage.value = data.hasNextPage
                     _totalFunds.value = data.totalItems
 
-                    _mutualFunds.value += data.items
+                    // Ranked among themselves and appended, so the page keeps its own run.
+                    _fundPages.value += listOf(data.items.rankedBy(_selectedYear.value))
                 }
                 .onError {
                     SnackBarController.showError(it.message)
@@ -189,20 +204,26 @@ class MutualFundSearchResultViewModel(
         reload()
     }
 
+    /**
+     * Steps the header's return period, which re-ranks the list against the new one.
+     *
+     * This is where any pages held back as their own blocks are folded in: the whole list is
+     * ranked as a single run again, so the split only ever lasts until the next period change.
+     */
     fun cycleReturnRatePeriod() {
 
-        when (_selectedYear.value) {
-            SelectedReturnRatePeriod.THREE_MONTH ->
-                _selectedYear.value = SelectedReturnRatePeriod.SIX_MONTH
+        val nextPeriod = when (_selectedYear.value) {
+            SelectedReturnRatePeriod.THREE_MONTH -> SelectedReturnRatePeriod.SIX_MONTH
+            SelectedReturnRatePeriod.SIX_MONTH -> SelectedReturnRatePeriod.ONE_YEAR
+            SelectedReturnRatePeriod.ONE_YEAR -> SelectedReturnRatePeriod.THREE_YEAR
+            SelectedReturnRatePeriod.THREE_YEAR -> SelectedReturnRatePeriod.THREE_MONTH
+        }
 
-            SelectedReturnRatePeriod.SIX_MONTH ->
-                _selectedYear.value = SelectedReturnRatePeriod.ONE_YEAR
+        _selectedYear.value = nextPeriod
 
-            SelectedReturnRatePeriod.ONE_YEAR ->
-                _selectedYear.value = SelectedReturnRatePeriod.THREE_YEAR
-
-            SelectedReturnRatePeriod.THREE_YEAR ->
-                _selectedYear.value = SelectedReturnRatePeriod.THREE_MONTH
+        val merged = _fundPages.value.flatten()
+        if (merged.isNotEmpty()) {
+            _fundPages.value = listOf(merged.rankedBy(nextPeriod))
         }
     }
 
@@ -235,6 +256,18 @@ class MutualFundSearchResultViewModel(
         currentPage = 1
         _hasNextPage.value = true
         loadFunds()
+    }
+
+    /**
+     * Best return first for the given period.
+     *
+     * A fund the gateway reports no figure for over that period sorts to the bottom rather than
+     * being read as a zero return, and ties hold the order the server sent them in.
+     */
+    private fun List<MutualFundDomain>.rankedBy(
+        period: SelectedReturnRatePeriod
+    ): List<MutualFundDomain> = sortedByDescending {
+        it.returnYearsRate.forPeriod(period) ?: Double.NEGATIVE_INFINITY
     }
 
     private companion object {
