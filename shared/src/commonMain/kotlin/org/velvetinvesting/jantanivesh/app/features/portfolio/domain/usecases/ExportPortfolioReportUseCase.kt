@@ -17,7 +17,7 @@ class ExportPortfolioReportUseCase(
             is NetworkResponse.Success -> {
                 downloadManager.downloadPdf(
                     pdfBytes = response.data,
-                    fileName = "Portfolio_Report.pdf",
+                    fileName = "Portfolio_Report",
                     onSuccess = {
                         onSuccess()
                     },
