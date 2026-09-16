@@ -21,17 +21,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		2A718FBC1F20323FE2D95FE0 /* Configuration */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Configuration;
+			sourceTree = "<group>";
+		};
 		A8F9A5559690BC65BA8F73E9 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				DFD16DC9F51FAA44EEB6C9AA /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
-			sourceTree = "<group>";
-		};
-		2A718FBC1F20323FE2D95FE0 /* Configuration */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Configuration;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */

@@ -38,7 +38,7 @@ val repositoryModule = module {
     single<LanguageRepository> { LanguageRepositoryImpl(get()) }
     single<AuthPrefs> { AuthPrefsImpl(get()) }
     single<HttpClient> { getHttpClient(get()) }
-    single<UserAuth> { UserAuthenticationRepo(get(), get(), get()) }
+    single<UserAuth> { UserAuthenticationRepo(get(), get(), get(),get()) }
     single<UserDataRepo> { UserDataRepoImpl(get()) }
     single<MpinRepo> { MpinRepoImpl(get()) }
     single<FixedDepositRepository> { FixedDepositRepo(get()) }

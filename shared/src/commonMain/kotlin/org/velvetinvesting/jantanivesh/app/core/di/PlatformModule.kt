@@ -7,6 +7,7 @@ import org.koin.core.module.Module
 expect val platformModule: Module
 
 fun initializeKoin(
+    extaModules: List<Module> = emptyList(),
     config: (KoinApplication.() -> Unit)? = null
 ) {
     startKoin {
@@ -16,8 +17,9 @@ fun initializeKoin(
                 platformModule,
                 viewModelModule,
                 repositoryModule,
-                useCaseModule
+                useCaseModule,
             )
+            + extaModules
         )
     }
 }

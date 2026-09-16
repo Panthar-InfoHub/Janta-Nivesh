@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.googleServices)
 }
 
 kotlin {
@@ -20,6 +21,9 @@ dependencies {
     debugImplementation(libs.compose.uiTooling)
 
     implementation(libs.androidx.biometric)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 
 }
 

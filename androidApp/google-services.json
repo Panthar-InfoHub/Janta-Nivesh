@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "34918043640",
+    "project_id": "janta-nivesh",
+    "storage_bucket": "janta-nivesh.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34918043640:android:de1e22cf4d851b70acd00d",
+        "android_client_info": {
+          "package_name": "org.velvetinvesting.jantanivesh"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBQujqGgYQvEvuS-nrI_vHA4f7Pr-ONdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

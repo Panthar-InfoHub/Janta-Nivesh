@@ -130,18 +130,16 @@ private fun calculateSipStartDate(
 
     val minimumDate = today.plus(DatePeriod(months = 1))
 
-    var startDate = LocalDate(
-        year = minimumDate.year,
+    var startDate = LocalDate(year = minimumDate.year,
         month = minimumDate.month,
-        dayOfMonth = sipDay
+        day = sipDay
     )
 
     if (startDate < minimumDate) {
         val nextMonth = minimumDate.plus(DatePeriod(months = 1))
-        startDate = LocalDate(
-            year = nextMonth.year,
+        startDate = LocalDate(year = nextMonth.year,
             month = nextMonth.month,
-            dayOfMonth = sipDay
+            day = sipDay
         )
     }
     return startDate
