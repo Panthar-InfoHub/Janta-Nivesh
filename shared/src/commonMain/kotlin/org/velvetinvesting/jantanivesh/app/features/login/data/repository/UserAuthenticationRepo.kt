@@ -6,6 +6,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import org.velvetinvesting.jantanivesh.app.core.FirebaseNotification.PushNotificationManager
 import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.networking.getUrl
@@ -27,7 +28,8 @@ import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.Notific
 class UserAuthenticationRepo(
     private val client: HttpClient,
     private val authPrefs: AuthPrefs,
-    private val deviceInfoRetriever: DeviceInfoRetriever
+    private val deviceInfoRetriever: DeviceInfoRetriever,
+    private val pushNotificationManager: PushNotificationManager
 ) : UserAuth {
 
     override suspend fun loginWithNumber(number: String): NetworkResponse<Unit, ErrorDomain> {
@@ -56,6 +58,7 @@ class UserAuthenticationRepo(
         otp: String
     ): NetworkResponse<LoginDomain, ErrorDomain> {
         val deviceInfo = deviceInfoRetriever.getDeviceInfo()
+        val token = pushNotificationManager.getToken()
 
         val response = safeRequest<VerifyOtpDto> {
             client.post(getUrl("/auth/validate-otp")) {
@@ -67,7 +70,8 @@ class UserAuthenticationRepo(
                 setBody(
                     VerifyOtpBodyDto(
                         mob = number,
-                        otp = otp
+                        otp = otp,
+                        fcm_token = token
                     )
                 )
             }

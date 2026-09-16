@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class VerifyOtpBodyDto(
     val mob: String,
-    val otp: String
+    val otp: String,
+    val fcm_token: String
 )
