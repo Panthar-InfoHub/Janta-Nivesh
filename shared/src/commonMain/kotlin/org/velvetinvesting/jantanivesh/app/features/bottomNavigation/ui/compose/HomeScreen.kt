@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.bell_icon
-import jantanivesh.shared.generated.resources.education_icon
 import jantanivesh.shared.generated.resources.front_arrow_icon
 import jantanivesh.shared.generated.resources.home_create_custom_goal_desc
 import jantanivesh.shared.generated.resources.home_custom_goal_subtitle
@@ -74,8 +73,6 @@ import jantanivesh.shared.generated.resources.piggybank_icon
 import jantanivesh.shared.generated.resources.plus_icon
 import jantanivesh.shared.generated.resources.profile_in_frame_icon
 import jantanivesh.shared.generated.resources.progress_icon
-import jantanivesh.shared.generated.resources.ring_icon
-import jantanivesh.shared.generated.resources.ruppee_circle
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -108,10 +105,9 @@ import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyWithUnits
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
-import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.progressPercent
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenUiState
-import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.goalIconFor
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
@@ -243,6 +239,86 @@ fun HomeScreenContent(
 
         item {
            BannerPager(modifier= Modifier)
+        }
+
+        item {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = horizontalPadding.fillMaxWidth()
+            ) {
+                Text(
+                    stringResource(Res.string.home_your_goals),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Icon(
+                    painter = painterResource(Res.drawable.front_arrow_icon),
+                    contentDescription = stringResource(Res.string.home_go_to_goals_desc),
+                    modifier = Modifier.size(Spacing.dp24)
+                        .clickable(onClick = { onEvent(HomeScreenEvent.OnGoToGoalsClicked) }),
+                    tint = SelectedBoxBorder
+                )
+            }
+        }
+        if (state.goals.isNotEmpty()){
+            item {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
+                    modifier = horizontalPadding.fillMaxWidth()
+                ) {
+                    for (goal in state.goals) {
+                        GoalCard(
+                            goal = goal,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                onEvent(
+                                    HomeScreenEvent.OnGoalClicked(goal.goalId)
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        item {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = horizontalPadding.fillMaxWidth().dashedBorder(
+                    color = DashedBorderColor,
+                    dashLength = Spacing.dp6,
+                    gapLength = Spacing.dp2,
+                    strokeWidth = Spacing.dp1
+                )
+                    .clickable(onClick = { onEvent(HomeScreenEvent.OnCreateCustomGoalClicked) })
+                    .padding(Spacing.dp12)
+            ) {
+                IconButton(
+                    onClick = { onEvent(HomeScreenEvent.OnCreateCustomGoalClicked) },
+                    shape = RoundedCornerShape(Spacing.dp10),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Primary.copy(alpha = 0.1f),
+                        contentColor = Primary
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.plus_icon),
+                        contentDescription = stringResource(Res.string.home_create_custom_goal_desc),
+                        modifier = Modifier.size(Spacing.dp20)
+                    )
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp2)) {
+                    Text(
+                        stringResource(Res.string.home_custom_goal_title),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    Text(
+                        stringResource(Res.string.home_custom_goal_subtitle),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = GreyText
+                    )
+                }
+            }
         }
 
         item {
@@ -677,14 +753,9 @@ private fun GoalCard(
     modifier: Modifier = Modifier,
     onClick: ()-> Unit
 ) {
-    val icon = when (goal.goalTypes.type) {
-        GoalType.ChildEducation -> Res.drawable.education_icon
-        GoalType.ChildMarriage -> Res.drawable.ring_icon
-        GoalType.Retirement -> Res.drawable.icon_callender
-        GoalType.WealthBuilding -> Res.drawable.ruppee_circle
-    }
+    val icon = goalIconFor(goal.goalTypes.type)
 
-    val progress = goal.progressPercent() / 100f
+    val progress = (goal.progressPercent / 100f).coerceIn(0f, 1f)
 
     Column(
         modifier = modifier
@@ -719,7 +790,7 @@ private fun GoalCard(
             )
 
             Text(
-                text = goal.goalTypes.title,
+                text = goal.title,
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
             )
@@ -745,7 +816,7 @@ private fun GoalCard(
             )
 
             Text(
-                text = "${goal.progressPercent()}%",
+                text = "${goal.progressPercent}%",
                 modifier = Modifier.align(Alignment.End),
                 fontSize = 10.sp,
             )

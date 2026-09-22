@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.important_note_desc
 import jantanivesh.shared.generated.resources.info_filled_icon
+import jantanivesh.shared.generated.resources.set_autopay
 import jantanivesh.shared.generated.resources.set_up_upi_autopay
 import jantanivesh.shared.generated.resources.upi_autopay_subtitle
 import org.jetbrains.compose.resources.stringResource
@@ -122,7 +123,7 @@ fun SetupAutopayScreen(
             }
             item{
                 AppButton(
-                    text = "Set Autopay",
+                    text = "Set Autopay/ " + stringResource(Res.string.set_autopay),
                     onClick = { handleEvent(SetupAutopayEvent.OnSetAutopayClick) },
                     loading = state.isLoading,
                     modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24).genericDropShadow()

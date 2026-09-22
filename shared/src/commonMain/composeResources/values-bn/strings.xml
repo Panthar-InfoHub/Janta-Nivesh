@@ -347,4 +347,44 @@
     <string name="cancel_reason_mandate_not_ready">ম্যান্ডেট প্রস্তুত নয়</string>
     <string name="cancel_reason_invest_later">পরে বিনিয়োগ করতে চাই</string>
     <string name="cancel_reason_customer_support">গ্রাহক সহায়তা সন্তোষজনক নয়</string>
+
+    <!-- Onboarding CTA buttons -->
+    <string name="proceed_to_digilocker">ডিজিলকারে এগিয়ে যান</string>
+    <string name="proceed">এগিয়ে যান</string>
+    <string name="submit">জমা দিন</string>
+    <string name="set_autopay">অটোপে সেট করুন</string>
+    <string name="save_and_continue">সংরক্ষণ করে চালিয়ে যান</string>
+    <string name="remove_signature">স্বাক্ষর সরান</string>
+    <string name="confirm">নিশ্চিত করুন</string>
+    <string name="change">পরিবর্তন করুন</string>
+    <string name="fetching_location">অবস্থান আনা হচ্ছে…</string>
+    <string name="submitting">জমা দেওয়া হচ্ছে…</string>
+
+    <!-- Goal projection screen -->
+    <string name="goal_projected_impact">প্রক্ষেপিত প্রভাব</string>
+    <string name="goal_analysis">লক্ষ্য বিশ্লেষণ</string>
+    <string name="goal_todays_cost">আজকের খরচ</string>
+    <string name="goal_target_corpus">লক্ষ্য তহবিল</string>
+    <string name="goal_future_value">ভবিষ্যৎ মূল্য</string>
+    <string name="goal_time_horizon">সময়সীমা</string>
+    <string name="goal_required_sip">প্রয়োজনীয় এসআইপি</string>
+    <string name="goal_per_month_suffix">মাস</string>
+    <string name="goal_years">বছর</string>
+    <string name="goal_saved_so_far">এখন পর্যন্ত সঞ্চিত</string>
+    <string name="goal_still_to_build">এখনও গড়তে হবে</string>
+    <string name="goal_progress">লক্ষ্যের অগ্রগতি</string>
+    <string name="goal_feasibility_score">সম্ভাব্যতা স্কোর</string>
+    <string name="goal_feasibility_note">এই লক্ষ্যের পরিকল্পিত রিটার্নের হারে আপনার বর্তমান সঞ্চয় লক্ষ্য তারিখ পর্যন্ত কতদূর নিয়ে যাবে।</string>
+    <string name="goal_inflation_adds">মুদ্রাস্ফীতি যোগ করে</string>
+    <string name="goal_lumpsum_today">অথবা আজই এটি বিনিয়োগ করুন</string>
+    <string name="goal_map_scheme">স্কিম ম্যাপ করুন</string>
+
+    <!-- Financial goal (create) screen -->
+    <string name="goal_category">বিভাগ</string>
+    <string name="goal_name_label">লক্ষ্যের নাম</string>
+    <string name="goal_target_year">লক্ষ্য বছর</string>
+    <string name="goal_target_amount">লক্ষ্য পরিমাণ</string>
+    <string name="goal_present_cost">আজকের খরচ</string>
+    <string name="goal_expected_inflation_rate">প্রত্যাশিত মুদ্রাস্ফীতির হার</string>
+    <string name="goal_save_goal">লক্ষ্য সংরক্ষণ করুন</string>
 </resources>

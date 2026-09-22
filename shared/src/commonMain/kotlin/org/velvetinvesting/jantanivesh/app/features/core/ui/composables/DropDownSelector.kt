@@ -45,6 +45,7 @@ fun <T> DropDownSelector(
     placeholder: String,
     mandatory: Boolean = false,
     modifier: Modifier = Modifier,
+    leadingIcon: @Composable (() -> Unit)? = null,
     list: List<T>,
     textConvertor: (T) -> String
 ) {
@@ -80,7 +81,8 @@ fun <T> DropDownSelector(
                 value = value,
                 placeHolder = placeholder,
                 onClick = { extended = !extended },
-                extended = extended
+                extended = extended,
+                leadingIcon = leadingIcon
             )
             if (extended) {
                 GenericDropDownContent(
@@ -108,7 +110,7 @@ private fun <T> GenericDropDownContent(
             .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
     ) {
 
-        list.forEach { it ->
+        list.forEach {
             Text(
                 text = textConvertor(it),
                 style = MaterialTheme.typography.labelMedium,
@@ -128,7 +130,8 @@ private fun GenericDropDownHeader(
     value: String,
     placeHolder: String,
     onClick: () -> Unit,
-    extended: Boolean
+    extended: Boolean,
+    leadingIcon: @Composable (() -> Unit)? = null
 ) {
     val animatedIcon by animateFloatAsState(
         targetValue = if (extended) 180f else 0f,
@@ -143,11 +146,16 @@ private fun GenericDropDownHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
+        if (leadingIcon != null) {
+            Row(modifier = Modifier.padding(start = 16.dp)) { leadingIcon() }
+        }
         Text(
             text = (value.ifEmpty { placeHolder }).capitalize(Locale.current),
             style = MaterialTheme.typography.labelSmall,
             color = if (value.isBlank()) Border else Primary,
-            modifier = Modifier.weight(1f).padding(start = 16.dp)
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = if (leadingIcon != null) 8.dp else 16.dp)
         )
         Icon(
             painter = painterResource(Res.drawable.dropdown_icon),

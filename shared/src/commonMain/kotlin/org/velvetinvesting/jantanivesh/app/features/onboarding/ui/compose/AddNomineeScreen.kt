@@ -57,7 +57,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.c
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddNomineeEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.AddNomineeUiState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeDocumentType
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeRelation
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Max_Nominee_Count
@@ -384,7 +383,7 @@ fun AddNomineeScreen(
             }
         }
         AppButton(
-            text = stringResource(Res.string.confirm_and_proceed),
+            text = "Confirm & Proceed/ " + stringResource(Res.string.confirm_and_proceed),
             onClick = { handleEvent(AddNomineeEvent.OnConfirmAndProceedClick) },
             loading = state.isLoading,
             enabled = state.canSubmit,
@@ -515,7 +514,7 @@ private fun NomineeOptOutCard(
     }
 }
 
-@Preview(locale = "hi", heightDp = 2000, showBackground = true)
+@Preview(locale = "hi", heightDp = 1600, showBackground = true)
 @Composable
 private fun AddNomineeScreenPreview() {
     JantaNiveshTheme {

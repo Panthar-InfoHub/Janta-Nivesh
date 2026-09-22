@@ -12,8 +12,10 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.core.utils.formatWithCommas
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
-import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.UserDataRepo
+import org.velvetinvesting.jantanivesh.app.features.goals.data.mapper.toSummary
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
 
 data class YourGoalsUiData(
     val totalGoalProgressAmt: String = "0",
@@ -37,8 +39,13 @@ sealed interface YourGoalsEffect {
     data class NavigateToGoalDetails(val goalId: String) : YourGoalsEffect
 }
 
+/**
+ * Reads the goal list from `GET /user-goal/` rather than from the copy embedded in `GET /user/`:
+ * this screen is where a goal is created and deleted, so it needs the goals as they are now, not
+ * as the last profile fetch saw them.
+ */
 class YourGoalsViewModel(
-    private val userDataRepo: UserDataRepo
+    private val goalsRepository: GoalsRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<YourGoalsUiData>>(UiState.Loading)
     val uiState: StateFlow<UiState<YourGoalsUiData>> = _uiState.asStateFlow()
@@ -46,28 +53,20 @@ class YourGoalsViewModel(
     private val _effect = Channel<YourGoalsEffect>()
     val effect = _effect.receiveAsFlow()
 
-    init {
-        loadGoals()
-    }
-
+    /**
+     * Deliberately not loaded in `init`: the screen requests it whenever it enters composition,
+     * so coming back from creating or deleting a goal re-reads the list instead of showing the
+     * one this view model fetched the first time it was built.
+     */
     private fun loadGoals() {
         viewModelScope.launch {
-
             _uiState.value = UiState.Loading
 
-            userDataRepo.getUserData()
-                .onSuccess {
-
-                    val goals = it.goals
-
-                    val totalProgress = goals.sumOf { goal ->
-                        goal.amount
-                    }
-
-                    val totalTarget = goals.sumOf { goal ->
-                        goal.targetAmount
-                    }
-
+            goalsRepository.getAllGoals()
+                .onSuccess { goals ->
+                    val summaries = goals.map { it.toSummary() }
+                    val totalProgress = summaries.sumOf { it.amount }
+                    val totalTarget = summaries.sumOf { it.targetAmount }
                     val percentage =
                         if (totalTarget > 0) {
                             ((totalProgress.toDouble() / totalTarget) * 100).toInt()
@@ -77,18 +76,16 @@ class YourGoalsViewModel(
 
                     _uiState.value = UiState.Success(
                         YourGoalsUiData(
-                            goals = goals,
-                            totalGoalProgressAmt = totalProgress.toString(),
-                            goalTargetAmt = totalTarget.toString(),
+                            goals = summaries,
+                            totalGoalProgressAmt = formatWithCommas(totalProgress),
+                            goalTargetAmt = formatWithCommas(totalTarget),
                             goalPercentage = percentage.toString()
                         )
                     )
                 }
                 .onError {
                     SnackBarController.showError(it.message)
-                    _uiState.value = UiState.Error(
-                        it.message
-                    )
+                    _uiState.value = UiState.Error(it.message)
                 }
         }
     }
@@ -98,7 +95,9 @@ class YourGoalsViewModel(
             YourGoalsEvent.OnBackClicked -> sendEffect(YourGoalsEffect.NavigateBack)
             YourGoalsEvent.OnAddGoalClicked -> sendEffect(YourGoalsEffect.NavigateToAddGoal)
             YourGoalsEvent.OnInvestNowClicked -> sendEffect(YourGoalsEffect.NavigateToInvest)
-            is YourGoalsEvent.OnGoalCardClicked -> sendEffect(YourGoalsEffect.NavigateToGoalDetails(event.goalId))
+            is YourGoalsEvent.OnGoalCardClicked -> sendEffect(
+                YourGoalsEffect.NavigateToGoalDetails(event.goalId)
+            )
             YourGoalsEvent.LoadGoals -> loadGoals()
         }
     }

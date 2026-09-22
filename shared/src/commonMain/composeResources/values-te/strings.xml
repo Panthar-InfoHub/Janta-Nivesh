@@ -346,4 +346,44 @@
     <string name="cancel_reason_mandate_not_ready">మాండేట్ సిద్ధంగా లేదు</string>
     <string name="cancel_reason_invest_later">తర్వాత పెట్టుబడి పెట్టాలనుకుంటున్నాను</string>
     <string name="cancel_reason_customer_support">కస్టమర్ సపోర్ట్ సంతృప్తికరంగా లేదు</string>
+
+    <!-- Onboarding CTA buttons -->
+    <string name="proceed_to_digilocker">డిజిలాకర్‌కు కొనసాగండి</string>
+    <string name="proceed">కొనసాగండి</string>
+    <string name="submit">సమర్పించండి</string>
+    <string name="set_autopay">ఆటోపే సెట్ చేయండి</string>
+    <string name="save_and_continue">సేవ్ చేసి కొనసాగించండి</string>
+    <string name="remove_signature">సంతకాన్ని తొలగించండి</string>
+    <string name="confirm">నిర్ధారించండి</string>
+    <string name="change">మార్చండి</string>
+    <string name="fetching_location">లొకేషన్ పొందుతోంది…</string>
+    <string name="submitting">సమర్పిస్తోంది…</string>
+
+    <!-- Goal projection screen -->
+    <string name="goal_projected_impact">అంచనా ప్రభావం</string>
+    <string name="goal_analysis">లక్ష్య విశ్లేషణ</string>
+    <string name="goal_todays_cost">నేటి ఖర్చు</string>
+    <string name="goal_target_corpus">లక్ష్య నిధి</string>
+    <string name="goal_future_value">భవిష్యత్ విలువ</string>
+    <string name="goal_time_horizon">కాల వ్యవధి</string>
+    <string name="goal_required_sip">అవసరమైన ఎస్ఐపి</string>
+    <string name="goal_per_month_suffix">నెల</string>
+    <string name="goal_years">సంవత్సరాలు</string>
+    <string name="goal_saved_so_far">ఇప్పటివరకు పొదుపు</string>
+    <string name="goal_still_to_build">ఇంకా సమకూర్చాల్సినది</string>
+    <string name="goal_progress">లక్ష్య పురోగతి</string>
+    <string name="goal_feasibility_score">సాధ్యత స్కోరు</string>
+    <string name="goal_feasibility_note">ఈ లక్ష్యానికి ప్రణాళిక చేసిన రాబడి రేటు ప్రకారం, మీ ప్రస్తుత పొదుపు లక్ష్య తేదీ నాటికి ఎంత దూరం తీసుకెళ్తుంది.</string>
+    <string name="goal_inflation_adds">ద్రవ్యోల్బణం జోడిస్తుంది</string>
+    <string name="goal_lumpsum_today">లేదా ఈ రోజే ఇది పెట్టుబడి పెట్టండి</string>
+    <string name="goal_map_scheme">స్కీమ్ మ్యాప్ చేయండి</string>
+
+    <!-- Financial goal (create) screen -->
+    <string name="goal_category">వర్గం</string>
+    <string name="goal_name_label">లక్ష్యం పేరు</string>
+    <string name="goal_target_year">లక్ష్య సంవత్సరం</string>
+    <string name="goal_target_amount">లక్ష్య మొత్తం</string>
+    <string name="goal_present_cost">నేటి ఖర్చు</string>
+    <string name="goal_expected_inflation_rate">అంచనా ద్రవ్యోల్బణ రేటు</string>
+    <string name="goal_save_goal">లక్ష్యాన్ని సేవ్ చేయండి</string>
 </resources>

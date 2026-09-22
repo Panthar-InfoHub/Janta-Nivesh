@@ -42,14 +42,15 @@ import jantanivesh.shared.generated.resources.account_type_label
 import jantanivesh.shared.generated.resources.bank_details_subtitle
 import jantanivesh.shared.generated.resources.bank_details_title
 import jantanivesh.shared.generated.resources.bank_name_label
+import jantanivesh.shared.generated.resources.change
 import jantanivesh.shared.generated.resources.check_circle_outline_icon
+import jantanivesh.shared.generated.resources.confirm
 import jantanivesh.shared.generated.resources.confirm_proceed
 import jantanivesh.shared.generated.resources.icon_arrow_right
 import jantanivesh.shared.generated.resources.ifsc_code_label
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
-import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBoxDivider
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -62,7 +63,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InvertedAppButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
@@ -280,14 +280,14 @@ private fun ConfirmBankAccountSheetContent(
 
         Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp16)) {
             AppButton(
-                text = "Confirm",
+                text = "Confirm/ " + stringResource(Res.string.confirm),
                 onClick = onConfirm,
                 style = AppButtonDefaults.style(height = Spacing.dp58),
                 trailingIcon = Res.drawable.icon_arrow_right,
                 modifier = Modifier.fillMaxWidth()
             )
             InvertedAppButton(
-                text = "Change",
+                text = "Change/ " + stringResource(Res.string.change),
                 onClick = onChange,
                 style = AppButtonDefaults.style(
                     containerColor = White,

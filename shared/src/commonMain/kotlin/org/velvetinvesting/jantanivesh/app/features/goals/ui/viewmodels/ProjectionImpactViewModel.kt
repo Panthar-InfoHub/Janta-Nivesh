@@ -10,36 +10,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
-import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.goals.data.mapper.toBody
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalDomain
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalSchemeDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.usecases.GetPortfolioUseCase
-import org.velvetinvesting.jantanivesh.app.features.goals.utils.GoalCalculator
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetAllBundledFundsUseCase
-import kotlin.math.pow
 
-data class ProjectionImpactUiData(
-    val goalItemName: String,
-    val todaysCost: Long,
-    val futureValue: Double,
-    val targetYear: Int,
-    val monthlySip: Double,
-    val feasibilityScore: Float,
-    val currentSaved: Long,
-    val targetAmount: Long,
-    val increasedBy: Double,
-    val requiredMonthly: Double,
-    val schemes: List<GoalSchemeDomain>,
-    val goalId: Int,
-    val goalName: String,
-    val goalTypeId: Int?
-)
+/**
+ * The Map Schemes screen shows the same projection the details screen does, so it reads the one
+ * [ProjectedImpactUiData] rather than keeping a second copy of those fields in step.
+ */
+typealias ProjectionImpactUiData = ProjectedImpactUiData
 
 data class ProjectionImpactUiState(
     val goalDetailsState: UiState<ProjectionImpactUiData> = UiState.Loading,
@@ -54,7 +38,7 @@ sealed interface ProjectionImpactEvent {
     object OpenBottomSheet : ProjectionImpactEvent
     object CloseBottomSheet : ProjectionImpactEvent
     object MapGoal : ProjectionImpactEvent
-    data class UnMapGoal(val goalId: Int) : ProjectionImpactEvent
+    data class UnMapGoal(val goalId: String) : ProjectionImpactEvent
     data class ToggleSelection(val schemeId: Int) : ProjectionImpactEvent
 }
 
@@ -104,7 +88,7 @@ class ProjectionImpactViewModel(
             goalsRepository.getGoalById(goalId)
                 .onSuccess { goal ->
                     _uiState.update {
-                        it.copy(goalDetailsState = UiState.Success(deriveProjectionData(goal)))
+                        it.copy(goalDetailsState = UiState.Success(goal.toUiData()))
                     }
                 }
                 .onError { error ->
@@ -189,7 +173,7 @@ class ProjectionImpactViewModel(
         }
     }
 
-    private fun unMapGoal(goalId: Int) {
+    private fun unMapGoal(goalId: String) {
         val currentGoalDetails = _uiState.value.goalDetailsState
         viewModelScope.launch {
             _uiState.update { it.copy(goalDetailsState = UiState.Loading) }
@@ -219,92 +203,4 @@ class ProjectionImpactViewModel(
         _uiState.update { it.copy(portfolioDataState = UiState.Success(updatedList)) }
     }
 
-    private fun deriveProjectionData(goal: GoalDomain): ProjectionImpactUiData {
-        if (goal.goalTypeId == 3) {
-            val currentAge = goal.currentAge ?: 0
-            val retirementAge = goal.retirementAge ?: 60
-            val lifeExpectancy = goal.lifeExpectancy ?: 85
-            val yearsLeft = retirementAge - currentAge
-            val currentMonthlyExpense = goal.currentMonthlyExpense?.toDoubleOrNull() ?: 0.0
-            val inflationRate = goal.inflationRate / 100.0
-            val preRetirementReturn = goal.returnRate / 100.0
-            val postRetirementReturn = goal.postRetirementReturn?.toDoubleOrNull()?.div(100.0) ?: 0.06
-
-            val retirementCorpus = GoalCalculator.calculateRetirementCorpus(
-                currentMonthlyExpense = currentMonthlyExpense,
-                inflationRate = inflationRate,
-                returnRate = postRetirementReturn,
-                yearsToRetirement = yearsLeft,
-                yearsPostRetirement = lifeExpectancy - retirementAge
-            )
-
-            val monthlySip = GoalCalculator.calculateRetirementSip(
-                retirementCorpus = retirementCorpus,
-                annualReturnRate = preRetirementReturn,
-                yearsToRetirement = yearsLeft
-            )
-
-            val currentSaved = goal.currentSavedAmount.toLongOrNull() ?: 0L
-            val targetAmount = retirementCorpus.toLong()
-            val progress = if (targetAmount > 0) currentSaved.toDouble() / targetAmount else 0.0
-            val timeFactor = (yearsLeft.toDouble() / 30.0).coerceIn(0.0, 1.0)
-            val feasibilityScore = (progress * 0.7 + timeFactor * 0.3).coerceIn(0.1, 1.0).toFloat()
-            val targetYear = DateTimeUtils.getCurrentYear() + yearsLeft
-
-            return ProjectionImpactUiData(
-                goalItemName = goal.goalItemName ?: goal.goalName ?: "Retirement",
-                goalName = goal.goalName ?: "Retirement",
-                todaysCost = currentMonthlyExpense.toLong(),
-                futureValue = retirementCorpus,
-                targetYear = targetYear,
-                monthlySip = monthlySip,
-                feasibilityScore = feasibilityScore,
-                currentSaved = currentSaved,
-                targetAmount = targetAmount,
-                increasedBy = retirementCorpus - currentMonthlyExpense,
-                requiredMonthly = monthlySip,
-                schemes = goal.schemes,
-                goalId = goal.goalId,
-                goalTypeId = goal.goalTypeId
-            )
-        } else {
-            val todaysCost = goal.currentGoalCost?.toLong() ?: 0L
-            val yearsLeft = goal.yearsLeft ?: 0
-            val inflationRate = goal.inflationRate / 100.0
-            val returnRate = goal.returnRate / 100.0
-            val futureValue = todaysCost * (1 + inflationRate).pow(yearsLeft.toDouble())
-            val currentSaved = goal.currentSavedAmount.toLongOrNull() ?: 0L
-            val targetAmount = futureValue.toLong()
-            val monthlyReturnRate = returnRate / 12
-            val totalMonths = yearsLeft * 12
-
-            val numerator = futureValue - (currentSaved * (1 + returnRate).pow(yearsLeft.toDouble()))
-            val denominator = if (totalMonths > 0) {
-                ((1 + monthlyReturnRate).pow(totalMonths.toDouble()) - 1) / monthlyReturnRate
-            } else 1.0
-
-            val monthlySip = if (denominator > 0) numerator / denominator else 0.0
-            val progress = if (targetAmount > 0) currentSaved.toDouble() / targetAmount else 0.0
-            val timeFactor = (yearsLeft.toDouble() / 30.0).coerceIn(0.0, 1.0)
-            val feasibilityScore = (progress * 0.7 + timeFactor * 0.3).coerceIn(0.1, 1.0).toFloat()
-            val targetYear = DateTimeUtils.getCurrentYear() + yearsLeft
-
-            return ProjectionImpactUiData(
-                goalItemName = goal.goalItemName ?: goal.goalName ?: "Goal",
-                todaysCost = todaysCost,
-                futureValue = futureValue,
-                targetYear = targetYear,
-                monthlySip = monthlySip,
-                feasibilityScore = feasibilityScore,
-                currentSaved = currentSaved,
-                targetAmount = targetAmount,
-                increasedBy = futureValue - todaysCost,
-                requiredMonthly = monthlySip,
-                schemes = goal.schemes,
-                goalId = goal.goalId,
-                goalName = goal.goalName ?: "Goal",
-                goalTypeId = goal.goalTypeId
-            )
-        }
-    }
 }

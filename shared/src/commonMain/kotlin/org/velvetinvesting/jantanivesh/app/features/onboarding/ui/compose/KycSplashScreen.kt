@@ -38,9 +38,11 @@ import jantanivesh.shared.generated.resources.img_amfi_logo
 import jantanivesh.shared.generated.resources.img_kycsplash
 import jantanivesh.shared.generated.resources.img_ondc_logo
 import jantanivesh.shared.generated.resources.img_upi_logo
+import jantanivesh.shared.generated.resources.proceed
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -138,7 +140,7 @@ fun KycSplashScreen(
         }
 
         AppButton(
-            text = "Proceed",
+            text = "Proceed/ " + stringResource(Res.string.proceed),
             onClick = { handleEvent(KycSplashEvent.OnProceedClick) },
             modifier = Modifier
                 .padding(top = Spacing.dp16)
@@ -284,7 +286,7 @@ private fun LogoBox(logo: DrawableResource, contentDescription: String) {
     }
 }
 
-@Preview
+@Preview(locale = "hi")
 @Composable
 private fun KycSplashScreenPreview() {
     JantaNiveshTheme {

@@ -1,13 +1,12 @@
 package org.velvetinvesting.jantanivesh.app.features.core.data.local.mapper
 
-import org.velvetinvesting.jantanivesh.app.core.theme.*
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.DashboardDto
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.OnboardingStatusDto
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.UserDataDto
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.UserGoal
-import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalOption
+import org.velvetinvesting.jantanivesh.app.features.goals.data.mapper.toDomain
+import org.velvetinvesting.jantanivesh.app.features.goals.data.mapper.toSummary
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.DashboardSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.OnboardingStatusDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.UserDataDomain
@@ -52,48 +51,8 @@ fun DashboardDto.toDomain(): DashboardSummaryDomain = DashboardSummaryDomain(
     monthChangePercent = month_change_percent
 )
 
-fun UserGoal.toGoalSummary(): GoalsSummaryDomain {
-    return GoalsSummaryDomain(
-        goalTypes = mapGoalOption(),
-        amount = current_saved_amount.toLong(),
-        targetAmount = current_goal_cost?.toLong()?:0L,
-        goalId = id
-    )
-}
-
-fun UserGoal.mapGoalOption(): GoalOption {
-    return when (goal_type_id) {
-
-        1 -> GoalOption(
-            title = "Child Education",
-            type = GoalType.ChildEducation,
-            color = MutualFundIconBg
-        )
-
-        2 -> GoalOption(
-            title = "Child Marriage",
-            type = GoalType.ChildMarriage,
-            color = bgColor3
-        )
-
-        3 -> GoalOption(
-            title = "Retirement",
-            type = GoalType.Retirement,
-            color = bgColor4
-        )
-
-        4 -> GoalOption(
-            title = goal_name?:"Wealth Building",
-            type = GoalType.WealthBuilding,
-            goalItemId = goal_item_id,
-            goalItemName = goal_item_name,
-            color = Secondary
-        )
-
-        else -> GoalOption(
-            title = "Unknown",
-            type = GoalType.WealthBuilding,
-            color = Primary
-        )
-    }
-}
+/**
+ * `GET /user/` embeds the same goal rows `GET /user-goal/` returns, so the home screen's cards
+ * come from the one goal mapper rather than from a second, drifting copy of the same arithmetic.
+ */
+fun UserGoal.toGoalSummary(): GoalsSummaryDomain = toDomain().toSummary()

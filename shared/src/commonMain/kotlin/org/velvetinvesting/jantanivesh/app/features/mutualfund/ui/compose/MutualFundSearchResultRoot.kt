@@ -421,15 +421,8 @@ fun MutualFundListCard(
                 )
             }
             Row{
-                val subtitle = listOfNotNull(
-                    fund.category.takeIf { it.isNotBlank() },
-                    fund.remark?.takeIf { it.isNotBlank() },
-                    fund.riskText?.takeIf { it.isNotBlank() }
-                ).joinToString(" • ")
-                    .ifBlank { fund.latestNav.takeIf { it.isNotBlank() }?.let { "NAV $it" }.orEmpty() }
-
                 Text(
-                    text = subtitle,
+                    text = "NAV ${fund.latestNav}",
 
                     style = tinyLabel,
                     color = titleColor,

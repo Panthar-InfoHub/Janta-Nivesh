@@ -347,4 +347,44 @@
     <string name="cancel_reason_mandate_not_ready">મેન્ડેટ તૈયાર નથી</string>
     <string name="cancel_reason_invest_later">પછીથી રોકાણ કરવા માંગું છું</string>
     <string name="cancel_reason_customer_support">ગ્રાહક સપોર્ટ સંતોષકારક નથી</string>
+
+    <!-- Onboarding CTA buttons -->
+    <string name="proceed_to_digilocker">ડિજિલૉકર પર આગળ વધો</string>
+    <string name="proceed">આગળ વધો</string>
+    <string name="submit">સબમિટ કરો</string>
+    <string name="set_autopay">ઑટોપે સેટ કરો</string>
+    <string name="save_and_continue">સાચવો અને ચાલુ રાખો</string>
+    <string name="remove_signature">સહી દૂર કરો</string>
+    <string name="confirm">પુષ્ટિ કરો</string>
+    <string name="change">બદલો</string>
+    <string name="fetching_location">સ્થાન મેળવાઈ રહ્યું છે…</string>
+    <string name="submitting">સબમિટ થઈ રહ્યું છે…</string>
+
+    <!-- Goal projection screen -->
+    <string name="goal_projected_impact">અનુમાનિત પ્રભાવ</string>
+    <string name="goal_analysis">લક્ષ્ય વિશ્લેષણ</string>
+    <string name="goal_todays_cost">આજની કિંમત</string>
+    <string name="goal_target_corpus">લક્ષ્ય રકમ</string>
+    <string name="goal_future_value">ભવિષ્યનું મૂલ્ય</string>
+    <string name="goal_time_horizon">સમય અવધિ</string>
+    <string name="goal_required_sip">જરૂરી એસઆઈપી</string>
+    <string name="goal_per_month_suffix">માસ</string>
+    <string name="goal_years">વર્ષ</string>
+    <string name="goal_saved_so_far">અત્યાર સુધી બચાવ્યું</string>
+    <string name="goal_still_to_build">હજુ એકઠું કરવાનું</string>
+    <string name="goal_progress">લક્ષ્ય પ્રગતિ</string>
+    <string name="goal_feasibility_score">શક્યતા સ્કોર</string>
+    <string name="goal_feasibility_note">આ લક્ષ્ય માટે નિર્ધારિત વળતર દરે તમારી હાલની બચત લક્ષ્ય તારીખ સુધી કેટલે પહોંચાડશે.</string>
+    <string name="goal_inflation_adds">મોંઘવારી ઉમેરે છે</string>
+    <string name="goal_lumpsum_today">અથવા આજે જ આટલું રોકાણ કરો</string>
+    <string name="goal_map_scheme">સ્કીમ મેપ કરો</string>
+
+    <!-- Financial goal (create) screen -->
+    <string name="goal_category">શ્રેણી</string>
+    <string name="goal_name_label">લક્ષ્યનું નામ</string>
+    <string name="goal_target_year">લક્ષ્ય વર્ષ</string>
+    <string name="goal_target_amount">લક્ષ્ય રકમ</string>
+    <string name="goal_present_cost">આજની કિંમત</string>
+    <string name="goal_expected_inflation_rate">અપેક્ષિત ફુગાવા દર</string>
+    <string name="goal_save_goal">લક્ષ્ય સાચવો</string>
 </resources>

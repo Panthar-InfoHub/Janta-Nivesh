@@ -131,8 +131,8 @@ val viewModelModule = module {
     viewModel { RequestCallbackViewModel() }
 
     viewModel { YourGoalsViewModel(get()) }
-    viewModel { AddGoalViewModel(get(), get()) }
-    viewModel { (id: String) -> ProjectedImpactViewModel(id, get(), get()) }
+    viewModel { AddGoalViewModel(get()) }
+    viewModel { (id: String) -> ProjectedImpactViewModel(id, get()) }
     viewModel { (id: String) -> ProjectionImpactViewModel(get(), get(), get(), id) }
 
     // Portfolio ViewModels

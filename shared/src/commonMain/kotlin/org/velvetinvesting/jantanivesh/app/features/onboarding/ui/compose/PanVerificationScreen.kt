@@ -54,7 +54,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
@@ -153,7 +152,7 @@ fun ConfirmYourDetailsScreen(
 
             item {
                 AppButton(
-                    text = stringResource(Res.string.confirm_and_proceed),
+                    text = "Confirm & Proceed/ " + stringResource(Res.string.confirm_and_proceed),
                     onClick = { handleEvent(PanVerificationEvent.OnProceedClick) },
                     loading = state.isLoading,
                     enabled = state.canSubmit,

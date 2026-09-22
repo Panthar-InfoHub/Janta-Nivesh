@@ -32,6 +32,7 @@ import jantanivesh.shared.generated.resources.annual_income_label
 import jantanivesh.shared.generated.resources.city
 import jantanivesh.shared.generated.resources.confirm_and_proceed
 import jantanivesh.shared.generated.resources.date_of_birth
+import jantanivesh.shared.generated.resources.fetching_location
 import jantanivesh.shared.generated.resources.kyc_form_full_name_label
 import jantanivesh.shared.generated.resources.kyc_form_gender_label
 import jantanivesh.shared.generated.resources.occupation
@@ -41,6 +42,7 @@ import jantanivesh.shared.generated.resources.resident_confirmation
 import jantanivesh.shared.generated.resources.review_profile_subtitle
 import jantanivesh.shared.generated.resources.review_profile_title
 import jantanivesh.shared.generated.resources.source_of_fund_label
+import jantanivesh.shared.generated.resources.submitting
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.location.rememberLocationPermissionRequester
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
@@ -346,9 +348,9 @@ private fun ReviewProfileContent(
             // The location fix is taken on this tap, before the profile call, so the label says
             // which of the two the user is waiting on.
             text = when {
-                state.isFetchingLocation -> "Fetching location..."
-                state.isLoading -> "Submitting..."
-                else -> stringResource(Res.string.confirm_and_proceed)
+                state.isFetchingLocation -> "Fetching location…/ " + stringResource(Res.string.fetching_location)
+                state.isLoading -> "Submitting…/ " + stringResource(Res.string.submitting)
+                else -> "Confirm & Proceed/ " + stringResource(Res.string.confirm_and_proceed)
             },
             onClick = { requestLocationPermission.request() },
             loading = state.isFetchingLocation || state.isLoading,

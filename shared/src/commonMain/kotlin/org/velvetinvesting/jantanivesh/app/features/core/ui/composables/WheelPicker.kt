@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
+import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import kotlin.math.abs
 import kotlin.time.Clock
@@ -328,11 +329,13 @@ private fun YearPickerPreview() {
         )
     }
 
-    YearPicker(
-        selectedYear = selectedYear,
-        onYearSelected = {
-            selectedYear = it
-        },
-        onDismiss = {}
-    )
+    JantaNiveshTheme{
+        YearPicker(
+            selectedYear = selectedYear,
+            onYearSelected = {
+                selectedYear = it
+            },
+            onDismiss = {}
+        )
+    }
 }
