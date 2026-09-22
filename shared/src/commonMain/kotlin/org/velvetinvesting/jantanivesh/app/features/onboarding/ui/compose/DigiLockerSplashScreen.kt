@@ -28,9 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.lock_outlined_icon
+import jantanivesh.shared.generated.resources.proceed_to_digilocker
 import jantanivesh.shared.generated.resources.securetick_icon
 import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
@@ -106,7 +108,7 @@ fun DigiLockerSplashScreen(
         }
 
         AppButton(
-            text = "Proceed to Digilocker",
+            text = "Proceed to Digilocker/ " + stringResource(Res.string.proceed_to_digilocker),
             onClick = { handleEvent(VerifyWithDigilockerEvent.OnProceedClick) },
             loading = state.isLoading,
             modifier = Modifier
@@ -229,7 +231,7 @@ private fun SecureAndSafeCard() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "hi")
 @Composable
 private fun DigiLockerSplashScreenPreview() {
     JantaNiveshTheme {

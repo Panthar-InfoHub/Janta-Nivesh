@@ -27,6 +27,7 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.email_declaration
 import jantanivesh.shared.generated.resources.email_id_label
 import jantanivesh.shared.generated.resources.email_subtitle
+import jantanivesh.shared.generated.resources.submit
 import jantanivesh.shared.generated.resources.what_is_your_email_id
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
@@ -127,7 +128,7 @@ fun EmailIdScreen(
 
             item {
                 AppButton(
-                    text = "Submit",
+                    text = "Submit/ " + stringResource(Res.string.submit),
                     onClick = { handleEvent(EmailIdEvent.OnSubmitClick) },
                     enabled = state.canSubmit,
                     loading = state.isLoading,

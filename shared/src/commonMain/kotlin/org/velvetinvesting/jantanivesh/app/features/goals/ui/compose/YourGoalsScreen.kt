@@ -33,12 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.arrow_front_icon
-import jantanivesh.shared.generated.resources.education_icon
 import jantanivesh.shared.generated.resources.goals_splash
-import jantanivesh.shared.generated.resources.icon_callender
 import jantanivesh.shared.generated.resources.plus_icon
-import jantanivesh.shared.generated.resources.ring_icon
-import jantanivesh.shared.generated.resources.ruppee_circle
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
@@ -46,6 +42,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
+import org.velvetinvesting.jantanivesh.app.core.theme.PathGray
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
@@ -53,12 +50,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.UploadBoxBackground
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
-import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.progressPercent
-import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.goalOptions
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.goalOptionFor
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
 
@@ -174,14 +169,9 @@ private fun GoalCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val icon = when (goal.goalTypes.type) {
-        GoalType.ChildEducation -> Res.drawable.education_icon
-        GoalType.ChildMarriage -> Res.drawable.ring_icon
-        GoalType.Retirement -> Res.drawable.icon_callender
-        GoalType.WealthBuilding -> Res.drawable.ruppee_circle
-    }
+    val icon = goalIconFor(goal.goalTypes.type)
 
-    val progress = goal.progressPercent() / 100f
+    val progress = (goal.progressPercent / 100f).coerceIn(0f, 1f)
 
     Column(
         modifier = modifier
@@ -193,7 +183,7 @@ private fun GoalCard(
                 LocalShapes.current.roundedDp16
             )
             .padding(Spacing.dp20),
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
     ) {
 
         Row(
@@ -212,14 +202,14 @@ private fun GoalCard(
                     .padding(Spacing.dp12)
                     .size(Spacing.dp17)
             )
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
-                    text = goal.goalTypes.title,
+                    text = goal.title,
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = goal.goalTypes.type.displayName,
+                    text = goal.goalTypes.type?.displayName ?: goal.goalTypes.title,
                     style = MaterialTheme.typography.titleSmall,
                     color = GreyText
                 )
@@ -266,13 +256,13 @@ private fun GoalCard(
                     .height(Spacing.dp8)
                     .clip(RoundedCornerShape(Spacing.dp6)),
                 color = Primary,
-                trackColor = SelectedBoxBorder,
+                trackColor = PathGray,
                 strokeCap = StrokeCap.Round,
                 drawStopIndicator = {}
             )
 
             Text(
-                text = "${goal.progressPercent()}%",
+                text = "${goal.progressPercent}%",
                 modifier = Modifier.align(Alignment.End),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
@@ -332,13 +322,13 @@ private fun YourGoalsContent(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
                     horizontalAlignment = Alignment.End,
-                    modifier = Modifier.weight(0.5f)
                 ) {
 
                     Text(
                         "Target: ₹ ${state.goalTargetAmt}",
                         style = MaterialTheme.typography.titleSmall,
-                        color = GreyText
+                        color = GreyText,
+                        textAlign = TextAlign.End
                     )
 
                     Row(
@@ -394,34 +384,36 @@ fun YourGoalsScreenPreview() {
 
     val previewGoals = listOf(
         GoalsSummaryDomain(
-            goalTypes = goalOptions[0], // Child Education
-            amount = 250_000,
+            goalId = "goal_1",
+            goalTypes = goalOptionFor(1),
+            title = "Aarav's Education",
+            amount = 100_000,
+            targetAmount = 1_790_847,
+            progressPercent = 6
+        ),
+        GoalsSummaryDomain(
+            goalId = "goal_2",
+            goalTypes = goalOptionFor(3),
+            title = "My Dream Villa",
+            amount = 500_000,
+            targetAmount = 7_035_502,
+            progressPercent = 7
+        ),
+        GoalsSummaryDomain(
+            goalId = "goal_3",
+            goalTypes = goalOptionFor(4),
+            title = "My New Car",
+            amount = 100_000,
+            targetAmount = 1_276_281,
+            progressPercent = 8
+        ),
+        GoalsSummaryDomain(
+            goalId = "goal_4",
+            goalTypes = goalOptionFor(5),
+            title = "Emergency Cushion",
+            amount = 200_000,
             targetAmount = 1_000_000,
-            goalId = "goal_1"
-        ),
-        GoalsSummaryDomain(
-            goalTypes = goalOptions[1], // Child Marriage
-            amount = 400_000,
-            targetAmount = 1_500_000,
-            goalId = "goal_2"
-        ),
-        GoalsSummaryDomain(
-            goalTypes = goalOptions[2], // Retirement
-            amount = 800_000,
-            targetAmount = 5_000_000,
-            goalId = "goal_3"
-        ),
-        GoalsSummaryDomain(
-            goalTypes = goalOptions[3], // Wealth Building
-            amount = 600_000,
-            targetAmount = 2_000_000,
-            goalId = "goal_4"
-        ),
-        GoalsSummaryDomain(
-            goalTypes = goalOptions[4], // Custom Goal
-            amount = 150_000,
-            targetAmount = 500_000,
-            goalId = "goal_5"
+            progressPercent = 20
         )
     )
 

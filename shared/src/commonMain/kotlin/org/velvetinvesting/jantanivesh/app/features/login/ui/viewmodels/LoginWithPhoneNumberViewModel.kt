@@ -18,8 +18,8 @@ import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginW
 data class LoginWithPhoneNumberUiState(
     val phoneNumber: String = "",
     val isLoading: Boolean = false,
-    val isOwnershipDeclared: Boolean = false,
-    val areTermsAccepted: Boolean = false,
+    val isOwnershipDeclared: Boolean = true,
+    val areTermsAccepted: Boolean = true,
     /** The same screen serves both flows; sign up additionally collects the consents. */
     val isSignUpMode: Boolean = false
 ) {

@@ -19,7 +19,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInpu
 
 data class PanVerificationUiState(
     val pan: String = "",
-    val isConsentChecked: Boolean = false,
+    val isConsentChecked: Boolean = true,
     val isLoading: Boolean = false
 ) {
     val canSubmit: Boolean

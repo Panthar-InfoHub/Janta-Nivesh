@@ -566,4 +566,44 @@
     <string name="cancel_reason_mandate_not_ready">Mandate not ready</string>
     <string name="cancel_reason_invest_later">Want to invest later</string>
     <string name="cancel_reason_customer_support">Customer support not satisfactory</string>
+
+    <!-- Onboarding CTA buttons -->
+    <string name="proceed_to_digilocker">Proceed to Digilocker</string>
+    <string name="proceed">Proceed</string>
+    <string name="submit">Submit</string>
+    <string name="set_autopay">Set Autopay</string>
+    <string name="save_and_continue">Save &amp; Continue</string>
+    <string name="remove_signature">Remove Signature</string>
+    <string name="confirm">Confirm</string>
+    <string name="change">Change</string>
+    <string name="fetching_location">Fetching location…</string>
+    <string name="submitting">Submitting…</string>
+
+    <!-- Goal projection screen -->
+    <string name="goal_projected_impact">Projected Impact</string>
+    <string name="goal_analysis">Goal Analysis</string>
+    <string name="goal_todays_cost">Today\'s Cost</string>
+    <string name="goal_target_corpus">Target Corpus</string>
+    <string name="goal_future_value">Future Value</string>
+    <string name="goal_time_horizon">Time Horizon</string>
+    <string name="goal_required_sip">Required SIP</string>
+    <string name="goal_per_month_suffix">mo</string>
+    <string name="goal_years">Years</string>
+    <string name="goal_saved_so_far">Saved So Far</string>
+    <string name="goal_still_to_build">Still To Build</string>
+    <string name="goal_progress">Goal Progress</string>
+    <string name="goal_feasibility_score">Feasibility Score</string>
+    <string name="goal_feasibility_note">How far your current savings get you by the target date, at the return rate this goal was planned with.</string>
+    <string name="goal_inflation_adds">Inflation adds</string>
+    <string name="goal_lumpsum_today">Or invest this today</string>
+    <string name="goal_map_scheme">Map Scheme</string>
+
+    <!-- Financial goal (create) screen -->
+    <string name="goal_category">Category</string>
+    <string name="goal_name_label">Goal Name</string>
+    <string name="goal_target_year">Target Year</string>
+    <string name="goal_target_amount">Target Amount</string>
+    <string name="goal_present_cost">Present Cost</string>
+    <string name="goal_expected_inflation_rate">Expected Inflation Rate</string>
+    <string name="goal_save_goal">Save Goal</string>
 </resources>

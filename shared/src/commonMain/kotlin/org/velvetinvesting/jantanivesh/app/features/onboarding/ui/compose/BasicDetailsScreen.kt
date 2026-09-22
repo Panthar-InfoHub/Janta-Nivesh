@@ -123,7 +123,7 @@ fun BasicDetailsScreen(
 
             item {
                 AppButton(
-                    text = stringResource(Res.string.confirm_and_proceed),
+                    text = "Confirm & Proceed/ " + stringResource(Res.string.confirm_and_proceed),
                     onClick = { handleEvent(BasicDetailsEvent.OnProceedClick) },
                     loading = state.isLoading,
                     enabled = state.canSubmit,

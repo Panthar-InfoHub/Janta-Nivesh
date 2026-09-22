@@ -5,7 +5,7 @@ import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.goal
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.SelectableSchemeUiModel
 
 
-fun List<SelectableSchemeUiModel>.toBody(goalId: Int): GoalMapBodyDto {
+fun List<SelectableSchemeUiModel>.toBody(goalId: String): GoalMapBodyDto {
     return GoalMapBodyDto(
         goal_id = goalId,
         map_data = this.map {

@@ -848,8 +848,6 @@ fun MainAppNavigation(
                         ProjectedImpactEffect.NavigateToInvest -> navController.navigate(
                             Route.MutualFundSearchResult()
                         )
-                        ProjectedImpactEffect.OpenPortfolioBottomSheet -> { /* handle */ }
-                        ProjectedImpactEffect.ClosePortfolioBottomSheet -> { /* handle */ }
                         is ProjectedImpactEffect.ShowError -> {
                             SnackBarController.showError(effect.message)
                         }
@@ -882,6 +880,9 @@ fun MainAppNavigation(
         composable<Route.GoalsScreen> {
             val vm: YourGoalsViewModel = koinViewModel()
             val uiState by vm.uiState.collectAsStateWithLifecycle()
+            LaunchedEffect(Unit) {
+                vm.handleEvent(YourGoalsEvent.LoadGoals)
+            }
             LaunchedEffect(vm.effect) {
                 vm.effect.collect { effect ->
                     when (effect) {

@@ -48,6 +48,7 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.plus_icon
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactEvent
@@ -76,39 +77,44 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.g
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalSchemeDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.SelectableSchemeUiModel
 
+private val previewGoalData = ProjectionImpactUiData(
+    goalId = "4506b743-16f1-4678-adee-932fe02a4031",
+    goalTypeId = 3,
+    goalName = "My Dream Villa",
+    goalTypeName = "Buy a Home",
+    todaysCost = 5_000_000.0,
+    futureValue = 7_035_502.11,
+    currentSavings = 500_000.0,
+    fvCurrentSavings = 974_358.55,
+    netRequiredCorpus = 6_061_143.56,
+    monthlySip = 50_112.63,
+    lumpsumToday = 3_110_325.02,
+    yearsRemaining = 7,
+    targetYear = 2033,
+    progressPercent = 7,
+    feasibilityScore = 0.14f,
+    increasedBy = 2_035_502.11,
+    isFixedCorpus = false,
+    schemes = listOf(
+        GoalSchemeDomain(
+            schemeName = "SBI Bluechip Fund",
+            folio = "123456789",
+            balUnits = "150.5",
+            nav = "45.6",
+            currentVal = "6862",
+            actualFolio = "Preview",
+            schemeId = "Preview"
+        )
+    )
+)
+
 @Preview
 @Composable
 fun MapSchemesScreenPreview() {
     JantaNiveshTheme {
-        val mockData = ProjectionImpactUiData(
-            goalItemName = "Buy a House",
-            todaysCost = 5000000L,
-            futureValue = 7500000.0,
-            targetYear = 2030,
-            monthlySip = 25000.0,
-            feasibilityScore = 0.8f,
-            currentSaved = 1000000L,
-            targetAmount = 7500000L,
-            increasedBy = 2500000.0,
-            requiredMonthly = 25000.0,
-            schemes = listOf(
-                GoalSchemeDomain(
-                    schemeName = "SBI Bluechip Fund",
-                    folio = "123456789",
-                    balUnits = "150.5",
-                    nav = "45.6",
-                    currentVal = "6862",
-                    actualFolio = "Preview",
-                    schemeId = "Preview"
-                )
-            ),
-            goalId = 1,
-            goalName = "Buy a House",
-            goalTypeId = 1
-        )
         MapSchemesScreen(
             uiState = ProjectionImpactUiState(
-                goalDetailsState = UiState.Success(mockData)
+                goalDetailsState = UiState.Success(previewGoalData)
             ),
             effectFlow = emptyFlow(),
             onEvent = {},
@@ -386,71 +392,84 @@ fun MapSchemesBottomSheetContent(
             sheetState = sheetState,
             containerColor = Color.White
         ) {
-            when (portfolioState) {
-                is UiState.Error -> {
-                    ErrorScreen(
-                        errorMessage = portfolioState.message,
-                        onRetryClick = { onEvent(ProjectionImpactEvent.RetryPortfolio) }
+            MapSchemesSheetBody(
+                portfolioState = portfolioState,
+                onEvent = onEvent,
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+fun MapSchemesSheetBody(
+    portfolioState: UiState<List<SelectableSchemeUiModel>>,
+    onEvent: (ProjectionImpactEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when (portfolioState) {
+        is UiState.Error -> {
+            ErrorScreen(
+                errorMessage = portfolioState.message,
+                onRetryClick = { onEvent(ProjectionImpactEvent.RetryPortfolio) }
+            )
+        }
+        UiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                VelvetLoader()
+            }
+        }
+        is UiState.Success -> {
+            val data = portfolioState.data
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .background(Color.White, RoundedCornerShape(Spacing.dp15))
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Map Schemes",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = "Choose the fund where you have invested to set a goal",
+                    style = titlesStyle,
+                    color = titleColor,
+                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 24.dp)
+                )
+
+                LazyColumn(
+                    modifier = Modifier.weight(1f, fill = false),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(data) { scheme ->
+                        SelectableSchemeItem(
+                            scheme = scheme,
+                            onToggle = { onEvent(ProjectionImpactEvent.ToggleSelection(scheme.schemeId)) }
+                        )
+                    }
+                }
+
+                if (data.isEmpty()) {
+                    Text(
+                        text = "Purchase Funds to map them with goals",
+                        style = titlesStyle,
+                        color = titleColor,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp)
                     )
                 }
-                UiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        VelvetLoader()
-                    }
-                }
-                is UiState.Success -> {
-                    val data = portfolioState.data
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .background(Color.White, RoundedCornerShape(Spacing.dp15))
-                            .padding(16.dp)
-                    ) {
-                        Text(
-                            text = "Map Schemes",
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                        Text(
-                            text = "Choose the fund where you have invested to set a goal",
-                            style = titlesStyle,
-                            color = titleColor,
-                            modifier = Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 24.dp)
-                        )
 
-                        LazyColumn(
-                            modifier = Modifier.weight(1f, fill = false),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            items(data) { scheme ->
-                                SelectableSchemeItem(
-                                    scheme = scheme,
-                                    onToggle = { onEvent(ProjectionImpactEvent.ToggleSelection(scheme.schemeId)) }
-                                )
-                            }
-                        }
-
-                        if (data.isEmpty()) {
-                            Text(
-                                text = "Purchase Funds to map them with goals",
-                                style = titlesStyle,
-                                color = titleColor,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-                        AppButton(
-                            onClick = { onEvent(ProjectionImpactEvent.MapGoal) },
-                            text = "Confirm Selection",
-                            enabled = data.any { it.isSelected },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
+                Spacer(modifier = Modifier.height(24.dp))
+                AppButton(
+                    onClick = { onEvent(ProjectionImpactEvent.MapGoal) },
+                    text = "Confirm Selection",
+                    enabled = data.any { it.isSelected },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }
@@ -489,7 +508,7 @@ fun SelectableSchemeItem(
             )
             Text(
                 text = ("Units: ${scheme.units} | Value: ₹${formatWithCommas(scheme.value.toLong())}").withInterRupee(),
-                style = MaterialTheme.typography.displaySmall,
+                style = MaterialTheme.typography.bodySmall,
                 color = titleColor
             )
         }
@@ -500,6 +519,156 @@ fun SelectableSchemeItem(
                 checkedColor = Secondary,
                 uncheckedColor = Color.LightGray.copy(alpha = 0.5f)
             )
+        )
+    }
+}
+private val previewSchemes = listOf(
+    SelectableSchemeUiModel(
+        schemeId = 1,
+        name = "SBI Bluechip Fund - Direct Growth",
+        units = "150.5432",
+        value = 68620.0,
+        isSelected = false,
+        folio = "123456789"
+    ),
+    SelectableSchemeUiModel(
+        schemeId = 2,
+        name = "HDFC Mid-Cap Opportunities Fund - Direct Growth",
+        units = "82.1145",
+        value = 124350.0,
+        isSelected = false,
+        folio = "987654321"
+    ),
+    SelectableSchemeUiModel(
+        schemeId = 3,
+        name = "ICICI Prudential Balanced Advantage Fund",
+        units = "310.0000",
+        value = 45980.0,
+        isSelected = false,
+        folio = "456123789"
+    ),
+    SelectableSchemeUiModel(
+        schemeId = 4,
+        name = "Axis Small Cap Fund - Direct Growth",
+        units = "45.7788",
+        value = 32110.0,
+        isSelected = false,
+        folio = "741852963"
+    ),
+    SelectableSchemeUiModel(
+        schemeId = 5,
+        name = "Parag Parikh Flexi Cap Fund - Direct Growth",
+        units = "220.3391",
+        value = 189475.0,
+        isSelected = false,
+        folio = "852963741"
+    )
+)
+
+@Preview
+@Composable
+fun MapSchemesSheetLoadedPreview() {
+    JantaNiveshTheme {
+        MapSchemesSheetBody(
+            portfolioState = UiState.Success(previewSchemes),
+            onEvent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MapSchemesSheetWithSelectionPreview() {
+    JantaNiveshTheme {
+        MapSchemesSheetBody(
+            portfolioState = UiState.Success(
+                previewSchemes.mapIndexed { index, scheme ->
+                    scheme.copy(isSelected = index == 0 || index == 2)
+                }
+            ),
+            onEvent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MapSchemesSheetEmptyPreview() {
+    JantaNiveshTheme {
+        MapSchemesSheetBody(
+            portfolioState = UiState.Success(emptyList()),
+            onEvent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MapSchemesSheetLoadingPreview() {
+    JantaNiveshTheme {
+        MapSchemesSheetBody(
+            portfolioState = UiState.Loading,
+            onEvent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MapSchemesSheetErrorPreview() {
+    JantaNiveshTheme {
+        MapSchemesSheetBody(
+            portfolioState = UiState.Error("Unable to load your portfolio"),
+            onEvent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SelectableSchemeItemPreview() {
+    JantaNiveshTheme {
+        Column(
+            modifier = Modifier.background(Color.White).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            SelectableSchemeItem(scheme = previewSchemes[0], onToggle = {})
+            SelectableSchemeItem(
+                scheme = previewSchemes[1].copy(isSelected = true),
+                onToggle = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun MapSchemesScreenWithSheetOpenPreview() {
+    JantaNiveshTheme {
+        MapSchemesScreen(
+            uiState = ProjectionImpactUiState(
+                goalDetailsState = UiState.Success(previewGoalData),
+                portfolioDataState = UiState.Success(previewSchemes)
+            ),
+            effectFlow = flowOf(ProjectionImpactEffect.OpenBottomSheet),
+            onEvent = {},
+            onBack = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MapSchemesScreenEmptyWithSheetOpenPreview() {
+    JantaNiveshTheme {
+        MapSchemesScreen(
+            uiState = ProjectionImpactUiState(
+                goalDetailsState = UiState.Success(previewGoalData.copy(schemes = emptyList())),
+                portfolioDataState = UiState.Success(previewSchemes)
+            ),
+            effectFlow = flowOf(ProjectionImpactEffect.OpenBottomSheet),
+            onEvent = {},
+            onBack = {}
         )
     }
 }

@@ -41,6 +41,8 @@ import io.github.ismoy.imagepickerkmp.features.imagepicker.ui.rememberImagePicke
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.kyc_image_upload_file_size_error
 import jantanivesh.shared.generated.resources.kyc_image_upload_signature_title
+import jantanivesh.shared.generated.resources.remove_signature
+import jantanivesh.shared.generated.resources.save_and_continue
 import jantanivesh.shared.generated.resources.upload_signature_icon
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
@@ -171,14 +173,14 @@ fun UploadSignatureScreen(
                                     .fillMaxWidth()
                                     .padding(horizontal = Spacing.dp16),
                                 onClick = { onEvent(UploadSignatureEvent.RemoveSignature) },
-                                text = "Remove Signature"
+                                text = "Remove Signature/ " + stringResource(Res.string.remove_signature)
                             )
                         }
                     }
                 }
             }
             NextButtonFooter(
-                value = "Save & Continue →",
+                value = "Save & Continue/ " + stringResource(Res.string.save_and_continue) + " →",
                 onClick = { onEvent(UploadSignatureEvent.OnUploadClicked) },
                 loading = state.isLoading,
                 enabled = state.signature != null,

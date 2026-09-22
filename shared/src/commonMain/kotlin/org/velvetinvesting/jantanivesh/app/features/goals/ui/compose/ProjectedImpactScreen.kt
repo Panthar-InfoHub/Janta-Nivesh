@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,12 +30,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.flag_icon
-import jantanivesh.shared.generated.resources.icon_arrow_right
+import jantanivesh.shared.generated.resources.ic_chain
+import jantanivesh.shared.generated.resources.ic_pointer_right
 import jantanivesh.shared.generated.resources.tick_icon
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import org.jetbrains.compose.resources.painterResource
@@ -44,6 +43,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.IconSize
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -52,8 +52,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectTenureCardColor
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedTenureChipColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.TextGray
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
+import org.velvetinvesting.jantanivesh.app.core.utils.formatWithCommas
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
@@ -83,57 +85,19 @@ fun ProjectedImpactScreen(
                 modifier = Modifier
             )
 
-            LazyColumn(modifier = Modifier.weight(1f).fillMaxSize(),
-                contentPadding = PaddingValues(top = Spacing.dp8)
+            LazyColumn(
+                modifier = Modifier.weight(1f).fillMaxSize(),
+                contentPadding = PaddingValues(top = Spacing.dp16)
             ) {
-                item{
+                item {
                     GoalAnalysisCard(
                         data = data,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .genericDropShadow()
-                            .background(White, RoundedCornerShape(Spacing.dp32))
+                            .genericDropShadow(shape = RoundedCornerShape(Spacing.dp32))
+                            .background(White, RoundedCornerShape(Spacing.dp32)),
+                        onMapClick={handleEvent(ProjectedImpactEvent.OnMapSchemesClick)}
                     )
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = Spacing.dp20)
-                            .clip(LocalShapes.current.roundedDp12)
-                            .background(Primary.copy(alpha = 0.08f))
-                            .border(
-                                width = 1.dp,
-                                color = Primary.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .clickable {
-                                handleEvent(ProjectedImpactEvent.OnMapSchemesClick)
-                            }
-                            .padding(vertical = 14.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-
-                        Text(
-                            text = "Map Scheme",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.SemiBold
-                            ),
-                            color = Primary
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Icon(
-                            painter = painterResource(Res.drawable.icon_arrow_right),
-                            contentDescription = null,
-                            tint = Primary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
                 }
 
             }
@@ -154,7 +118,8 @@ fun ProjectedImpactScreen(
 @Composable
 private fun GoalAnalysisCard(
     data: ProjectedImpactUiData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMapClick: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
@@ -162,33 +127,108 @@ private fun GoalAnalysisCard(
     ) {
         // Main Content Area
         Column(
-            modifier = Modifier.padding(Spacing.dp24),
+            modifier = Modifier.padding(vertical=Spacing.dp24, horizontal = Spacing.dp16),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
         ) {
-            GoalAnalysisHeader(goalName = data.goalName)
+            GoalAnalysisHeader(goalName = data.goalName, goalTypeName = data.goalTypeName)
 
-            ProjectedImpactCard(
-                todayCost = "₹ ${data.todaysCost}",
-                futureValue = "₹ ${data.futureValue.toLong()}",
-                timeHorizon = data.targetYear.toString(),
-                requiredSip = "₹ ${data.monthlySip.toLong()}"
+            ProjectedImpactCard(data = data)
+
+//            ProgressSection(
+//                progressPercent = data.progressPercent,
+//            )
+
+            MapSipSection(
+                onMapClick= onMapClick
             )
 
-            FeasibilitySection(feasibilityScore = data.feasibilityScore)
         }
-
-        // Highlighted Status Strip Area
-        WealthBuildingStatus(
-            increasedBy = data.increasedBy,
-            monthlySip = data.monthlySip.toLong().toString()
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.dp20))
     }
 }
 
 @Composable
-private fun GoalAnalysisHeader(goalName: String, modifier: Modifier = Modifier) {
+private fun MapSipSection(onMapClick: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .clip(LocalShapes.current.roundedDp12)
+            .background(Color(0xffDBEAFE).copy(alpha = 0.4f))
+            .border(
+                width = 1.dp,
+                color = Color(0xffDBEAFE).copy(alpha = 0.8f),
+                shape = LocalShapes.current.roundedDp12
+            )
+            .padding(vertical = Spacing.dp12, horizontal = Spacing.dp12),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+    ) {
+        Box(
+            modifier = Modifier.size(Spacing.dp36)
+                .clip(LocalShapes.current.roundedDp12)
+                .background(Color(0xffDBEAFE))
+        ){
+            Icon(
+                painter = painterResource(Res.drawable.ic_chain),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
+                    .padding(Spacing.dp8),
+                tint = Primary
+            )
+        }
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = "Have active investments?",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                color = Primary
+            )
+            Text(
+                text = "Link already running SIPs to this goal instead of new ones.",
+                style = MaterialTheme.typography.titleSmall,
+                color = TextGray
+            )
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.dp2),
+            modifier = Modifier
+                .clip(LocalShapes.current.roundedDp8)
+                .clickable(
+                    onClick = onMapClick
+                )
+                .background(White)
+                .border(
+                    width = 1.dp,
+                    color = Color(0xffDBEAFE).copy(alpha = 0.8f),
+                    shape = LocalShapes.current.roundedDp8
+                )
+                .padding(horizontal = Spacing.dp8, vertical = Spacing.dp8   )
+        ){
+            Text(
+                text = "Map SIPs",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                color = Primary
+            )
+
+            Icon(
+                painter = painterResource(Res.drawable.ic_pointer_right),
+                contentDescription = null,
+                tint = Primary,
+                modifier = Modifier.size(IconSize.dp12)
+            )
+
+        }
+    }
+}
+
+@Composable
+private fun GoalAnalysisHeader(
+    goalName: String,
+    goalTypeName: String,
+    modifier: Modifier = Modifier
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
         verticalAlignment = Alignment.CenterVertically,
@@ -204,7 +244,7 @@ private fun GoalAnalysisHeader(goalName: String, modifier: Modifier = Modifier) 
         )
         Column {
             Text(
-                text = "GOAL ANALYSIS",
+                text = goalTypeName.uppercase(),
                 style = MaterialTheme.typography.titleSmall,
                 color = GreyText
             )
@@ -216,39 +256,56 @@ private fun GoalAnalysisHeader(goalName: String, modifier: Modifier = Modifier) 
     }
 }
 
+/**
+ * Two bars, because they answer different questions: progress is what has been saved against the
+ * target, feasibility is what those savings will have grown into by the target date.
+ */
 @Composable
-private fun FeasibilitySection(
-    feasibilityScore: Float,
+private fun ProgressSection(
+    progressPercent: Int,
     modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(Spacing.dp12),
         modifier = modifier
     ) {
-        Text("Feasibility Score", style = MaterialTheme.typography.labelSmall)
-        LinearProgressIndicator(
-            progress = { feasibilityScore },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(Spacing.dp8)
-                .clip(RoundedCornerShape(Spacing.dp6)),
-            color = SelectedBoxBorder,
-            trackColor = FilterChipUnselected,
-            strokeCap = StrokeCap.Round,
-            drawStopIndicator = {}
-        )
-        Text(
-            text = "Based on your current savings rate and projected market returns.",
-            style = MaterialTheme.typography.titleSmall,
-            color = GreyText
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Goal Progress", style = MaterialTheme.typography.labelSmall)
+            Text(
+                text = "$progressPercent%",
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = SelectedBoxBorder
+            )
+        }
+        GoalBar(progress = (progressPercent / 100f).coerceIn(0f, 1f))
     }
+}
+
+@Composable
+private fun GoalBar(progress: Float, modifier: Modifier = Modifier) {
+    LinearProgressIndicator(
+        progress = { progress },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(Spacing.dp8)
+            .clip(RoundedCornerShape(Spacing.dp6)),
+        color = SelectedBoxBorder,
+        trackColor = FilterChipUnselected,
+        strokeCap = StrokeCap.Round,
+        drawStopIndicator = {}
+    )
 }
 
 @Composable
 private fun WealthBuildingStatus(
     increasedBy: Double,
-    monthlySip: String,
+    monthlySip: Double,
+    lumpsumToday: Double,
+    isFixedCorpus: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -257,21 +314,24 @@ private fun WealthBuildingStatus(
             .background(color = SelectTenureCardColor)
             .padding(horizontal = Spacing.dp24, vertical = Spacing.dp20)
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
-            Icon(
-                painter = painterResource(Res.drawable.upward_trend_arrow),
-                contentDescription = null,
-                tint = Color(0xff4F2400),
-                modifier = Modifier.size(Spacing.dp20)
-            )
-            Text(
-                text = "Increased By ₹ ${increasedBy.toLong()}",
-                style = MaterialTheme.typography.labelSmall,
-                color = Color(0xff4F2400)
-            )
-        }
+        // A named corpus is not inflated, so there is no increase to report for one.
+        if (!isFixedCorpus) {
+            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+                Icon(
+                    painter = painterResource(Res.drawable.upward_trend_arrow),
+                    contentDescription = null,
+                    tint = Color(0xff4F2400),
+                    modifier = Modifier.size(Spacing.dp20)
+                )
+                Text(
+                    text = "Inflation adds ${increasedBy.asRupeesText()}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color(0xff4F2400)
+                )
+            }
 
-        Spacer(modifier = Modifier.height(Spacing.dp8))
+            Spacer(modifier = Modifier.height(Spacing.dp8))
+        }
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
@@ -293,11 +353,19 @@ private fun WealthBuildingStatus(
                     .padding(Spacing.dp4)
             )
             Text(
-                text = "Req. monthly: ₹ $monthlySip",
+                text = "Req. monthly: ${monthlySip.asRupeesText()}",
                 style = MaterialTheme.typography.labelSmall,
                 color = SecondaryPrimary
             )
         }
+
+        Spacer(modifier = Modifier.height(Spacing.dp8))
+
+        Text(
+            text = "Or ${lumpsumToday.asRupeesText()} invested today.",
+            style = MaterialTheme.typography.titleSmall,
+            color = GreyText
+        )
     }
 }
 
@@ -331,13 +399,11 @@ private fun ReturnDetailItem(
 
 @Composable
 private fun ProjectedImpactCard(
-    todayCost: String,
-    futureValue: String,
-    timeHorizon: String,
-    requiredSip: String
+    data: ProjectedImpactUiData,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .background(GoalIconBg, shape = RoundedCornerShape(Spacing.dp12))
             .fillMaxWidth()
             .padding(Spacing.dp16)
@@ -350,17 +416,14 @@ private fun ProjectedImpactCard(
                 verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
             ) {
                 ReturnDetailItem(
-                    label = "Today's Cost",
-                    value = todayCost,
-                    valueStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                    label = if (data.isFixedCorpus) "Target Corpus" else "Today's Cost",
+                    value = data.todaysCost.asRupeesText()
                 )
                 ReturnDetailItem(
                     label = "Target",
-                    value = timeHorizon,
-                    valueColor = Black,
-                    valueStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                    value = data.targetYear?.toString()
+                        ?: "${data.yearsRemaining} yrs"
                 )
-
             }
             Column(
                 modifier = Modifier.fillMaxWidth().weight(1f),
@@ -368,38 +431,44 @@ private fun ProjectedImpactCard(
             ) {
                 ReturnDetailItem(
                     label = "Future Value",
-                    value = futureValue,
-                    valueStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                    value = data.futureValue.asRupeesText()
                 )
                 ReturnDetailItem(
                     label = "Monthly SIP",
-                    value = requiredSip,
-                    valueColor = Primary,
-                    valueStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                    value = data.monthlySip.asRupeesText(),
+                    valueColor = Primary
                 )
             }
         }
     }
 }
 
+/** Rupee amounts are rounded to whole rupees: paise in a 20-year projection are noise. */
+private fun Double.asRupeesText(): String = "₹ ${formatWithCommas(this.toLong())}"
+
+
 @Preview(showBackground = true)
 @Composable
 private fun ProjectedImpactScreenPreview() {
     val sampleData = ProjectedImpactUiData(
-        goalItemName = "Retirement",
-        todaysCost = 50000L,
-        futureValue = 5000000.0,
-        targetYear = 2050,
-        monthlySip = 15000.0,
-        feasibilityScore = 0.75f,
-        currentSaved = 100000L,
-        targetAmount = 5000000L,
-        increasedBy = 4500000.0,
-        requiredMonthly = 15000.0,
-        schemes = emptyList(),
-        goalId = 1,
-        goalName = "Retirement Goal",
-        goalTypeId = 3
+        goalId = "940a7f46-212e-4c53-a5bd-09399cb2bad2",
+        goalTypeId = 4,
+        goalName = "My New Car",
+        goalTypeName = "Buy a Vehicle",
+        todaysCost = 1_000_000.0,
+        futureValue = 1_276_281.56,
+        currentSavings = 100_000.0,
+        fvCurrentSavings = 161_051.0,
+        netRequiredCorpus = 1_115_230.56,
+        monthlySip = 14_401.77,
+        lumpsumToday = 692_470.43,
+        yearsRemaining = 5,
+        targetYear = 2031,
+        progressPercent = 8,
+        feasibilityScore = 0.13f,
+        increasedBy = 276_281.56,
+        isFixedCorpus = false,
+        schemes = emptyList()
     )
     JantaNiveshTheme {
         ProjectedImpactScreen(

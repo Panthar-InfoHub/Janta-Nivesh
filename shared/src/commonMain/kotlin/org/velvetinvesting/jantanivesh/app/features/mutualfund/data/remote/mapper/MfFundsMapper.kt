@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.mapper
 
 import org.velvetinvesting.jantanivesh.app.core.utils.trimDoubleTo
+import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PaginatedData
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mffunds.MfFundDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.mffunds.MfFundMetricsDto
@@ -41,7 +42,7 @@ fun MfFundDto.toDomain(): MutualFundDomain {
         name = name?.toTitleCase().orEmpty(),
         icon = img_url.orEmpty(),
         returnYearsRate = metrics.toReturnDomain(),
-        latestNav = latest_nav.orEmpty(),
+        latestNav = latest_nav?.toDouble()?.trimTo(2) ?: "n/a",
         isin = isin,
         latestNavDate = latest_nav_date
     )

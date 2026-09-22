@@ -347,4 +347,44 @@
     <string name="cancel_reason_mandate_not_ready">ஆணை தயாராக இல்லை</string>
     <string name="cancel_reason_invest_later">பின்னர் முதலீடு செய்ய விரும்புகிறேன்</string>
     <string name="cancel_reason_customer_support">வாடிக்கையாளர் ஆதரவு திருப்திகரமாக இல்லை</string>
+
+    <!-- Onboarding CTA buttons -->
+    <string name="proceed_to_digilocker">டிஜிலாக்கருக்குச் செல்லவும்</string>
+    <string name="proceed">தொடரவும்</string>
+    <string name="submit">சமர்ப்பிக்கவும்</string>
+    <string name="set_autopay">ஆட்டோபே அமைக்கவும்</string>
+    <string name="save_and_continue">சேமித்துத் தொடரவும்</string>
+    <string name="remove_signature">கையொப்பத்தை நீக்கவும்</string>
+    <string name="confirm">உறுதிப்படுத்தவும்</string>
+    <string name="change">மாற்றவும்</string>
+    <string name="fetching_location">இருப்பிடம் பெறப்படுகிறது…</string>
+    <string name="submitting">சமர்ப்பிக்கப்படுகிறது…</string>
+
+    <!-- Goal projection screen -->
+    <string name="goal_projected_impact">எதிர்பார்க்கப்படும் தாக்கம்</string>
+    <string name="goal_analysis">இலக்கு பகுப்பாய்வு</string>
+    <string name="goal_todays_cost">இன்றைய செலவு</string>
+    <string name="goal_target_corpus">இலக்கு நிதி</string>
+    <string name="goal_future_value">எதிர்கால மதிப்பு</string>
+    <string name="goal_time_horizon">கால அளவு</string>
+    <string name="goal_required_sip">தேவையான எஸ்ஐபி</string>
+    <string name="goal_per_month_suffix">மாதம்</string>
+    <string name="goal_years">ஆண்டுகள்</string>
+    <string name="goal_saved_so_far">இதுவரை சேமித்தது</string>
+    <string name="goal_still_to_build">இன்னும் சேர்க்க வேண்டியது</string>
+    <string name="goal_progress">இலக்கு முன்னேற்றம்</string>
+    <string name="goal_feasibility_score">சாத்தியக்கூறு மதிப்பெண்</string>
+    <string name="goal_feasibility_note">இந்த இலக்குக்குத் திட்டமிட்ட வருவாய் விகிதத்தில், உங்கள் தற்போதைய சேமிப்பு இலக்கு தேதிக்குள் எவ்வளவு தூரம் கொண்டு செல்லும்.</string>
+    <string name="goal_inflation_adds">பணவீக்கம் சேர்க்கிறது</string>
+    <string name="goal_lumpsum_today">அல்லது இதை இன்றே முதலீடு செய்யுங்கள்</string>
+    <string name="goal_map_scheme">திட்டத்தை இணைக்கவும்</string>
+
+    <!-- Financial goal (create) screen -->
+    <string name="goal_category">வகை</string>
+    <string name="goal_name_label">இலக்கின் பெயர்</string>
+    <string name="goal_target_year">இலக்கு ஆண்டு</string>
+    <string name="goal_target_amount">இலக்குத் தொகை</string>
+    <string name="goal_present_cost">இன்றைய செலவு</string>
+    <string name="goal_expected_inflation_rate">எதிர்பார்க்கப்படும் பணவீக்க விகிதம்</string>
+    <string name="goal_save_goal">இலக்கைச் சேமிக்கவும்</string>
 </resources>

@@ -53,8 +53,8 @@ data class ReviewProfileUiState(
     val sourceOfFund: SourceOfFund? = null,
     /** Digits only — the user enters an amount and the slab is derived from it. */
     val annualIncome: String = "",
-    val isPepConfirmed: Boolean = false,
-    val isResidentConfirmed: Boolean = false,
+    val isPepConfirmed: Boolean = true,
+    val isResidentConfirmed: Boolean = true,
     val isLoading: Boolean = false,
     /** Covers the initial `GET /user/` read that prefills the form — the whole screen is a loader. */
     val isScreenLoading: Boolean = true,
