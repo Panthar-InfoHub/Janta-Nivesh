@@ -4,22 +4,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.isAndroid
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.LogoutUseCase
 
 @Composable
 fun BaseNavigation() {
     val navController = rememberNavController()
     val prefs: AuthPrefs = koinInject()
+    val logout: LogoutUseCase = koinInject()
+    // Held above the graph on purpose: the sign-out clean-up has to outlive the destination that
+    // asked for it, which is torn down by the navigation that follows.
+    val scope = rememberCoroutineScope()
     val isLoggedIn = prefs.isLoggedIn()
 
     // Set once the user belongs in the main app — either the server finished onboarding, or they
@@ -108,10 +115,14 @@ fun BaseNavigation() {
                         }
                     }
                 ) {
-                    prefs.setLoggedIn(false)
-                    navController.navigate(Route.LoginGraph) {
-                        launchSingleTop = true
-                        popUpTo(0)
+                    // Both ways out — the log out button and an expired token — land here, so the
+                    // wipe happens once, before the app is back at the splash with a clean slate.
+                    scope.launch {
+                        logout()
+                        navController.navigate(Route.LoginGraph) {
+                            launchSingleTop = true
+                            popUpTo(0)
+                        }
                     }
                 }
             }
