@@ -29,6 +29,8 @@ import jantanivesh.shared.generated.resources.health_insurance
 import jantanivesh.shared.generated.resources.ins_flexible_tenure
 import jantanivesh.shared.generated.resources.ins_high_coverage
 import jantanivesh.shared.generated.resources.ins_tax_benefits
+import jantanivesh.shared.generated.resources.request_callback
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
@@ -150,7 +152,7 @@ fun TermInsuranceScreen(
 
 
             AppButton(
-                "Request Callback",
+                text = "Request Callback/ " + stringResource(Res.string.request_callback),
                 onClick = { onRequestCallBackClick() },
                 modifier = Modifier.fillMaxWidth()
             )

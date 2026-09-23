@@ -36,6 +36,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.arrow_front_icon
+import jantanivesh.shared.generated.resources.confirm
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
@@ -118,7 +120,7 @@ fun PurchaseOtpSheet(
             )
 
             AppButton(
-                text = "Confirm",
+                text = "Confirm/ " + stringResource(Res.string.confirm),
                 onClick = { handleEvent(FundPurchaseEvent.OnConfirmOtpClick) },
                 loading = state.isVerifyingOtp,
                 enabled = state.isOtpComplete,

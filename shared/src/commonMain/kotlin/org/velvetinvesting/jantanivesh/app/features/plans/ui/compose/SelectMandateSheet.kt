@@ -33,8 +33,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.check_circle_outline_icon
+import jantanivesh.shared.generated.resources.confirm
+import jantanivesh.shared.generated.resources.set_autopay
 import jantanivesh.shared.generated.resources.wallet_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
@@ -123,14 +126,14 @@ fun SelectMandateSheet(
 
             if (mandates.isEmpty() && !isLoading) {
                 AppButton(
-                    text = "Set up autopay",
+                    text = "Set Up Autopay/ " + stringResource(Res.string.set_autopay),
                     onClick = onAddMandateClick,
                     style = AppButtonDefaults.style(height = Spacing.dp58),
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
                 AppButton(
-                    text = "Confirm",
+                    text = "Confirm/ " + stringResource(Res.string.confirm),
                     onClick = onConfirm,
                     enabled = selectedMandateId != null,
                     style = AppButtonDefaults.style(height = Spacing.dp58),

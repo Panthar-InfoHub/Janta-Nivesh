@@ -46,8 +46,11 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.ic_callended_filled
 import jantanivesh.shared.generated.resources.ic_ruppee_filled
+import jantanivesh.shared.generated.resources.invest_lump_sum
+import jantanivesh.shared.generated.resources.start_sip
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -196,7 +199,7 @@ fun InvestmentMethodContent(
                     InvestmentOptionCard(
                         title = "Start a SIP",
                         description = "Automated monthly investments to build wealth steadily over time.",
-                        buttonText = "Start SIP ",
+                        buttonText = "Start SIP/ " + stringResource(Res.string.start_sip),
                         icon = Res.drawable.ic_callended_filled,
                         onButtonClick = {
                             if (hasFunds){
@@ -213,7 +216,7 @@ fun InvestmentMethodContent(
                     InvestmentOptionCard(
                         title = "Invest a Lump-Sum",
                         description = "Make a one-time investment with your available funds today.",
-                        buttonText = "Invest Lump Sum",
+                        buttonText = "Invest Lump Sum/ " + stringResource(Res.string.invest_lump_sum),
                         icon = Res.drawable.ic_ruppee_filled,
                         onButtonClick = {
                             if (hasFunds){

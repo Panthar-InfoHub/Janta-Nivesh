@@ -33,8 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.invest_now
 import jantanivesh.shared.generated.resources.insured_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
@@ -158,7 +160,7 @@ fun SetInvestmentDetailsScreen(
             }
         }
         NextButtonFooter(
-            value = "Invest Now",
+            value = "Invest Now/ " + stringResource(Res.string.invest_now),
             onClick = { onEvent(SetInvestmentDetailsEvent.OnContinueClicked) },
             modifier = Modifier.fillMaxWidth(),
             enabled = state.isButtonEnabled,

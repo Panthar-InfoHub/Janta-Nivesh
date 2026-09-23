@@ -37,8 +37,10 @@ import jantanivesh.shared.generated.resources.ins_assistance
 import jantanivesh.shared.generated.resources.ins_cover
 import jantanivesh.shared.generated.resources.ins_no_claim_bonus_general
 import jantanivesh.shared.generated.resources.ins_quick_claim
+import jantanivesh.shared.generated.resources.request_callback
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
@@ -214,7 +216,7 @@ fun GeneralInsuranceScreen(
 
 
             NextButtonFooter(
-                value = "Request Callback",
+                value = "Request Callback/ " + stringResource(Res.string.request_callback),
                 onClick = { onRequestCallBackClick()},
                 modifier = Modifier.fillMaxWidth()
             )

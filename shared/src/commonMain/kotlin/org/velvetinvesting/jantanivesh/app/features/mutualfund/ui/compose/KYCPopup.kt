@@ -23,8 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.complete_your_application
 import jantanivesh.shared.generated.resources.kyc_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.appRed
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 import org.velvetinvesting.jantanivesh.app.core.theme.titlesStyle
@@ -86,7 +88,7 @@ fun KYCPopup(
                 onClick = {
                     onClick()
                 },
-                text = "Complete your application",
+                text = "Complete Your Application/ " + stringResource(Res.string.complete_your_application),
             )
 
         }

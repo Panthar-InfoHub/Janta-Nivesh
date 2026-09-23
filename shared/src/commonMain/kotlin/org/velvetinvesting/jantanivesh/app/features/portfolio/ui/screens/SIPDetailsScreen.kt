@@ -38,8 +38,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.download_ic
+import jantanivesh.shared.generated.resources.proceed_to_withdraw
+import jantanivesh.shared.generated.resources.redeem
+import jantanivesh.shared.generated.resources.tac_dialog_cancel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.navigation.Route
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
@@ -209,15 +213,15 @@ fun SIPDetailsLoadedScreen(
 
         if (data.isSip){
             ContinueBackButtonFooter(
-                continueText = "Redeem",
-                backText = "Cancel",
+                continueText = "Redeem/ " + stringResource(Res.string.redeem),
+                backText = "Cancel/ " + stringResource(Res.string.tac_dialog_cancel),
                 onContinue = onRedeem,
                 onBack = onCancelClick
             )
         }
         else{
             NextButtonFooter(
-                value = "Proceed to withdraw",
+                value = "Proceed to Withdraw/ " + stringResource(Res.string.proceed_to_withdraw),
                 onClick = onRedeem,
             )
         }

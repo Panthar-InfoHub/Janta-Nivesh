@@ -39,9 +39,12 @@ import jantanivesh.shared.generated.resources.ic_graph
 import jantanivesh.shared.generated.resources.ic_ruppee_filled
 import jantanivesh.shared.generated.resources.icon_clock
 import jantanivesh.shared.generated.resources.icon_warning
+import jantanivesh.shared.generated.resources.download_receipt
 import jantanivesh.shared.generated.resources.receipt_icon
+import jantanivesh.shared.generated.resources.try_again
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GrayScreenBackGround
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -354,7 +357,7 @@ private fun OrderDetailsFooter(
             // Retrying needs the scheme to place the order against; without it the button would
             // lead nowhere, so it is left off rather than shown broken.
             order.state == OrderState.FAILED && order.mfProductId.isNotBlank() -> AppButton(
-                text = "Try Again",
+                text = "Try Again/ " + stringResource(Res.string.try_again),
                 onClick = onRetryOrder,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -385,7 +388,7 @@ private fun OrderDetailsFooter(
             }
 
             order.state == OrderState.SUCCESSFUL -> AppButton(
-                text = "Download Receipt",
+                text = "Download Receipt/ " + stringResource(Res.string.download_receipt),
                 onClick = onDownloadReceipt,
                 modifier = Modifier.fillMaxWidth()
             )

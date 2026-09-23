@@ -48,6 +48,8 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.dropdown_outlined_icon
 import jantanivesh.shared.generated.resources.edit_icon
 import jantanivesh.shared.generated.resources.ic_feature_compounding
+import jantanivesh.shared.generated.resources.invest_now
+import org.jetbrains.compose.resources.stringResource
 import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.BackgroundFill
@@ -245,7 +247,7 @@ fun FdDetailsContent(
                 }
             }
             NextButtonFooter(
-                value = "Invest Now",
+                value = "Invest Now/ " + stringResource(Res.string.invest_now),
                 onClick = { onEvent(FdDetailsEvent.OnInvestNowClicked) },
                 modifier = Modifier.fillMaxWidth()
             )

@@ -14,6 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.tac_dialog_cancel
+import jantanivesh.shared.generated.resources.try_again
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -85,13 +89,13 @@ fun SipSetupScreen(
             )
 
             AppButton(
-                text = "Try Again",
+                text = "Try Again/ " + stringResource(Res.string.try_again),
                 onClick = onRetryClick,
                 modifier = Modifier.fillMaxWidth()
             )
 
             InvertedAppButton(
-                text = "Cancel",
+                text = "Cancel/ " + stringResource(Res.string.tac_dialog_cancel),
                 onClick = onCancelClick,
                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp12)
             )

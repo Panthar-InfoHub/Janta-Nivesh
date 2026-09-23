@@ -25,7 +25,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -75,6 +73,7 @@ import jantanivesh.shared.generated.resources.piggybank_icon
 import jantanivesh.shared.generated.resources.plus_icon
 import jantanivesh.shared.generated.resources.profile_in_frame_icon
 import jantanivesh.shared.generated.resources.progress_icon
+import jantanivesh.shared.generated.resources.start_now
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -82,7 +81,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.DashedBorderColor
 import org.velvetinvesting.jantanivesh.app.core.theme.FdIconBg
-import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray65
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.IconBackgroundBlue
@@ -96,6 +94,8 @@ import org.velvetinvesting.jantanivesh.app.core.theme.LightOrange
 import org.velvetinvesting.jantanivesh.app.core.theme.LightOrangeBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.MutualFundIconBg
+import org.velvetinvesting.jantanivesh.app.core.theme.Orange
+import org.velvetinvesting.jantanivesh.app.core.theme.OrangeBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxBorder
@@ -103,15 +103,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
 import org.velvetinvesting.jantanivesh.app.core.theme.ShadowElevation
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
-import org.velvetinvesting.jantanivesh.app.core.theme.Orange
-import org.velvetinvesting.jantanivesh.app.core.theme.OrangeBg
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyWithUnits
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenUiState
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.goalIconFor
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
@@ -853,7 +848,7 @@ private fun InvestingCard(
             }
             AppButton(
                 onClick = onClick,
-                text = "Start Now",
+                text = "Start Now/ " + stringResource(Res.string.start_now),
                 modifier = Modifier.height(Spacing.dp36)
             )
         }

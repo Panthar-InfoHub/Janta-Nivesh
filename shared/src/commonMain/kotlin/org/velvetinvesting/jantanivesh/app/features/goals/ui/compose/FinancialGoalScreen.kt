@@ -154,7 +154,7 @@ fun FinancialGoalScreen(
                 }
 
                 NextButtonFooter(
-                    value = "Save Goal/ (" + stringResource(Res.string.goal_save_goal) + ")",
+                    value = "Save Goal/ " + stringResource(Res.string.goal_save_goal),
                     onClick = { handleEvent(AddGoalEvent.OnSaveGoalClicked) },
                     loading = loading,
                     enabled = data.isValid

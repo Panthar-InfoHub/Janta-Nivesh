@@ -37,13 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.delete_box
-import jantanivesh.shared.generated.resources.delete_icon
 import jantanivesh.shared.generated.resources.flag_icon
 import jantanivesh.shared.generated.resources.ic_chain
 import jantanivesh.shared.generated.resources.ic_pointer_right
+import jantanivesh.shared.generated.resources.invest_now
 import jantanivesh.shared.generated.resources.tick_icon
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
@@ -131,7 +132,7 @@ fun ProjectedImpactScreen(
             }
 
             AppButton(
-                text = "Invest Now",
+                text = "Invest Now/ " + stringResource(Res.string.invest_now),
                 onClick = { handleEvent(ProjectedImpactEvent.OnInvestNowClicked) },
                 modifier = Modifier
                     .genericDropShadow()
@@ -508,7 +509,7 @@ private fun ProjectedImpactCard(
 private fun Double.asRupeesText(): String = "₹ ${formatWithCommas(this.toLong())}"
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "hi")
 @Composable
 private fun ProjectedImpactScreenPreview() {
      val previewHoldings = listOf(

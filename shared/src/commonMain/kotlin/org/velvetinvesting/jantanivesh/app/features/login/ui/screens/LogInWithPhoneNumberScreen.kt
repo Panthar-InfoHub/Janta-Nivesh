@@ -41,7 +41,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.Agreemen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextField
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.CheckBoxCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberEvent
@@ -151,7 +150,7 @@ fun LoginWithPhoneNumberScreen(
 
                 item {
                     AppButton(
-                        text = stringResource(Res.string.verify),
+                        text = "Verify/ " + stringResource(Res.string.verify),
                         onClick = { onEvent(LoginWithPhoneNumberEvent.OnVerifyClicked) },
                         enabled = state.isNextEnabled,
                         loading = state.isLoading,

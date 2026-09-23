@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,6 +46,10 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.D
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.FundBadge
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.LumpSumCart
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.ShadowlessTextField
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.add_to_cart
+import jantanivesh.shared.generated.resources.start_sip
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.generateInvestmentChips
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.BundleCartUiState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.BundleResultViewModel
@@ -189,7 +192,7 @@ fun BundleResultScreenContent(
                     NextButtonFooter(
                         onClick = onShowCartSheet,
                         pv = PaddingValues(0.dp),
-                        value = "Add To Cart",
+                        value = "Add to Cart/ " + stringResource(Res.string.add_to_cart),
                     )
                 },
                 containerColor = Color.White
@@ -561,7 +564,7 @@ fun SIPBundleCart(
 
         AppButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Start SIP",
+            text = "Start SIP/ " + stringResource(Res.string.start_sip),
             loading = loading,
             enabled = amount != null && amount>=minAmount && frequency!=null && sipDay!=null,
             onClick = onAddClick
