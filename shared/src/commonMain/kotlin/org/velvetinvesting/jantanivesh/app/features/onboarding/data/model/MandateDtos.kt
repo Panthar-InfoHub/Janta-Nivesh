@@ -20,6 +20,8 @@ data class MandateResponseDto(
 
 @Serializable
 data class MandateDataDto(
+    /** The server's own record id; the SIP body is keyed on this. */
+    val id: String? = null,
     val mandate_id: Int? = null,
     val token_url: String? = null,
     val status: String? = null
@@ -27,6 +29,7 @@ data class MandateDataDto(
 
 fun MandateResponseDto.toDomain(): Mandate = Mandate(
     id = data?.mandate_id,
+    recordId = data?.id,
     tokenUrl = data?.token_url,
     status = data?.status
 )

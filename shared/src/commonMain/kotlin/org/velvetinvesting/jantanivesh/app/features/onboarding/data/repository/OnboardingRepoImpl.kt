@@ -376,16 +376,12 @@ class OnboardingRepoImpl(
             }
         }
         if (response is NetworkResponse.Success) {
-            persistStage(OnboardingStage.AutopaySetup)
+            persistStage(OnboardingStage.Completed)
         }
         return response
     }
 
-    /**
-     * The nominees are the last thing the server tracks, so from here the flow is on the autopay
-     * mandate — which is why the stored stage moves to [OnboardingStage.AutopaySetup] and not to
-     * completed.
-     */
+    /** The nominees are the last step of onboarding, so the flow is finished once they land. */
     private suspend fun postNominees(body: NomineeRequestBody): NetworkResponse<Unit, ErrorDomain> {
         val response = safeUnitRequest {
             client.post(getUrl("/onboarding/nominee")) {
@@ -393,7 +389,7 @@ class OnboardingRepoImpl(
             }
         }
         if (response is NetworkResponse.Success) {
-            persistStage(OnboardingStage.AutopaySetup)
+            persistStage(OnboardingStage.Completed)
         }
         return response
     }
@@ -435,7 +431,7 @@ class OnboardingRepoImpl(
     /**
      * Keeps the locally remembered stage in step with the server's, so a restart resumes on the
      * screen the user actually reached. Always stored as a resume point, so `KYC_VERIFICATION`
-     * (no screen of its own) and `COMPLETED` (autopay still outstanding) never reach storage.
+     * — which has no screen of its own — never reaches storage.
      */
     private fun persistStage(currentStage: String?) {
         persistStage(OnboardingStage.resumePoint(currentStage))

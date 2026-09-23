@@ -83,9 +83,16 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Set
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayViewModel
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.FundPurchaseScreen
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.SipPurchaseOtpScreen
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.SipSetupScreen
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.PurchaseSuccessScreen
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseEffect
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipMandateHandoff
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipPurchaseOtpEffect
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipPurchaseOtpViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipSetupEffect
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipSetupViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.CancelSIPConfirmationScreen
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.ExistingFundLumpSumScreen
@@ -142,6 +149,10 @@ private const val PURCHASE_PAYMENT_RESULT = "purchase_payment_returned"
 
 /** Marks the payment web view, which pops back to the purchase screen so it can poll. */
 private const val WEBVIEW_COMPLETION_PURCHASE_PAYMENT = "mf_purchase_payment"
+
+/** Set on the purchase screen when the user comes back from a SIP mandate's approval page. */
+private const val SIP_MANDATE_RESULT = "sip_mandate_returned"
+private const val WEBVIEW_COMPLETION_SIP_MANDATE = "sip_mandate"
 private const val FD_DETAILS_WEBVIEW_RESULT = "fd_details_webview_completed"
 
 /**
@@ -442,6 +453,19 @@ fun MainAppNavigation(
                 }
             }
 
+            val sipMandateReturned by entry.savedStateHandle
+                .getStateFlow(SIP_MANDATE_RESULT, false)
+                .collectAsStateWithLifecycle()
+
+            LaunchedEffect(sipMandateReturned) {
+                if (sipMandateReturned) {
+                    entry.savedStateHandle[SIP_MANDATE_RESULT] = false
+                    // Whether the mandate was actually approved is only knowable from the
+                    // server, which the setup screen polls for.
+                    vm.onMandateAuthorizationReturned()
+                }
+            }
+
             val paymentReturned by entry.savedStateHandle
                 .getStateFlow(PURCHASE_PAYMENT_RESULT, false)
                 .collectAsStateWithLifecycle()
@@ -459,6 +483,33 @@ fun MainAppNavigation(
                     when (effect) {
                         FundPurchaseEffect.AddMandate -> {
                             navController.navigate(Route.AddMandate) {
+                                launchSingleTop = true
+                            }
+                        }
+
+                        is FundPurchaseEffect.OpenMandateAuthorization -> {
+                            navController.navigate(
+                                Route.WebViewScreen(
+                                    url = effect.url,
+                                    title = "UPI Autopay",
+                                    completionRouteKey = WEBVIEW_COMPLETION_SIP_MANDATE
+                                )
+                            )
+                        }
+
+                        is FundPurchaseEffect.StartSipSetup -> {
+                            val handoff = effect.handoff
+                            navController.navigate(
+                                Route.SipSetup(
+                                    mandateId = handoff.mandateId,
+                                    mandateRecordId = handoff.mandateRecordId,
+                                    mfProductId = handoff.mfProductId,
+                                    schemeName = handoff.schemeName,
+                                    amount = handoff.amount,
+                                    mode = handoff.mode.name,
+                                    installmentDay = handoff.installmentDay
+                                )
+                            ) {
                                 launchSingleTop = true
                             }
                         }
@@ -544,6 +595,105 @@ fun MainAppNavigation(
             SetupAutopayScreen(
                 state = state,
                 handleEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.SipSetup> { entry ->
+            val route = entry.toRoute<Route.SipSetup>()
+            val vm: SipSetupViewModel = koinViewModel {
+                parametersOf(
+                    SipMandateHandoff(
+                        mandateId = route.mandateId,
+                        mandateRecordId = route.mandateRecordId,
+                        mfProductId = route.mfProductId,
+                        schemeName = route.schemeName,
+                        amount = route.amount,
+                        mode = PurchaseMode.fromName(route.mode),
+                        installmentDay = route.installmentDay
+                    )
+                )
+            }
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        is SipSetupEffect.OtpRequested -> {
+                            navController.navigate(
+                                Route.SipPurchaseOtp(
+                                    planId = effect.planId,
+                                    schemeName = route.schemeName,
+                                    amount = route.amount,
+                                    mode = route.mode,
+                                    installmentDay = route.installmentDay
+                                )
+                            ) {
+                                // The SIP is registered; there is nothing to come back to here.
+                                popUpTo<Route.SipSetup> { inclusive = true }
+                            }
+                        }
+
+                        SipSetupEffect.Cancelled -> navController.popBackStack()
+                    }
+                }
+            }
+
+            val state by vm.uiState.collectAsStateWithLifecycle()
+            SipSetupScreen(
+                state = state,
+                schemeName = route.schemeName,
+                onRetryClick = vm::onRetryClick,
+                onCancelClick = vm::onCancelClick
+            )
+        }
+
+        composable<Route.SipPurchaseOtp> { entry ->
+            val route = entry.toRoute<Route.SipPurchaseOtp>()
+            val vm: SipPurchaseOtpViewModel = koinViewModel {
+                parametersOf(
+                    route.planId,
+                    route.schemeName,
+                    route.amount,
+                    PurchaseMode.fromName(route.mode),
+                    route.installmentDay
+                )
+            }
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        is SipPurchaseOtpEffect.PurchaseConfirmed -> {
+                            navController.navigate(
+                                Route.PurchaseSuccess(
+                                    mode = effect.mode.name,
+                                    schemeName = effect.schemeName,
+                                    amount = effect.amount,
+                                    installmentDay = effect.installmentDay,
+                                    startDate = effect.startDate
+                                )
+                            ) {
+                                // The SIP is placed — going back to the form would only invite a
+                                // duplicate.
+                                popUpTo<Route.FundPurchase> { inclusive = true }
+                            }
+                        }
+
+                        SipPurchaseOtpEffect.Cancelled -> navController.popBackStack()
+                    }
+                }
+            }
+
+            val otpState by vm.otp.state.collectAsStateWithLifecycle()
+            SipPurchaseOtpScreen(
+                otpState = otpState,
+                schemeName = route.schemeName,
+                amountLabel = sipAmountLabel(
+                    mode = PurchaseMode.fromName(route.mode),
+                    amount = route.amount
+                ),
+                onOtpChange = vm::onOtpChange,
+                onVerifyClick = vm::onVerifyClick,
+                onResendClick = vm::onResendClick,
+                onBackClick = vm::onBackClick
             )
         }
 
@@ -1368,6 +1518,15 @@ fun MainAppNavigation(
                         navController.popBackStack()
                     }
 
+                    WEBVIEW_COMPLETION_SIP_MANDATE -> {
+                        // Back to the purchase screen, which hands the SIP on to its setup
+                        // screen once it knows the user has been through the bank's page.
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(SIP_MANDATE_RESULT, true)
+                        navController.popBackStack()
+                    }
+
                     WEBVIEW_COMPLETION_ADD_MANDATE -> {
                         // Come back to the autopay screen so it can confirm with the bank.
                         navController.previousBackStackEntry
@@ -1477,3 +1636,10 @@ private val MutualFundDomain.purchaseSubtitle: String
         .filter { it.isNotBlank() }
         .distinct()
         .joinToString(" · ")
+
+/** "₹5,000/month" — how the OTP screen names what the code is authorising. */
+private fun sipAmountLabel(mode: PurchaseMode, amount: Int): String = when (mode) {
+    PurchaseMode.DAILY -> "₹$amount/day"
+    PurchaseMode.MONTHLY -> "₹$amount/month"
+    PurchaseMode.ONE_TIME -> "₹$amount"
+}

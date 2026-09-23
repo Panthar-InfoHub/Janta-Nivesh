@@ -138,6 +138,7 @@ class PlansRepoImpl(
         amount: Int,
         frequency: String,
         installmentDay: Int?,
+        mandateId: String,
         folioNumber: String
     ): NetworkResponse<PurchasePlan, ErrorDomain> {
         val response = safeRequest<CreatePurchasePlanResponseDto> {
@@ -149,6 +150,7 @@ class PlansRepoImpl(
                             amount = amount,
                             frequency = frequency,
                             installment_day = installmentDay,
+                            mandate_id = mandateId,
                             folio_number = folioNumber
                         )
                     )
@@ -157,7 +159,8 @@ class PlansRepoImpl(
                         CreateDailySipPlanBody(
                             mf_product_id = mfProductId,
                             amount = amount,
-                            frequency = frequency
+                            frequency = frequency,
+                            mandate_id = mandateId
                         )
                     )
                 }

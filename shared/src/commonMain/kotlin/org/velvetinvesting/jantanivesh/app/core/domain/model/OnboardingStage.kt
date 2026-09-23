@@ -47,16 +47,6 @@ sealed interface OnboardingStage {
         override val id = "NOMINEE_ADDITION"
     }
 
-    /**
-     * Client-side only. The server considers onboarding finished once the nominees are in, but the
-     * user still has to authorize the autopay mandate before the app lets them through, so the
-     * server's `COMPLETED` resumes here instead.
-     */
-    @Serializable
-    data object AutopaySetup : OnboardingStage {
-        override val id = "AUTOPAY_SETUP"
-    }
-
     @Serializable
     data object Completed : OnboardingStage {
         override val id = "COMPLETED"
@@ -74,7 +64,6 @@ sealed interface OnboardingStage {
             EmailVerification,
             InvestorProfile,
             NomineeAddition,
-            AutopaySetup,
             Completed
         )
 
@@ -102,18 +91,13 @@ sealed interface OnboardingStage {
             }
 
         /**
-         * Where the onboarding flow should start for a stage. Only meaningful once the app has
-         * decided the user belongs in onboarding at all: on top of [normalize] it sends
-         * [Completed] to [AutopaySetup], because the mandate is a step the server does not track
-         * and so is still outstanding for anyone the server calls finished but the app does not.
+         * Where the onboarding flow should start for a stage. Onboarding ends with the nominees —
+         * the autopay mandate is raised per SIP now, not once up front — so [Completed] is simply
+         * carried through and the flow finishes on it.
          *
          * A user who is already through onboarding never reaches this — the completed flag routes
          * them to the main app without the stage being read.
          */
-        fun resumePoint(serverStage: String?): OnboardingStage =
-            when (val stage = normalize(serverStage)) {
-                Completed -> AutopaySetup
-                else -> stage
-            }
+        fun resumePoint(serverStage: String?): OnboardingStage = normalize(serverStage)
     }
 }

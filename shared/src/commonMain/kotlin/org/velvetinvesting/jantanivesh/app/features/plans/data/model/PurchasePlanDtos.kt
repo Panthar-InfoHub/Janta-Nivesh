@@ -38,6 +38,8 @@ data class CreateMonthlySipPlanBody(
     val amount: Int,
     val frequency: String,
     val installment_day: Int,
+    /** The autopay mandate the installments are debited against. */
+    val mandate_id: String,
     /** Blank for a fresh purchase; an existing folio number tops that folio up instead. */
     val folio_number: String
 )
@@ -47,7 +49,8 @@ data class CreateMonthlySipPlanBody(
 data class CreateDailySipPlanBody(
     val mf_product_id: String,
     val amount: Int,
-    val frequency: String
+    val frequency: String,
+    val mandate_id: String
 )
 
 /**

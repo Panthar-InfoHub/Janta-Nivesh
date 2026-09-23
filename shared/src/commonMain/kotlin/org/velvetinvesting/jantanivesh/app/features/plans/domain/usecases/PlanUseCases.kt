@@ -64,6 +64,7 @@ class CreateSipPlanUseCase(
         amount: Int,
         frequency: String,
         installmentDay: Int?,
+        mandateId: String,
         folioNumber: String = NEW_FOLIO
     ): NetworkResponse<PurchasePlan, ErrorDomain> {
         return plansRepo.createSipPlan(
@@ -71,6 +72,7 @@ class CreateSipPlanUseCase(
             amount = amount,
             frequency = frequency,
             installmentDay = installmentDay,
+            mandateId = mandateId,
             folioNumber = folioNumber
         )
     }
