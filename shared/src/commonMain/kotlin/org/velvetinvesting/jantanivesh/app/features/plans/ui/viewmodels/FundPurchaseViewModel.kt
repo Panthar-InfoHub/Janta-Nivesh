@@ -17,6 +17,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.core.utils.WebURLConstants
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AmountTypeLabel
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.MandateOption
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
@@ -887,7 +888,7 @@ class FundPurchaseViewModel(
         const val MAX_AMOUNT_DIGITS = 9
 
         /** No server-side postback is wired up yet, so the mandate is sent the placeholder URL. */
-        const val PAYMENT_POSTBACK_URL = "https://yourapp.com/payment_confirmation"
+        const val PAYMENT_POSTBACK_URL = WebURLConstants.mandateExitUrl
 
         const val MANDATE_FAILED_MESSAGE = "Autopay setup failed. Please try again." 
         const val SECOND_MS = 1_000L

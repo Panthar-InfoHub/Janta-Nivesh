@@ -9,6 +9,7 @@ import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
 import platform.WebKit.WKNavigation
 import platform.WebKit.WKNavigationAction
+import platform.WebKit.WKNavigationActionPolicy
 import platform.WebKit.WKNavigationDelegateProtocol
 import platform.WebKit.WKUIDelegateProtocol
 import platform.WebKit.WKWebView
@@ -44,6 +45,18 @@ private class WebViewNavigationDelegate(
     private val state: WebViewState,
     private val onUrlChanged: (String) -> Unit
 ) : NSObject(), WKNavigationDelegateProtocol, WKUIDelegateProtocol {
+
+    // The URL a flow ends on is often posted to a host the app owns but nothing serves, so the
+    // navigation never commits and no load callback ever carries it. The policy decision is the
+    // one point it is always seen, so the URL is reported from there and the load still allowed.
+    override fun webView(
+        webView: WKWebView,
+        decidePolicyForNavigationAction: WKNavigationAction,
+        decisionHandler: (WKNavigationActionPolicy) -> Unit
+    ) {
+        decidePolicyForNavigationAction.request.URL?.absoluteString?.let(onUrlChanged)
+        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
+    }
 
     @ObjCSignatureOverride
     override fun webView(webView: WKWebView, didStartProvisionalNavigation: WKNavigation?) {
