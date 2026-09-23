@@ -387,4 +387,35 @@
     <string name="goal_present_cost">આજની કિંમત</string>
     <string name="goal_expected_inflation_rate">અપેક્ષિત ફુગાવા દર</string>
     <string name="goal_save_goal">લક્ષ્ય સાચવો</string>
+
+    <!-- AppButton Dual Language Keys -->
+    <string name="start_now">હવે શરૂ કરો</string>
+    <string name="try_again">ફરી પ્રયાસ કરો</string>
+    <string name="confirm_selection">પસંદગીની પુષ્ટિ કરો</string>
+    <string name="back_to_home">હોમ પર પાછા જાઓ</string>
+    <string name="request_callback">કોલબેકની વિનંતી કરો</string>
+    <string name="start_sip">SIP શરૂ કરો</string>
+    <string name="complete_your_application">તમારી અરજી પૂર્ણ કરો</string>
+    <string name="purchase">ખરીદો</string>
+    <string name="add_to_cart">કાર્ટમાં ઉમેરો</string>
+    <string name="download_receipt">રસીદ ડાઉનલોડ કરો</string>
+    <string name="view_my_holdings">મારી હોલ્ડિંગ્સ જુઓ</string>
+    <string name="done">પૂર્ણ</string>
+    <string name="add">ઉમેરો</string>
+    <string name="invest_more">વધુ રોકાણ કરો</string>
+    <string name="cancel_order">ઓર્ડર રદ કરો</string>
+    <string name="redeem_now">હવે રિડીમ કરો</string>
+    <string name="log_out">લૉગ આઉટ</string>
+    <string name="get_started">શરૂ કરો</string>
+    <string name="add_goal">લક્ષ્ય ઉમેરો</string>
+    <string name="no_fund_in_cart">કાર્ટમાં કોઈ ફંડ ઉમેરાયેલ નથી</string>
+    <string name="pay">ચુકવણી કરો</string>
+    <string name="top_up">ટૉપ અપ</string>
+    <string name="redeem">રિડીમ</string>
+    <string name="proceed_to_withdraw">ઉપાડવા માટે આગળ વધો</string>
+    <string name="invest_lump_sum">એકસાથે રોકાણ કરો</string>
+    <string name="start_daily_sip">દૈનિક SIP શરૂ કરો</string>
+    <string name="start_monthly_sip">માસિક SIP શરૂ કરો</string>
+    <string name="explore_mutual_funds">મ્યુચ્યુઅલ ફંડ એક્સપ્લોર કરો</string>
+    <string name="back">પાછા</string>
 </resources>

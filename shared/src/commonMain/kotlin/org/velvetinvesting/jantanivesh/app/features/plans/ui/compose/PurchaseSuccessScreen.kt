@@ -25,8 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.done
 import jantanivesh.shared.generated.resources.tick_icon
+import jantanivesh.shared.generated.resources.view_my_holdings
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBoxDivider
@@ -120,12 +123,12 @@ fun PurchaseSuccessScreen(
                 modifier = Modifier.padding(bottom = Spacing.dp24)
             ) {
                 AppButton(
-                    text = "View my holdings",
+                    text = "View My Holdings/ " + stringResource(Res.string.view_my_holdings),
                     onClick = onViewHoldingsClick,
                     modifier = Modifier.fillMaxWidth()
                 )
                 InvertedAppButton(
-                    text = "Done",
+                    text = "Done/ " + stringResource(Res.string.done),
                     onClick = onDoneClick,
                     modifier = Modifier.fillMaxWidth()
                 )

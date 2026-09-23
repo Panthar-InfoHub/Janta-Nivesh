@@ -107,7 +107,7 @@ fun CancelSipReasonSheet(
             }
 
             AppButton(
-                text = "Cancel SIP/" + stringResource(Res.string.cancel_sip_confirm),
+                text = "Cancel SIP/ " + stringResource(Res.string.cancel_sip_confirm),
                 onClick = onConfirm,
                 enabled = selectedReason != null && !isSubmitting,
                 loading = isSubmitting,

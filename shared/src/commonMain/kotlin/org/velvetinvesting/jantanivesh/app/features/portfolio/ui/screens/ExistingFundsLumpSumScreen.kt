@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,6 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.ExistingFundsLumpSumSideEffect
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.add
+import jantanivesh.shared.generated.resources.top_up
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.ExistingFundsLumpSumViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.LumpSumAdd
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -171,7 +174,7 @@ fun FolioFundsLumpSumContent(
             }
         }
         NextButtonFooter(
-            value = "Top Up",
+            value = "Top Up/ " + stringResource(Res.string.top_up),
             onClick = { onTopUpClick() },
             enabled = selectedFunds.isNotEmpty(),
             loading = buttonLoading
@@ -425,7 +428,7 @@ fun MutualFundsFolioCardLumpSum(
                         )
 
                         AppButton(
-                            text = "Add",
+                            text = "Add/ " + stringResource(Res.string.add),
                             onClick = {
                                 addAmount.toLongOrNull()?.let{
                                     onAddClick(it)

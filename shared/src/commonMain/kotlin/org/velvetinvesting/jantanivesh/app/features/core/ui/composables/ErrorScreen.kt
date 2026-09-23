@@ -12,6 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.try_again
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ErrorScreen(
@@ -40,7 +43,7 @@ fun ErrorScreen(
             )
 
             AppButton(
-                text = "Try again",
+                text = "Try Again/ " + stringResource(Res.string.try_again),
                 onClick = onRetryClick
             )
         }

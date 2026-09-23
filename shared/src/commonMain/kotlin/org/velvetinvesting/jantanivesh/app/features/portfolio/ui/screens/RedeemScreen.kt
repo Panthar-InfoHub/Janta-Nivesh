@@ -29,7 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.info_filled_icon
+import jantanivesh.shared.generated.resources.redeem_now
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
@@ -112,7 +114,7 @@ fun RedeemScreen(
         }
 
         AppButton(
-            text = "Redeem Now",
+            text = "Redeem Now/ " + stringResource(Res.string.redeem_now),
             onClick = { handleEvent(RedeemEvent.OnRedeemClick) },
             loading = state.isRedeeming,
             enabled = state.canRedeem,

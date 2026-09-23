@@ -607,4 +607,35 @@
     <string name="goal_present_cost">Present Cost</string>
     <string name="goal_expected_inflation_rate">Expected Inflation Rate</string>
     <string name="goal_save_goal">Save Goal</string>
+
+    <!-- AppButton Dual Language Keys -->
+    <string name="start_now">Start Now</string>
+    <string name="try_again">Try Again</string>
+    <string name="confirm_selection">Confirm Selection</string>
+    <string name="back_to_home">Back to Home</string>
+    <string name="request_callback">Request Callback</string>
+    <string name="start_sip">Start SIP</string>
+    <string name="complete_your_application">Complete Your Application</string>
+    <string name="purchase">Purchase</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="download_receipt">Download Receipt</string>
+    <string name="view_my_holdings">View My Holdings</string>
+    <string name="done">Done</string>
+    <string name="add">Add</string>
+    <string name="invest_more">Invest More</string>
+    <string name="cancel_order">Cancel Order</string>
+    <string name="redeem_now">Redeem Now</string>
+    <string name="log_out">Log Out</string>
+    <string name="get_started">Get Started</string>
+    <string name="add_goal">Add Goal</string>
+    <string name="no_fund_in_cart">No Fund Added to Cart</string>
+    <string name="pay">Pay</string>
+    <string name="top_up">Top Up</string>
+    <string name="redeem">Redeem</string>
+    <string name="proceed_to_withdraw">Proceed to Withdraw</string>
+    <string name="invest_lump_sum">Invest Lump Sum</string>
+    <string name="start_daily_sip">Start Daily SIP</string>
+    <string name="start_monthly_sip">Start Monthly SIP</string>
+    <string name="explore_mutual_funds">Explore Mutual Funds</string>
+    <string name="back">Back</string>
 </resources>

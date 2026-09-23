@@ -27,7 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.confirm
+import jantanivesh.shared.generated.resources.tac_dialog_cancel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
@@ -111,7 +115,7 @@ fun <T> ListWheelPicker(
                 ) {
 
                     InvertedAppButton(
-                        text = "Cancel",
+                        text = "Cancel/ " + stringResource(Res.string.tac_dialog_cancel),
                         onClick = onDismiss,
                         modifier = Modifier
                             .weight(1f)
@@ -119,7 +123,7 @@ fun <T> ListWheelPicker(
                     )
 
                     AppButton(
-                        text = "Confirm",
+                        text = "Confirm/ " + stringResource(Res.string.confirm),
                         onClick = {
                             onItemSelected(wheelItem)
                             onDismiss()

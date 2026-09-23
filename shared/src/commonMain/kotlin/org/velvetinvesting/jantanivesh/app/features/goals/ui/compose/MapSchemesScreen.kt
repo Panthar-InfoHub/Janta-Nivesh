@@ -48,8 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.confirm_selection
 import jantanivesh.shared.generated.resources.delete_box
-import jantanivesh.shared.generated.resources.delete_icon
 import jantanivesh.shared.generated.resources.icon_arrow_right
 import jantanivesh.shared.generated.resources.plus_icon
 import jantanivesh.shared.generated.resources.upward_trend_arrow
@@ -57,12 +57,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.SlateGray
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.core.theme.TextGray
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
 import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
@@ -74,6 +74,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.VelvetLoader
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalHoldingDomain
@@ -82,7 +83,6 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchem
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeUiData
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeUiState
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.SelectableSchemeUiModel
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 private val CardBorder = Color(0xffE9EDF2)
 
@@ -528,7 +528,7 @@ fun MapSchemesSheetBody(
                 Spacer(modifier = Modifier.height(24.dp))
                 AppButton(
                     onClick = { onEvent(MapSchemeEvent.MapSelectedHoldings) },
-                    text = "Confirm Selection",
+                    text = "Confirm Selection/ " + stringResource(Res.string.confirm_selection),
                     enabled = data.any { it.isSelected },
                     loading = mapping,
                     modifier = Modifier.fillMaxWidth()

@@ -32,7 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.headphone
+import jantanivesh.shared.generated.resources.submit
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.FeatureCardText
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
@@ -234,7 +236,7 @@ fun RequestCallbackScreen(
             }
 
             NextButtonFooter(
-                value="Submit",
+                value = "Submit/ " + stringResource(Res.string.submit),
                 enabled = (state.fullName != "" && state.mobileNumber != "" && validityCheck(email = state.email)),
                 onClick = { onEvent(RequestCallbackEvent.OnSubmitClicked) },
                 modifier = Modifier.fillMaxWidth()

@@ -24,9 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.explore_mutual_funds
 import jantanivesh.shared.generated.resources.ic_leaf
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -138,7 +140,7 @@ private fun EmptyFundPreview() {
         EmptyFundScreen(
             title = "Your investment journey starts here",
             subtitle = "You haven't invested in any funds yet. Start your journey with Janta Nivesh and grow your wealth with ease.",
-            buttonText = "Explore Mutual Funds",
+            buttonText = "Explore Mutual Funds/ " + stringResource(Res.string.explore_mutual_funds),
             onActionClick = {}
         )
     }

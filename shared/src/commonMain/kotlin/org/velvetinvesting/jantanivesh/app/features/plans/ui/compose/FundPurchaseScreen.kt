@@ -43,9 +43,13 @@ import jantanivesh.shared.generated.resources.dob_dropdown_icon
 import jantanivesh.shared.generated.resources.dropdown_icon
 import jantanivesh.shared.generated.resources.ic_graph
 import jantanivesh.shared.generated.resources.icon_arrow_right
+import jantanivesh.shared.generated.resources.invest_now
+import jantanivesh.shared.generated.resources.start_daily_sip
+import jantanivesh.shared.generated.resources.start_monthly_sip
 import jantanivesh.shared.generated.resources.wallet_icon
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
@@ -201,7 +205,11 @@ private fun PurchaseForm(
         )
 
         AppButton(
-            text = state.submitLabel,
+            text = state.submissionStage?.message ?: when (state.mode) {
+                PurchaseMode.DAILY -> "Start Daily SIP/ " + stringResource(Res.string.start_daily_sip) + " · ₹${state.enteredAmount}/day"
+                PurchaseMode.MONTHLY -> "Start Monthly SIP/ " + stringResource(Res.string.start_monthly_sip) + " · ₹${state.enteredAmount}/month"
+                PurchaseMode.ONE_TIME -> "Invest Now/ " + stringResource(Res.string.invest_now) + " · ₹${state.enteredAmount}"
+            },
             onClick = { handleEvent(FundPurchaseEvent.OnSubmitClick) },
             loading = state.isSubmitting,
             enabled = state.canSubmit,

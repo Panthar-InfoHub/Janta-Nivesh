@@ -30,7 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.info_icon
+import jantanivesh.shared.generated.resources.top_up
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.FolioFundsMFViewModel
@@ -134,7 +136,7 @@ fun FolioFundsContent(
             }
         }
         NextButtonFooter(
-            value = "Top Up",
+            value = "Top Up/ " + stringResource(Res.string.top_up),
             onClick = { onTopUpClick() },
         )
     }

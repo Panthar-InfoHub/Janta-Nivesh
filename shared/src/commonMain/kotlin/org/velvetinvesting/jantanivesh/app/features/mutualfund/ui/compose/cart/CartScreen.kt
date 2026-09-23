@@ -34,9 +34,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.nav_icon_full_screener
+import jantanivesh.shared.generated.resources.no_fund_in_cart
+import jantanivesh.shared.generated.resources.pay
 import jantanivesh.shared.generated.resources.wallet_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -144,7 +147,7 @@ fun CartScreen(
                     onClick = {
                         viewModel.showPopup()
                     },
-                    value = if (total == 0L) "No Fund Added to the Cart" else "Pay ₹${
+                    value = if (total == 0L) "No Fund Added to Cart/ " + stringResource(Res.string.no_fund_in_cart) else "Pay/ " + stringResource(Res.string.pay) + " ₹${
                         formatMoneyAfterL(
                             total
                         )

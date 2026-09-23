@@ -23,6 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.save_changes
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray45
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
@@ -88,7 +91,7 @@ fun ProfileLanguageScreen(
                 }
 
             }
-            AppButton("Save Changes", onClick = {onEvent(ProfileLanguageEvent.OnSaveClicked)}, modifier = Modifier.fillMaxWidth())
+            AppButton(text = "Save Changes/ " + stringResource(Res.string.save_changes), onClick = {onEvent(ProfileLanguageEvent.OnSaveClicked)}, modifier = Modifier.fillMaxWidth())
 
         }
     }

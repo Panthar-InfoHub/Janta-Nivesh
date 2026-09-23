@@ -387,4 +387,35 @@
     <string name="goal_present_cost">आजचा खर्च</string>
     <string name="goal_expected_inflation_rate">अपेक्षित महागाई दर</string>
     <string name="goal_save_goal">ध्येय जतन करा</string>
+
+    <!-- AppButton Dual Language Keys -->
+    <string name="start_now">आत्ता सुरू करा</string>
+    <string name="try_again">पुन्हा प्रयत्न करा</string>
+    <string name="confirm_selection">निवडीची पुष्टी करा</string>
+    <string name="back_to_home">होमवर परत जा</string>
+    <string name="request_callback">कॉलबॅकची विनंती करा</string>
+    <string name="start_sip">SIP सुरू करा</string>
+    <string name="complete_your_application">तुमचा अर्ज पूर्ण करा</string>
+    <string name="purchase">खरेदी करा</string>
+    <string name="add_to_cart">कार्टमध्ये जोडा</string>
+    <string name="download_receipt">पावती डाउनलोड करा</string>
+    <string name="view_my_holdings">माझ्या होल्डिंग्स पहा</string>
+    <string name="done">पूर्ण झाले</string>
+    <string name="add">जोडा</string>
+    <string name="invest_more">आणखी गुंतवणूक करा</string>
+    <string name="cancel_order">ऑर्डर रद्द करा</string>
+    <string name="redeem_now">आत्ताच रिडीम करा</string>
+    <string name="log_out">लॉग आउट</string>
+    <string name="get_started">सुरुवात करा</string>
+    <string name="add_goal">ध्येय जोडा</string>
+    <string name="no_fund_in_cart">कार्टमध्ये कोणताही फंड जोडलेला नाही</string>
+    <string name="pay">पेमेंट करा</string>
+    <string name="top_up">टॉप अप</string>
+    <string name="redeem">रिडीम</string>
+    <string name="proceed_to_withdraw">पैसे काढण्यासाठी पुढे जा</string>
+    <string name="invest_lump_sum">एकरकमी गुंतवणूक करा</string>
+    <string name="start_daily_sip">दैनिक SIP सुरू करा</string>
+    <string name="start_monthly_sip">मासिक SIP सुरू करा</string>
+    <string name="explore_mutual_funds">म्युच्युअल फंड शोधा</string>
+    <string name="back">मागे</string>
 </resources>

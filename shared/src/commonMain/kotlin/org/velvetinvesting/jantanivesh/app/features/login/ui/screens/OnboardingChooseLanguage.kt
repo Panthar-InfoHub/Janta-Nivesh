@@ -154,7 +154,7 @@ fun OnboardingChooseLanguage(
             }
 
             AppButton(
-                text = stringResource(Res.string.continue_text),
+                text = "Continue/ " + stringResource(Res.string.continue_text),
                 onClick = { onEvent(ChooseLanguageEvent.OnContinueClicked) },
                 enabled = state.isNextEnabled,
                 loading = state.isLoading,

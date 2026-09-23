@@ -15,12 +15,16 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.back
+import jantanivesh.shared.generated.resources.continue_text
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 
 @Composable
 fun ContinueBackButtonFooter(
-    continueText: String = "Continue",
-    backText: String = "Back",
+    continueText: String = "Continue/ " + stringResource(Res.string.continue_text),
+    backText: String = "Back/ " + stringResource(Res.string.back),
     onContinue: () -> Unit,
     onBack: () -> Unit,
     pv: PaddingValues = PaddingValues(),

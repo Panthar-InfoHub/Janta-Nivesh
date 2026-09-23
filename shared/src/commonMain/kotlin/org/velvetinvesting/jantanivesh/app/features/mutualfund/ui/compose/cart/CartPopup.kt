@@ -45,8 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.add_to_cart
 import jantanivesh.shared.generated.resources.arrow_down
+import jantanivesh.shared.generated.resources.purchase
+import jantanivesh.shared.generated.resources.start_sip
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
@@ -288,7 +292,7 @@ fun SIPCart(
 
         AppButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Start SIP " + ((amount?.let {"of ₹" +formatMoneyAfterL(it)+"/month" })?:""),
+            text = "Start SIP/ " + stringResource(Res.string.start_sip) + ((amount?.let {" of ₹" +formatMoneyAfterL(it)+"/month" })?:""),
             onClick = {
                 onAddClick()
             },
@@ -358,9 +362,9 @@ fun LumpSumCart(
         AppButton(
             modifier = Modifier.fillMaxWidth(),
             text = if (isPurchase)
-                "Purchase " + ((amount?.let { "of ₹" + formatMoneyAfterL(it) }) ?: "")
+                "Purchase/ " + stringResource(Res.string.purchase) + ((amount?.let { " of ₹" + formatMoneyAfterL(it) }) ?: "")
             else
-                "Add " + ((amount?.let { "of ₹" + formatMoneyAfterL(it) }) ?: "") + " to Cart",
+                "Add to Cart/ " + stringResource(Res.string.add_to_cart) + ((amount?.let { " of ₹" + formatMoneyAfterL(it) }) ?: ""),
             onClick = {
                 onAddClick()
             },

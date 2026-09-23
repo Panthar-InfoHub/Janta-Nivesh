@@ -3,7 +3,6 @@ package org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -39,23 +38,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.add_to_cart
 import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.icon_warning
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
-import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
@@ -69,6 +66,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDialogList
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ContinueBackButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ListWheelPicker
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NavLineChart
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
@@ -76,18 +74,14 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCa
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.CartInfo
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CalculatorInputState
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CartBottomSheetState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.DetailsState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Duration
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.GraphDurationSelection
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.GraphState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.InvestmentFrequency
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MFPurchaseTypes
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Metrics
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDetailsDomain
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundGraphDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundGraphPointsDomain
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundScreenState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.StableMetricUi
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartFab
@@ -95,8 +89,6 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.C
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MFBottomSheetType
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MFDetailsSideEffect
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel
-import kotlin.toString
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -193,7 +185,7 @@ fun MutualFundDetailsScreenRoot(
                                 onClick = {
                                     viewModel.showBottomSheet()
                                 },
-                                value = "Add to Cart"
+                                value = "Add to Cart/ " + stringResource(Res.string.add_to_cart)
                             )
                         }
                     }

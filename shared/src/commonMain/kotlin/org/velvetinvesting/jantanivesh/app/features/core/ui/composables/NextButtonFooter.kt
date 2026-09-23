@@ -13,13 +13,16 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.next
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
 fun NextButtonFooter(
     onClick: () -> Unit,
     pv: PaddingValues = PaddingValues(),
-    value: String = "Next",
+    value: String = "Next/ " + stringResource(Res.string.next),
     enabled: Boolean = true,
     loading: Boolean = false,
     modifier: Modifier= Modifier

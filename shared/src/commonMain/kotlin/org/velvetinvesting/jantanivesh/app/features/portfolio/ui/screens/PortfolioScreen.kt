@@ -51,16 +51,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.cancel_order
 import jantanivesh.shared.generated.resources.download_ic
 import jantanivesh.shared.generated.resources.holdings_ic
 import jantanivesh.shared.generated.resources.ic_pointer_right
-import jantanivesh.shared.generated.resources.icon_arrow_right
 import jantanivesh.shared.generated.resources.icon_download
+import jantanivesh.shared.generated.resources.invest_more
 import jantanivesh.shared.generated.resources.progress_icon
 import jantanivesh.shared.generated.resources.receipt_icon
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.sharad.velvetinvestment.presentation.portfolio.models.SelectedPortfolio
 import org.sharad.velvetinvestment.presentation.portfolio.models.label
 import org.velvetinvesting.jantanivesh.app.core.theme.IconSize
@@ -85,6 +87,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.GenericTabSwitcher
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
@@ -103,7 +106,6 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.Port
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.TotalInvestmentsDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
 import kotlin.math.abs
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun PortfolioScreenMain(
@@ -906,7 +908,7 @@ fun FixedDepositPortfolio(
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp), contentAlignment = Alignment.Center) {
                         AppButton(
-                            text = "Invest More",
+                            text = "Invest More/ " + stringResource(Res.string.invest_more),
                             onClick = onEmptyButtonClick,
                             modifier = Modifier.width(180.dp),
                         )
@@ -1129,7 +1131,7 @@ fun MFInvestmentsCard(
                     )
                 }
                 AppButton(
-                    text = "INVEST MORE",
+                    text = "Invest More/ " + stringResource(Res.string.invest_more),
                     onClick = onInvestMore,
                     modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
                     style = AppButtonDefaults.style(shape = LocalShapes.current.roundedDp12)
@@ -1376,7 +1378,7 @@ fun PendingPaymentsCard(item: PendingOrderDomain, onCancel: () -> Unit) {
             AppButton(
                 modifier = Modifier
                     .padding(top = 4.dp).height(40.dp),
-                text = "Cancel order",
+                text = "Cancel Order/ " + stringResource(Res.string.cancel_order),
                 onClick = onCancel,
                 enabled = true
             )

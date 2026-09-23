@@ -33,16 +33,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.forward
+import jantanivesh.shared.generated.resources.log_out
 import jantanivesh.shared.generated.resources.profile_bank
-import jantanivesh.shared.generated.resources.profile_clock
 import jantanivesh.shared.generated.resources.profile_contact_us
 import jantanivesh.shared.generated.resources.profile_help
 import jantanivesh.shared.generated.resources.profile_kyc_status
 import jantanivesh.shared.generated.resources.profile_language
 import jantanivesh.shared.generated.resources.profile_setting
-import jantanivesh.shared.generated.resources.receipt_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray45
@@ -322,7 +322,7 @@ fun ProfileIntroScreen(
             }
             item {
                 AppButton(
-                    "Log Out",
+                    text = "Log Out/ " + stringResource(Res.string.log_out),
                     onClick = { onEvent(ProfileEvent.OnLogoutClicked) },
                     modifier = Modifier.fillMaxWidth()
                 )
