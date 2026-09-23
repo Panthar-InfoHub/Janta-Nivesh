@@ -4,6 +4,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.authProviders
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -95,4 +97,14 @@ fun getHttpClient(
             contentType(ContentType.Application.Json)
         }
     }
+}
+
+/**
+ * Drops the tokens the Bearer provider is holding in memory. Clearing them from storage is not
+ * enough on its own: [loadTokens] runs once and the provider keeps what it got for the life of
+ * the client, so without this the signed-out app would carry on sending the last user's token.
+ */
+fun HttpClient.clearAuthTokens() {
+    authProviders.filterIsInstance<BearerAuthProvider>()
+        .forEach { it.clearToken() }
 }

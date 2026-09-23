@@ -4,6 +4,7 @@ import org.koin.dsl.module
 import org.velvetinvesting.jantanivesh.app.features.auth.domain.usecase.UpdateMpinUseCase
 import org.velvetinvesting.jantanivesh.app.features.auth.domain.usecase.VerifyMpinUseCase
 import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.LogoutUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFDDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetFixedDepositsSearchResultUseCase
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPickFDUseCase
@@ -92,6 +93,7 @@ val useCaseModule = module {
     factory { PurchaseFDUseCase(get()) }
     factory { GetTopPickFDUseCase(get()) }
     factory { GetUserDataUseCase(get()) }
+    factory { LogoutUseCase(get(), get(), get()) }
     factory { UpdateMpinUseCase(get()) }
     factory { VerifyMpinUseCase(get()) }
 
