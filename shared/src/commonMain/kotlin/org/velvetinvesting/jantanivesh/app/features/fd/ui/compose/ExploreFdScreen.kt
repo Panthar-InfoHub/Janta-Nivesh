@@ -25,8 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.FilterChipUnselected
@@ -51,7 +49,7 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.label
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.ExploreFdUiState
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundIcon
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun ExploreFdScreen(
@@ -186,30 +184,14 @@ private fun FundListItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
         ) {
-            SubcomposeAsyncImage(
-                model = item.bankLogoUrl,
+            FundIcon(
+                iconUrl = item.bankLogoUrl,
+                name = item.bankName,
                 contentDescription = "Bank Logo",
-                modifier = Modifier.size(Spacing.dp40),
-
-                loading = {
-                    MutualFundIcon(
-                        schemeName = item.bankName,
-                        size = Spacing.dp40,
-                        cornerRadius = Spacing.dp8
-                    )
-                },
-
-                error = {
-                    MutualFundIcon(
-                        schemeName = item.bankName,
-                        size = Spacing.dp40,
-                        cornerRadius = Spacing.dp8
-                    )
-                },
-
-                success = {
-                    SubcomposeAsyncImageContent()
-                }
+                size = Spacing.dp40,
+                cornerRadius = Spacing.dp8,
+                backgroundColor = Primary,
+                textColor = White
             )
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(

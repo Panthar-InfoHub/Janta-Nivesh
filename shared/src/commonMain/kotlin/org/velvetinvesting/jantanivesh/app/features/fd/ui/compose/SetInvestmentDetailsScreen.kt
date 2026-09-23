@@ -32,8 +32,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.insured_icon
 import org.jetbrains.compose.resources.painterResource
@@ -70,7 +68,7 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.PayoutType
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsUiState
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundIcon
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun SetInvestmentDetailsScreen(
@@ -206,34 +204,14 @@ private fun BankNameCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp16)
             ) {
-                SubcomposeAsyncImage(
-                    model = bankLogoUrl,
+                FundIcon(
+                    iconUrl = bankLogoUrl,
+                    name = bankName,
                     contentDescription = "Bank Logo",
-                    modifier = Modifier.size(Spacing.dp48),
-
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = bankName,
-                            size = Spacing.dp40,
-                            cornerRadius = Spacing.dp40,
-                            backgroundColor = GreyBox,
-                            textColor = Primary
-                        )
-                    },
-
-                    error = {
-                        MutualFundIcon(
-                            schemeName = bankName,
-                            size = Spacing.dp40,
-                            cornerRadius = Spacing.dp40,
-                            backgroundColor = GreyBox,
-                            textColor = Primary
-                        )
-                    },
-
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+                    size = Spacing.dp48,
+                    cornerRadius = Spacing.dp48,
+                    backgroundColor = GreyBox,
+                    textColor = Primary
                 )
 
                 Column(

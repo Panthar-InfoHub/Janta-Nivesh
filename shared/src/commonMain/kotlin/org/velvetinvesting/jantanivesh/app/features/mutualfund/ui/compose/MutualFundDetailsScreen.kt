@@ -42,16 +42,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.icon_warning
@@ -100,6 +96,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MFBo
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MFDetailsSideEffect
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel
 import kotlin.toString
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -733,28 +730,13 @@ fun InfoCard(
         )
         {
 
-            SubcomposeAsyncImage(
-                modifier = Modifier.size(48.dp)
-                    .shadow(
-                        elevation = 16.dp
-                    ),
-                model = detailsState.icon,
-                contentDescription = null,
-                loading = {
-                    MutualFundIcon(
-                        schemeName = detailsState.scheme_name,
-                        size = 48.dp
-                    )
-                },
-                error = {
-                    MutualFundIcon(
-                        schemeName = detailsState.scheme_name,
-                        size = 48.dp
-                    )
-                },
-                success = {
-                    SubcomposeAsyncImageContent()
-                }
+            FundIcon(
+                iconUrl = detailsState.icon,
+                name = detailsState.scheme_name,
+                size = 48.dp,
+                backgroundColor = Primary,
+                textColor = Color.White,
+                modifier = Modifier.shadow(elevation = 16.dp)
             )
 
 //            Box(
@@ -868,30 +850,6 @@ fun InfoCard(
     }
 }
 
-@Composable
-fun MutualFundIcon(
-    schemeName: String,
-    modifier: Modifier = Modifier,
-    size: Dp = 48.dp,
-    cornerRadius: Dp = 12.dp,
-    backgroundColor: Color = Primary,
-    textColor: Color = Color.White
-) {
-    Box(
-        modifier = modifier
-            .size(size)
-            .clip(RoundedCornerShape(cornerRadius))
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = schemeName
-                .take(1).capitalize(Locale.current),
-            style = MaterialTheme.typography.headlineSmall,
-            color = textColor
-        )
-    }
-}
 
 private val sampleMetrics = Metrics(
     nav_change_pct = 1.2,

@@ -36,8 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.download_ic
 import kotlinx.coroutines.launch
@@ -61,7 +59,6 @@ import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ContinueBackButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
@@ -69,6 +66,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPor
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.MFPortfolioSideEffects
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -245,15 +243,10 @@ fun FundHeaderCard(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SubcomposeAsyncImage(
-                modifier = Modifier.size(44.dp)
-                    .clip(LocalShapes.current.roundedDp12)
-                    .background(Color.White),
-                model = data.img_url,
-                contentDescription = null,
-                loading = { MutualFundIcon(schemeName = data.title, size = 44.dp) },
-                error = { MutualFundIcon(schemeName = data.title, size = 44.dp) },
-                success = { SubcomposeAsyncImageContent() }
+            FundIcon(
+                iconUrl = data.img_url,
+                name = data.title,
+                size = 44.dp
             )
 
             Column(

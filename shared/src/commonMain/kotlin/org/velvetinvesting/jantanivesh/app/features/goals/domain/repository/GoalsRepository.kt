@@ -2,7 +2,6 @@ package org.velvetinvesting.jantanivesh.app.features.goals.domain.repository
 
 import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
-import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.goalmapping.GoalMapBodyDto
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.CreateGoalRequest
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalCalculationDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalCalculationRequest
@@ -27,7 +26,15 @@ interface GoalsRepository {
 
     suspend fun deleteGoal(goalId: String): NetworkResponse<Unit, ErrorDomain>
 
-    suspend fun mapGoal(body: GoalMapBodyDto): NetworkResponse<Unit, ErrorDomain>
+    /** Maps holdings the user already owns to a goal. */
+    suspend fun mapHoldings(
+        goalId: String,
+        holdingIds: List<String>
+    ): NetworkResponse<Unit, ErrorDomain>
 
-    suspend fun unMapGoal(goalId: String): NetworkResponse<Unit, ErrorDomain>
+    /** Removes one mapped holding from a goal. */
+    suspend fun removeHolding(
+        goalId: String,
+        holdingId: String
+    ): NetworkResponse<Unit, ErrorDomain>
 }

@@ -26,9 +26,6 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
@@ -38,6 +35,9 @@ import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundItemDomain
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.White
 
 @Composable
 fun BundleCardExtended(
@@ -74,25 +74,12 @@ fun BundleCardExtended(
                     modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    SubcomposeAsyncImage(
-                        modifier = Modifier.size(38.dp),
-                        model = bundleData.img_url,
-                        contentDescription = null,
-                        loading = {
-                            MutualFundIcon(
-                                schemeName = bundleData.categoryName,
-                                size = 38.dp
-                            )
-                        },
-                        error = {
-                            MutualFundIcon(
-                                schemeName = bundleData.categoryName,
-                                size = 38.dp
-                            )
-                        },
-                        success = {
-                            SubcomposeAsyncImageContent()
-                        }
+                    FundIcon(
+                        iconUrl = bundleData.img_url,
+                        name = bundleData.categoryName,
+                        size = 38.dp,
+                        backgroundColor = Primary,
+                        textColor = White
                     )
                     Column(
                     ) {

@@ -2,6 +2,8 @@ package org.velvetinvesting.jantanivesh.app.features.goals.data.mapper
 
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.domain.models.GoalsSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata.UserGoal
+import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.usergoal.UserGoalHoldingDto
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalHoldingDomain
 import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
 import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.calculate.GoalCalculationDto
 import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.config.GoalConfigDto
@@ -42,7 +44,24 @@ fun UserGoal.toDomain(): GoalDomain = GoalDomain(
     calculationVersion = calculation_version,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    progressPercent = progress_percent?.toInt() ?: 0
+    progressPercent = progress_percent?.toInt() ?: 0,
+    holdings = holdings.map { it.toDomain() },
+    totalHoldingsValue = total_holdings_value
+        ?: holdings.sumOf { it.current_value.toAmount() ?: 0.0 }
+)
+
+/**
+ * The scheme's own name beats the folio's shouted one (`INVESCO INDIA SMALL CAP FUND - REGULAR
+ * GROWTH`), and its published NAV is the one the rest of the app shows.
+ */
+fun UserGoalHoldingDto.toDomain(): GoalHoldingDomain = GoalHoldingDomain(
+    holdingId = id,
+    fundName = mf_product?.name?.takeIf { it.isNotBlank() } ?: fund_name.orEmpty(),
+    folioNumber = folio_number.orEmpty(),
+    units = units.toAmount() ?: 0.0,
+    nav = nav.toAmount() ?: mf_product?.latest_nav.toAmount() ?: 0.0,
+    currentValue = current_value.toAmount() ?: 0.0,
+    imageUrl = mf_product?.img_url
 )
 
 /**

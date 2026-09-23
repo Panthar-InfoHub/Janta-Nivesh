@@ -44,9 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.dropdown_outlined_icon
 import jantanivesh.shared.generated.resources.edit_icon
@@ -88,7 +85,7 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FDTenureUiModel
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsEvent
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsUiState
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundIcon
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun FdDetailsScreen(
@@ -286,34 +283,14 @@ private fun HeaderCard(
                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SubcomposeAsyncImage(
-                    model = details.bankLogo,
+                FundIcon(
+                    iconUrl = details.bankLogo,
+                    name = details.bankName,
                     contentDescription = "Bank Logo",
-                    modifier = Modifier.size(Spacing.dp48),
-
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = details.bankName,
-                            size = Spacing.dp40,
-                            cornerRadius = Spacing.dp40,
-                            backgroundColor = GreyBox,
-                            textColor = Primary
-                        )
-                    },
-
-                    error = {
-                        MutualFundIcon(
-                            schemeName = details.bankName,
-                            size = Spacing.dp40,
-                            cornerRadius = Spacing.dp40,
-                            backgroundColor = GreyBox,
-                            textColor = Primary
-                        )
-                    },
-
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+                    size = Spacing.dp48,
+                    cornerRadius = Spacing.dp48,
+                    backgroundColor = GreyBox,
+                    textColor = Primary
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
                     Text(
@@ -699,22 +676,17 @@ private fun FeatureCard(feature: KeyFeatureDomain) {
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
             verticalAlignment = Alignment.Top
         ) {
-            Box(
-                modifier = Modifier
-                    .size(Spacing.dp40)
-                    .clip(CircleShape)
-                    .background(BackgroundFill),
-                contentAlignment = Alignment.Center
-            ) {
-                if (!feature.iconUrl.isNullOrEmpty()) {
-                    AsyncImage(
-                        model = feature.iconUrl,
-                        contentDescription = "Bank Logo",
-                        modifier = Modifier
-                            .size(Spacing.dp40),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
+            // A feature carries its own artwork when the payload has one; the generic
+            // compounding glyph stands in for it, rather than the issuer's initials.
+            FundIcon(
+                iconUrl = feature.iconUrl,
+                name = feature.title,
+                contentDescription = "Bank Logo",
+                size = Spacing.dp40,
+                cornerRadius = Spacing.dp40,
+                backgroundColor = BackgroundFill,
+                contentScale = ContentScale.Crop,
+                placeholder = {
                     Icon(
                         painter = painterResource(Res.drawable.ic_feature_compounding),
                         contentDescription = feature.title,
@@ -722,7 +694,7 @@ private fun FeatureCard(feature: KeyFeatureDomain) {
                         modifier = Modifier.size(Spacing.dp16)
                     )
                 }
-            }
+            )
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp4)) {
                 Text(
                     text = feature.title,

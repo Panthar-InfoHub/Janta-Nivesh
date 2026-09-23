@@ -35,8 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import org.koin.compose.viewmodel.koinViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.ExistingFundsLumpSumSideEffect
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.ExistingFundsLumpSumViewModel
@@ -55,11 +53,11 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MoneyTextField
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun ExistingFundLumpSumScreen(
@@ -225,30 +223,12 @@ fun MutualFundsFolioCardLumpSum(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                SubcomposeAsyncImage(
-                    modifier = Modifier.size(44.dp),
-                    model = iconUrl,
-                    contentDescription = null,
-
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = title,
-                            size = 44.dp
-                        )
-                    },
-
-                    error = {
-                        MutualFundIcon(
-                            schemeName = title,
-                            size = 44.dp,
-                            backgroundColor = Color(0xffEFEDF3),
-                            textColor = Primary
-                        )
-                    },
-
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+                FundIcon(
+                    iconUrl = iconUrl,
+                    name = title,
+                    size = 44.dp,
+                    backgroundColor = Color(0xffEFEDF3),
+                    textColor = Primary
                 )
 
                 Column(

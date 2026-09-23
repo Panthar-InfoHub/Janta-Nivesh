@@ -57,6 +57,7 @@ import jantanivesh.shared.generated.resources.home_custom_goal_title
 import jantanivesh.shared.generated.resources.home_fixed_deposits
 import jantanivesh.shared.generated.resources.home_go_to_goals_desc
 import jantanivesh.shared.generated.resources.home_good_morning
+import jantanivesh.shared.generated.resources.home_invest_create_goal
 import jantanivesh.shared.generated.resources.home_invest_in_fd
 import jantanivesh.shared.generated.resources.home_invest_in_mf
 import jantanivesh.shared.generated.resources.home_kyc_title
@@ -66,6 +67,7 @@ import jantanivesh.shared.generated.resources.home_pnl_trend_suffix
 import jantanivesh.shared.generated.resources.home_portfolio_value
 import jantanivesh.shared.generated.resources.home_verify_button
 import jantanivesh.shared.generated.resources.home_your_goals
+import jantanivesh.shared.generated.resources.ic_create_goal
 import jantanivesh.shared.generated.resources.icon_callender
 import jantanivesh.shared.generated.resources.invesy_in_mf_icon
 import jantanivesh.shared.generated.resources.monument_icon
@@ -101,6 +103,8 @@ import org.velvetinvesting.jantanivesh.app.core.theme.SelectedBoxColor
 import org.velvetinvesting.jantanivesh.app.core.theme.ShadowElevation
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.core.theme.Orange
+import org.velvetinvesting.jantanivesh.app.core.theme.OrangeBg
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyWithUnits
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
@@ -114,6 +118,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderSc
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.dashedBorder
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.GoalCard
 import kotlin.time.Duration.Companion.milliseconds
 
 @Preview(showBackground = true, heightDp = 1204)
@@ -213,6 +218,7 @@ fun HomeScreenContent(
             QuickInvestActions(
                 onInvestInMfClick = { onEvent(HomeScreenEvent.OnInvestInMfClicked) },
                 onInvestInFdClick = { onEvent(HomeScreenEvent.OnInvestInFdClicked) },
+                onCreateGoalClick = { onEvent(HomeScreenEvent.OnCreateGoalClicked) },
                 modifier = horizontalPadding
             )
         }
@@ -522,6 +528,7 @@ private fun PnlTrendChip(
 private fun QuickInvestActions(
     onInvestInMfClick: () -> Unit,
     onInvestInFdClick: () -> Unit,
+    onCreateGoalClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -532,6 +539,7 @@ private fun QuickInvestActions(
             onClick = onInvestInMfClick,
             title = stringResource(Res.string.home_invest_in_mf),
             icon = Res.drawable.invesy_in_mf_icon,
+            iconColor = Secondary,
             iconBackground = MutualFundIconBg,
             modifier = Modifier.weight(1f)
         )
@@ -540,6 +548,15 @@ private fun QuickInvestActions(
             title = stringResource(Res.string.home_invest_in_fd),
             icon = Res.drawable.monument_icon,
             iconBackground = FdIconBg,
+            iconColor = Primary,
+            modifier = Modifier.weight(1f)
+        )
+        IconButtonCard(
+            onClick = onCreateGoalClick,
+            title = stringResource(Res.string.home_invest_create_goal),
+            icon = Res.drawable.ic_create_goal,
+            iconBackground = OrangeBg,
+            iconColor = Orange,
             modifier = Modifier.weight(1f)
         )
     }
@@ -748,88 +765,12 @@ private fun AmountCard(title: String, amount: String, modifier: Modifier = Modif
 }
 
 @Composable
-private fun GoalCard(
-    goal: GoalsSummaryDomain,
-    modifier: Modifier = Modifier,
-    onClick: ()-> Unit
-) {
-    val icon = goalIconFor(goal.goalTypes.type)
-
-    val progress = (goal.progressPercent / 100f).coerceIn(0f, 1f)
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .genericDropShadow()
-            .clip(RoundedCornerShape(Spacing.dp12))
-            .clickable(onClick=onClick)
-            .background(
-                White,
-                LocalShapes.current.roundedDp16
-            )
-            .padding(Spacing.dp16),
-        verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
-    ) {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
-        ) {
-
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                tint = Primary,
-                modifier = Modifier
-                    .background(
-                        GoalIconBg,
-                        CircleShape
-                    )
-                    .padding(Spacing.dp12)
-                    .size(Spacing.dp17)
-            )
-
-            Text(
-                text = goal.title,
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-            )
-        }
-
-        Text(
-            text = "₹${formatMoneyAfterL(goal.amount)}/${formatMoneyWithUnits(goal.targetAmount)}"
-                .withInterRupee(),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
-
-        Column {
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Spacing.dp4)
-                    .clip(RoundedCornerShape(Spacing.dp6)),
-                color = Primary,
-                trackColor = SelectedBoxBorder,
-                strokeCap = StrokeCap.Round
-            )
-
-            Text(
-                text = "${goal.progressPercent}%",
-                modifier = Modifier.align(Alignment.End),
-                fontSize = 10.sp,
-            )
-        }
-    }
-}
-
-@Composable
 private fun IconButtonCard(
     onClick: () -> Unit,
     title: String,
     icon: DrawableResource,
     iconBackground: Color,
+    iconColor: Color,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -852,7 +793,8 @@ private fun IconButtonCard(
             contentDescription = title,
             modifier = Modifier.size(Spacing.dp48).clip(CircleShape)
                 .background(iconBackground)
-                .padding(Spacing.dp14)
+                .padding(Spacing.dp14),
+            tint = iconColor
         )
         Text(
             title,

@@ -1,4 +1,4 @@
-    package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
+package org.velvetinvesting.jantanivesh.app.features.goals.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +22,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -45,171 +48,320 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.delete_box
+import jantanivesh.shared.generated.resources.delete_icon
+import jantanivesh.shared.generated.resources.icon_arrow_right
 import jantanivesh.shared.generated.resources.plus_icon
+import jantanivesh.shared.generated.resources.upward_trend_arrow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.painterResource
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactEffect
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactEvent
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactUiData
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactUiState
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
+import org.velvetinvesting.jantanivesh.app.core.theme.SlateGray
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.TextGray
 import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
-import org.velvetinvesting.jantanivesh.app.core.theme.appRed
-import org.velvetinvesting.jantanivesh.app.core.theme.subHeading
 import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 import org.velvetinvesting.jantanivesh.app.core.theme.titlesStyle
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.core.utils.formatWithCommas
+import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.VelvetLoader
-import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalSchemeDomain
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalHoldingDomain
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeEffect
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeEvent
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeUiData
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeUiState
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.SelectableSchemeUiModel
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
-private val previewGoalData = ProjectionImpactUiData(
-    goalId = "4506b743-16f1-4678-adee-932fe02a4031",
-    goalTypeId = 3,
-    goalName = "My Dream Villa",
-    goalTypeName = "Buy a Home",
-    todaysCost = 5_000_000.0,
-    futureValue = 7_035_502.11,
-    currentSavings = 500_000.0,
-    fvCurrentSavings = 974_358.55,
-    netRequiredCorpus = 6_061_143.56,
-    monthlySip = 50_112.63,
-    lumpsumToday = 3_110_325.02,
-    yearsRemaining = 7,
-    targetYear = 2033,
-    progressPercent = 7,
-    feasibilityScore = 0.14f,
-    increasedBy = 2_035_502.11,
-    isFixedCorpus = false,
-    schemes = listOf(
-        GoalSchemeDomain(
-            schemeName = "SBI Bluechip Fund",
-            folio = "123456789",
-            balUnits = "150.5",
-            nav = "45.6",
-            currentVal = "6862",
-            actualFolio = "Preview",
-            schemeId = "Preview"
-        )
-    )
-)
-
-@Preview
-@Composable
-fun MapSchemesScreenPreview() {
-    JantaNiveshTheme {
-        MapSchemesScreen(
-            uiState = ProjectionImpactUiState(
-                goalDetailsState = UiState.Success(previewGoalData)
-            ),
-            effectFlow = emptyFlow(),
-            onEvent = {},
-            onBack = {}
-        )
-    }
-}
+private val CardBorder = Color(0xffE9EDF2)
 
 @Composable
 fun MapSchemesScreen(
-    uiState: ProjectionImpactUiState,
-    effectFlow: Flow<ProjectionImpactEffect>,
-    onEvent: (ProjectionImpactEvent) -> Unit,
+    uiState: MapSchemeUiState,
+    effectFlow: Flow<MapSchemeEffect>,
+    onEvent: (MapSchemeEvent) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     UiStateContainer(
         uiState = uiState.goalDetailsState,
-        onRetry = { onEvent(ProjectionImpactEvent.RetryGoalDetails) },
-    ) { goalDataResponse ->
+        onRetry = { onEvent(MapSchemeEvent.RetryGoalDetails) },
+    ) { goalData ->
         Scaffold(
-            topBar = {
+            containerColor = Color.White
+        ) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+            ) {
                 BackHeader(
-                    title = "Map Schemes",
+                    title = "Map SIP",
                     showBack = true,
                     onBack = onBack,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp16)
                 )
-            },
-            bottomBar = {
-                NextButtonFooter(
-                    onClick = { onEvent(ProjectionImpactEvent.OpenBottomSheet) },
-                    pv = PaddingValues(0.dp),
-                    value = if (goalDataResponse.schemes.isEmpty()) "Map Schemes to Goal" else "More funds for maps"
-                )
-            },
-            containerColor = Color.White
-        ) { paddingValues ->
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                if (goalDataResponse.schemes.isEmpty()) {
+                if (goalData.holdings.isEmpty()) {
                     MapSchemesEmptyContent(
                         modifier = Modifier.weight(1f),
-                        onClick = { onEvent(ProjectionImpactEvent.OpenBottomSheet) }
+                        onClick = { onEvent(MapSchemeEvent.OpenBottomSheet) }
                     )
                 } else {
-                    MapSchemesFilledContent(
-                        mappedSchemes = goalDataResponse.schemes,
-                        onRemoveScheme = { onEvent(ProjectionImpactEvent.UnMapGoal(goalDataResponse.goalId)) },
+                    MappedHoldingsContent(
+                        goalData = goalData,
+                        removingHoldingIds = uiState.removingHoldingIds,
+                        onRemoveHolding = { onEvent(MapSchemeEvent.RemoveHolding(it)) },
                         modifier = Modifier.weight(1f)
                     )
                 }
+                MapSchemesFooter(
+                    text = if (goalData.holdings.isEmpty()) {
+                        "Map Schemes to Goal"
+                    } else {
+                        "More fund for Map"
+                    },
+                    onClick = { onEvent(MapSchemeEvent.OpenBottomSheet) }
+                )
             }
 
             MapSchemesBottomSheetContent(
                 portfolioState = uiState.portfolioDataState,
+                mapping = uiState.mapping,
                 effectFlow = effectFlow,
                 onEvent = onEvent
+            )
+
+        }
+    }
+}
+
+@Composable
+private fun MapSchemesFooter(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .navigationBarsPadding()
+            .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
+    ) {
+        AppButton(
+            text = text,
+            onClick = onClick,
+            trailingIcon = Res.drawable.icon_arrow_right,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun MappedHoldingsContent(
+    goalData: MapSchemeUiData,
+    removingHoldingIds: Set<String>,
+    onRemoveHolding: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = Spacing.dp16, vertical = Spacing.dp8),
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
+    ) {
+        item {
+            TotalCurrentValueCard(
+                totalValue = goalData.totalCurrentValue,
+                mappedCount = goalData.holdings.size
+            )
+        }
+        items(
+            items = goalData.holdings,
+            key = { holding -> holding.holdingId }
+        ) { holding ->
+            MappedHoldingCard(
+                holding = holding,
+                removing = holding.holdingId in removingHoldingIds,
+                onRemove = { onRemoveHolding(holding.holdingId) }
             )
         }
     }
 }
 
 @Composable
-fun TotalCurrentValueBar(totalValue: Double) {
-    Box(
-        modifier = Modifier
+fun TotalCurrentValueCard(
+    totalValue: Double,
+    mappedCount: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
             .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = Color.LightGray.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(Spacing.dp8)
-            )
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .clip(RoundedCornerShape(Spacing.dp16))
+            .border(1.dp, CardBorder, RoundedCornerShape(Spacing.dp16))
+            .background(Color.White)
+            .padding(Spacing.dp20),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Total Current Value",
-                style = titlesStyle,
-                color = titleColor
-            )
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Total Current Value",
+                    style = titlesStyle,
+                    color = titleColor
+                )
+                Text(
+                    text = "$mappedCount Mapped",
+                    style = tinyLabel,
+                    color = appGreen,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(appGreen.copy(alpha = 0.12f))
+                        .padding(horizontal = Spacing.dp8, vertical = Spacing.dp4)
+                )
+            }
             Text(
                 text = "₹${formatWithCommas(totalValue.toLong())}".withInterRupee(),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = appGreen
+                color = Primary
             )
         }
+
+        Icon(
+            painter = painterResource(Res.drawable.upward_trend_arrow),
+            contentDescription = null,
+            tint = appGreen,
+            modifier = Modifier
+                .size(Spacing.dp44)
+                .background(appGreen.copy(alpha = 0.12f), RoundedCornerShape(Spacing.dp12))
+                .padding(Spacing.dp12)
+        )
+    }
+}
+
+@Composable
+fun MappedHoldingCard(
+    holding: GoalHoldingDomain,
+    removing: Boolean,
+    onRemove: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Spacing.dp16))
+            .border(1.dp, CardBorder, RoundedCornerShape(Spacing.dp16))
+            .background(Color.White)
+            .padding(Spacing.dp16),
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
+            verticalAlignment = Alignment.Top
+        ) {
+            // The fund house's own logo, with its initial standing in until it loads.
+            FundIcon(
+                iconUrl = holding.imageUrl,
+                name = holding.fundName,
+                size = Spacing.dp36,
+                cornerRadius = Spacing.dp8
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp2)
+            ) {
+                Text(
+                    text = holding.fundName,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Text(
+                    text = "Folio: ${holding.folioNumber}",
+                    style = tinyLabel.copy(fontWeight = FontWeight.Normal),
+                    color = SlateGray
+                )
+            }
+
+            // Removing swaps the button for a loader, so the same row cannot be deleted twice.
+            if (removing) {
+                CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    color = Primary,
+                    modifier = Modifier.size(Spacing.dp16)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(Res.drawable.delete_box),
+                    contentDescription = "Remove ${holding.fundName}",
+                    tint = SlateGray,
+                    modifier = Modifier
+                        .size(Spacing.dp16)
+                        .clickable(onClick = onRemove)
+                )
+            }
+        }
+
+        HorizontalDivider(color = CardBorder)
+
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            HoldingStat(
+                label = "UNITS",
+                value = holding.units.trimTo(2),
+                modifier = Modifier
+            )
+            HoldingStat(
+                label = "NAV",
+                value = "₹${holding.nav.trimTo(2)}",
+                modifier = Modifier,
+            )
+            HoldingStat(
+                label = "CURRENT VALUE",
+                value = "₹${formatWithCommas(holding.currentValue.toLong())}",
+                valueColor = appGreen,
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun HoldingStat(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    valueColor: Color = Primary,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Spacing.dp2),
+        horizontalAlignment = horizontalAlignment
+    ) {
+        Text(text = label, style = tinyLabel.copy(fontWeight = FontWeight.Normal, fontSize = 10.sp), color = SlateGray)
+        Text(
+            text = value.withInterRupee(),
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
+            color = valueColor
+        )
     }
 }
 
@@ -268,110 +420,13 @@ fun MapSchemesEmptyContent(modifier: Modifier = Modifier, onClick: () -> Unit) {
     }
 }
 
-@Composable
-fun MapSchemesFilledContent(
-    mappedSchemes: List<GoalSchemeDomain>,
-    onRemoveScheme: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
-            TotalCurrentValueBar(
-                totalValue = mappedSchemes.sumOf { it.currentVal.toDoubleOrNull() ?: 0.0 }
-            )
-        }
-        items(mappedSchemes) { scheme ->
-            MappedSchemeCard(scheme = scheme)
-        }
-        item {
-            Text(
-                text = "Remove Mapping",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = onRemoveScheme),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.headlineSmall,
-                color = appRed
-            )
-        }
-    }
-}
-
-@Composable
-fun MappedSchemeCard(scheme: GoalSchemeDomain) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .genericDropShadow()
-            .clip(RoundedCornerShape(Spacing.dp12))
-            .border(1.dp, Color.LightGray.copy(alpha = 0.3f))
-            .background(Color.White)
-            .padding(20.dp)
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Text(
-                    text = scheme.schemeName,
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(text = "FOLIO", style = tinyLabel)
-                    Text(
-                        text = scheme.folio,
-                        style = subHeading,
-                        color = Primary
-                    )
-                }
-                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                    Text(text = "UNITS", style = tinyLabel)
-                    Text(
-                        text = scheme.balUnits,
-                        style = subHeading,
-                        color = Primary
-                    )
-                }
-            }
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(text = "NAV", style = tinyLabel)
-                    Text(
-                        text = "₹${scheme.nav}".withInterRupee(),
-                        style = subHeading,
-                        color = Primary
-                    )
-                }
-                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                    Text(text = "CURRENT VALUE", style = tinyLabel)
-                    Text(
-                        text = "₹${formatWithCommas(scheme.currentVal.toDoubleOrNull()?.toLong() ?: 0L)}".withInterRupee(),
-                        style = subHeading,
-                        color = appGreen
-                    )
-                }
-            }
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapSchemesBottomSheetContent(
     portfolioState: UiState<List<SelectableSchemeUiModel>>,
-    effectFlow: Flow<ProjectionImpactEffect>,
-    onEvent: (ProjectionImpactEvent) -> Unit,
+    mapping: Boolean,
+    effectFlow: Flow<MapSchemeEffect>,
+    onEvent: (MapSchemeEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -380,20 +435,21 @@ fun MapSchemesBottomSheetContent(
     LaunchedEffect(Unit) {
         effectFlow.collect { effect ->
             when (effect) {
-                ProjectionImpactEffect.OpenBottomSheet -> showSheet = true
-                ProjectionImpactEffect.CloseBottomSheet -> showSheet = false
+                MapSchemeEffect.OpenBottomSheet -> showSheet = true
+                MapSchemeEffect.CloseBottomSheet -> showSheet = false
             }
         }
     }
 
     if (showSheet) {
         ModalBottomSheet(
-            onDismissRequest = { onEvent(ProjectionImpactEvent.CloseBottomSheet) },
+            onDismissRequest = { onEvent(MapSchemeEvent.CloseBottomSheet) },
             sheetState = sheetState,
             containerColor = Color.White
         ) {
             MapSchemesSheetBody(
                 portfolioState = portfolioState,
+                mapping = mapping,
                 onEvent = onEvent,
                 modifier = modifier
             )
@@ -404,14 +460,15 @@ fun MapSchemesBottomSheetContent(
 @Composable
 fun MapSchemesSheetBody(
     portfolioState: UiState<List<SelectableSchemeUiModel>>,
-    onEvent: (ProjectionImpactEvent) -> Unit,
-    modifier: Modifier = Modifier
+    onEvent: (MapSchemeEvent) -> Unit,
+    modifier: Modifier = Modifier,
+    mapping: Boolean = false
 ) {
     when (portfolioState) {
         is UiState.Error -> {
             ErrorScreen(
                 errorMessage = portfolioState.message,
-                onRetryClick = { onEvent(ProjectionImpactEvent.RetryPortfolio) }
+                onRetryClick = { onEvent(MapSchemeEvent.RetryPortfolio) }
             )
         }
         UiState.Loading -> {
@@ -431,7 +488,7 @@ fun MapSchemesSheetBody(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Map Schemes",
+                    text = "Map SIP",
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
@@ -448,7 +505,9 @@ fun MapSchemesSheetBody(
                     items(data) { scheme ->
                         SelectableSchemeItem(
                             scheme = scheme,
-                            onToggle = { onEvent(ProjectionImpactEvent.ToggleSelection(scheme.schemeId)) }
+                            onToggle = {
+                                onEvent(MapSchemeEvent.ToggleSelection(scheme.holdingId))
+                            }
                         )
                     }
                 }
@@ -465,9 +524,10 @@ fun MapSchemesSheetBody(
 
                 Spacer(modifier = Modifier.height(24.dp))
                 AppButton(
-                    onClick = { onEvent(ProjectionImpactEvent.MapGoal) },
+                    onClick = { onEvent(MapSchemeEvent.MapSelectedHoldings) },
                     text = "Confirm Selection",
                     enabled = data.any { it.isSelected },
+                    loading = mapping,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -522,48 +582,115 @@ fun SelectableSchemeItem(
         )
     }
 }
+
+private val previewHoldings = listOf(
+    GoalHoldingDomain(
+        holdingId = "holding-1",
+        fundName = "HDFC Top 100 Fund – Growth",
+        folioNumber = "123456",
+        units = 150.25,
+        nav = 332.8,
+        currentValue = 50_000.0,
+        imageUrl = null
+    ),
+    GoalHoldingDomain(
+        holdingId = "holding-2",
+        fundName = "ICICI Pru Bluechip – Direct Gr.",
+        folioNumber = "884210",
+        units = 85.50,
+        nav = 98.4,
+        currentValue = 35_000.0,
+        imageUrl = null
+    ),
+    GoalHoldingDomain(
+        holdingId = "holding-3",
+        fundName = "Parag Parikh Flexi Cap Fund",
+        folioNumber = "441092",
+        units = 42.10,
+        nav = 712.5,
+        currentValue = 30_000.0,
+        imageUrl = null
+    )
+)
+
+private val previewGoalData = MapSchemeUiData(
+    goalId = "4506b743-16f1-4678-adee-932fe02a4031",
+    goalName = "Aarav's Education",
+    holdings = previewHoldings,
+    totalCurrentValue = 115_000.0
+)
+
 private val previewSchemes = listOf(
     SelectableSchemeUiModel(
-        schemeId = 1,
+        holdingId = "holding-4",
         name = "SBI Bluechip Fund - Direct Growth",
         units = "150.5432",
         value = 68620.0,
-        isSelected = false,
         folio = "123456789"
     ),
     SelectableSchemeUiModel(
-        schemeId = 2,
+        holdingId = "holding-5",
         name = "HDFC Mid-Cap Opportunities Fund - Direct Growth",
         units = "82.1145",
         value = 124350.0,
-        isSelected = false,
         folio = "987654321"
     ),
     SelectableSchemeUiModel(
-        schemeId = 3,
-        name = "ICICI Prudential Balanced Advantage Fund",
-        units = "310.0000",
-        value = 45980.0,
-        isSelected = false,
-        folio = "456123789"
-    ),
-    SelectableSchemeUiModel(
-        schemeId = 4,
+        holdingId = "holding-6",
         name = "Axis Small Cap Fund - Direct Growth",
         units = "45.7788",
         value = 32110.0,
-        isSelected = false,
         folio = "741852963"
-    ),
-    SelectableSchemeUiModel(
-        schemeId = 5,
-        name = "Parag Parikh Flexi Cap Fund - Direct Growth",
-        units = "220.3391",
-        value = 189475.0,
-        isSelected = false,
-        folio = "852963741"
     )
 )
+
+@Preview()
+@Composable
+fun MapSchemesScreenPreview() {
+    JantaNiveshTheme {
+        MapSchemesScreen(
+            uiState = MapSchemeUiState(
+                goalDetailsState = UiState.Success(previewGoalData)
+            ),
+            effectFlow = emptyFlow(),
+            onEvent = {},
+            onBack = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MapSchemesScreenRemovingPreview() {
+    JantaNiveshTheme {
+        MapSchemesScreen(
+            uiState = MapSchemeUiState(
+                goalDetailsState = UiState.Success(previewGoalData),
+                removingHoldingIds = setOf("holding-2")
+            ),
+            effectFlow = emptyFlow(),
+            onEvent = {},
+            onBack = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MapSchemesScreenEmptyPreview() {
+    JantaNiveshTheme {
+        MapSchemesScreen(
+            uiState = MapSchemeUiState(
+                goalDetailsState = UiState.Success(
+                    previewGoalData.copy(holdings = emptyList(), totalCurrentValue = 0.0)
+                )
+            ),
+            effectFlow = emptyFlow(),
+            onEvent = {},
+            onBack = {}
+        )
+    }
+}
 
 @Preview
 @Composable
@@ -583,7 +710,7 @@ fun MapSchemesSheetWithSelectionPreview() {
         MapSchemesSheetBody(
             portfolioState = UiState.Success(
                 previewSchemes.mapIndexed { index, scheme ->
-                    scheme.copy(isSelected = index == 0 || index == 2)
+                    scheme.copy(isSelected = index == 0)
                 }
             ),
             onEvent = {}
@@ -604,71 +731,55 @@ fun MapSchemesSheetEmptyPreview() {
 
 @Preview
 @Composable
-fun MapSchemesSheetLoadingPreview() {
-    JantaNiveshTheme {
-        MapSchemesSheetBody(
-            portfolioState = UiState.Loading,
-            onEvent = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-fun MapSchemesSheetErrorPreview() {
-    JantaNiveshTheme {
-        MapSchemesSheetBody(
-            portfolioState = UiState.Error("Unable to load your portfolio"),
-            onEvent = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-fun SelectableSchemeItemPreview() {
-    JantaNiveshTheme {
-        Column(
-            modifier = Modifier.background(Color.White).padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            SelectableSchemeItem(scheme = previewSchemes[0], onToggle = {})
-            SelectableSchemeItem(
-                scheme = previewSchemes[1].copy(isSelected = true),
-                onToggle = {}
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
 fun MapSchemesScreenWithSheetOpenPreview() {
     JantaNiveshTheme {
         MapSchemesScreen(
-            uiState = ProjectionImpactUiState(
+            uiState = MapSchemeUiState(
                 goalDetailsState = UiState.Success(previewGoalData),
                 portfolioDataState = UiState.Success(previewSchemes)
             ),
-            effectFlow = flowOf(ProjectionImpactEffect.OpenBottomSheet),
+            effectFlow = flowOf(MapSchemeEffect.OpenBottomSheet),
             onEvent = {},
             onBack = {}
         )
     }
 }
 
+/**
+ * The same screen with the mapping sheet open. `ModalBottomSheet` does not render in a preview,
+ * so the sheet body is drawn over the screen exactly as the sheet presents it.
+ */
 @Preview
 @Composable
-fun MapSchemesScreenEmptyWithSheetOpenPreview() {
+fun MapSchemesScreenSheetOpenPreview() {
     JantaNiveshTheme {
-        MapSchemesScreen(
-            uiState = ProjectionImpactUiState(
-                goalDetailsState = UiState.Success(previewGoalData.copy(schemes = emptyList())),
-                portfolioDataState = UiState.Success(previewSchemes)
-            ),
-            effectFlow = flowOf(ProjectionImpactEffect.OpenBottomSheet),
-            onEvent = {},
-            onBack = {}
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            MapSchemesScreen(
+                uiState = MapSchemeUiState(
+                    goalDetailsState = UiState.Success(previewGoalData),
+                    portfolioDataState = UiState.Success(previewSchemes)
+                ),
+                effectFlow = emptyFlow(),
+                onEvent = {},
+                onBack = {}
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.32f))
+            )
+            MapSchemesSheetBody(
+                portfolioState = UiState.Success(
+                    previewSchemes.mapIndexed { index, scheme ->
+                        scheme.copy(isSelected = index == 0)
+                    }
+                ),
+                onEvent = {},
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .clip(RoundedCornerShape(topStart = Spacing.dp28, topEnd = Spacing.dp28))
+                    .background(Color.White)
+            )
+        }
     }
 }

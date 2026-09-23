@@ -3,24 +3,19 @@ package org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.goa
 import kotlinx.serialization.Serializable
 
 /**
- * Scheme mapping still posts to `/user-goal/map` and `/user-goal/map-remove`. Those endpoints
- * were not re-specified with the `v2.0` goal engine, so the id sent here is the goal's UUID —
- * every other `/user-goal` route is UUID-keyed, and the integer `goal_id` the old responses
- * carried is no longer returned by `GET /user-goal/{id}`.
+ * `POST /user-goal/map`. Both endpoints are keyed by the holding's id, and both accept a single
+ * `holding_id` or a `holding_ids` list — mapping is done from a multi-select sheet, so it sends
+ * the list; removal is per row, so it sends the one.
  */
 @Serializable
 data class GoalMapBodyDto(
     val goal_id: String,
-    val map_data: List<MapData>
+    val holding_ids: List<String>
 )
 
+/** `POST /user-goal/remove`. */
 @Serializable
-data class MapData(
-    val folio: String,
-    val scheme_id: String
-)
-
-@Serializable
-data class UnMapGoalRequestDto(
-    val goal_id: String
+data class GoalUnMapBodyDto(
+    val goal_id: String,
+    val holding_id: String
 )

@@ -14,7 +14,6 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalDomain
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalSchemeDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
 
 /**
@@ -43,17 +42,7 @@ data class ProjectedImpactUiData(
     /** How much inflation adds between today's figure and the target. */
     val increasedBy: Double,
     /** True for "Build My Savings", where the target was named rather than inflated. */
-    val isFixedCorpus: Boolean,
-    val schemes: List<GoalSchemeDomain>
-)
-
-data class SelectableSchemeUiModel(
-    val schemeId: Int,
-    val name: String,
-    val units: String,
-    val value: Double,
-    val isSelected: Boolean,
-    val folio: String
+    val isFixedCorpus: Boolean
 )
 
 sealed interface ProjectedImpactEvent {
@@ -77,6 +66,10 @@ class ProjectedImpactViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ProjectedImpactUiData>>(UiState.Loading)
     val uiState: StateFlow<UiState<ProjectedImpactUiData>> = _uiState.asStateFlow()
+
+    /** Kept apart from [uiState] so deleting shows a loader on the button, not an empty screen. */
+    private val _deleting = MutableStateFlow(false)
+    val deleting: StateFlow<Boolean> = _deleting.asStateFlow()
 
     private val _effect = Channel<ProjectedImpactEffect>()
     val effect = _effect.receiveAsFlow()
@@ -110,18 +103,20 @@ class ProjectedImpactViewModel(
     }
 
     private fun deleteGoal() {
+        if (_deleting.value) return
+
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
+            _deleting.value = true
             goalsRepository.deleteGoal(id)
                 .onSuccess {
+                    _deleting.value = false
+                    SnackBarController.showSuccess("Goal deleted")
                     AppEventsController.sendGoalRefreshEvent()
                     sendEffect(ProjectedImpactEffect.NavigateBack)
                 }
                 .onError { error ->
+                    _deleting.value = false
                     SnackBarController.showError(error.message)
-                    // Put the goal back on screen rather than leaving an empty failure state.
-                    loadGoalDetails()
-                    sendEffect(ProjectedImpactEffect.ShowError(error.message))
                 }
         }
     }
@@ -150,8 +145,7 @@ fun GoalDomain.toUiData(): ProjectedImpactUiData = ProjectedImpactUiData(
     progressPercent = progressPercent,
     feasibilityScore = feasibilityScore(),
     increasedBy = (futureTargetAmount - baseAmount).coerceAtLeast(0.0),
-    isFixedCorpus = goalType?.usesTargetAmount == true,
-    schemes = schemes
+    isFixedCorpus = goalType?.usesTargetAmount == true
 )
 
 /**

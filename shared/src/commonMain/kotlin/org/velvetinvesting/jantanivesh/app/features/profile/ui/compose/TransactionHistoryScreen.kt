@@ -33,8 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.check_circle_outline_icon
 import jantanivesh.shared.generated.resources.ic_cross_circled
@@ -51,11 +49,10 @@ import org.velvetinvesting.jantanivesh.app.core.theme.ProfileGreen
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.appRed
-import org.velvetinvesting.jantanivesh.app.core.theme.bgColor3
+import org.velvetinvesting.jantanivesh.app.core.theme.Orange
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBar
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.TransactionGroup
@@ -65,6 +62,7 @@ import org.velvetinvesting.jantanivesh.app.features.profile.domain.model.Transac
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionFilter
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryEvent
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryUiState
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun TransactionHistoryScreen(
@@ -341,28 +339,13 @@ private fun TransactionItem(
 /** The scheme or issuer logo when the payload has one, and its initials when it does not. */
 @Composable
 private fun TransactionIcon(iconUrl: String, title: String) {
-    val fallback: @Composable () -> Unit = {
-        MutualFundIcon(
-            schemeName = title,
-            size = 40.dp,
-            cornerRadius = Spacing.dp8,
-            backgroundColor = IconBackgroundBlue,
-            textColor = Primary
-        )
-    }
-
-    if (iconUrl.isBlank()) {
-        fallback()
-        return
-    }
-
-    SubcomposeAsyncImage(
-        model = iconUrl,
-        contentDescription = null,
-        modifier = Modifier.size(40.dp).clip(RoundedCornerShape(Spacing.dp8)),
-        loading = { fallback() },
-        error = { fallback() },
-        success = { SubcomposeAsyncImageContent() }
+    FundIcon(
+        iconUrl = iconUrl,
+        name = title,
+        size = 40.dp,
+        cornerRadius = Spacing.dp8,
+        backgroundColor = IconBackgroundBlue,
+        textColor = Primary
     )
 }
 
@@ -370,7 +353,7 @@ private fun TransactionIcon(iconUrl: String, title: String) {
 private fun StatusTag(status: TransactionStatus, label: String) {
     val (color, icon) = when (status) {
         TransactionStatus.SUCCESSFUL -> ProfileGreen to Res.drawable.check_circle_outline_icon
-        TransactionStatus.PENDING -> bgColor3 to Res.drawable.icon_clock
+        TransactionStatus.PENDING -> Orange to Res.drawable.icon_clock
         TransactionStatus.FAILED -> appRed to Res.drawable.ic_cross_circled
     }
     // The source's own wording ("Payment Pending", "FD Created") says more than the three

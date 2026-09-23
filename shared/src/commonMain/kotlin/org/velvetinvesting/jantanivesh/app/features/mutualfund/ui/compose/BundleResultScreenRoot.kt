@@ -35,8 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
@@ -75,6 +73,8 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.SelectedFundTy
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -320,28 +320,13 @@ fun BundleMutualFundListCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                SubcomposeAsyncImage(
-                    modifier = Modifier.size(44.dp)
-                        .genericDropShadow(LocalShapes.current.roundedDp12)
-                        .clip(LocalShapes.current.roundedDp12)
-                        .background(Color.White),
-                    model = fund.icon,
-                    contentDescription = null,
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = fund.scheme_name,
-                            size = 40.dp
-                        )
-                    },
-                    error = {
-                        MutualFundIcon(
-                            schemeName = fund.scheme_name,
-                            size = 40.dp
-                        )
-                    },
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+                FundIcon(
+                    iconUrl = fund.icon,
+                    name = fund.scheme_name,
+                    size = 44.dp,
+                    backgroundColor = Primary,
+                    textColor = Color.White,
+                    modifier = Modifier.genericDropShadow(LocalShapes.current.roundedDp12)
                 )
 
                 Column(modifier = Modifier.weight(1f)) {

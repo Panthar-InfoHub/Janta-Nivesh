@@ -5,7 +5,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.MutualFundIconBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.SecondaryPrimary
-import org.velvetinvesting.jantanivesh.app.core.theme.bgColor3
+import org.velvetinvesting.jantanivesh.app.core.theme.Orange
 import org.velvetinvesting.jantanivesh.app.core.theme.bgColor4
 import org.velvetinvesting.jantanivesh.app.features.core.domain.GoalType
 
@@ -41,7 +41,7 @@ data class GoalOption(
 /** The colour each type is drawn in, stable whether or not config has loaded. */
 fun goalTypeColor(goalTypeId: Int): Color = when (goalTypeId) {
     GoalType.ChildEducation.id -> MutualFundIconBg
-    GoalType.ChildMarriage.id -> bgColor3
+    GoalType.ChildMarriage.id -> Orange
     GoalType.BuyHome.id -> bgColor4
     GoalType.BuyVehicle.id -> Secondary
     GoalType.BuildSavings.id -> SecondaryPrimary
