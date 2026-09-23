@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +23,6 @@ import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.icon_cross
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.utils.AppBackHandler
 
 @Composable
 fun WebViewScreen(
@@ -32,6 +32,10 @@ fun WebViewScreen(
     modifier: Modifier = Modifier
 ) {
     val state = rememberWebViewState(config.url)
+
+    // The exit URL can now be seen by more than one platform callback (the request, the page
+    // load, the load error), so the hand-back is latched to the first sighting.
+    val exitReported = remember { mutableStateOf(false) }
 
 
 
@@ -47,12 +51,14 @@ fun WebViewScreen(
                 state = state,
                 modifier = Modifier.fillMaxSize(),
                 onUrlChanged = { url ->
-                    if (WebViewExitUrlMatcher.matches(
+                    if (!exitReported.value &&
+                        WebViewExitUrlMatcher.matches(
                             url,
                             config.exitUrlPatterns,
                             config.matchType
                         )
                     ) {
+                        exitReported.value = true
                         onExitUrlReached(url)
                     }
                 }

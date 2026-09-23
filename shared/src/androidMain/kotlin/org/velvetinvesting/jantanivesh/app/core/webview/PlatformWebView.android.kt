@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -32,6 +34,18 @@ actual fun PlatformWebView(
     onUrlChanged: (String) -> Unit
 ) {
     val context = LocalContext.current
+
+    val currentOnUrlChanged by rememberUpdatedState(onUrlChanged)
+
+    /**
+     * Hands a main-frame URL to the caller without touching [WebViewState.currentUrl] — that
+     * field drives the loader, and a URL seen before it loads must not be fed back into it.
+     * Interception runs off the main thread, so the callback is posted.
+     */
+    fun WebView?.reportUrl(url: String?) {
+        if (url.isNullOrBlank()) return
+        if (this == null) currentOnUrlChanged(url) else post { currentOnUrlChanged(url) }
+    }
 
     val webView = remember {
         WebView.setWebContentsDebuggingEnabled(true)
@@ -86,6 +100,13 @@ actual fun PlatformWebView(
         """.trimIndent()
                     )
 
+                    // The return hop is typically a POST to a URL the app owns but no server
+                    // serves, so it never commits and no page callback ever carries it. Reporting
+                    // the request itself is the only point the URL is reliably seen.
+                    if (request?.isForMainFrame == true) {
+                        view?.reportUrl(request.url?.toString())
+                    }
+
                     return super.shouldInterceptRequest(view, request)
                 }
 
@@ -121,6 +142,12 @@ actual fun PlatformWebView(
         Description: ${error?.description}
         """.trimIndent()
                     )
+
+                    // A return URL that resolves to nothing still errors on the exact URL the
+                    // flow signals completion with, so it counts as having been reached.
+                    if (request?.isForMainFrame == true) {
+                        view.reportUrl(request.url?.toString())
+                    }
 
                     super.onReceivedError(view, request, error)
                 }
@@ -213,6 +240,11 @@ actual fun PlatformWebView(
                     request: WebResourceRequest?
                 ): Boolean {
                     Log.d("WEB", "Loading : ${request?.url}")
+
+                    if (request?.isForMainFrame == true) {
+                        view.reportUrl(request.url?.toString())
+                    }
+
                     return false
                 }
             }

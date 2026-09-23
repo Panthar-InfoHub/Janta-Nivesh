@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -116,7 +117,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.g
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.GoalCard
 import kotlin.time.Duration.Companion.milliseconds
 
-@Preview(showBackground = true, heightDp = 1204)
+@Preview(showBackground = true, heightDp = 1204, widthDp = 800)
 @Composable
 fun HomeScreenPreview() {
     JantaNiveshTheme {
@@ -374,9 +375,10 @@ private fun BannerPager(modifier: Modifier= Modifier){
 
     HorizontalPager(
         state = pagerState,
-        modifier = modifier.fillMaxWidth(),
+        pageSize = PageSize.Fixed(340.dp),
         contentPadding = PaddingValues(horizontal = Spacing.dp16),
-        pageSpacing = Spacing.dp12
+        pageSpacing = Spacing.dp12,
+        modifier = modifier.fillMaxWidth()
     ) { page ->
 
         val banner = banners[page]
@@ -386,9 +388,8 @@ private fun BannerPager(modifier: Modifier= Modifier){
             subHeading = banner.subHeading,
             backgroundColor = banner.backgroundColor,
             border = banner.border,
-            modifier = Modifier
+            modifier = Modifier.fillMaxWidth()
         )
-
     }
 }
 

@@ -2,30 +2,40 @@ package org.velvetinvesting.jantanivesh.app.features.plans.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.ic_jagged_arrow
 import jantanivesh.shared.generated.resources.tac_dialog_cancel
 import jantanivesh.shared.generated.resources.try_again
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InvertedAppButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.VelvetLoader
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipSetupStage
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipSetupUiState
 
@@ -51,7 +61,7 @@ fun SipSetupScreen(
         verticalArrangement = Arrangement.Center
     ) {
         if (state.error == null) {
-            VelvetLoader()
+            MandateLoader()
 
             Text(
                 text = state.stage.message,
@@ -103,6 +113,40 @@ fun SipSetupScreen(
     }
 }
 
+@Composable
+private fun MandateLoader(){
+    Box(
+        contentAlignment = Alignment.Center
+    )
+    {
+
+        CircularProgressIndicator(
+            modifier = Modifier.size(92.dp).graphicsLayer { scaleX = -1f },
+            color = Secondary,
+            strokeWidth = 4.dp
+        )
+        CircularProgressIndicator(
+            modifier = Modifier.size(108.dp),
+            color = Primary,
+            strokeWidth = 4.dp
+        )
+
+        Box(
+            modifier = Modifier.size(72.dp)
+                .clip(CircleShape)
+                .background(Primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_jagged_arrow),
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                tint = White
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun SipSetupScreenPreview() {
@@ -116,7 +160,7 @@ private fun SipSetupScreenPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "hi")
 @Composable
 private fun SipSetupScreenErrorPreview() {
     JantaNiveshTheme {

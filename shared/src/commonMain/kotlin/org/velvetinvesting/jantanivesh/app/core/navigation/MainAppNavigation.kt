@@ -21,6 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.constants.WebUrls
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.core.utils.WebURLConstants
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
@@ -170,12 +171,20 @@ fun MainAppNavigation(
 
     val navController = rememberNavController()
     val prefs: AuthPrefs = koinInject()
+
+    // Signing out has to forget that this process already cleared the app lock, or the next user
+    // to log in on this device walks straight past the PIN screen.
+    val signOut: () -> Unit = {
+        pinVerifiedThisSession = false
+        onSignOut()
+    }
+
     LaunchedEffect(Unit) {
         AppEventsController.appEvent.collect {
             when (it) {
                 AppEvent.LogOut -> {
                     AppEventsController.clear()
-                    onSignOut()
+                    signOut()
                     SnackBarController.showInfo("Token Expired. Login Again.")
                 }
 
@@ -492,7 +501,8 @@ fun MainAppNavigation(
                                 Route.WebViewScreen(
                                     url = effect.url,
                                     title = "UPI Autopay",
-                                    completionRouteKey = WEBVIEW_COMPLETION_SIP_MANDATE
+                                    completionRouteKey = WEBVIEW_COMPLETION_SIP_MANDATE,
+                                    exitUrlPatterns = listOf(WebURLConstants.mandateExitUrl)
                                 )
                             )
                         }
@@ -518,7 +528,7 @@ fun MainAppNavigation(
                             navController.navigate(
                                 Route.WebViewScreen(
                                     url = effect.url,
-                                    exitUrlPatterns = emptyList(),
+                                    exitUrlPatterns = listOf(WebURLConstants.mandateExitUrl),
                                     title = "Complete Payment",
                                     completionRouteKey = WEBVIEW_COMPLETION_PURCHASE_PAYMENT
                                 )
@@ -706,7 +716,11 @@ fun MainAppNavigation(
                 amount = route.amount,
                 installmentDay = route.installmentDay.takeIf { it > 0 },
                 startDate = route.startDate.takeIf { it.isNotBlank() },
-                onViewHoldingsClick = { navController.popBackStack() },
+                onViewHoldingsClick = { navController.navigate(Route.MyOrders){
+                    popUpTo(Route.PurchaseSuccess){
+                        inclusive=true
+                    }
+                } },
                 onDoneClick = { navController.popBackStack() }
             )
         }
@@ -894,7 +908,7 @@ fun MainAppNavigation(
                         launchSingleTop=true
                     }
                 },
-                onSignOut = onSignOut
+                onSignOut = signOut
             )
         }
 
