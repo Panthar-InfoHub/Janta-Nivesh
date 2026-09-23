@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.delete_box
+import jantanivesh.shared.generated.resources.delete_icon
 import jantanivesh.shared.generated.resources.flag_icon
 import jantanivesh.shared.generated.resources.ic_chain
 import jantanivesh.shared.generated.resources.ic_pointer_right
@@ -68,7 +72,8 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.Projecte
 fun ProjectedImpactScreen(
     state: UiState<ProjectedImpactUiData>,
     handleEvent: (ProjectedImpactEvent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    deleting: Boolean = false
 ) {
     UiStateContainer(
         uiState = state,
@@ -96,7 +101,9 @@ fun ProjectedImpactScreen(
                             .fillMaxWidth()
                             .genericDropShadow(shape = RoundedCornerShape(Spacing.dp32))
                             .background(White, RoundedCornerShape(Spacing.dp32)),
-                        onMapClick={handleEvent(ProjectedImpactEvent.OnMapSchemesClick)}
+                        onMapClick={handleEvent(ProjectedImpactEvent.OnMapSchemesClick)},
+                        deleting = deleting,
+                        onDeleteClick = { handleEvent(ProjectedImpactEvent.DeleteGoal) }
                     )
                 }
 
@@ -119,7 +126,9 @@ fun ProjectedImpactScreen(
 private fun GoalAnalysisCard(
     data: ProjectedImpactUiData,
     modifier: Modifier = Modifier,
-    onMapClick: () -> Unit
+    onMapClick: () -> Unit,
+    deleting: Boolean = false,
+    onDeleteClick: () -> Unit = {}
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(Spacing.dp24),
@@ -130,7 +139,12 @@ private fun GoalAnalysisCard(
             modifier = Modifier.padding(vertical=Spacing.dp24, horizontal = Spacing.dp16),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp24)
         ) {
-            GoalAnalysisHeader(goalName = data.goalName, goalTypeName = data.goalTypeName)
+            GoalAnalysisHeader(
+                goalName = data.goalName,
+                goalTypeName = data.goalTypeName,
+                deleting = deleting,
+                onDeleteClick = onDeleteClick
+            )
 
             ProjectedImpactCard(data = data)
 
@@ -227,7 +241,9 @@ private fun MapSipSection(onMapClick: () -> Unit) {
 private fun GoalAnalysisHeader(
     goalName: String,
     goalTypeName: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    deleting: Boolean = false,
+    onDeleteClick: () -> Unit = {}
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
@@ -242,7 +258,9 @@ private fun GoalAnalysisHeader(
                 .background(color = SelectedTenureChipColor, shape = CircleShape)
                 .padding(Spacing.dp16)
         )
-        Column {
+        Column(
+            modifier= Modifier.weight(1f)
+        ) {
             Text(
                 text = goalTypeName.uppercase(),
                 style = MaterialTheme.typography.titleSmall,
@@ -252,6 +270,28 @@ private fun GoalAnalysisHeader(
                 text = goalName,
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
             )
+        }
+
+        // While the delete is in flight the button becomes its own loader, so the goal cannot
+        // be deleted twice on a slow response.
+        IconButton(
+            onClick = onDeleteClick,
+            enabled = !deleting
+        ){
+            if (deleting) {
+                CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    color = GreyText,
+                    modifier = Modifier.size(IconSize.dp20)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(Res.drawable.delete_box),
+                    contentDescription = "Delete goal",
+                    tint = GreyText,
+                    modifier = Modifier.size(IconSize.dp20)
+                )
+            }
         }
     }
 }
@@ -467,8 +507,7 @@ private fun ProjectedImpactScreenPreview() {
         progressPercent = 8,
         feasibilityScore = 0.13f,
         increasedBy = 276_281.56,
-        isFixedCorpus = false,
-        schemes = emptyList()
+        isFixedCorpus = false
     )
     JantaNiveshTheme {
         ProjectedImpactScreen(

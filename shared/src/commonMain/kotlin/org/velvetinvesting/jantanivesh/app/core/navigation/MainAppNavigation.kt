@@ -1,5 +1,9 @@
 package org.velvetinvesting.jantanivesh.app.core.navigation
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,7 +57,7 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalE
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
@@ -178,7 +182,47 @@ fun MainAppNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { it },
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        },
+
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        },
+
+        // Back navigation animation
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -it }, // From Left
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        },
+
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { it }, // To Right
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        }
     ) {
 
         composable<Route.EnterPin> { entry ->
@@ -841,6 +885,7 @@ fun MainAppNavigation(
             val route = it.toRoute<Route.GoalProjectionFlow>()
             val vm: ProjectedImpactViewModel = koinViewModel(parameters = { parametersOf(route.id) })
             val uiState by vm.uiState.collectAsStateWithLifecycle()
+            val deleting by vm.deleting.collectAsStateWithLifecycle()
             LaunchedEffect(vm.effect) {
                 vm.effect.collect { effect ->
                     when (effect) {
@@ -861,13 +906,13 @@ fun MainAppNavigation(
                 }
             }
             ProjectedImpactScreen(
-                state = uiState, handleEvent = vm::handleEvent
+                state = uiState, handleEvent = vm::handleEvent, deleting = deleting
             )
         }
 
         composable<Route.MapSchemes> {
             val route = it.toRoute<Route.MapSchemes>()
-            val vm: ProjectionImpactViewModel = koinViewModel(parameters = { parametersOf(route.id) })
+            val vm: MapSchemeViewModel = koinViewModel(parameters = { parametersOf(route.id) })
             val uiState by vm.uiState.collectAsStateWithLifecycle()
             MapSchemesScreen(
                 uiState = uiState,

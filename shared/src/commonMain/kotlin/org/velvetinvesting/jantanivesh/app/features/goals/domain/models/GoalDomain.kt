@@ -40,11 +40,10 @@ data class GoalDomain(
     val updatedAt: String?,
     /** As reported by the server, so the app and the backend agree on a goal's progress. */
     val progressPercent: Int,
-    /**
-     * Schemes mapped to this goal. `GET /user-goal/{id}` does not return them under `v2.0`, so
-     * this is empty until it does.
-     */
-    val schemes: List<GoalSchemeDomain> = emptyList()
+    /** The holdings mapped to this goal; carried by `GET /user-goal/{id}` only. */
+    val holdings: List<GoalHoldingDomain> = emptyList(),
+    /** What those mapped holdings are worth today, as the server totals them. */
+    val totalHoldingsValue: Double = 0.0
 ) {
     /** The present-day amount the goal was sized from, whichever field carries it. */
     val baseAmount: Double
@@ -69,12 +68,16 @@ data class GoalDomain(
     }
 }
 
-data class GoalSchemeDomain(
-    val actualFolio: String,
-    val balUnits: String,
-    val currentVal: String,
-    val folio: String,
-    val nav: String,
-    val schemeId: String,
-    val schemeName: String
+/**
+ * One holding mapped to a goal. [holdingId] is what `/user-goal/map` and `/user-goal/remove`
+ * are keyed by — the folio number is for the user to read, not for the API.
+ */
+data class GoalHoldingDomain(
+    val holdingId: String,
+    val fundName: String,
+    val folioNumber: String,
+    val units: Double,
+    val nav: Double,
+    val currentValue: Double,
+    val imageUrl: String?
 )

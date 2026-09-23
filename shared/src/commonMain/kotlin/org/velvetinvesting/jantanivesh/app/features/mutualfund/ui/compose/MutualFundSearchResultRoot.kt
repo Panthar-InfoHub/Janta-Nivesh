@@ -44,8 +44,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.icon_filter
 import org.koin.compose.viewmodel.koinViewModel
@@ -83,6 +81,8 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
 import org.velvetinvesting.jantanivesh.app.features.search.ui.compose.SearchOverlay
 import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayEffect
 import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayViewModel
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
+import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 
 @Composable
 fun MutualFundSearchScreenRoot(
@@ -382,30 +382,13 @@ fun MutualFundListCard(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SubcomposeAsyncImage(
-            modifier = Modifier.size(38.dp)
-                .shadow(
-                    elevation = 16.dp
-                )
-                .clip(LocalShapes.current.roundedDp12)
-                .background(Color.White),
-            model = fund.icon,
-            contentDescription = null,
-            loading = {
-                MutualFundIcon(
-                    schemeName = fund.name,
-                    size = 38.dp
-                )
-            },
-            error = {
-                MutualFundIcon(
-                    schemeName = fund.name,
-                    size = 38.dp
-                )
-            },
-            success = {
-                SubcomposeAsyncImageContent()
-            }
+        FundIcon(
+            iconUrl = fund.icon,
+            name = fund.name,
+            size = 38.dp,
+            backgroundColor = Primary,
+            textColor = Color.White,
+            modifier = Modifier.shadow(elevation = 16.dp)
         )
         Column(
             modifier=Modifier.weight(1f)

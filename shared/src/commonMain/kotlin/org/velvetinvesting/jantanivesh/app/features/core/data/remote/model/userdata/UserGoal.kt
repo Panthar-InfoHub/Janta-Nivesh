@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.core.data.remote.model.userdata
 
 import kotlinx.serialization.Serializable
+import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.usergoal.UserGoalHoldingDto
 
 /**
  * One row of `GET /user-goal/` — and the same shape `GET /user/` embeds under `user_goals` and
@@ -49,5 +50,11 @@ data class UserGoal(
     val calculation_version: String? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null,
-    val progress_percent: Double? = null
+    val progress_percent: Double? = null,
+
+    /** The holdings mapped to this goal; only `GET /user-goal/{id}` carries them. */
+    val holdings: List<UserGoalHoldingDto> = emptyList(),
+    val total_holdings_value: Double? = null,
+    val total_invested_amount: Double? = null,
+    val total_current_value: Double? = null
 )

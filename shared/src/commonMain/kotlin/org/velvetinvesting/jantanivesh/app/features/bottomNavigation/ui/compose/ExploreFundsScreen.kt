@@ -34,15 +34,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.arrow_forward_short_icon
 import jantanivesh.shared.generated.resources.monument_icon
@@ -75,6 +71,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHead
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun ExploreFundsScreen(
@@ -288,28 +285,12 @@ fun TopPicksMfCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            SubcomposeAsyncImage(
-                modifier = Modifier.size(44.dp), model = fund.icon, contentDescription = null,
-
-                loading = {
-                    MutualFundIcon(
-                        backgroundColor = GrayBackGround,
-                        textColor = Primary,
-                        schemeName = fund.name, size = 44.dp
-                    )
-                },
-
-                error = {
-                    MutualFundIcon(
-                        backgroundColor = GrayBackGround,
-                        textColor = Primary,
-                        schemeName = fund.name, size = 44.dp
-                    )
-                },
-
-                success = {
-                    SubcomposeAsyncImageContent()
-                }
+            FundIcon(
+                iconUrl = fund.icon,
+                name = fund.name,
+                size = 44.dp,
+                backgroundColor = GrayBackGround,
+                textColor = Primary
             )
             if (fund.metadata.contains("High Risk", ignoreCase = true)) {
                 Text(
@@ -408,35 +389,14 @@ fun TopPicksFixedDepositCard(
             .clickable(onClick = onClick)
             .padding(Spacing.dp20)
     ) {
-        SubcomposeAsyncImage(
-            modifier = Modifier.size(44.dp),
-            model = fund.icon,
-            contentDescription = null,
-
-            loading = {
-                MutualFundIcon(
-                    letterNum = 2,
-                    backgroundColor = GrayBackGround,
-                    textColor = Primary,
-                    schemeName = fund.name,
-                    size = 40.dp,
-                    cornerRadius = Spacing.dp48
-                )
-            },
-
-            error = {
-                MutualFundIcon(
-                    letterNum = 2,
-                    backgroundColor = GrayBackGround,
-                    textColor = Primary,
-                    schemeName = fund.name, size = 40.dp,
-                    cornerRadius = Spacing.dp48
-                )
-            },
-
-            success = {
-                SubcomposeAsyncImageContent()
-            }
+        FundIcon(
+            iconUrl = fund.icon,
+            name = fund.name,
+            size = 44.dp,
+            cornerRadius = Spacing.dp48,
+            backgroundColor = GrayBackGround,
+            textColor = Primary,
+            letterNum = 2
         )
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
@@ -532,32 +492,6 @@ fun StartWealthCard(modifier: Modifier = Modifier) {
             contentDescription = null,
             modifier = Modifier.size(100.dp).padding(start = Spacing.dp32),
             tint = White.copy(alpha = 0.15f)
-        )
-    }
-}
-
-@Composable
-fun MutualFundIcon(
-    letterNum: Int = 1,
-    schemeName: String,
-    modifier: Modifier = Modifier,
-    size: Dp = 48.dp,
-    cornerRadius: Dp = 12.dp,
-    backgroundColor: Color = Primary,
-    textColor: Color = Color.White
-) {
-    Box(
-        modifier = modifier
-            .size(size)
-            .clip(RoundedCornerShape(cornerRadius))
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = schemeName
-                .take(letterNum).capitalize(Locale.current),
-            style = MaterialTheme.typography.headlineSmall,
-            color = textColor
         )
     }
 }

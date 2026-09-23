@@ -19,14 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray65
@@ -57,27 +53,11 @@ fun InsurancePopularPlansCard(
             Box(modifier = Modifier.clip(RoundedCornerShape(Spacing.dp12)).background(color = LogoBackgroundColor, shape = RoundedCornerShape(
                 Spacing.dp12)))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SubcomposeAsyncImage(
-                    modifier = Modifier.size(38.dp)
-                        .genericDropShadow()
-                        .background(Color.White),
-                    model = icon,
-                    contentDescription = null,
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = title,
-                            size = 38.dp
-                        )
-                    },
-                    error = {
-                        MutualFundIcon(
-                            schemeName = title,
-                            size = 38.dp
-                        )
-                    },
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+                FundIcon(
+                    iconUrl = icon,
+                    name = title,
+                    size = 38.dp,
+                    modifier = Modifier.genericDropShadow()
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(title, style = MaterialTheme.typography.labelLarge, color = Black)
@@ -113,30 +93,6 @@ fun InsurancePopularPlansCard(
         }
     }
 
-@Composable
-fun MutualFundIcon(
-    schemeName: String,
-    modifier: Modifier = Modifier,
-    size: Dp = 48.dp,
-    cornerRadius: Dp = 12.dp,
-    backgroundColor: Color = LogoBackgroundColor,
-    textColor: Color = Primary
-) {
-    Box(
-        modifier = modifier
-            .size(size)
-            .clip(RoundedCornerShape(cornerRadius))
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = schemeName
-                .take(1).capitalize(Locale.current),
-            style = MaterialTheme.typography.headlineSmall,
-            color = textColor
-        )
-    }
-}
 
 
 @Composable
@@ -157,27 +113,11 @@ fun InsurancePopularPlansCardGeneral(
             Box(modifier = Modifier.clip(RoundedCornerShape(Spacing.dp12)).background(color = LogoBackgroundColor, shape = RoundedCornerShape(
                 Spacing.dp12)))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SubcomposeAsyncImage(
-                    modifier = Modifier.size(38.dp)
-                        .genericDropShadow()
-                        .background(Color.White),
-                    model = icon,
-                    contentDescription = null,
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = title,
-                            size = 38.dp
-                        )
-                    },
-                    error = {
-                        MutualFundIcon(
-                            schemeName = title,
-                            size = 38.dp
-                        )
-                    },
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+                FundIcon(
+                    iconUrl = icon,
+                    name = title,
+                    size = 38.dp,
+                    modifier = Modifier.genericDropShadow()
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(title, style = MaterialTheme.typography.labelLarge, color = Black)

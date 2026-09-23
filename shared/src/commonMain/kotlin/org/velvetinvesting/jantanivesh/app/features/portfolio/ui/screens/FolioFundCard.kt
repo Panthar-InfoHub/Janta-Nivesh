@@ -22,17 +22,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.MutualFundPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun FolioFundCard(fundItem: MutualFundPortfolioDomain, onClick: () -> Unit) {
@@ -58,28 +56,12 @@ fun FolioFundCard(fundItem: MutualFundPortfolioDomain, onClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                SubcomposeAsyncImage(
-                    modifier = Modifier.size(44.dp),
-                    model = fundItem.icon,
-                    contentDescription = null,
-
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = fundItem.title, size = 44.dp
-                        )
-                    },
-
-                    error = {
-                        MutualFundIcon(
-                            schemeName = fundItem.title, size = 44.dp,
-                            backgroundColor = Color(0xffEFEDF3),
-                            textColor = Primary
-                        )
-                    },
-
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+                FundIcon(
+                    iconUrl = fundItem.icon,
+                    name = fundItem.title,
+                    size = 44.dp,
+                    backgroundColor = Color(0xffEFEDF3),
+                    textColor = Primary
                 )
 
                 Column(

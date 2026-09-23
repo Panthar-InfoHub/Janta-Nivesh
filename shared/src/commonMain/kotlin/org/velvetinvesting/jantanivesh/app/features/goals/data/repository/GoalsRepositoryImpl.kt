@@ -16,7 +16,7 @@ import org.velvetinvesting.jantanivesh.app.features.goals.data.mapper.toDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.calculate.GoalCalculationResponseDto
 import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.config.GoalConfigResponseDto
 import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.goalmapping.GoalMapBodyDto
-import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.goalmapping.UnMapGoalRequestDto
+import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.goalmapping.GoalUnMapBodyDto
 import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.usergoal.UserGoalDto
 import org.velvetinvesting.jantanivesh.app.features.goals.data.remote.model.usergoal.UserGoalsListDto
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.CreateGoalRequest
@@ -96,18 +96,24 @@ class GoalsRepositoryImpl(
         }
     }
 
-    override suspend fun mapGoal(body: GoalMapBodyDto): NetworkResponse<Unit, ErrorDomain> {
+    override suspend fun mapHoldings(
+        goalId: String,
+        holdingIds: List<String>
+    ): NetworkResponse<Unit, ErrorDomain> {
         return safeUnitRequest {
             client.post(getUrl("/user-goal/map")) {
-                setBody(body)
+                setBody(GoalMapBodyDto(goal_id = goalId, holding_ids = holdingIds))
             }
         }
     }
 
-    override suspend fun unMapGoal(goalId: String): NetworkResponse<Unit, ErrorDomain> {
+    override suspend fun removeHolding(
+        goalId: String,
+        holdingId: String
+    ): NetworkResponse<Unit, ErrorDomain> {
         return safeUnitRequest {
-            client.delete(getUrl("/user-goal/map-remove")) {
-                setBody(UnMapGoalRequestDto(goalId))
+            client.post(getUrl("/user-goal/remove")) {
+                setBody(GoalUnMapBodyDto(goal_id = goalId, holding_id = holdingId))
             }
         }
     }

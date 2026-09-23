@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.arrow_front_icon
 import jantanivesh.shared.generated.resources.fd_completion_icon
@@ -51,6 +50,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextF
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppTextFieldStyle
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.FixedDepositDomain
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.model.RiskLevel
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun FixedDepositsScreen(
@@ -263,30 +263,18 @@ private fun FdListItem(
                 horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(Spacing.dp40)
-                        .clip(CircleShape)
-                        .background(SelectedBoxColor),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (item.bankLogoUrl.isNotEmpty()) {
-                        AsyncImage(
-                            model = item.bankLogoUrl, contentDescription = "Bank Logo",
-                            modifier = Modifier
-                                .size(Spacing.dp40)
-                                .clip(RoundedCornerShape(Spacing.dp58))
-                                .background(SelectTenureCardColor)
-                        )
-                    } else {
-                        Text(
-                            text = item.bankName.take(1) + item.bankName.substringAfter(" ")
-                                .take(1),
-                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp),
-                            color = Primary
-                        )
-                    }
-                }
+                FundIcon(
+                    iconUrl = item.bankLogoUrl,
+                    name = item.bankName,
+                    contentDescription = "Bank Logo",
+                    size = Spacing.dp40,
+                    cornerRadius = Spacing.dp40,
+                    backgroundColor = SelectedBoxColor,
+                    textColor = Primary,
+                    // The issuer's initials read as one per word: "State Bank" is "SB".
+                    initials = item.bankName.take(1) +
+                            item.bankName.substringAfter(" ").take(1)
+                )
                 Column() {
                     Text(
                         text = item.bankName,

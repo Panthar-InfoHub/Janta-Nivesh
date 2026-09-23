@@ -74,7 +74,8 @@ val HolderNatureTextColor = Color(0xff44464F)
 val titleColor=Color(0xff5A5E60)
 
 val bgColor4=Color(0xff4881FF)
-val bgColor3=Color(0xffFF9D00)
+val Orange=Color(0xffFF9D00)
+val OrangeBg=Color(0xffFDEEE9)
 
 
 // Explore Screen Colors

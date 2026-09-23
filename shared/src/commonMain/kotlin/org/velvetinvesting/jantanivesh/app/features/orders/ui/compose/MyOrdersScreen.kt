@@ -34,8 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.receipt_icon
 import org.velvetinvesting.jantanivesh.app.core.theme.GrayScreenBackGround
@@ -50,7 +48,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.redColor
 import org.velvetinvesting.jantanivesh.app.core.theme.titleColor
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderDomain
 import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.OrderFilter
@@ -66,6 +63,7 @@ import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrders
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.screens.EmptyFundScreen
 import org.velvetinvesting.jantanivesh.app.shared.compose.PaginationEffect
 import org.velvetinvesting.jantanivesh.app.shared.compose.PaginationFooter
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun MyOrdersScreen(
@@ -277,20 +275,11 @@ internal fun OrderCard(
 
 @Composable
 internal fun OrderFundIcon(order: OrderDomain, size: androidx.compose.ui.unit.Dp = Spacing.dp40) {
-    val fallback: @Composable () -> Unit = {
-        MutualFundIcon(schemeName = order.fundName, size = size, cornerRadius = Spacing.dp12)
-    }
-
-    SubcomposeAsyncImage(
-        model = order.fundIconUrl,
-        contentDescription = null,
-        modifier = Modifier
-            .size(size)
-            .clip(RoundedCornerShape(Spacing.dp12))
-            .background(White),
-        loading = { fallback() },
-        error = { fallback() },
-        success = { SubcomposeAsyncImageContent() }
+    FundIcon(
+        iconUrl = order.fundIconUrl,
+        name = order.fundName,
+        size = size,
+        cornerRadius = Spacing.dp12
     )
 }
 

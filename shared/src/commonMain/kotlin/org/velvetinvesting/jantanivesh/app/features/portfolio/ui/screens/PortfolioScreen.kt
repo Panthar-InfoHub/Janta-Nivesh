@@ -50,8 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.download_ic
 import jantanivesh.shared.generated.resources.holdings_ic
@@ -88,7 +86,6 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.GenericTabSwitcher
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
@@ -106,6 +103,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.Port
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.TotalInvestmentsDomain
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.PortfolioScreenViewModel
 import kotlin.math.abs
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun PortfolioScreenMain(
@@ -517,29 +515,13 @@ fun ActiveSipCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SubcomposeAsyncImage(
-                    modifier = Modifier.size(40.dp).clip(RoundedCornerShape(8.dp)),
-                    model = item.iconUrl,
-                    contentDescription = null,
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = item.fundName,
-                            size = 40.dp,
-                            cornerRadius = 8.dp,
-                            backgroundColor = Color(0xFFF3F4F6),
-                            textColor = Primary
-                        )
-                    },
-                    error = {
-                        MutualFundIcon(
-                            schemeName = item.fundName,
-                            size = 40.dp,
-                            cornerRadius = 8.dp,
-                            backgroundColor = Color(0xFFF3F4F6),
-                            textColor = Primary
-                        )
-                    },
-                    success = { SubcomposeAsyncImageContent() }
+                FundIcon(
+                    iconUrl = item.iconUrl,
+                    name = item.fundName,
+                    size = 40.dp,
+                    cornerRadius = 8.dp,
+                    backgroundColor = Color(0xFFF3F4F6),
+                    textColor = Primary
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
@@ -1320,28 +1302,12 @@ fun PendingPaymentsCard(item: PendingOrderDomain, onCancel: () -> Unit) {
                         verticalAlignment = Alignment.CenterVertically
                     ){
 
-                        SubcomposeAsyncImage(
-                            modifier = Modifier.size(44.dp),
-                            model = item.icon,
-                            contentDescription = null,
-
-                            loading = {
-                                MutualFundIcon(
-                                    schemeName = item.schemeName, size = 44.dp
-                                )
-                            },
-
-                            error = {
-                                MutualFundIcon(
-                                    schemeName = item.schemeName, size = 44.dp,
-                                    backgroundColor = Color(0xffEFEDF3),
-                                    textColor = Primary
-                                )
-                            },
-
-                            success = {
-                                SubcomposeAsyncImageContent()
-                            }
+                        FundIcon(
+                            iconUrl = item.icon,
+                            name = item.schemeName,
+                            size = 44.dp,
+                            backgroundColor = Color(0xffEFEDF3),
+                            textColor = Primary
                         )
                         Text(
                             text = item.schemeName.toTitleCase(),

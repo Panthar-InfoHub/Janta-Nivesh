@@ -78,6 +78,7 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.Ve
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetActiveSipsUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPendingOrdersUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.GetPortfolioUseCase
+// Goals has a use case of the same name over its own repository; both are bound below.
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.InvestMoreLumpsumUseCase
 import org.velvetinvesting.jantanivesh.app.features.orders.domain.usecase.GetOrdersUseCase
 import org.velvetinvesting.jantanivesh.app.features.profile.domain.usecase.GetNotificationsUseCase
@@ -154,7 +155,6 @@ val useCaseModule = module {
     factory { RedeemPartialFundUseCase(get()) }
 
     // Goals UseCases
-    factory { GetPortfolioUseCase(get()) }
     factory { GetOrdersUseCase(get()) }
     factory { GetNotificationsUseCase(get()) }
     factory { MarkNotificationsAsReadUseCase(get()) }

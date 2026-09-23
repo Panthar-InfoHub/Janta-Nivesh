@@ -23,8 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.ic_callended_filled
 import org.jetbrains.compose.resources.painterResource
@@ -35,9 +33,9 @@ import org.velvetinvesting.jantanivesh.app.core.theme.appRed
 import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMoneyAfterL
 import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.MutualFundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.models.FixedDepositPortfolioDomain
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun FixedDepositCard(fdData: FixedDepositPortfolioDomain, onClick: () -> Unit){
@@ -61,26 +59,10 @@ fun FixedDepositCard(fdData: FixedDepositPortfolioDomain, onClick: () -> Unit){
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SubcomposeAsyncImage(
-                    modifier = Modifier.size(44.dp),
-                    model = fdData.issuerLogoUrl,
-                    contentDescription = null,
-
-                    loading = {
-                        MutualFundIcon(
-                            schemeName = fdData.issuerDisplayName, size = 44.dp
-                        )
-                    },
-
-                    error = {
-                        MutualFundIcon(
-                            schemeName = fdData.issuerDisplayName, size = 44.dp
-                        )
-                    },
-
-                    success = {
-                        SubcomposeAsyncImageContent()
-                    }
+                FundIcon(
+                    iconUrl = fdData.issuerLogoUrl,
+                    name = fdData.issuerDisplayName,
+                    size = 44.dp
                 )
                 Column(
                     modifier = Modifier.weight(1f)

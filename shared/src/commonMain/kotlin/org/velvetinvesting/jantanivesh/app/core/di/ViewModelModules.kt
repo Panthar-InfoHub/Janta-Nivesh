@@ -12,7 +12,7 @@ import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.FdDetailsVi
 import org.velvetinvesting.jantanivesh.app.features.fd.ui.viewmodels.SetInvestmentDetailsViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectionImpactViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsViewModel
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.InsuranceViewModel
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackViewModel
@@ -133,7 +133,7 @@ val viewModelModule = module {
     viewModel { YourGoalsViewModel(get()) }
     viewModel { AddGoalViewModel(get()) }
     viewModel { (id: String) -> ProjectedImpactViewModel(id, get()) }
-    viewModel { (id: String) -> ProjectionImpactViewModel(get(), get(), get(), id) }
+    viewModel { (id: String) -> MapSchemeViewModel(id, get(), get()) }
 
     // Portfolio ViewModels
     viewModel { (folioId: String) -> FolioFundsMFViewModel(folioId, get()) }
