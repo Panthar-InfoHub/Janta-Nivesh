@@ -27,7 +27,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.EmailO
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.KycSplashScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.NomineeOptOutTermsScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.ReviewProfileScreen
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.SetupAutopayScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.UploadSignatureScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.VerifyBankAccountScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.DigiLockerSplashScreen
@@ -46,9 +45,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Kyc
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileViewModel
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEffect
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEvent
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.UploadSignatureEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.UploadSignatureViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountEffect
@@ -59,8 +55,8 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Ver
 
 /**
  * Set on whichever entry launched a web view once the user comes back, so that screen can
- * re-check the server and decide what happens next: DigiLocker (from KYC initiation), eSign
- * (from the investor profile) and mandate authorization (from autopay) all use it.
+ * re-check the server and decide what happens next: DigiLocker (from KYC initiation) and eSign
+ * (from the investor profile) both use it.
  */
 private const val KYC_STEP_RESULT = "onboarding_kyc_step_completed"
 
@@ -83,7 +79,6 @@ fun OnboardingNavigation(
         OnboardingStage.EmailVerification -> Route.OnboardingEmail
         OnboardingStage.InvestorProfile -> Route.OnboardingProfile
         OnboardingStage.NomineeAddition -> Route.OnboardingNominee
-        OnboardingStage.AutopaySetup -> Route.OnboardingAutopay
         else -> null
     }
 
@@ -365,11 +360,8 @@ fun OnboardingNavigation(
                 LaunchedEffect(Unit) {
                     vm.effect.collect { effect ->
                         when (effect) {
-                            AddNomineeEffect.NomineesSubmitted -> {
-                                navController.navigate(Route.OnboardingAutopay) {
-                                    launchSingleTop = true
-                                }
-                            }
+                            // The nominees are the last step; autopay is raised per SIP now.
+                            AddNomineeEffect.NomineesSubmitted -> onCompleted()
                         }
                     }
                 }
@@ -389,45 +381,6 @@ fun OnboardingNavigation(
             composable<Route.NomineeOptOutTerms> {
                 NomineeOptOutTermsScreen(
                     onBackClick = { navController.popBackStack() }
-                )
-            }
-
-            composable<Route.OnboardingAutopay> { entry ->
-                val vm: SetupAutopayViewModel = koinViewModel()
-
-                val authorizationReturned by entry.savedStateHandle
-                    .getStateFlow(KYC_STEP_RESULT, false)
-                    .collectAsStateWithLifecycle()
-
-                LaunchedEffect(authorizationReturned) {
-                    if (authorizationReturned) {
-                        entry.savedStateHandle[KYC_STEP_RESULT] = false
-                        vm.handleEvent(SetupAutopayEvent.OnAuthorizationReturned)
-                    }
-                }
-
-                LaunchedEffect(Unit) {
-                    vm.effect.collect { effect ->
-                        when (effect) {
-                            is SetupAutopayEffect.OpenMandateWebView -> {
-                                navController.navigate(
-                                    Route.WebViewScreen(
-                                        url = effect.url,
-                                        title = "UPI Autopay",
-                                        completionRouteKey = WEBVIEW_COMPLETION_KYC_STEP
-                                    )
-                                )
-                            }
-
-                            SetupAutopayEffect.AutopayCompleted -> onCompleted()
-                        }
-                    }
-                }
-
-                val state by vm.uiState.collectAsStateWithLifecycle()
-                SetupAutopayScreen(
-                    state = state,
-                    handleEvent = vm::handleEvent
                 )
             }
 

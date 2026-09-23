@@ -19,12 +19,16 @@ interface PlansRepo {
     /**
      * Registers the SIP against a product id rather than an ISIN. [installmentDay] is required
      * for a monthly SIP and must be null for a daily one — the two send different bodies.
+     *
+     * [mandateId] is the autopay mandate the installments are debited against; every SIP is
+     * created against one, which is why it is not optional.
      */
     suspend fun createSipPlan(
         mfProductId: String,
         amount: Int,
         frequency: String,
         installmentDay: Int?,
+        mandateId: String,
         folioNumber: String
     ): NetworkResponse<PurchasePlan, ErrorDomain>
 

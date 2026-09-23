@@ -71,6 +71,36 @@ sealed interface Route {
     data object AddMandate : Route
 
     /**
+     * Runs a SIP's unattended steps after the user approves its mandate: the mandate read-back,
+     * the plan registration and the OTP request. Everything it needs travels on the route, so it
+     * survives the purchase form being rebuilt behind the authorization web view.
+     */
+    @Serializable
+    data class SipSetup(
+        val mandateId: Int,
+        val mandateRecordId: String,
+        val mfProductId: String,
+        val schemeName: String,
+        val amount: Int,
+        val mode: String,
+        /** Zero for a daily SIP, which has no debit day. */
+        val installmentDay: Int
+    ) : Route
+
+    /**
+     * Confirms a registered SIP with the OTP the gateway sent. [planId] is what both OTP calls
+     * are keyed on; the rest is what the success screen shows once the code lands.
+     */
+    @Serializable
+    data class SipPurchaseOtp(
+        val planId: String,
+        val schemeName: String,
+        val amount: Int,
+        val mode: String,
+        val installmentDay: Int
+    ) : Route
+
+    /**
      * The redeem screen. Everything it needs travels on the route — it is reached from the order
      * details, which already holds the figures, so it loads nothing of its own.
      */
@@ -365,6 +395,4 @@ sealed interface Route {
     /** [email] is collected on [OnboardingEmail], which always runs immediately before this. */
     @Serializable
     data object OnboardingProfile: Route
-    @Serializable
-    data object OnboardingAutopay: Route
 }

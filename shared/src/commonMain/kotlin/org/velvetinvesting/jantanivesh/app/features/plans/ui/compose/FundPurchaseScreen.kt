@@ -178,12 +178,12 @@ private fun PurchaseForm(
             }
 
             // A one-time buy is settled then and there, so there is no mandate to debit.
-            if (state.mode.isSip) {
-                MandateCard(
-                    mandate = state.selectedMandate,
-                    onClick = { handleEvent(FundPurchaseEvent.OnMandateFieldClick) }
-                )
-            }
+//            if (state.mode.isSip) {
+//                MandateCard(
+//                    mandate = state.selectedMandate,
+//                    onClick = { handleEvent(FundPurchaseEvent.OnMandateFieldClick) }
+//                )
+//            }
 
             state.amountError?.let { error ->
                 Text(

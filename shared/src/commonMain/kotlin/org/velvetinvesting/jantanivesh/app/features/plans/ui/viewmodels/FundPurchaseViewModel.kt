@@ -15,22 +15,20 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
+import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AmountTypeLabel
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.MandateOption
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SchemePlan
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SipThreshold
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.CreateMandateUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CreateMfPurchaseUseCase
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.CreateSipPlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetMandatesUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetMfPurchaseUseCase
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetPurchasePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.GetSchemePlanUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.RequestMfPurchaseOtpUseCase
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.RequestPurchasePlanOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyMfPurchaseOtpUseCase
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.usecases.VerifyPurchasePlanOtpUseCase
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -45,6 +43,8 @@ const val OTP_LENGTH = 6
  * waits — the review poll alone can run about twenty seconds, and a bare spinner reads as a hang.
  */
 enum class SipSubmissionStage(val message: String) {
+    /** A SIP starts by registering the autopay mandate its installments will be debited from. */
+    CREATING_MANDATE("Setting up autopay\u2026"),
     CREATING("Setting up your investment\u2026"),
     AWAITING_REVIEW("Verifying with the exchange\u2026"),
     REQUESTING_OTP("Sending OTP\u2026"),
@@ -246,9 +246,36 @@ sealed interface FundPurchaseEvent {
     data object OnOtpSheetDismiss : FundPurchaseEvent
 }
 
+/**
+ * What the SIP setup that follows the mandate needs, gathered on this screen and carried through
+ * the authorization web view to the screen that finishes the purchase.
+ */
+data class SipMandateHandoff(
+    /** The gateway's numeric mandate id, which the status lookup is polled on. */
+    val mandateId: Int,
+    /** The server's own mandate record id, which the create-SIP body is keyed on. */
+    val mandateRecordId: String,
+    val mfProductId: String,
+    val schemeName: String,
+    val amount: Int,
+    val mode: PurchaseMode,
+    /** Zero for a daily SIP, which has no debit day. */
+    val installmentDay: Int
+)
+
 sealed interface FundPurchaseEffect {
     /** The user has no approved mandate, so autopay has to be set up before a SIP can run. */
     data object AddMandate : FundPurchaseEffect
+
+    /**
+     * A SIP's mandate has been created and needs the user's approval on the bank's page. The
+     * caller opens this and calls [FundPurchaseViewModel.onMandateAuthorizationReturned] when
+     * the user comes back.
+     */
+    data class OpenMandateAuthorization(val url: String) : FundPurchaseEffect
+
+    /** The user is back from the mandate page; the rest of the SIP runs on its own screen. */
+    data class StartSipSetup(val handoff: SipMandateHandoff) : FundPurchaseEffect
 
     /**
      * A lumpsum purchase is authorised but not paid. The caller opens this in the web view and
@@ -289,10 +316,7 @@ class FundPurchaseViewModel(
     private val fundAmountType: String?,
     private val getSchemePlan: GetSchemePlanUseCase,
     private val getMandates: GetMandatesUseCase,
-    private val createSipPlan: CreateSipPlanUseCase,
-    private val getPurchasePlan: GetPurchasePlanUseCase,
-    private val requestPurchasePlanOtp: RequestPurchasePlanOtpUseCase,
-    private val verifyPurchasePlanOtp: VerifyPurchasePlanOtpUseCase,
+    private val createMandate: CreateMandateUseCase,
     private val createMfPurchase: CreateMfPurchaseUseCase,
     private val getMfPurchase: GetMfPurchaseUseCase,
     private val requestMfPurchaseOtp: RequestMfPurchaseOtpUseCase,
@@ -322,6 +346,12 @@ class FundPurchaseViewModel(
 
     private val _effect = Channel<FundPurchaseEffect>()
     val effect = _effect.receiveAsFlow()
+
+    /**
+     * Held from the mandate creation so the return from the authorization page can hand the SIP
+     * on without re-reading anything the user typed.
+     */
+    private var pendingSipHandoff: SipMandateHandoff? = null
 
     init {
         loadScheme()
@@ -501,31 +531,31 @@ class FundPurchaseViewModel(
         }
     }
 
+    /**
+     * A SIP cannot be registered without a mandate to debit, so the submit button starts one:
+     * the mandate is created for exactly the amount the user typed, and the rest of the SIP
+     * happens after they approve it. A one-time buy needs no mandate and runs here as before.
+     */
     private fun onSubmitClick() {
         val state = _uiState.value
         if (!state.canSubmit) return
 
+        if (state.mode.isSip) {
+            startSipMandate(state)
+            return
+        }
+
         viewModelScope.launch {
             setStage(SipSubmissionStage.CREATING)
 
-            val purchaseId = if (state.mode.isSip) {
-                createSip(state)
-            } else {
-                createLumpsum(state)
-            } ?: return@launch
+            val purchaseId = createLumpsum(state) ?: return@launch
 
-            val ready = awaitReadyForOtp(purchaseId, state.mode)
+            val ready = awaitPurchasePending(purchaseId)
             if (!ready) return@launch
 
             setStage(SipSubmissionStage.REQUESTING_OTP)
 
-            val otpResult = if (state.mode.isSip) {
-                requestPurchasePlanOtp(purchaseId)
-            } else {
-                requestMfPurchaseOtp(purchaseId)
-            }
-
-            when (otpResult) {
+            when (val otpResult = requestMfPurchaseOtp(purchaseId)) {
                 is NetworkResponse.Error -> failSubmission(otpResult.error.message)
 
                 is NetworkResponse.Success -> {
@@ -543,22 +573,63 @@ class FundPurchaseViewModel(
         }
     }
 
-    private suspend fun createSip(state: FundPurchaseUiState): String? {
-        val result = createSipPlan(
-            mfProductId = state.productId(mfProductId),
-            amount = state.enteredAmount,
-            frequency = state.mode.frequency,
-            // Null is meaningful here: it is what selects the daily request body.
-            installmentDay = state.installmentDay.takeIf { state.mode.needsInstallmentDay }
-        )
+    /**
+     * The mandate's ceiling is the installment itself: a mandate approved for more than the SIP
+     * debits would be asking the user for headroom this purchase never uses.
+     */
+    private fun startSipMandate(state: FundPurchaseUiState) {
+        viewModelScope.launch {
+            setStage(SipSubmissionStage.CREATING_MANDATE)
 
-        return when (result) {
-            is NetworkResponse.Error -> {
-                failSubmission(result.error.message)
-                null
+            val result = createMandate(
+                mandateLimit = state.enteredAmount.toLong(),
+                validFrom = DateTimeUtils.today().toString(),
+                paymentPostbackUrl = PAYMENT_POSTBACK_URL
+            )
+
+            when (result) {
+                is NetworkResponse.Error -> failSubmission(result.error.message)
+
+                is NetworkResponse.Success -> {
+                    val mandate = result.data
+                    val tokenUrl = mandate.tokenUrl
+                    val mandateId = mandate.id
+                    val recordId = mandate.recordId
+
+                    if (mandateId == null || recordId.isNullOrBlank() || tokenUrl.isNullOrBlank()) {
+                        failSubmission(MANDATE_FAILED_MESSAGE)
+                        return@launch
+                    }
+
+                    pendingSipHandoff = SipMandateHandoff(
+                        mandateId = mandateId,
+                        mandateRecordId = recordId,
+                        mfProductId = state.productId(mfProductId),
+                        schemeName = state.scheme?.schemeName?.takeIf { it.isNotBlank() }
+                            ?: state.fundName,
+                        amount = state.enteredAmount,
+                        mode = state.mode,
+                        installmentDay = state.installmentDay
+                            ?.takeIf { state.mode.needsInstallmentDay }
+                            ?: 0
+                    )
+
+                    _uiState.update { it.copy(submissionStage = null) }
+                    _effect.send(FundPurchaseEffect.OpenMandateAuthorization(tokenUrl))
+                }
             }
+        }
+    }
 
-            is NetworkResponse.Success -> result.data.id
+    /**
+     * Called when the user comes back from the mandate authorization page. Whether they actually
+     * approved it is only knowable from the server, so the SIP screen takes over and polls.
+     */
+    fun onMandateAuthorizationReturned() {
+        val handoff = pendingSipHandoff ?: return
+
+        viewModelScope.launch {
+            _effect.send(FundPurchaseEffect.StartSipSetup(handoff))
         }
     }
 
@@ -579,81 +650,46 @@ class FundPurchaseViewModel(
     }
 
     /**
-     * Waits for the order to become confirmable, polling up to [POLL_ATTEMPTS] times at
-     * [POLL_INTERVAL_MS] apart.
+     * Waits for the purchase to become confirmable, polling up to [POLL_ATTEMPTS] times at
+     * [POLL_INTERVAL_MS] apart. `PENDING` is the only state the OTP endpoint accepts, so anything
+     * else means keep waiting, and running out of attempts ends the submission rather than firing
+     * a request that would be rejected.
      *
-     * Both flows wait for one specific state, because that state is the only one the OTP
-     * endpoints accept: a SIP plan has to reach `review_completed`, a lumpsum purchase `PENDING`.
-     * Anything else — still under review, or a state the gateway has not reached yet — means keep
-     * waiting, and running out of attempts ends the submission rather than firing an OTP request
-     * that would be rejected.
-     *
-     * False means the submission is over: a read failed, the order failed, or it never became
+     * False means the submission is over: a read failed, the purchase failed, or it never became
      * confirmable in time.
      */
-    private suspend fun awaitReadyForOtp(purchaseId: String, mode: PurchaseMode): Boolean {
+    private suspend fun awaitPurchasePending(purchaseId: String): Boolean {
         setStage(SipSubmissionStage.AWAITING_REVIEW)
 
         repeat(POLL_ATTEMPTS) { attempt ->
             // The first read happens immediately; the order is often reviewed by then.
             if (attempt > 0) delay(POLL_INTERVAL_MS.milliseconds)
 
-            when (readOrderStatus(purchaseId, mode)) {
-                OrderStatus.READY -> return true
-
-                OrderStatus.FAILED -> {
-                    failSubmission(mode.orderFailedMessage)
-                    return false
-                }
-
-                OrderStatus.UNREADABLE -> return false
-
-                // Still being reviewed — fall through to the next attempt.
-                OrderStatus.WAITING -> Unit
-            }
-        }
-
-        failSubmission(mode.reviewTimedOutMessage)
-        return false
-    }
-
-    /**
-     * One read of whichever order the mode created. A failed read reports itself and comes back
-     * as [OrderStatus.UNREADABLE], which stops the poll immediately.
-     */
-    private suspend fun readOrderStatus(purchaseId: String, mode: PurchaseMode): OrderStatus {
-        return if (mode.isSip) {
-            when (val result = getPurchasePlan(purchaseId)) {
-                is NetworkResponse.Error -> {
-                    failSubmission(result.error.message)
-                    OrderStatus.UNREADABLE
-                }
-
-                is NetworkResponse.Success -> when {
-                    result.data.isReviewCompleted -> OrderStatus.READY
-                    result.data.hasFailed -> OrderStatus.FAILED
-                    else -> OrderStatus.WAITING
-                }
-            }
-        } else {
             when (val result = getMfPurchase(purchaseId)) {
                 is NetworkResponse.Error -> {
                     failSubmission(result.error.message)
-                    OrderStatus.UNREADABLE
+                    return false
                 }
 
                 is NetworkResponse.Success -> when {
-                    result.data.isPending -> OrderStatus.READY
-                    result.data.hasFailed -> OrderStatus.FAILED
-                    else -> OrderStatus.WAITING
+                    result.data.isPending -> return true
+
+                    result.data.hasFailed -> {
+                        failSubmission(PurchaseMode.ONE_TIME.orderFailedMessage)
+                        return false
+                    }
+
+                    // Still being reviewed — fall through to the next attempt.
+                    else -> Unit
                 }
             }
         }
+
+        failSubmission(PurchaseMode.ONE_TIME.reviewTimedOutMessage)
+        return false
     }
 
-    /** What one poll read told us, reduced to what the caller acts on. */
-    private enum class OrderStatus { READY, WAITING, FAILED, UNREADABLE }
-
+    /** Only a one-time purchase is confirmed here; a SIP's OTP has its own screen. */
     private fun onConfirmOtpClick() {
         val state = _uiState.value
         if (state.isVerifyingOtp || !state.isOtpComplete) return
@@ -662,31 +698,7 @@ class FundPurchaseViewModel(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isVerifyingOtp = true) }
-
-            if (state.mode.isSip) {
-                confirmSip(purchaseId, state)
-            } else {
-                confirmLumpsum(purchaseId, state)
-            }
-        }
-    }
-
-    /** A SIP is finished once the OTP lands — the mandate carries the debit from here. */
-    private suspend fun confirmSip(purchaseId: String, state: FundPurchaseUiState) {
-        when (val result = verifyPurchasePlanOtp(purchaseId, state.otp)) {
-            is NetworkResponse.Error -> failVerification(result.error.message)
-
-            is NetworkResponse.Success -> {
-                _uiState.update { it.copy(isVerifyingOtp = false) }
-                emitConfirmed(
-                    ConfirmedPurchase(
-                        amount = result.data.amount,
-                        installmentDay = result.data.installmentDay,
-                        startDate = result.data.startDate
-                    ),
-                    state
-                )
-            }
+            confirmLumpsum(purchaseId, state)
         }
     }
 
@@ -811,16 +823,9 @@ class FundPurchaseViewModel(
         if (state.resendSecondsLeft > 0) return
 
         val purchaseId = state.pendingPurchaseId ?: return
-        val isSip = state.mode.isSip
 
         viewModelScope.launch {
-            val result = if (isSip) {
-                requestPurchasePlanOtp(purchaseId)
-            } else {
-                requestMfPurchaseOtp(purchaseId)
-            }
-
-            when (result) {
+            when (val result = requestMfPurchaseOtp(purchaseId)) {
                 is NetworkResponse.Error -> SnackBarController.showError(result.error.message)
                 is NetworkResponse.Success -> startResendCountdown()
             }
@@ -880,6 +885,11 @@ class FundPurchaseViewModel(
 
     private companion object {
         const val MAX_AMOUNT_DIGITS = 9
+
+        /** No server-side postback is wired up yet, so the mandate is sent the placeholder URL. */
+        const val PAYMENT_POSTBACK_URL = "https://yourapp.com/payment_confirmation"
+
+        const val MANDATE_FAILED_MESSAGE = "Autopay setup failed. Please try again." 
         const val SECOND_MS = 1_000L
 
         /** Five reads gives four 5-second gaps — about 20 seconds of grace per wait. */

@@ -37,7 +37,11 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Upl
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerViewModel
 import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipMandateHandoff
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipPurchaseOtpViewModel
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipSetupViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemHolding
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemViewModel
@@ -97,14 +101,39 @@ val viewModelModule = module {
             fundAmountType = fundAmountType,
             getSchemePlan = get(),
             getMandates = get(),
-            createSipPlan = get(),
-            getPurchasePlan = get(),
-            requestPurchasePlanOtp = get(),
-            verifyPurchasePlanOtp = get(),
+            createMandate = get(),
             createMfPurchase = get(),
             getMfPurchase = get(),
             requestMfPurchaseOtp = get(),
             verifyMfPurchaseOtp = get()
+        )
+    }
+
+    viewModel { (handoff: SipMandateHandoff) ->
+        SipSetupViewModel(
+            handoff = handoff,
+            confirmMandate = get(),
+            createSipPlan = get(),
+            getPurchasePlan = get(),
+            requestPurchasePlanOtp = get()
+        )
+    }
+
+    viewModel { (
+        planId: String,
+        schemeName: String,
+        amount: Int,
+        mode: PurchaseMode,
+        installmentDay: Int
+    ) ->
+        SipPurchaseOtpViewModel(
+            planId = planId,
+            schemeName = schemeName,
+            amount = amount,
+            mode = mode,
+            installmentDay = installmentDay,
+            requestPurchasePlanOtp = get(),
+            verifyPurchasePlanOtp = get()
         )
     }
     viewModel { (holding: RedeemHolding) -> RedeemViewModel(holding, get(), get(), get()) }
