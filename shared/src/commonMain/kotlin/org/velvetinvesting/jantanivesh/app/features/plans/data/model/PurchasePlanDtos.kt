@@ -1,11 +1,13 @@
 package org.velvetinvesting.jantanivesh.app.features.plans.data.model
 
 import kotlinx.serialization.Serializable
+import org.velvetinvesting.jantanivesh.app.core.utils.WebURLConstants
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchasePlan
 
 @Serializable
 data class VerifyOtpBody(
-    val otp: String
+    val otp: String,
+    val payment_postback_url:String= WebURLConstants.mandateExitUrl
 )
 
 /**

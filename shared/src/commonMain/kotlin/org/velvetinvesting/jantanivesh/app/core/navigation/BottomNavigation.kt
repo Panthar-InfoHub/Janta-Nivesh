@@ -83,8 +83,14 @@ fun BottomNavigation(
     val currentDestination = navBackStackEntry?.destination
 
     val homeViewModel: HomeScreenViewModel = koinViewModel()
-    val homeState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val exploreFundVM: ExploreFundsViewModel = koinViewModel()
+
     val portfolioViewModel: PortfolioScreenViewModel =koinViewModel()
+    val profileViewModel: ProfileViewModel = koinViewModel()
+
+    val homeState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+
 
     LaunchedEffect(Unit){
         AppEventsController.appEvent.collect {
@@ -239,11 +245,10 @@ fun BottomNavigation(
                 )
             }
             composable<Route.FundScreener> {
-                val vm: ExploreFundsViewModel = koinViewModel()
-                val state by vm.uiState.collectAsStateWithLifecycle()
+                val state by exploreFundVM.uiState.collectAsStateWithLifecycle()
 
-                LaunchedEffect(vm.effect){
-                    vm.effect.collect {
+                LaunchedEffect(exploreFundVM.effect){
+                    exploreFundVM.effect.collect {
                         when(it){
                             is ExploreFundsEffect.NavigateToFixedDepositDetail -> navigateToFDDetailsScreen(it.fdId)
                             ExploreFundsEffect.NavigateToFixedDeposits -> navigateToCategoryFDScreen()
@@ -255,7 +260,7 @@ fun BottomNavigation(
 
                 ExploreFundsScreen(
                     uiState = state,
-                    handleEvent = vm::handleEvent,
+                    handleEvent = exploreFundVM::handleEvent,
                 )
             }
             composable<Route.PortFolio> {
@@ -271,10 +276,9 @@ fun BottomNavigation(
                 )
             }
             composable<Route.Profile> {
-                val vm: ProfileViewModel = koinViewModel()
                 val browserLauncher = rememberBrowserReturnLauncher()
-                LaunchedEffect(vm.effect){
-                    vm.effect.collect {
+                LaunchedEffect(profileViewModel.effect){
+                    profileViewModel.effect.collect {
                         when (it) {
                             ProfileEffect.NavigateToContactUs -> {
                                 browserLauncher.launch(WebUrls.CONTACT){}
@@ -298,7 +302,7 @@ fun BottomNavigation(
                 }
                 ProfileIntroScreen(
                     state = homeState,
-                    onEvent = vm::handleEvent,
+                    onEvent = profileViewModel::handleEvent,
                 )
             }
             composable<Route.Insurance> {
