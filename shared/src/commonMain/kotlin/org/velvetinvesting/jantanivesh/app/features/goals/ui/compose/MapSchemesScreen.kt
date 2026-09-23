@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,7 +49,9 @@ import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.confirm_selection
 import jantanivesh.shared.generated.resources.delete_box
-import jantanivesh.shared.generated.resources.icon_arrow_right
+import jantanivesh.shared.generated.resources.ic_pointer_right
+import jantanivesh.shared.generated.resources.map_schemes_to_goal
+import jantanivesh.shared.generated.resources.more_fund_for_map
 import jantanivesh.shared.generated.resources.plus_icon
 import jantanivesh.shared.generated.resources.upward_trend_arrow
 import kotlinx.coroutines.flow.Flow
@@ -126,9 +127,9 @@ fun MapSchemesScreen(
                 }
                 MapSchemesFooter(
                     text = if (goalData.holdings.isEmpty()) {
-                        "Map Schemes to Goal"
+                        "Map Schemes to Goal/ " + stringResource(Res.string.map_schemes_to_goal)
                     } else {
-                        "More fund for Map"
+                        "More fund for Map/ " + stringResource(Res.string.more_fund_for_map)
                     },
                     onClick = { onEvent(MapSchemeEvent.OpenBottomSheet) }
                 )
@@ -155,13 +156,12 @@ private fun MapSchemesFooter(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
-            .navigationBarsPadding()
-            .padding(horizontal = Spacing.dp24, vertical = Spacing.dp16)
+            .padding(horizontal = Spacing.dp24, vertical = Spacing.dp12)
     ) {
         AppButton(
             text = text,
             onClick = onClick,
-            trailingIcon = Res.drawable.icon_arrow_right,
+            trailingIcon = Res.drawable.ic_pointer_right,
             modifier = Modifier.fillMaxWidth()
         )
     }

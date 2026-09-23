@@ -31,7 +31,7 @@ fun EnterOtpScreen(
     OtpVerificationScreen(
         state = state.otp,
         title = "Enter the Code/" + stringResource(Res.string.enter_code),
-        submitText = "Next" + stringResource(Res.string.next),
+        submitText = "Next/" + stringResource(Res.string.next),
         onOtpChange = { onEvent(EnterOtpEvent.OnOtpChanged(it)) },
         onSubmit = { onEvent(EnterOtpEvent.OnNextClicked) },
         onResend = { onEvent(EnterOtpEvent.OnResendClicked) },

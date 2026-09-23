@@ -717,7 +717,9 @@ fun MainAppNavigation(
                 installmentDay = route.installmentDay.takeIf { it > 0 },
                 startDate = route.startDate.takeIf { it.isNotBlank() },
                 onViewHoldingsClick = { navController.navigate(Route.MyOrders){
-                    popUpTo(Route.PurchaseSuccess){
+                    // Reified: naming the data class itself would resolve to its companion,
+                    // which has no serializer and blows up when the options are built.
+                    popUpTo<Route.PurchaseSuccess>{
                         inclusive=true
                     }
                 } },

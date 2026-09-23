@@ -173,6 +173,8 @@ data class FundPurchaseUiState(
 
     val canSubmit: Boolean
         get() = !isSubmitting &&
+                // A purchase already awaiting its OTP must not be joined by a second one.
+                !showOtpSheet &&
                 !isLoadingScheme &&
                 scheme != null &&
                 enteredAmount > 0 &&
@@ -551,7 +553,7 @@ class FundPurchaseViewModel(
 
             val purchaseId = createLumpsum(state) ?: return@launch
 
-            val ready = awaitPurchasePending(purchaseId)
+            val ready = awaitPurchaseConfirmable(purchaseId)
             if (!ready) return@launch
 
             setStage(SipSubmissionStage.REQUESTING_OTP)
@@ -652,14 +654,14 @@ class FundPurchaseViewModel(
 
     /**
      * Waits for the purchase to become confirmable, polling up to [POLL_ATTEMPTS] times at
-     * [POLL_INTERVAL_MS] apart. `PENDING` is the only state the OTP endpoint accepts, so anything
-     * else means keep waiting, and running out of attempts ends the submission rather than firing
-     * a request that would be rejected.
+     * [POLL_INTERVAL_MS] apart. The gateway only accepts an OTP once its own review has finished,
+     * so anything short of that means keep waiting, and running out of attempts ends the
+     * submission rather than firing a request that would be rejected.
      *
      * False means the submission is over: a read failed, the purchase failed, or it never became
      * confirmable in time.
      */
-    private suspend fun awaitPurchasePending(purchaseId: String): Boolean {
+    private suspend fun awaitPurchaseConfirmable(purchaseId: String): Boolean {
         setStage(SipSubmissionStage.AWAITING_REVIEW)
 
         repeat(POLL_ATTEMPTS) { attempt ->
@@ -673,7 +675,7 @@ class FundPurchaseViewModel(
                 }
 
                 is NetworkResponse.Success -> when {
-                    result.data.isPending -> return true
+                    result.data.isReadyForOtp -> return true
 
                     result.data.hasFailed -> {
                         failSubmission(PurchaseMode.ONE_TIME.orderFailedMessage)
@@ -741,7 +743,11 @@ class FundPurchaseViewModel(
     /**
      * Called when the user comes back from the payment page. Coming back proves nothing about
      * whether they paid — they may have closed it — so the purchase is read back until it reports
-     * `SUBMITTED`, and only that is treated as done.
+     * `SUBMITTED` *and* its payment reports `SUCCESS`.
+     *
+     * The two move separately: the order is submitted the moment it reaches the exchange, while
+     * the debit behind it can still be pending or can fail outright. Only a successful payment
+     * finishes the flow; a pending one spends the remaining attempts, and a failed one stops here.
      */
     fun onPaymentReturned() {
         val state = _uiState.value
@@ -763,20 +769,35 @@ class FundPurchaseViewModel(
                         val purchase = result.data
 
                         if (purchase.isSubmitted) {
-                            _uiState.update { it.copy(submissionStage = null) }
-                            emitConfirmed(
-                                ConfirmedPurchase(
-                                    amount = purchase.amount,
-                                    installmentDay = null,
-                                    startDate = purchase.scheduledOn
-                                ),
-                                state
-                            )
-                            return@launch
+                            when {
+                                purchase.hasPaymentFailed -> {
+                                    failSubmission(
+                                        purchase.paymentFailureReason ?: PAYMENT_FAILED_MESSAGE
+                                    )
+                                    return@launch
+                                }
+
+                                purchase.isPaymentSuccessful -> {
+                                    _uiState.update { it.copy(submissionStage = null) }
+                                    emitConfirmed(
+                                        ConfirmedPurchase(
+                                            amount = purchase.amount,
+                                            installmentDay = null,
+                                            startDate = purchase.scheduledOn
+                                        ),
+                                        state
+                                    )
+                                    return@launch
+                                }
+
+                                // Submitted with the debit still in flight. Nothing has gone
+                                // wrong yet, so the remaining attempts are spent waiting on it.
+                                else -> Unit
+                            }
                         }
 
                         if (purchase.hasFailed) {
-                            failSubmission("The payment did not go through. Please try again.")
+                            failSubmission(PAYMENT_FAILED_MESSAGE)
                             return@launch
                         }
                     }
@@ -890,7 +911,8 @@ class FundPurchaseViewModel(
         /** No server-side postback is wired up yet, so the mandate is sent the placeholder URL. */
         const val PAYMENT_POSTBACK_URL = WebURLConstants.mandateExitUrl
 
-        const val MANDATE_FAILED_MESSAGE = "Autopay setup failed. Please try again." 
+        const val MANDATE_FAILED_MESSAGE = "Autopay setup failed. Please try again."
+        const val PAYMENT_FAILED_MESSAGE = "The payment did not go through. Please try again."
         const val SECOND_MS = 1_000L
 
         /** Five reads gives four 5-second gaps — about 20 seconds of grace per wait. */

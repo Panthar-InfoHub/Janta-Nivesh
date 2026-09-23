@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,17 +35,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.arrow_forward_short_icon
+import jantanivesh.shared.generated.resources.invest_now
 import jantanivesh.shared.generated.resources.monument_icon
 import jantanivesh.shared.generated.resources.mutual_funds_icon
 import jantanivesh.shared.generated.resources.piggybank_icon
 import jantanivesh.shared.generated.resources.upward_trend_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.DarkNavy
 import org.velvetinvesting.jantanivesh.app.core.theme.FdIconBg
@@ -69,9 +69,9 @@ import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.ExploreFundsUiState
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 
 @Composable
 fun ExploreFundsScreen(
@@ -368,7 +368,7 @@ fun TopPicksMfCard(
             modifier = Modifier.width(250.dp)
         ) {
             Text(
-                "Invest Now →",
+                "Invest Now/ " + stringResource(Res.string.invest_now) + " →",
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
             )
         }
