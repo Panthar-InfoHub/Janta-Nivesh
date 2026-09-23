@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -63,8 +64,10 @@ import org.velvetinvesting.jantanivesh.app.core.utils.formatWithCommas
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalHoldingDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactEvent
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactUiData
 
@@ -92,7 +95,9 @@ fun ProjectedImpactScreen(
 
             LazyColumn(
                 modifier = Modifier.weight(1f).fillMaxSize(),
-                contentPadding = PaddingValues(top = Spacing.dp16)
+                contentPadding = PaddingValues(top = Spacing.dp16, bottom = Spacing.dp20),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp12)
+
             ) {
                 item {
                     GoalAnalysisCard(
@@ -104,6 +109,22 @@ fun ProjectedImpactScreen(
                         onMapClick={handleEvent(ProjectedImpactEvent.OnMapSchemesClick)},
                         deleting = deleting,
                         onDeleteClick = { handleEvent(ProjectedImpactEvent.DeleteGoal) }
+                    )
+                }
+
+                item {
+                    BarHeader(
+                        title = "Mapped Funds",
+                        modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.dp8)
+                    )
+                }
+
+                items(data.holdings, key = {it.holdingId}){holding->
+                    MappedHoldingCard(
+                        holding = holding,
+                        removing = false,
+                        onRemove = {  },
+                        showDelete = false
                     )
                 }
 
@@ -148,9 +169,9 @@ private fun GoalAnalysisCard(
 
             ProjectedImpactCard(data = data)
 
-//            ProgressSection(
-//                progressPercent = data.progressPercent,
-//            )
+            ProgressSection(
+                progressPercent = data.progressPercent,
+            )
 
             MapSipSection(
                 onMapClick= onMapClick
@@ -431,7 +452,7 @@ private fun ReturnDetailItem(
         )
         Text(
             text = value + valueSuffix,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
             color = valueColor
         )
     }
@@ -490,6 +511,35 @@ private fun Double.asRupeesText(): String = "₹ ${formatWithCommas(this.toLong(
 @Preview(showBackground = true)
 @Composable
 private fun ProjectedImpactScreenPreview() {
+     val previewHoldings = listOf(
+        GoalHoldingDomain(
+            holdingId = "holding-1",
+            fundName = "HDFC Top 100 Fund – Growth",
+            folioNumber = "123456",
+            units = 150.25,
+            nav = 332.8,
+            currentValue = 50_000.0,
+            imageUrl = null
+        ),
+        GoalHoldingDomain(
+            holdingId = "holding-2",
+            fundName = "ICICI Pru Bluechip – Direct Gr.",
+            folioNumber = "884210",
+            units = 85.50,
+            nav = 98.4,
+            currentValue = 35_000.0,
+            imageUrl = null
+        ),
+        GoalHoldingDomain(
+            holdingId = "holding-3",
+            fundName = "Parag Parikh Flexi Cap Fund",
+            folioNumber = "441092",
+            units = 42.10,
+            nav = 712.5,
+            currentValue = 30_000.0,
+            imageUrl = null
+        )
+    )
     val sampleData = ProjectedImpactUiData(
         goalId = "940a7f46-212e-4c53-a5bd-09399cb2bad2",
         goalTypeId = 4,
@@ -507,7 +557,8 @@ private fun ProjectedImpactScreenPreview() {
         progressPercent = 8,
         feasibilityScore = 0.13f,
         increasedBy = 276_281.56,
-        isFixedCorpus = false
+        isFixedCorpus = false,
+        holdings = previewHoldings
     )
     JantaNiveshTheme {
         ProjectedImpactScreen(

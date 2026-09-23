@@ -259,6 +259,7 @@ fun MappedHoldingCard(
     holding: GoalHoldingDomain,
     removing: Boolean,
     onRemove: () -> Unit,
+    showDelete: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -300,21 +301,23 @@ fun MappedHoldingCard(
             }
 
             // Removing swaps the button for a loader, so the same row cannot be deleted twice.
-            if (removing) {
-                CircularProgressIndicator(
-                    strokeWidth = 2.dp,
-                    color = Primary,
-                    modifier = Modifier.size(Spacing.dp16)
-                )
-            } else {
-                Icon(
-                    painter = painterResource(Res.drawable.delete_box),
-                    contentDescription = "Remove ${holding.fundName}",
-                    tint = SlateGray,
-                    modifier = Modifier
-                        .size(Spacing.dp16)
-                        .clickable(onClick = onRemove)
-                )
+            if (showDelete){
+                if (removing) {
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        color = Primary,
+                        modifier = Modifier.size(Spacing.dp16)
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(Res.drawable.delete_box),
+                        contentDescription = "Remove ${holding.fundName}",
+                        tint = SlateGray,
+                        modifier = Modifier
+                            .size(Spacing.dp16)
+                            .clickable(onClick = onRemove)
+                    )
+                }
             }
         }
 

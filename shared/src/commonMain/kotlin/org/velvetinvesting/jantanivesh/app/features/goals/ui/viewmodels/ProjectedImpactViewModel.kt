@@ -14,6 +14,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalDomain
+import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalHoldingDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
 
 /**
@@ -42,7 +43,8 @@ data class ProjectedImpactUiData(
     /** How much inflation adds between today's figure and the target. */
     val increasedBy: Double,
     /** True for "Build My Savings", where the target was named rather than inflated. */
-    val isFixedCorpus: Boolean
+    val isFixedCorpus: Boolean,
+    val holdings: List<GoalHoldingDomain>
 )
 
 sealed interface ProjectedImpactEvent {
@@ -145,7 +147,8 @@ fun GoalDomain.toUiData(): ProjectedImpactUiData = ProjectedImpactUiData(
     progressPercent = progressPercent,
     feasibilityScore = feasibilityScore(),
     increasedBy = (futureTargetAmount - baseAmount).coerceAtLeast(0.0),
-    isFixedCorpus = goalType?.usesTargetAmount == true
+    isFixedCorpus = goalType?.usesTargetAmount == true,
+    holdings = holdings
 )
 
 /**
