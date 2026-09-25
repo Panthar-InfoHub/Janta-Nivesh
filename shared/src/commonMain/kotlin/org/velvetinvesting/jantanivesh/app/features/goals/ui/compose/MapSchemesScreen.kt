@@ -77,7 +77,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHead
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.FundIcon
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.VelvetLoader
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.GenericLoader
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalHoldingDomain
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeEvent
@@ -479,7 +479,7 @@ fun MapSchemesSheetBody(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                VelvetLoader()
+                GenericLoader()
             }
         }
         is UiState.Success -> {
