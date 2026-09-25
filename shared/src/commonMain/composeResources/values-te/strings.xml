@@ -441,4 +441,5 @@
     <string name="secure_transparent_future">సురక్షితం, పారదర్శకం మరియు మీ భవిష్యత్తు కోసం రూపొందించబడింది.</string>
     <string name="units_title">యూనిట్లు</string>
     <string name="value_title">విలువ</string>
+    <string name="tac_dialog_cancel">రద్దు చేయండి</string>
 </resources>

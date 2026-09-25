@@ -442,4 +442,5 @@
     <string name="secure_transparent_future">নিরাপদ, স্বচ্ছ এবং আপনার ভবিষ্যতের জন্য তৈরি।</string>
     <string name="units_title">ইউনিট</string>
     <string name="value_title">মূল্য</string>
+    <string name="tac_dialog_cancel">বাতিল করুন</string>
 </resources>

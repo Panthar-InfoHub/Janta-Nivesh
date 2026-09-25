@@ -442,4 +442,5 @@
     <string name="secure_transparent_future">பாதுகாப்பான, வெளிப்படையான, உங்கள் எதிர்காலத்திற்காக உருவாக்கப்பட்டது.</string>
     <string name="units_title">யூனிட்கள்</string>
     <string name="value_title">மதிப்பு</string>
+    <string name="tac_dialog_cancel">ரத்து செய்</string>
 </resources>

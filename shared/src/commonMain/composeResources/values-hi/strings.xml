@@ -480,4 +480,5 @@
     <string name="secure_transparent_future">सुरक्षित, पारदर्शी और आपके भविष्य के लिए बनाया गया।</string>
     <string name="units_title">यूनिट्स</string>
     <string name="value_title">मूल्य</string>
+    <string name="tac_dialog_cancel">रद्द करें</string>
 </resources>
