@@ -25,17 +25,20 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import org.velvetinvesting.jantanivesh.app.core.deeplink.ExternalAppUrl
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 actual fun PlatformWebView(
     state: WebViewState,
     modifier: Modifier,
-    onUrlChanged: (String) -> Unit
+    onUrlChanged: (String) -> Unit,
+    onExternalAppUrl: ((String) -> Unit)?
 ) {
     val context = LocalContext.current
 
     val currentOnUrlChanged by rememberUpdatedState(onUrlChanged)
+    val currentOnExternalAppUrl by rememberUpdatedState(onExternalAppUrl)
 
     /**
      * Hands a main-frame URL to the caller without touching [WebViewState.currentUrl] — that
@@ -45,6 +48,18 @@ actual fun PlatformWebView(
     fun WebView?.reportUrl(url: String?) {
         if (url.isNullOrBlank()) return
         if (this == null) currentOnUrlChanged(url) else post { currentOnUrlChanged(url) }
+    }
+
+    /**
+     * Hands an app link (`gpay://`, `intent://` …) to the caller instead of letting the web view
+     * load it, which would only end on an unknown-scheme error page. Returns true when the link
+     * was taken, so the navigation must be cancelled; false leaves it to load as before.
+     */
+    fun WebView?.handOffExternalAppUrl(url: String?): Boolean {
+        val handler = currentOnExternalAppUrl ?: return false
+        if (url == null || !ExternalAppUrl.isExternalAppUrl(url)) return false
+        if (this == null) handler(url) else post { handler(url) }
+        return true
     }
 
     val webView = remember {
@@ -241,6 +256,12 @@ actual fun PlatformWebView(
                 ): Boolean {
                     Log.d("WEB", "Loading : ${request?.url}")
 
+                    // Checked for every frame, not just the main one: a payment widget living in
+                    // an iframe links to the UPI apps from there.
+                    if (view.handOffExternalAppUrl(request?.url?.toString())) {
+                        return true
+                    }
+
                     if (request?.isForMainFrame == true) {
                         view.reportUrl(request.url?.toString())
                     }
@@ -295,9 +316,10 @@ actual fun PlatformWebView(
                             request: WebResourceRequest?
                         ): Boolean {
 
-                            view?.loadUrl(
-                                request?.url.toString()
-                            )
+                            val url = request?.url?.toString()
+                            if (!view.handOffExternalAppUrl(url)) {
+                                view?.loadUrl(url.toString())
+                            }
 
                             child?.destroy()
 
@@ -310,8 +332,10 @@ actual fun PlatformWebView(
                             favicon: Bitmap?
                         ) {
 
-                            url?.let {
-                                view?.loadUrl(it)
+                            if (!view.handOffExternalAppUrl(url)) {
+                                url?.let {
+                                    view?.loadUrl(it)
+                                }
                             }
 
                             child?.destroy()

@@ -15,14 +15,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.icon_cross
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
+import org.velvetinvesting.jantanivesh.app.core.deeplink.ExternalAppLauncher
+import org.velvetinvesting.jantanivesh.app.core.deeplink.ExternalAppUrl
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
+import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun WebViewScreen(
@@ -32,6 +39,8 @@ fun WebViewScreen(
     modifier: Modifier = Modifier
 ) {
     val state = rememberWebViewState(config.url)
+    val externalAppLauncher: ExternalAppLauncher = koinInject()
+    val scope = rememberCoroutineScope()
 
     // The exit URL can now be seen by more than one platform callback (the request, the page
     // load, the load error), so the hand-back is latched to the first sighting.
@@ -60,6 +69,22 @@ fun WebViewScreen(
                     ) {
                         exitReported.value = true
                         onExitUrlReached(url)
+                    }
+                },
+                // An app link (gpay://, phonepe:// …) is opened in its app while this page stays
+                // put and carries on with its own status check and exit URL. With the app missing,
+                // the link is never loaded, so the page is still usable for another option.
+                onExternalAppUrl = { url ->
+                    scope.launch {
+                        try {
+                            if (!externalAppLauncher.launch(url)) {
+                                SnackBarController.showError(ExternalAppUrl.appNotInstalledMessage(url))
+                            }
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            SnackBarController.showError(ExternalAppUrl.appNotInstalledMessage(url))
+                        }
                     }
                 }
             )

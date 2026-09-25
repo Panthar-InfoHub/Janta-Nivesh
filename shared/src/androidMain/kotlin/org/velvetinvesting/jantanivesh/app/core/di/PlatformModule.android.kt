@@ -4,6 +4,8 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.velvetinvesting.jantanivesh.app.core.database.createAndroidDatabase
 import org.velvetinvesting.jantanivesh.app.core.datastore.createAndroidDataStore
+import org.velvetinvesting.jantanivesh.app.core.deeplink.ExternalAppLauncher
+import org.velvetinvesting.jantanivesh.app.core.deeplink.AndroidExternalAppLauncher
 import org.velvetinvesting.jantanivesh.app.core.location.AndroidLocationProvider
 import org.velvetinvesting.jantanivesh.app.core.location.LocationProvider
 import org.velvetinvesting.jantanivesh.app.core.platform.AndroidSharedPreferences
@@ -24,6 +26,7 @@ actual val platformModule: Module = module{
     single<DeviceInfoRetriever> { DeviceInfoRetrieverAndroid(get()) }
     single<PdfViewer> { PdfViewerAndroid(get()) }
     single<BrowserLauncher> { AndroidBrowserLauncher(get()) }
+    single<ExternalAppLauncher> { AndroidExternalAppLauncher(get()) }
     single<PdfDownloadManager> { PdfDownloader(get(), get()) }
     single<LocationProvider> { AndroidLocationProvider(get()) }
 }
