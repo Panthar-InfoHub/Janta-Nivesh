@@ -354,11 +354,29 @@ sealed interface Route {
     @Serializable
     data object ActiveMandates : Route
 
+    /**
+     * [interceptExternalAppUrls] opens app links (`gpay://`, `intent://` …) the page leads to in
+     * their app. Off, they are only blocked: the page never loads them either way.
+     */
     @Serializable
     data class WebViewScreen(
         val url: String,
         val exitUrlPatterns: List<String> = emptyList(),
         val matchType: String = WebViewUrlMatchType.CONTAINS.name,
+        val title: String? = null,
+        val completionRouteKey: String? = null,
+        val interceptExternalAppUrls: Boolean = true
+    ): Route
+
+    /**
+     * A UPI payment page with no timer of its own; see
+     * [org.velvetinvesting.jantanivesh.app.core.webview.UpiPaymentWebViewScreen]. It closes when
+     * the user comes back from the UPI app, and reports through [completionRouteKey] like
+     * [WebViewScreen] does.
+     */
+    @Serializable
+    data class UpiPaymentWebView(
+        val url: String,
         val title: String? = null,
         val completionRouteKey: String? = null
     ): Route

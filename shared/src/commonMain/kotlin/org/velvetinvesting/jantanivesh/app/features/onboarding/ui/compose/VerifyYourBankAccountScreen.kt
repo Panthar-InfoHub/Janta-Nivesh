@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -59,15 +60,19 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.tagColor
+import org.velvetinvesting.jantanivesh.app.core.utils.AppBackHandler
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InvertedAppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.TitledAppTextField
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.AccountType
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.BankAccountDetails
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.BankVerificationStep
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountUiState
 
@@ -97,19 +102,94 @@ fun VerifyBankAccountScreen(
         }
     }
 
+    // Leaving mid-check would drop the confirmation of a payment the user may already have made;
+    // the poll is short, so back simply waits for it to settle.
+    AppBackHandler(enabled = state.step == BankVerificationStep.VERIFYING) {}
+
+    when (state.step) {
+        BankVerificationStep.LOADING -> Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = Primary)
+        }
+
+        BankVerificationStep.LOAD_ERROR -> ErrorScreen(
+            errorMessage = state.loadError.orEmpty(),
+            onRetryClick = { handleEvent(VerifyBankAccountEvent.OnRetryLoadClick) },
+            modifier = modifier
+        )
+
+        BankVerificationStep.INTRO -> ReversePennyDropIntroScreen(
+            isInitiating = state.isInitiating,
+            notice = state.introNotice,
+            onVerifyClick = { handleEvent(VerifyBankAccountEvent.OnStartVerificationClick) },
+            onBackClick = { handleEvent(VerifyBankAccountEvent.OnIntroBackClick) },
+            modifier = modifier
+        )
+
+        BankVerificationStep.SELECT_APP -> SelectUpiAppScreen(
+            apps = state.availableApps,
+            canPayByQr = state.canPayByQr,
+            selectedOption = state.selectedPaymentOption,
+            notice = state.paymentNotice,
+            canCheckStatus = state.canCheckPaymentStatus,
+            onOptionSelected = { handleEvent(VerifyBankAccountEvent.OnPaymentOptionSelected(it)) },
+            onPayClick = { handleEvent(VerifyBankAccountEvent.OnPayClick) },
+            onCheckStatusClick = { handleEvent(VerifyBankAccountEvent.OnCheckPaymentStatusClick) },
+            onBackClick = { handleEvent(VerifyBankAccountEvent.OnSelectAppBackClick) },
+            appLinkToOpen = state.appLinkToOpen,
+            awaitingAppReturn = state.awaitingAppReturn,
+            onAppLinkOpening = { handleEvent(VerifyBankAccountEvent.OnAppLinkOpening) },
+            onAppLinkNotOpened = { handleEvent(VerifyBankAccountEvent.OnAppLinkNotOpened) },
+            onReturnedFromApp = { handleEvent(VerifyBankAccountEvent.OnReturnedFromUpiApp(it)) },
+            onFormSwitch = {handleEvent(VerifyBankAccountEvent.SwitchToForm)},
+            modifier = modifier
+        )
+
+        BankVerificationStep.VERIFYING -> VerifyingPaymentContent(modifier = modifier)
+
+        BankVerificationStep.FORM -> BankDetailsForm(
+            state = state,
+            handleEvent = handleEvent,
+            modifier = modifier
+        )
+    }
+}
+
+/**
+ * The bank details form, reached once the details are known. Back — the header's or the system's —
+ * returns to the intro rather than leaving the step, so the user can verify another account.
+ */
+@Composable
+private fun BankDetailsForm(
+    state: VerifyBankAccountUiState,
+    handleEvent: (VerifyBankAccountEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val onBackClick = { handleEvent(VerifyBankAccountEvent.OnFormBackClick) }
+    AppBackHandler(enabled = true, onBack = onBackClick)
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = Spacing.dp24)
+            .background(White)
             .clearFocusOnTap()
             .imePadding()
     ) {
+        BackHeader(
+            title = "",
+            onBack = onBackClick,
+            showBack = true,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp20),
+        )
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = Spacing.dp24),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp18),
-            contentPadding = PaddingValues(top = Spacing.dp24)
+            contentPadding = PaddingValues(top = Spacing.dp8)
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {
@@ -210,6 +290,7 @@ fun VerifyBankAccountScreen(
             enabled = state.canSubmit,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = Spacing.dp24)
                 .padding(top = Spacing.dp24)
                 .genericDropShadow()
         )
@@ -330,7 +411,7 @@ private fun BankDetailRow(label: String, value: String) {
 private fun VerifyBankAccountScreenPreview() {
     JantaNiveshTheme {
         VerifyBankAccountScreen(
-            state = VerifyBankAccountUiState(),
+            state = VerifyBankAccountUiState(step = BankVerificationStep.FORM),
             handleEvent = {}
         )
     }

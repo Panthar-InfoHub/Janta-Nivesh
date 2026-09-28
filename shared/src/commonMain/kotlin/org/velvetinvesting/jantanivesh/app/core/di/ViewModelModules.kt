@@ -82,7 +82,7 @@ val viewModelModule = module {
     viewModel { EmailIdViewModel(get(), get()) }
     viewModel { (email: String) -> EmailOtpViewModel(email, get(), get(), get()) }
     viewModel { KycSplashViewModel() }
-    viewModel { VerifyBankAccountViewModel(get(), get()) }
+    viewModel { VerifyBankAccountViewModel(get(), get(), get(), get(), get()) }
     viewModel { VerifyWithDigilockerViewModel(get(), get()) }
     viewModel { UploadSignatureViewModel(get()) }
     viewModel { ReviewProfileViewModel(get(), get(), get(), get()) }

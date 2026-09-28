@@ -30,8 +30,14 @@ enum class SipSetupStage(val message: String) {
 
 data class SipSetupUiState(
     val stage: SipSetupStage = SipSetupStage.CONFIRMING_MANDATE,
-    /** Set when the chain stops; the screen then offers a retry instead of a spinner. */
-    val error: String? = null
+    /** Set when the chain stops; the screen then shows it in place of the spinner. */
+    val error: String? = null,
+    /**
+     * True when the chain stopped only because a wait ran out — the mandate or the SIP is still
+     * pending and may yet go through, so the screen offers to check its status again. A real
+     * failure leaves this false and the user can only go back.
+     */
+    val canCheckStatus: Boolean = false
 ) {
     val isWorking: Boolean
         get() = error == null
@@ -65,12 +71,20 @@ class SipSetupViewModel(
     private val _effect = Channel<SipSetupEffect>()
     val effect = _effect.receiveAsFlow()
 
+    /**
+     * The plan once it is registered. A status check after that point must only read this plan
+     * back — running the chain from the top would register a second SIP.
+     */
+    private var planId: String? = null
+
     init {
         start()
     }
 
-    fun onRetryClick() {
-        if (_uiState.value.isWorking) return
+    /** Re-reads whatever was still pending and carries on from there; nothing is redone. */
+    fun onCheckStatusClick() {
+        val state = _uiState.value
+        if (state.isWorking || !state.canCheckStatus) return
         start()
     }
 
@@ -79,12 +93,20 @@ class SipSetupViewModel(
     }
 
     private fun start() {
-        _uiState.update { it.copy(stage = SipSetupStage.CONFIRMING_MANDATE, error = null) }
+        _uiState.update {
+            it.copy(
+                stage = if (planId == null) SipSetupStage.CONFIRMING_MANDATE else SipSetupStage.AWAITING_REVIEW,
+                error = null,
+                canCheckStatus = false
+            )
+        }
 
         viewModelScope.launch {
-            if (!awaitMandateApproval()) return@launch
-
-            val planId = createPlan() ?: return@launch
+            // Once the plan exists only its review is left to wait on; before that, the mandate.
+            val planId = this@SipSetupViewModel.planId ?: run {
+                if (!awaitMandateApproval()) return@launch
+                createPlan()?.also { this@SipSetupViewModel.planId = it } ?: return@launch
+            }
 
             if (!awaitReviewCompleted(planId)) return@launch
 
@@ -119,7 +141,7 @@ class SipSetupViewModel(
             }
         }
 
-        fail(MANDATE_PENDING_MESSAGE)
+        fail(MANDATE_PENDING_MESSAGE, canCheckStatus = true)
         return false
     }
 
@@ -176,17 +198,20 @@ class SipSetupViewModel(
             }
         }
 
-        fail(SIP_TIMED_OUT_MESSAGE)
+        fail(SIP_TIMED_OUT_MESSAGE, canCheckStatus = true)
         return false
     }
 
     private fun setStage(stage: SipSetupStage) {
-        _uiState.update { it.copy(stage = stage, error = null) }
+        _uiState.update { it.copy(stage = stage, error = null, canCheckStatus = false) }
     }
 
-    /** The message stays on screen with a retry: the mandate is already approved and reusable. */
-    private fun fail(message: String) {
-        _uiState.update { it.copy(error = message) }
+    /**
+     * Stops the chain with [message] on screen. [canCheckStatus] is only for a wait that ran out;
+     * anything that actually failed has nothing left to check, so the user just goes back.
+     */
+    private fun fail(message: String, canCheckStatus: Boolean = false) {
+        _uiState.update { it.copy(error = message, canCheckStatus = canCheckStatus) }
     }
 
     private companion object {
@@ -195,14 +220,19 @@ class SipSetupViewModel(
         const val MANDATE_POLL_ATTEMPTS = 5
         const val POLL_INTERVAL_MS = 5_000L
 
-        const val MANDATE_FAILED_MESSAGE = "We could not confirm your autopay mandate."
+        const val MANDATE_FAILED_MESSAGE =
+            "We could not confirm your autopay mandate. Please go back and start your SIP again."
 
         const val MANDATE_PENDING_MESSAGE =
-            "Your autopay mandate has not been approved yet. Please try again in a moment."
+            "Your bank has not approved the autopay mandate yet. This can take a few minutes — " +
+                "tap Check Status to see if it has gone through. You will not need to set up " +
+                "the mandate again."
 
-        const val SIP_FAILED_MESSAGE = "This SIP could not be set up. Please try again."
+        const val SIP_FAILED_MESSAGE =
+            "This SIP could not be set up. Please go back and start your SIP again."
 
         const val SIP_TIMED_OUT_MESSAGE =
-            "Your SIP is taking longer than usual to set up. Please try again in a moment."
+            "Your SIP is still being verified with the exchange. Tap Check Status to see if " +
+                "it is ready — this will not create a new SIP."
     }
 }

@@ -651,8 +651,8 @@ fun MainAppNavigation(
             SipSetupScreen(
                 state = state,
                 schemeName = route.schemeName,
-                onRetryClick = vm::onRetryClick,
-                onCancelClick = vm::onCancelClick
+                onCheckStatusClick = vm::onCheckStatusClick,
+                onGoBackClick = vm::onCancelClick
             )
         }
 
@@ -1577,7 +1577,8 @@ fun MainAppNavigation(
                     title = route.title
                 ),
                 onExitUrlReached = { onWebViewDone() },
-                onBackClick = { onWebViewDone() }
+                onBackClick = { onWebViewDone() },
+                interceptExternalAppUrls = route.interceptExternalAppUrls
             )
         }
 

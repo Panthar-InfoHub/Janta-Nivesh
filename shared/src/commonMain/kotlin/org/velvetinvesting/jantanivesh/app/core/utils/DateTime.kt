@@ -521,6 +521,28 @@ fun formatMillisToIsoDate(millis: Long?): String {
             date.day.toString().padStart(2, '0')
 }
 
+@OptIn(ExperimentalTime::class)
+
+fun formatMillisToDisplayDate(millis: Long?): String {
+
+    if (millis == null) return ""
+
+    val date = Instant
+
+        .fromEpochMilliseconds(millis)
+
+        .toLocalDateTime(TimeZone.UTC)
+
+        .date
+
+    return "${date.day.toString().padStart(2, '0')}-" +
+
+            "${date.month.number.toString().padStart(2, '0')}-" +
+
+            date.year.toString().padStart(4, '0')
+
+}
+
 /**
  * "2026-08-07T00:00:00.000Z" -> "Aug 07, 2026". Read in UTC, which is how the gateway states a
  * mandate's start date: it is a calendar date, not a moment, so shifting it into the device's zone

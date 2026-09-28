@@ -14,6 +14,9 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Mand
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Nominee
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PANVerificationError
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PennyDropStatus
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PrefilledBankDetails
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.ReversePennyDropLinks
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.ReversePennyDropStatus
 
 interface OnboardingRepo  {
 
@@ -48,6 +51,21 @@ interface OnboardingRepo  {
     suspend fun getPennyDropStatus(
         accountNumber: String
     ) : NetworkResponse<PennyDropStatus, ErrorDomain>
+
+    /**
+     * Bank details a reverse penny drop has already read, or null when there are none yet — in
+     * which case the user has to make the ₹1 verification payment first.
+     */
+    suspend fun getPrefilledBankDetails() : NetworkResponse<PrefilledBankDetails?, ErrorDomain>
+
+    /** Raises the ₹1 reverse penny drop and returns the links the user can pay it through. */
+    suspend fun initiateReversePennyDrop() : NetworkResponse<ReversePennyDropLinks, ErrorDomain>
+
+    /**
+     * Whether the ₹1 payment has come through. Asynchronous on the bank's side, so it is polled
+     * after the user comes back from the payment page.
+     */
+    suspend fun getReversePennyDropStatus() : NetworkResponse<ReversePennyDropStatus, ErrorDomain>
 
     /**
      * Mails a 4-digit code to [email]. Also used to resend it, since the server treats a repeat

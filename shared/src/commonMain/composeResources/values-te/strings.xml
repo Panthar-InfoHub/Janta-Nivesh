@@ -390,6 +390,8 @@
     <!-- AppButton Dual Language Keys -->
     <string name="start_now">ఇప్పుడే ప్రారంభించండి</string>
     <string name="try_again">మళ్లీ ప్రయత్నించండి</string>
+    <string name="sip_setup_check_status">స్థితిని తనిఖీ చేయండి</string>
+    <string name="sip_setup_go_back">వెనుకకు వెళ్ళండి</string>
     <string name="confirm_selection">ఎంపికను నిర్ధారించండి</string>
     <string name="back_to_home">హోమ్‌కి తిరిగి వెళ్లండి</string>
     <string name="request_callback">కోల్‌బ్యాక్ అభ్యర్థించండి</string>
@@ -442,4 +444,8 @@
     <string name="units_title">యూనిట్లు</string>
     <string name="value_title">విలువ</string>
     <string name="tac_dialog_cancel">రద్దు చేయండి</string>
+    <string name="verify_your_upi">మీ UPIని ధృవీకరించండి</string>
+    <string name="pay_one_rupee_via">%1$s ద్వారా ₹1 చెల్లించండి</string>
+    <string name="pay_one_rupee_by_qr">QR స్కాన్ చేసి ₹1 చెల్లించండి</string>
+    <string name="pay_one_rupee">₹1 చెల్లించండి</string>
 </resources>

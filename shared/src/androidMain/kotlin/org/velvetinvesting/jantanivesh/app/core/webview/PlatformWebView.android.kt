@@ -51,14 +51,16 @@ actual fun PlatformWebView(
     }
 
     /**
-     * Hands an app link (`gpay://`, `intent://` …) to the caller instead of letting the web view
-     * load it, which would only end on an unknown-scheme error page. Returns true when the link
-     * was taken, so the navigation must be cancelled; false leaves it to load as before.
+     * Keeps an app link (`gpay://`, `intent://` …) out of the web view, which can only fail on it
+     * with an unknown-scheme error page — whether the user tapped it or the page redirected to it
+     * on its own. The caller, when listening, gets the link to open in its app. Returns true for
+     * any app link, so the navigation must be cancelled; false leaves a web URL to load.
      */
     fun WebView?.handOffExternalAppUrl(url: String?): Boolean {
-        val handler = currentOnExternalAppUrl ?: return false
         if (url == null || !ExternalAppUrl.isExternalAppUrl(url)) return false
-        if (this == null) handler(url) else post { handler(url) }
+        currentOnExternalAppUrl?.let { handler ->
+            if (this == null) handler(url) else post { handler(url) }
+        }
         return true
     }
 
@@ -176,6 +178,11 @@ actual fun PlatformWebView(
 
                     Log.d("WEB", "Started : $url")
 
+                    // WebView can still announce an app link it was told not to load. It is not a
+                    // page, so it must never become the current URL — the loader below would
+                    // otherwise load it directly, past shouldOverrideUrlLoading.
+                    if (ExternalAppUrl.isExternalAppUrl(url)) return
+
                     state.isLoading = true
                     state.canGoBack = view?.canGoBack() ?: false
 
@@ -190,6 +197,14 @@ actual fun PlatformWebView(
                     url: String?
                 ) {
                     super.onPageFinished(view, url)
+
+                    // A cancelled redirect to an app link (a page that sends itself to gpay://
+                    // on load) is still reported here. Recording it as the current URL is what
+                    // made the loader reload it and land on the error page.
+                    if (ExternalAppUrl.isExternalAppUrl(url)) {
+                        Log.d("WEB", "Ignored finish of app link : $url")
+                        return
+                    }
 
                     view?.evaluateJavascript(
                         """
@@ -365,7 +380,9 @@ actual fun PlatformWebView(
     }
 
     LaunchedEffect(state.currentUrl) {
-        if (webView.url != state.currentUrl) {
+        // loadUrl() skips shouldOverrideUrlLoading, so this is the last point an app link could
+        // slip into the page; it never loads one.
+        if (webView.url != state.currentUrl && !ExternalAppUrl.isExternalAppUrl(state.currentUrl)) {
             webView.loadUrl(state.currentUrl)
         }
     }

@@ -611,6 +611,8 @@
     <!-- AppButton Dual Language Keys -->
     <string name="start_now">Start Now</string>
     <string name="try_again">Try Again</string>
+    <string name="sip_setup_check_status">Check Status</string>
+    <string name="sip_setup_go_back">Go Back</string>
     <string name="confirm_selection">Confirm Selection</string>
     <string name="back_to_home">Back to Home</string>
     <string name="request_callback">Request Callback</string>
@@ -662,4 +664,8 @@
     <string name="secure_transparent_future">Secure, transparent, and built for your future.</string>
     <string name="units_title">Units</string>
     <string name="value_title">Value</string>
+    <string name="verify_your_upi">Verify your UPI</string>
+    <string name="pay_one_rupee_via">Pay ₹1 via %1$s</string>
+    <string name="pay_one_rupee_by_qr">Pay ₹1 by scanning QR</string>
+    <string name="pay_one_rupee">Pay ₹1</string>
 </resources>

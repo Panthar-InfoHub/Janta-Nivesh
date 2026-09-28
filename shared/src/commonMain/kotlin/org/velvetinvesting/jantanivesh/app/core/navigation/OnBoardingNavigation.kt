@@ -16,6 +16,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.core.webview.UpiPaymentWebViewScreen
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
@@ -48,6 +49,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Rev
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.UploadSignatureEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.UploadSignatureViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountEffect
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerEvent
@@ -55,13 +57,19 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Ver
 
 /**
  * Set on whichever entry launched a web view once the user comes back, so that screen can
- * re-check the server and decide what happens next: DigiLocker (from KYC initiation) and eSign
- * (from the investor profile) both use it.
+ * re-check the server and decide what happens next: DigiLocker (from KYC initiation), eSign
+ * (from the investor profile) and the ₹1 bank verification payment all use it.
  */
 private const val KYC_STEP_RESULT = "onboarding_kyc_step_completed"
 
 /** Marks a web view that should pop back to its caller and flag [KYC_STEP_RESULT]. */
 private const val WEBVIEW_COMPLETION_KYC_STEP = "onboarding_kyc_step"
+
+/**
+ * Set on the bank step to the UPI app link its payment page led to. The page closes on it without
+ * opening it; the bank step opens the app itself and watches for the user's return.
+ */
+private const val UPI_APP_LINK_RESULT = "onboarding_upi_app_link"
 
 @Composable
 fun OnboardingNavigation(
@@ -287,8 +295,35 @@ fun OnboardingNavigation(
                 )
             }
 
-            composable<Route.OnboardingBankVerification> {
+            // The whole bank stage — prefill check, ₹1 reverse penny drop, payment page and the
+            // bank form — lives under this one destination and its view model. Every way in
+            // starts the flow from the top; the only way out is the form's PennyDropCompleted.
+            composable<Route.OnboardingBankVerification> { entry ->
                 val vm: VerifyBankAccountViewModel = koinViewModel()
+
+                // Back from the ₹1 payment page: only the server knows whether it went through.
+                val paymentPageReturned by entry.savedStateHandle
+                    .getStateFlow(KYC_STEP_RESULT, false)
+                    .collectAsStateWithLifecycle()
+
+                LaunchedEffect(paymentPageReturned) {
+                    if (paymentPageReturned) {
+                        entry.savedStateHandle[KYC_STEP_RESULT] = false
+                        vm.handleEvent(VerifyBankAccountEvent.OnPaymentPageReturned)
+                    }
+                }
+
+                // The payment page closed on a UPI app link; the app picker opens it.
+                val upiAppLink by entry.savedStateHandle
+                    .getStateFlow<String?>(UPI_APP_LINK_RESULT, null)
+                    .collectAsStateWithLifecycle()
+
+                LaunchedEffect(upiAppLink) {
+                    upiAppLink?.let { url ->
+                        entry.savedStateHandle[UPI_APP_LINK_RESULT] = null
+                        vm.handleEvent(VerifyBankAccountEvent.OnUpiAppLinkCaught(url))
+                    }
+                }
 
                 LaunchedEffect(Unit) {
                     vm.effect.collect { effect ->
@@ -300,6 +335,18 @@ fun OnboardingNavigation(
                             }
 
                             VerifyBankAccountEffect.NavigateToChangeBankAccount -> {}
+
+                            VerifyBankAccountEffect.NavigateBack -> navController.popBackStack()
+
+                            is VerifyBankAccountEffect.OpenPaymentPage -> {
+                                navController.navigate(
+                                    Route.UpiPaymentWebView(
+                                        url = effect.url,
+                                        title = "Bank Verification",
+                                        completionRouteKey = WEBVIEW_COMPLETION_KYC_STEP
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -403,6 +450,35 @@ fun OnboardingNavigation(
                         matchType = WebViewUrlMatchType.valueOf(route.matchType),
                         title = route.title
                     ),
+                    onExitUrlReached = { onWebViewDone() },
+                    onBackClick = { onWebViewDone() },
+                    interceptExternalAppUrls = route.interceptExternalAppUrls
+                )
+            }
+
+            composable<Route.UpiPaymentWebView> { entry ->
+                val route = entry.toRoute<Route.UpiPaymentWebView>()
+
+                val onWebViewDone: () -> Unit = {
+                    when (route.completionRouteKey) {
+                        WEBVIEW_COMPLETION_KYC_STEP -> navController.returnToCallerWithStepResult()
+                        else -> navController.popBackStack()
+                    }
+                }
+
+                UpiPaymentWebViewScreen(
+                    config = WebViewConfig(
+                        url = route.url,
+                        title = route.title
+                    ),
+                    // Nothing has been paid yet — only the app to pay in is known — so this hands
+                    // the link back rather than flagging the step for a status check.
+                    onAppLinkCaught = { url ->
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(UPI_APP_LINK_RESULT, url)
+                        navController.popBackStack()
+                    },
                     onExitUrlReached = { onWebViewDone() },
                     onBackClick = { onWebViewDone() }
                 )

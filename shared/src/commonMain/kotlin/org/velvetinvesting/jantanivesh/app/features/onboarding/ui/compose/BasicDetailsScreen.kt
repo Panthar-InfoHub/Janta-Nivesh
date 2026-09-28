@@ -34,7 +34,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.JantaNiveshAndVelvetLogo
@@ -57,7 +56,7 @@ fun BasicDetailsScreen(
         selectedDate = null,
         onDismiss = { showDatePicker = false },
         onDateSelected = { millis ->
-            handleEvent(BasicDetailsEvent.OnDobChange(formatMillisToIsoDate(millis)))
+            handleEvent(BasicDetailsEvent.OnDobChange(millis))
         }
     )
 
@@ -116,8 +115,9 @@ fun BasicDetailsScreen(
             item {
                 TitledDateField(
                     title = "Date of Birth (as per PAN)/ " + stringResource(Res.string.dob_as_per_pan),
-                    value = state.dob,
-                    onClick = { showDatePicker = true }
+                    value = state.displayDob,
+                    onClick = { showDatePicker = true },
+                    placeholder = "DD-MM-YYYY"
                 )
             }
 

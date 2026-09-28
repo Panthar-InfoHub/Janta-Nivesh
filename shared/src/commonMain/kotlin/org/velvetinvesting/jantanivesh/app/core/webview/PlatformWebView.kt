@@ -4,9 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 /**
- * @param onExternalAppUrl when set, any navigation to an app link (see
- * [org.velvetinvesting.jantanivesh.app.core.deeplink.ExternalAppUrl]) is cancelled before the web
- * view tries to load it and handed here instead. Left null, such links load as they always did.
+ * App links (see [org.velvetinvesting.jantanivesh.app.core.deeplink.ExternalAppUrl]) are never
+ * loaded in the page — not when tapped, not when the page redirects to one by itself — since the
+ * web view can only fail on them.
+ *
+ * @param onExternalAppUrl gets each such link, to open it in its app. Left null, the link is
+ * simply blocked.
  */
 @Composable
 expect fun PlatformWebView(

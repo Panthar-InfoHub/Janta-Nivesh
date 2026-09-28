@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToDisplayDate
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitBasicDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
@@ -18,6 +20,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInpu
 data class BasicDetailsUiState(
     val name: String = "",
     val dob: String = "",
+    val displayDob: String = "",
     val isLoading: Boolean = false
 ) {
     val canSubmit: Boolean
@@ -27,7 +30,7 @@ data class BasicDetailsUiState(
 
 sealed interface BasicDetailsEvent {
     data class OnNameChange(val name: String) : BasicDetailsEvent
-    data class OnDobChange(val dob: String) : BasicDetailsEvent
+    data class OnDobChange(val dob: Long?) : BasicDetailsEvent
     data object OnProceedClick : BasicDetailsEvent
 }
 
@@ -60,8 +63,10 @@ class BasicDetailsViewModel(
     }
 
     /** Always arrives as `yyyy-MM-dd` from the date picker; the field itself is read-only. */
-    private fun onDobChange(dob: String) {
-        _uiState.update { it.copy(dob = dob) }
+    private fun onDobChange(dob: Long?) {
+        if (dob==null) return
+        _uiState.update { it.copy(dob = formatMillisToIsoDate(dob),
+            displayDob = formatMillisToDisplayDate(dob)) }
     }
 
 

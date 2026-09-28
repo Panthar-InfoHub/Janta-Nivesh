@@ -391,6 +391,8 @@
     <!-- AppButton Dual Language Keys -->
     <string name="start_now">હવે શરૂ કરો</string>
     <string name="try_again">ફરી પ્રયાસ કરો</string>
+    <string name="sip_setup_check_status">સ્થિતિ તપાસો</string>
+    <string name="sip_setup_go_back">પાછા જાઓ</string>
     <string name="confirm_selection">પસંદગીની પુષ્ટિ કરો</string>
     <string name="back_to_home">હોમ પર પાછા જાઓ</string>
     <string name="request_callback">કોલબેકની વિનંતી કરો</string>
@@ -443,4 +445,8 @@
     <string name="units_title">યુનિટ્સ</string>
     <string name="value_title">મૂલ્ય</string>
     <string name="tac_dialog_cancel">રદ કરો</string>
+    <string name="verify_your_upi">તમારું UPI ચકાસો</string>
+    <string name="pay_one_rupee_via">%1$s દ્વારા ₹1 ચૂકવો</string>
+    <string name="pay_one_rupee_by_qr">QR સ્કેન કરીને ₹1 ચૂકવો</string>
+    <string name="pay_one_rupee">₹1 ચૂકવો</string>
 </resources>

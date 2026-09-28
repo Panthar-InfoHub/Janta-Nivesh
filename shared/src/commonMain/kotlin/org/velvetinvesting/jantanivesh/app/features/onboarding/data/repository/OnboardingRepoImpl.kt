@@ -13,6 +13,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.util.network.UnresolvedAddressException
 import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.networking.ErrorDomain
+import org.velvetinvesting.jantanivesh.app.core.networking.ErrorType
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.networking.ServerError
 import org.velvetinvesting.jantanivesh.app.core.networking.getUrl
@@ -40,6 +41,9 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.toDoma
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.OnboardingStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.PennyDropBody
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.PennyDropStatusResponseDto
+import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.ReversePennyInitiateResponseDto
+import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.ReversePennyPrefillResponseDto
+import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.ReversePennyStatusResponseDto
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.SkipNomineeRequestBody
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.toDomain
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.BankAccount
@@ -53,6 +57,9 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Mand
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Nominee
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PANVerificationError
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PennyDropStatus
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.PrefilledBankDetails
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.ReversePennyDropLinks
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.ReversePennyDropStatus
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.repository.OnboardingRepo
 
 class OnboardingRepoImpl(
@@ -287,6 +294,53 @@ class OnboardingRepoImpl(
         }
     }
 
+    override suspend fun getPrefilledBankDetails(): NetworkResponse<PrefilledBankDetails?, ErrorDomain> {
+        val response = safeRequest<ReversePennyPrefillResponseDto> {
+            client.get(getUrl("/onboarding/reverse-penny/prefill/"))
+        }
+        return when (response) {
+            is NetworkResponse.Success -> NetworkResponse.Success(response.data.toDomain())
+            is NetworkResponse.Error -> NetworkResponse.Error(response.error)
+        }
+    }
+
+    override suspend fun initiateReversePennyDrop(): NetworkResponse<ReversePennyDropLinks, ErrorDomain> {
+        val response = safeRequest<ReversePennyInitiateResponseDto> {
+            client.post(getUrl("/onboarding/reverse-penny/initiate"))
+        }
+        return when (response) {
+            is NetworkResponse.Success -> {
+                val body = response.data
+                val links = body.toDomain()?.takeIf { body.success }
+                if (links != null) {
+                    NetworkResponse.Success(links)
+                } else {
+                    // A 200 that failed in its body, or carried no link to pay through.
+                    NetworkResponse.Error(
+                        ErrorDomain(
+                            code = HTTP_OK,
+                            message = body.message?.takeIf { it.isNotBlank() }
+                                ?: "Could not start the bank verification. Please try again.",
+                            type = ErrorType.SERVER
+                        )
+                    )
+                }
+            }
+
+            is NetworkResponse.Error -> NetworkResponse.Error(response.error)
+        }
+    }
+
+    override suspend fun getReversePennyDropStatus(): NetworkResponse<ReversePennyDropStatus, ErrorDomain> {
+        val response = safeRequest<ReversePennyStatusResponseDto> {
+            client.get(getUrl("/onboarding/reverse-penny/status/"))
+        }
+        return when (response) {
+            is NetworkResponse.Success -> NetworkResponse.Success(response.data.toDomain())
+            is NetworkResponse.Error -> NetworkResponse.Error(response.error)
+        }
+    }
+
     override suspend fun requestEmailOtp(
         email: String
     ): NetworkResponse<OnboardingStatus, ErrorDomain> {
@@ -499,5 +553,9 @@ class OnboardingRepoImpl(
                 type = KYCError.UNKNOWN
             )
         }
+    }
+
+    private companion object {
+        const val HTTP_OK = 200
     }
 }

@@ -43,6 +43,9 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.S
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitInvestorProfileUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitNomineesUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetPennyDropStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetPrefilledBankDetailsUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetReversePennyDropStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.InitiateReversePennyDropUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitPennyDropUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.UploadKycFormSignatureUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.VerifyEmailOtpUseCase
@@ -107,6 +110,9 @@ val useCaseModule = module {
     factory { UploadKycFormSignatureUseCase(get()) }
     factory { SubmitPennyDropUseCase(get()) }
     factory { GetPennyDropStatusUseCase(get()) }
+    factory { GetPrefilledBankDetailsUseCase(get()) }
+    factory { InitiateReversePennyDropUseCase(get()) }
+    factory { GetReversePennyDropStatusUseCase(get()) }
     factory { RequestEmailOtpUseCase(get()) }
     factory { VerifyEmailOtpUseCase(get()) }
     factory { SubmitInvestorProfileUseCase(get()) }

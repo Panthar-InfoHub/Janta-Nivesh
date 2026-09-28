@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.ic_jagged_arrow
-import jantanivesh.shared.generated.resources.tac_dialog_cancel
-import jantanivesh.shared.generated.resources.try_again
+import jantanivesh.shared.generated.resources.sip_setup_check_status
+import jantanivesh.shared.generated.resources.sip_setup_go_back
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
@@ -41,15 +41,16 @@ import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipSetup
 
 /**
  * What the user watches between approving their mandate and typing the OTP. There is nothing to
- * do here, so the screen only reports which step is running — and, when a step gives up, offers
- * to run the chain again rather than sending the user back to re-enter the amount.
+ * do here, so the screen only reports which step is running. When a wait runs out with the
+ * mandate or SIP still pending, it offers to check that status again — never to redo the setup.
+ * A real failure has nothing left to check, so the user can only go back.
  */
 @Composable
 fun SipSetupScreen(
     state: SipSetupUiState,
     schemeName: String,
-    onRetryClick: () -> Unit,
-    onCancelClick: () -> Unit,
+    onCheckStatusClick: () -> Unit,
+    onGoBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -98,17 +99,28 @@ fun SipSetupScreen(
                 modifier = Modifier.padding(top = Spacing.dp12, bottom = Spacing.dp32)
             )
 
-            AppButton(
-                text = "Try Again/ " + stringResource(Res.string.try_again),
-                onClick = onRetryClick,
-                modifier = Modifier.fillMaxWidth()
-            )
+            val goBackText = "Go Back/ " + stringResource(Res.string.sip_setup_go_back)
 
-            InvertedAppButton(
-                text = "Cancel/ " + stringResource(Res.string.tac_dialog_cancel),
-                onClick = onCancelClick,
-                modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp12)
-            )
+            if (state.canCheckStatus) {
+                AppButton(
+                    text = "Check Status/ " + stringResource(Res.string.sip_setup_check_status),
+                    onClick = onCheckStatusClick,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                InvertedAppButton(
+                    text = goBackText,
+                    onClick = onGoBackClick,
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp12)
+                )
+            } else {
+                // The only way on, so it takes the primary slot.
+                AppButton(
+                    text = goBackText,
+                    onClick = onGoBackClick,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
@@ -154,8 +166,8 @@ private fun SipSetupScreenPreview() {
         SipSetupScreen(
             state = SipSetupUiState(stage = SipSetupStage.AWAITING_REVIEW),
             schemeName = "SBI Gold Fund",
-            onRetryClick = {},
-            onCancelClick = {}
+            onCheckStatusClick = {},
+            onGoBackClick = {}
         )
     }
 }
@@ -167,12 +179,30 @@ private fun SipSetupScreenErrorPreview() {
         SipSetupScreen(
             state = SipSetupUiState(
                 stage = SipSetupStage.CONFIRMING_MANDATE,
-                error = "Your autopay mandate has not been approved yet. Please try again in a " +
-                        "moment."
+                error = "Your bank has not approved the autopay mandate yet. This can take a " +
+                        "few minutes — tap Check Status to see if it has gone through. You will " +
+                        "not need to set up the mandate again.",
+                canCheckStatus = true
             ),
             schemeName = "SBI Gold Fund",
-            onRetryClick = {},
-            onCancelClick = {}
+            onCheckStatusClick = {},
+            onGoBackClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, locale = "hi")
+@Composable
+private fun SipSetupScreenFailedPreview() {
+    JantaNiveshTheme {
+        SipSetupScreen(
+            state = SipSetupUiState(
+                stage = SipSetupStage.AWAITING_REVIEW,
+                error = "This SIP could not be set up. Please go back and start your SIP again."
+            ),
+            schemeName = "SBI Gold Fund",
+            onCheckStatusClick = {},
+            onGoBackClick = {}
         )
     }
 }
