@@ -32,10 +32,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.view_bundle
 import jantanivesh.shared.generated.resources.ic_bundle_card_fund
 import jantanivesh.shared.generated.resources.ic_pointer_right
 import jantanivesh.shared.generated.resources.rupee_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardFundsIcon
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardFundsIconBg
@@ -222,7 +224,7 @@ fun BundleCard(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
         ) {
             Text(
-                text = "View Bundle",
+                text = "View Bundle/" + stringResource(Res.string.view_bundle),
                 fontFamily = InterFontFamily,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp

@@ -5,6 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -35,6 +36,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.Nomine
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.NomineePhoneBody
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.NomineeRequestBody
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.BasicDetailsBody
+import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.CityLookupResponseDto
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.OnboardingResponseDto
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.PANVerificationBody
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.toDomain
@@ -45,7 +47,6 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.Revers
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.ReversePennyPrefillResponseDto
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.ReversePennyStatusResponseDto
 import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.SkipNomineeRequestBody
-import org.velvetinvesting.jantanivesh.app.features.onboarding.data.model.toDomain
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.BankAccount
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.EmailVerification
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.InvestorProfile
@@ -376,6 +377,28 @@ class OnboardingRepoImpl(
             }
 
             is NetworkResponse.Error -> NetworkResponse.Error(response.error)
+        }
+    }
+
+    override suspend fun getCityByPincode(pincode: String): NetworkResponse<String, ErrorDomain> {
+        val response = safeRequest<CityLookupResponseDto> {
+            client.get(getUrl("/frontend/city")) {
+                parameter("pin", pincode)
+            }
+        }
+        return when (response) {
+            is NetworkResponse.Error -> NetworkResponse.Error(response.error)
+            is NetworkResponse.Success -> {
+                // The city is echoed at the top level and under `data`; either will do.
+                val city = (response.data.data?.city ?: response.data.city)?.trim()
+                if (city.isNullOrBlank()) {
+                    NetworkResponse.Error(
+                        ErrorDomain(0, "Could not find a city for this pincode", ErrorType.UNKNOWN)
+                    )
+                } else {
+                    NetworkResponse.Success(city)
+                }
+            }
         }
     }
 

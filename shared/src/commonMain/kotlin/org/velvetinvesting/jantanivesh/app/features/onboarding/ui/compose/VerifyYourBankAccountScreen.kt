@@ -35,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.account_holder_label
@@ -64,7 +65,6 @@ import org.velvetinvesting.jantanivesh.app.core.utils.AppBackHandler
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InvertedAppButton
@@ -217,7 +217,7 @@ private fun BankDetailsForm(
                 TitledAppTextField(
                     title = "Bank Name/ " + stringResource(Res.string.bank_name_label),
                     value = state.bankName,
-                    onValueChange = { handleEvent(VerifyBankAccountEvent.OnBankNameChange(it)) },
+                    onValueChange = { handleEvent(VerifyBankAccountEvent.OnBankNameChange(it.toUpperCase(Locale.current))) },
                     placeholder = "",
                     mandatory = true,
                     keyboardOptions = KeyboardOptions(
@@ -243,7 +243,7 @@ private fun BankDetailsForm(
                 TitledAppTextField(
                     title = "Account Holder/ " + stringResource(Res.string.account_holder_label),
                     value = state.accountHolder,
-                    onValueChange = { handleEvent(VerifyBankAccountEvent.OnAccountHolderChange(it)) },
+                    onValueChange = { handleEvent(VerifyBankAccountEvent.OnAccountHolderChange(it.toUpperCase(Locale.current))) },
                     placeholder = "",
                     mandatory = true,
                     keyboardOptions = KeyboardOptions(

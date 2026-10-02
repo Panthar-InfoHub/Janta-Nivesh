@@ -1,7 +1,10 @@
 package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +27,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Sour
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.InvestorProfile
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.KYCError
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.MaritalStatus
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetCityByPincodeUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetKycFormStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitInvestorProfileUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
@@ -62,6 +66,8 @@ data class ReviewProfileUiState(
     val error: String = "",
     /** True while the fix that precedes the submit call is being taken. */
     val isFetchingLocation: Boolean = false,
+    /** True while the city for a complete pincode is looked up; the city field and submit wait. */
+    val isFetchingCity: Boolean = false,
     /**
      * True once the email OTP has been verified: the address is then settled, so the field is
      * neither shown nor editable. Every other prefilled value stays editable here.
@@ -137,13 +143,17 @@ class ReviewProfileViewModel(
     private val submitInvestorProfile: SubmitInvestorProfileUseCase,
     private val getKycFormStatus: GetKycFormStatusUseCase,
     private val locationProvider: LocationProvider,
-    private val getUserData: GetUserDataUseCase
+    private val getUserData: GetUserDataUseCase,
+    private val getCityByPincode: GetCityByPincodeUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ReviewProfileUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _effect = Channel<ReviewProfileEffect>()
     val effect = _effect.receiveAsFlow()
+
+    /** The running city lookup, cancelled when the pincode it was for is edited. */
+    private var cityLookupJob: Job? = null
 
     init {
         loadUserData()
@@ -173,7 +183,7 @@ class ReviewProfileViewModel(
                             isScreenLoading = false,
                             showError = false,
                             error = "",
-                            fullName = user.name,
+                            fullName = user.name.toUpperCase(Locale.current),
                             // The API states the date of birth as a UTC timestamp; the form and
                             // the submit payload both want a plain `yyyy-MM-dd`.
                             dob = user.dob.isoUtcToIsoDate(),
@@ -205,14 +215,7 @@ class ReviewProfileViewModel(
             is ReviewProfileEvent.OnAddressChange ->
                 update { it.copy(address = OnboardingInput.sanitizeText(event.value, 200)) }
 
-            is ReviewProfileEvent.OnPincodeChange -> update {
-                it.copy(
-                    pincode = OnboardingInput.sanitizeDigits(
-                        event.value,
-                        OnboardingInput.PINCODE_LENGTH
-                    )
-                )
-            }
+            is ReviewProfileEvent.OnPincodeChange -> onPincodeChange(event.value)
 
             is ReviewProfileEvent.OnCityChange ->
                 update { it.copy(city = OnboardingInput.sanitizeName(event.value)) }
@@ -267,6 +270,40 @@ class ReviewProfileViewModel(
     }
 
     /**
+     * A complete pincode looks its city up and fills it in. Any edit to the pincode drops a lookup
+     * still running for the old one, so a stale answer never lands in the city field.
+     */
+    private fun onPincodeChange(value: String) {
+        val previous = _uiState.value.pincode
+        val pincode = OnboardingInput.sanitizeDigits(value, OnboardingInput.PINCODE_LENGTH)
+        if (pincode == previous) return
+
+        cityLookupJob?.cancel()
+        update { it.copy(pincode = pincode, isFetchingCity = false) }
+
+        if (!OnboardingInput.isValidPincode(pincode)) return
+
+        cityLookupJob = viewModelScope.launch {
+            update { it.copy(isFetchingCity = true) }
+
+            when (val result = getCityByPincode(pincode)) {
+                is NetworkResponse.Success -> update {
+                    it.copy(
+                        isFetchingCity = false,
+                        city = OnboardingInput.sanitizeName(result.data).toUpperCase(Locale.current)
+                    )
+                }
+
+                // The city stays as it was and can still be typed in by hand.
+                is NetworkResponse.Error -> {
+                    update { it.copy(isFetchingCity = false) }
+                    SnackBarController.showError(result.error.message)
+                }
+            }
+        }
+    }
+
+    /**
      * The KYC stamp is taken as part of the submission rather than as its own step, so the fix is
      * always current and the user only presses one button. Permission is not optional — without
      * it the submission does not happen at all — but a device that cannot produce a fix despite
@@ -274,7 +311,7 @@ class ReviewProfileViewModel(
      */
     private fun onSubmit(isPermissionGranted: Boolean) {
         val state = _uiState.value
-        if (state.isLoading || state.isFetchingLocation || !state.canSubmit) return
+        if (state.isLoading || state.isFetchingLocation || state.isFetchingCity || !state.canSubmit) return
 
         if (!isPermissionGranted) {
             viewModelScope.launch {

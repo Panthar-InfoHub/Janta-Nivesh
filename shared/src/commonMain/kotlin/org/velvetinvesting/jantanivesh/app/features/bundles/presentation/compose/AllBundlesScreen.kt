@@ -39,8 +39,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.invest
 import jantanivesh.shared.generated.resources.ic_pointer_right
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardSubtitle
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardTitle
@@ -336,7 +338,7 @@ private fun BundleInfoRowAll(
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
         ) {
             Text(
-                text = "Invest",
+                text = "Invest/" + stringResource(Res.string.invest),
                 fontFamily = InterFontFamily,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp

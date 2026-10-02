@@ -144,6 +144,13 @@ sealed interface Route {
     @Serializable
     data object CartScreen : Route
 
+    /**
+     * Confirms the cart's SIP or lumpsum checkout; it shares the cart's view model, which holds
+     * the batch.
+     */
+    @Serializable
+    data object CartCheckoutOtp : Route
+
     @Serializable
     data object MutualFundTypeSelectionScreen : Route
 

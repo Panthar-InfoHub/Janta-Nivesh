@@ -37,11 +37,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.save_fund
 import jantanivesh.shared.generated.resources.ic_pointer_right
 import jantanivesh.shared.generated.resources.icon_warning
 import jantanivesh.shared.generated.resources.plus_icon
 import jantanivesh.shared.generated.resources.tick_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardSubtitle
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardTitle
@@ -118,7 +120,7 @@ fun SelectFundScreen(
                     )
                     NextButtonFooter(
                         onClick = { onEvent(BundleDetailsEvent.OnSaveFundsClicked) },
-                        value = "Save Fund",
+                        value = "Save Fund/" + stringResource(Res.string.save_fund),
                         enabled = category.slots.all { selection.effectiveFund(it) != null })
                 }
 

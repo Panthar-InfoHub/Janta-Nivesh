@@ -21,7 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.confirm_and_proceed
@@ -101,7 +103,7 @@ fun BasicDetailsScreen(
                 TitledAppTextField(
                     title = "Name (as per PAN)/ " + stringResource(Res.string.name_as_per_pan),
                     value = state.name,
-                    onValueChange = { handleEvent(BasicDetailsEvent.OnNameChange(it)) },
+                    onValueChange = { handleEvent(BasicDetailsEvent.OnNameChange(it.toUpperCase(Locale.current))) },
                     placeholder = "",
                     mandatory = true,
                     keyboardType = KeyboardType.Text,

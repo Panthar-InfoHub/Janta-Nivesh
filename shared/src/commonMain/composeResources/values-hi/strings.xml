@@ -487,4 +487,7 @@
     <string name="pay_one_rupee_via">%1$s से ₹1 भुगतान करें</string>
     <string name="pay_one_rupee_by_qr">QR स्कैन करके ₹1 भुगतान करें</string>
     <string name="pay_one_rupee">₹1 भुगतान करें</string>
+    <string name="invest">निवेश करें</string>
+    <string name="view_bundle">बंडल देखें</string>
+    <string name="save_fund">फंड सेव करें</string>
 </resources>

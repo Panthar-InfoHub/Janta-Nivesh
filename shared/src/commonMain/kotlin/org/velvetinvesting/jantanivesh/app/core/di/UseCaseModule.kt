@@ -16,7 +16,12 @@ import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddBund
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddToCartLumpsumUseCase
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddToCartSipUseCase
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.CheckSipPurchaseStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.CheckoutCartLumpsumUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.CheckoutCartSipUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.ConfirmCartLumpsumCheckoutUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.GetCartPaymentStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.ClearCartUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.VerifyCartSipCheckoutOtpUseCase
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.DeleteCartItemUseCase
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.usecases.GetAllBundlesUseCase
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.usecases.GetBundleDetailsUseCase
@@ -34,6 +39,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.R
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.ConfirmMandateUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.CreateMandateUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetKycFormStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetCityByPincodeUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.GetPANVerificationStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.InitiateKycFormUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.InitiatePANVerificationUseCase
@@ -116,6 +122,7 @@ val useCaseModule = module {
     factory { RequestEmailOtpUseCase(get()) }
     factory { VerifyEmailOtpUseCase(get()) }
     factory { SubmitInvestorProfileUseCase(get()) }
+    factory { GetCityByPincodeUseCase(get()) }
     factory { SubmitNomineesUseCase(get()) }
     factory { CreateMandateUseCase(get()) }
     factory { ConfirmMandateUseCase(get()) }
@@ -146,6 +153,10 @@ val useCaseModule = module {
     factory { AddBundleToCartSipUseCase(get()) }
     factory { AddBundleToCartLumpsumUseCase(get()) }
     factory { CheckSipPurchaseStatusUseCase(get()) }
+    factory { CheckoutCartLumpsumUseCase(get()) }
+    factory { CheckoutCartSipUseCase(get()) }
+    factory { ConfirmCartLumpsumCheckoutUseCase(get()) }
+    factory { GetCartPaymentStatusUseCase(get()) }
     factory { ClearCartUseCase(get()) }
     factory { DeleteCartItemUseCase(get()) }
     factory { GetAllBundlesUseCase(get()) }
@@ -157,6 +168,7 @@ val useCaseModule = module {
     factory { GetMutualFundTopPicksUseCase(get()) }
     factory { GetUserCartUseCase(get()) }
     factory { InitiateSipPurchaseUseCase(get()) }
+    factory { VerifyCartSipCheckoutOtpUseCase(get()) }
     factory { PurchaseLumpsumFundUseCase(get()) }
     factory { PurchaseSipFundUseCase(get()) }
     factory { RedeemFullFundUseCase(get()) }

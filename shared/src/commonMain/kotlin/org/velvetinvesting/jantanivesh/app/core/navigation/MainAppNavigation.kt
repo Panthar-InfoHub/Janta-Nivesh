@@ -89,8 +89,10 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.Invest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundDetailsScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundSearchScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.cart.presentation.compose.CartScreen
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.compose.CartCheckoutOtpScreen
 import org.velvetinvesting.jantanivesh.app.features.cart.presentation.viewmodel.CartEffect
 import org.velvetinvesting.jantanivesh.app.features.cart.presentation.viewmodel.CartEvent
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.viewmodel.CartCheckoutOtpEffect
 import org.velvetinvesting.jantanivesh.app.features.cart.presentation.viewmodel.CartViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.SetupAutopayScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEffect
@@ -754,14 +756,19 @@ fun MainAppNavigation(
                 vm.effect.collect { effect ->
                     when (effect) {
                         CartEffect.NavigateBack -> navController.popBackStack()
-                        is CartEffect.OpenWebView -> navController.navigate(
+                        // Returns to the cart through the same "cart" key, which resumes the SIP
+                        // purchase once the user is back from the bank's page.
+                        is CartEffect.OpenMandateAuthorization -> navController.navigate(
                             Route.WebViewScreen(
                                 url = effect.url,
-                                exitUrlPatterns = emptyList(),
-                                title = "Complete Payment",
+                                exitUrlPatterns = listOf(effect.exitUrl),
+                                title = "UPI Autopay",
                                 completionRouteKey = "cart"
                             )
                         )
+                        CartEffect.NavigateToCheckoutOtp -> navController.navigate(Route.CartCheckoutOtp) {
+                            launchSingleTop = true
+                        }
                     }
                 }
             }
@@ -779,6 +786,41 @@ fun MainAppNavigation(
 
             CartScreen(
                 state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.CartCheckoutOtp> { entry ->
+            // The cart entry's view model, which placed the checkout and holds its batch.
+            val cartEntry = remember(entry) { navController.getBackStackEntry<Route.CartScreen>() }
+            val vm: CartViewModel = koinViewModel(viewModelStoreOwner = cartEntry)
+            val state by vm.uiState.collectAsStateWithLifecycle()
+            val otpState by vm.otp.state.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.checkoutOtpEffect) {
+                vm.checkoutOtpEffect.collect { effect ->
+                    when (effect) {
+                        CartCheckoutOtpEffect.Close -> navController.popBackStack<Route.CartScreen>(inclusive = false)
+
+                        // Replaces the OTP screen, so the "cart" key returns to the cart, which
+                        // then reads the payment back.
+                        is CartCheckoutOtpEffect.OpenPayment -> navController.navigate(
+                            Route.WebViewScreen(
+                                url = effect.url,
+                                exitUrlPatterns = listOf(effect.exitUrl),
+                                title = "Complete Payment",
+                                completionRouteKey = "cart"
+                            )
+                        ) {
+                            popUpTo<Route.CartCheckoutOtp> { inclusive = true }
+                        }
+                    }
+                }
+            }
+
+            CartCheckoutOtpScreen(
+                otpState = otpState,
+                checkout = state.checkout,
                 onEvent = vm::handleEvent
             )
         }

@@ -522,25 +522,19 @@ fun formatMillisToIsoDate(millis: Long?): String {
 }
 
 @OptIn(ExperimentalTime::class)
-
 fun formatMillisToDisplayDate(millis: Long?): String {
-
     if (millis == null) return ""
 
     val date = Instant
-
         .fromEpochMilliseconds(millis)
-
         .toLocalDateTime(TimeZone.UTC)
-
         .date
 
-    return "${date.day.toString().padStart(2, '0')}-" +
+    val month = date.month.name
+        .take(3)
+        .uppercase()
 
-            "${date.month.number.toString().padStart(2, '0')}-" +
-
-            date.year.toString().padStart(4, '0')
-
+    return "${date.day.toString().padStart(2, '0')}-$month-${date.year}"
 }
 
 /**

@@ -30,8 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.save_fund
 import jantanivesh.shared.generated.resources.back_arrow
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardSubtitle
@@ -197,7 +199,7 @@ fun ExploreCategoryFundScreen(
 
         NextButtonFooter(
             onClick = onSaveClick,
-            value = "Save Fund",
+            value = "Save Fund/" + stringResource(Res.string.save_fund),
             enabled = selectedFundId != null && !isLoadingFund,
             loading = isLoadingFund
         )

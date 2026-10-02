@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.address_label
@@ -69,7 +71,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Rev
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.ReviewProfileUiState
 
 private val nameKeyboardOptions = KeyboardOptions(
-    capitalization = KeyboardCapitalization.Words,
+    capitalization = KeyboardCapitalization.Characters,
     imeAction = ImeAction.Next
 )
 
@@ -159,7 +161,7 @@ private fun ReviewProfileContent(
                 TitledAppTextField(
                     title = "Full Name/ " + stringResource(Res.string.kyc_form_full_name_label),
                     value = state.fullName,
-                    onValueChange = { handleEvent(ReviewProfileEvent.OnFullNameChange(it)) },
+                    onValueChange = { handleEvent(ReviewProfileEvent.OnFullNameChange(it.toUpperCase(Locale.current))) },
                     placeholder = "",
                     mandatory = true,
                     keyboardOptions = nameKeyboardOptions
@@ -206,11 +208,11 @@ private fun ReviewProfileContent(
                 TitledAppTextField(
                     title = "Address/ " + stringResource(Res.string.address_label),
                     value = state.address,
-                    onValueChange = { handleEvent(ReviewProfileEvent.OnAddressChange(it)) },
+                    onValueChange = { handleEvent(ReviewProfileEvent.OnAddressChange(it.toUpperCase(Locale.current))) },
                     placeholder = "\n\n\n",
                     mandatory = true,
                     keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
+                        capitalization = KeyboardCapitalization.Characters,
                         imeAction = ImeAction.Next
                     )
                 )
@@ -231,8 +233,10 @@ private fun ReviewProfileContent(
                     TitledAppTextField(
                         title = "City/ " + stringResource(Res.string.city),
                         value = state.city,
-                        onValueChange = { handleEvent(ReviewProfileEvent.OnCityChange(it)) },
-                        placeholder = "",
+                        onValueChange = { handleEvent(ReviewProfileEvent.OnCityChange(it.toUpperCase(Locale.current))) },
+                        // Filled from the pincode; locked only while that lookup runs.
+                        enabled = !state.isFetchingCity,
+                        placeholder = if (state.isFetchingCity) "Fetching city…" else "",
                         mandatory = true,
                         keyboardOptions = nameKeyboardOptions,
                         modifier = Modifier.weight(1f)
@@ -257,7 +261,7 @@ private fun ReviewProfileContent(
                     TitledAppTextField(
                         title = "Spouse's Name",
                         value = state.spouseName,
-                        onValueChange = { handleEvent(ReviewProfileEvent.OnSpouseNameChange(it)) },
+                        onValueChange = { handleEvent(ReviewProfileEvent.OnSpouseNameChange(it.toUpperCase(Locale.current))) },
                         placeholder = "",
                         mandatory = true,
                         keyboardOptions = nameKeyboardOptions
@@ -268,7 +272,7 @@ private fun ReviewProfileContent(
                 TitledAppTextField(
                     title = "Father's Name",
                     value = state.fatherName,
-                    onValueChange = { handleEvent(ReviewProfileEvent.OnFatherNameChange(it)) },
+                    onValueChange = { handleEvent(ReviewProfileEvent.OnFatherNameChange(it.toUpperCase(Locale.current))) },
                     placeholder = "",
                     mandatory = true,
                     keyboardOptions = nameKeyboardOptions
@@ -278,7 +282,7 @@ private fun ReviewProfileContent(
                 TitledAppTextField(
                     title = "Place of Birth",
                     value = state.placeOfBirth,
-                    onValueChange = { handleEvent(ReviewProfileEvent.OnPlaceOfBirthChange(it)) },
+                    onValueChange = { handleEvent(ReviewProfileEvent.OnPlaceOfBirthChange(it.toUpperCase(Locale.current))) },
                     placeholder = "",
                     mandatory = true,
                     keyboardOptions = nameKeyboardOptions
@@ -358,7 +362,7 @@ private fun ReviewProfileContent(
             },
             onClick = { requestLocationPermission.request() },
             loading = state.isFetchingLocation || state.isLoading,
-            enabled = state.canSubmit,
+            enabled = state.canSubmit && !state.isFetchingCity,
             modifier = Modifier.fillMaxWidth().padding(top = Spacing.dp24).genericDropShadow()
         )
     }

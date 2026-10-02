@@ -1,5 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
 
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -10,6 +12,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToDisplayDate
+import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.Nominee
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeAddress
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SubmitNomineesUseCase
@@ -31,6 +35,7 @@ data class NomineeDetails(
     val relationship: NomineeRelation? = null,
     val percentageAllocation: String = "",
     val dateOfBirth: String = "",
+    val displayDob: String = "",
     val identityType: NomineeDocumentType? = null,
     val allocationSource: AllocationSource = AllocationSource.AUTOMATIC,
     val panCard: String = "",
@@ -122,7 +127,7 @@ sealed interface AddNomineeEvent {
     data class OnNameChanged(val index: Int, val name: String) : AddNomineeEvent
     data class OnRelationshipChanged(val index: Int, val relationship: NomineeRelation) : AddNomineeEvent
     data class OnPercentageAllocationChanged(val index: Int, val percentage: String) : AddNomineeEvent
-    data class OnDateOfBirthChanged(val index: Int, val dob: String) : AddNomineeEvent
+    data class OnDateOfBirthChanged(val index: Int, val dob: Long?) : AddNomineeEvent
     data class OnIdentityTypeChanged(val index: Int, val type: NomineeDocumentType) : AddNomineeEvent
     data class OnPanCardChanged(val index: Int, val pan: String) : AddNomineeEvent
     data class OnEmailChanged(val index: Int, val email: String) : AddNomineeEvent
@@ -156,7 +161,7 @@ class AddNomineeViewModel(
             }
             AddNomineeEvent.OnAddAnotherNomineeClick -> onAddAnotherNomineeClick()
             is AddNomineeEvent.OnDeleteNomineeClick -> onDeleteNomineeClick(event.index)
-            is AddNomineeEvent.OnNameChanged -> onNameChanged(event.index, event.name)
+            is AddNomineeEvent.OnNameChanged -> onNameChanged(event.index, event.name.toUpperCase(Locale.current))
             is AddNomineeEvent.OnRelationshipChanged -> onRelationshipChanged(event.index, event.relationship)
             is AddNomineeEvent.OnPercentageAllocationChanged -> onPercentageAllocationChanged(event.index, event.percentage)
             is AddNomineeEvent.OnDateOfBirthChanged -> onDateOfBirthChanged(event.index, event.dob)
@@ -328,8 +333,15 @@ class AddNomineeViewModel(
     }
 
     /** Always `yyyy-MM-dd` from the date picker; the field itself is read-only. */
-    private fun onDateOfBirthChanged(index: Int, dob: String) = updateNominee(index) {
-        it.copy(dateOfBirth = dob)
+    private fun onDateOfBirthChanged(index: Int, dob: Long?)  {
+        dob?.let {millis->
+            updateNominee(index) {
+                it.copy(
+                    dateOfBirth = formatMillisToIsoDate(millis),
+                    displayDob = formatMillisToDisplayDate(millis)
+                )
+            }
+        }
     }
 
     /**

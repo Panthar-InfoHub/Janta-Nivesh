@@ -668,4 +668,7 @@
     <string name="pay_one_rupee_via">Pay ₹1 via %1$s</string>
     <string name="pay_one_rupee_by_qr">Pay ₹1 by scanning QR</string>
     <string name="pay_one_rupee">Pay ₹1</string>
+    <string name="invest">Invest</string>
+    <string name="view_bundle">View Bundle</string>
+    <string name="save_fund">Save Fund</string>
 </resources>

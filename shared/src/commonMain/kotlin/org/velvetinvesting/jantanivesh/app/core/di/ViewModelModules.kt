@@ -85,7 +85,7 @@ val viewModelModule = module {
     viewModel { VerifyBankAccountViewModel(get(), get(), get(), get(), get()) }
     viewModel { VerifyWithDigilockerViewModel(get(), get()) }
     viewModel { UploadSignatureViewModel(get()) }
-    viewModel { ReviewProfileViewModel(get(), get(), get(), get()) }
+    viewModel { ReviewProfileViewModel(get(), get(), get(), get(), get()) }
     viewModel { AddNomineeViewModel(get()) }
     viewModel { SetupAutopayViewModel(get(), get()) }
 
@@ -143,7 +143,7 @@ val viewModelModule = module {
     viewModel { (bundleId: String, purchaseMode: PurchaseMode) ->
         BundleDetailsViewModel(bundleId, purchaseMode, get(), get(), get(), get(), get())
     }
-    viewModel { CartViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { CartViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryMutualFundViewModel(get(), get()) }
     viewModel { (id: String) -> MutualFundDetailsScreenViewModel(id, get(), get(), get(), get(), get(),get()) }
     viewModel { (search: String?, tag: String?, category: String?, amountType: String?) ->

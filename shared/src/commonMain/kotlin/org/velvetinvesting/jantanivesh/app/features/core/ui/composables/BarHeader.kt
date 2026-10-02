@@ -31,6 +31,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
+import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
+import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
 
 @Composable
 fun BarHeader(
@@ -66,19 +68,29 @@ fun BarHeader(
             )
 
             if (showArrow){
-                Icon(
-                    painter = painterResource(Res.drawable.icon_arrow_right),
-                    contentDescription = null,
-                    tint = Primary,
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .size(16.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { onArrowClick() }
-                        )
-                )
+                Row(
+                    modifier= Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { onArrowClick() }
+                    ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp6)
+                ){
+                    Text(
+                        text= "View All",
+                        style = tinyLabel,
+                        color = Secondary
+                    )
+                    Icon(
+                        painter = painterResource(Res.drawable.icon_arrow_right),
+                        contentDescription = null,
+                        tint = Secondary,
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(12.dp)
+                    )
+                }
             }
 
         }
@@ -90,7 +102,8 @@ fun BarHeader(
 private fun BarHeaderPreview() {
     JantaNiveshTheme {
         BarHeader(
-            title = "Mutual Funds"
+            title = "Mutual Funds",
+            showArrow = true
         )
     }
 }

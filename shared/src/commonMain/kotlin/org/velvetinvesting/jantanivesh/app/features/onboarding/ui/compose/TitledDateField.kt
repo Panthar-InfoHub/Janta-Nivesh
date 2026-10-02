@@ -22,7 +22,7 @@ fun TitledDateField(
     value: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "YYYY-MM-DD",
+    placeholder: String = "DD-MM-YYYY",
     mandatory: Boolean = true
 ) {
     TitledAppTextField(

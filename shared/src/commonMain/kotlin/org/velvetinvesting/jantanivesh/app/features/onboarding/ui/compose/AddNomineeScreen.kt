@@ -41,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray444
 import org.velvetinvesting.jantanivesh.app.core.theme.GoalIconBg
@@ -103,7 +102,7 @@ fun AddNomineeScreen(
             onDismiss = { datePickerIndex = null },
             onDateSelected = { millis ->
                 handleEvent(
-                    AddNomineeEvent.OnDateOfBirthChanged(index, formatMillisToIsoDate(millis))
+                    AddNomineeEvent.OnDateOfBirthChanged(index, millis)
                 )
             }
         )
@@ -247,40 +246,40 @@ fun AddNomineeScreen(
                         onClick = { datePickerIndex = index },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    DropDownSelector(
-                        title = "Identity Type / " +stringResource(Res.string.identity_type),
-                        value = nominee.identityType?.let { nomineeDocumentLabel(it) } ?: "",
-                        onValueChange = {
-                                handleEvent(AddNomineeEvent.OnIdentityTypeChanged(index, it))
-                        },
-                        list = NomineeDocumentType.entries,
-                        placeholder = "Select identity type",
-                        mandatory = true,
-                        textConvertor = { documentLabels.getValue(it) }
-                    )
-                    TitledAppTextField(
-                        title = nomineeDocumentLabel(nominee.identityType),
-                        value = nominee.panCard,
-                        onValueChange = { handleEvent(AddNomineeEvent.OnPanCardChanged(index, it)) },
-                        // Format examples rather than prose, so they need no translation.
-                        placeholder = when (nominee.identityType) {
-                            NomineeDocumentType.PAN -> "ABCDE1234F"
-                            NomineeDocumentType.AADHAAR -> "1234"
-                            else -> ""
-                        },
-                        mandatory = true,
-                        keyboardType = if (nominee.identityType == NomineeDocumentType.AADHAAR) {
-                            KeyboardType.Number
-                        } else {
-                            KeyboardType.Text
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Characters,
-                            autoCorrectEnabled = false,
-                            imeAction = ImeAction.Next
-                        ),
-                        isError = nominee.panCard.isNotEmpty() && !nominee.isDocumentNumberValid
-                    )
+//                    DropDownSelector(
+//                        title = "Identity Type / " +stringResource(Res.string.identity_type),
+//                        value = nominee.identityType?.let { nomineeDocumentLabel(it) } ?: "",
+//                        onValueChange = {
+//                                handleEvent(AddNomineeEvent.OnIdentityTypeChanged(index, it))
+//                        },
+//                        list = NomineeDocumentType.entries,
+//                        placeholder = "Select identity type",
+//                        mandatory = true,
+//                        textConvertor = { documentLabels.getValue(it) }
+//                    )
+//                    TitledAppTextField(
+//                        title = nomineeDocumentLabel(nominee.identityType),
+//                        value = nominee.panCard,
+//                        onValueChange = { handleEvent(AddNomineeEvent.OnPanCardChanged(index, it)) },
+//                        // Format examples rather than prose, so they need no translation.
+//                        placeholder = when (nominee.identityType) {
+//                            NomineeDocumentType.PAN -> "ABCDE1234F"
+//                            NomineeDocumentType.AADHAAR -> "1234"
+//                            else -> ""
+//                        },
+//                        mandatory = true,
+//                        keyboardType = if (nominee.identityType == NomineeDocumentType.AADHAAR) {
+//                            KeyboardType.Number
+//                        } else {
+//                            KeyboardType.Text
+//                        },
+//                        keyboardOptions = KeyboardOptions(
+//                            capitalization = KeyboardCapitalization.Characters,
+//                            autoCorrectEnabled = false,
+//                            imeAction = ImeAction.Next
+//                        ),
+//                        isError = nominee.panCard.isNotEmpty() && !nominee.isDocumentNumberValid
+//                    )
 //                    TitledAppTextField(
 //                        title = "Email/ " + stringResource(Res.string.email),
 //                        value = nominee.email,

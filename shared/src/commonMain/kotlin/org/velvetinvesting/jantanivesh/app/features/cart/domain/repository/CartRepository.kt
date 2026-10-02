@@ -7,6 +7,9 @@ import org.velvetinvesting.jantanivesh.app.features.cart.data.remote.model.bundl
 import org.velvetinvesting.jantanivesh.app.features.cart.data.remote.model.cartaddsip.AddCartSipRequest
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.MutualFundPurchaseInitiateDomain
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.SIPStatus
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.CartCheckoutDomain
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.CartPaymentStatusDomain
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.LumpsumCheckoutPaymentDomain
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.SipItemDomain
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.UserCartDomain
 
@@ -31,6 +34,28 @@ interface CartRepository {
 
     /** `DELETE /mf/cart` */
     suspend fun clearCart(): NetworkResponse<Unit, ErrorDomain>
+
+    /** `POST /mf/cart/checkout/sip` — places the cart's SIPs on [mandateId] and sends the OTP. */
+    suspend fun checkoutSip(mandateId: String): NetworkResponse<CartCheckoutDomain, ErrorDomain>
+
+    /** `POST /mf/cart/checkout/sip` — confirms checkout [batchId] with the user's [otp]. */
+    suspend fun verifySipCheckoutOtp(batchId: String, otp: String): NetworkResponse<Unit, ErrorDomain>
+
+    /** `POST /mf/cart/checkout/lumpsum` — batches the cart's lumpsum orders and sends the OTP. */
+    suspend fun checkoutLumpsum(): NetworkResponse<CartCheckoutDomain, ErrorDomain>
+
+    /**
+     * `POST /mf/cart/checkout/lumpsum/confirm` — authorises batch [batchId] with the user's [otp]
+     * and returns the page to pay on, which lands on [paymentPostbackUrl] when done.
+     */
+    suspend fun confirmLumpsumCheckout(
+        batchId: String,
+        otp: String,
+        paymentPostbackUrl: String
+    ): NetworkResponse<LumpsumCheckoutPaymentDomain, ErrorDomain>
+
+    /** `GET /payment/{id}` */
+    suspend fun getPaymentStatus(paymentId: String): NetworkResponse<CartPaymentStatusDomain, ErrorDomain>
 
     suspend fun purchaseLumpSum(): NetworkResponse<String, ErrorDomain>
 

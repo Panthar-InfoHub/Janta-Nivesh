@@ -34,6 +34,14 @@ class SubmitInvestorProfileUseCase(
     }
 }
 
+class GetCityByPincodeUseCase(
+    private val onboardingRepo: OnboardingRepo
+) {
+    suspend operator fun invoke(pincode: String): NetworkResponse<String, ErrorDomain> {
+        return onboardingRepo.getCityByPincode(pincode)
+    }
+}
+
 class SubmitNomineesUseCase(
     private val onboardingRepo: OnboardingRepo
 ) {

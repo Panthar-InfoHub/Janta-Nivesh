@@ -449,4 +449,7 @@
     <string name="pay_one_rupee_via">%1$s দিয়ে ₹1 পেমেন্ট করুন</string>
     <string name="pay_one_rupee_by_qr">QR স্ক্যান করে ₹1 পেমেন্ট করুন</string>
     <string name="pay_one_rupee">₹1 পেমেন্ট করুন</string>
+    <string name="invest">বিনিয়োগ করুন</string>
+    <string name="view_bundle">বান্ডেল দেখুন</string>
+    <string name="save_fund">ফান্ড সেভ করুন</string>
 </resources>

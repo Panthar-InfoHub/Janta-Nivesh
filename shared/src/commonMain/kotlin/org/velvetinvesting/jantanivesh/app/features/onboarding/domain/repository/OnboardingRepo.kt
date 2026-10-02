@@ -78,6 +78,9 @@ interface OnboardingRepo  {
 
     suspend fun submitInvestorProfile(profile: InvestorProfile) : NetworkResponse<Unit, ErrorDomain>
 
+    /** `GET /frontend/city` — the city for a 6-digit [pincode], to prefill the profile's city. */
+    suspend fun getCityByPincode(pincode: String) : NetworkResponse<String, ErrorDomain>
+
     suspend fun submitNominees(nominees: List<Nominee>) : NetworkResponse<Unit, ErrorDomain>
 
     suspend fun skipNominees() : NetworkResponse<Unit, ErrorDomain>

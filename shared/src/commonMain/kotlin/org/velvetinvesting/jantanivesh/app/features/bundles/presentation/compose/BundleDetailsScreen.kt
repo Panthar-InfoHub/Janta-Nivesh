@@ -47,10 +47,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
+import jantanivesh.shared.generated.resources.add_to_cart
+import jantanivesh.shared.generated.resources.change
 import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.cart_icon
 import jantanivesh.shared.generated.resources.lock_icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.BoxBorder
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardSubtitle
 import org.velvetinvesting.jantanivesh.app.core.theme.GrayBackGround
@@ -126,7 +129,7 @@ fun BundleDetailsScreen(
                         modifier = Modifier.weight(1f)
                     )
                     NextButtonFooter(
-                        value = "Add to Cart",
+                        value = "Add to Cart/" + stringResource(Res.string.add_to_cart),
                         onClick = { onEvent(BundleDetailsEvent.OnAddToCartClicked) },
                         enabled = state.canInvest && !state.isAddingToCart,
                         loading = state.isAddingToCart
@@ -619,7 +622,7 @@ private fun CategoryDistributionItem(
                         .clickable(onClick = onChangeFundClick)
                 ) {
                     Text(
-                        text = "Change",
+                        text = "Change/" + stringResource(Res.string.change),
                         color = appGreen,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
