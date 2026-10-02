@@ -19,9 +19,9 @@ import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.Requ
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.ChooseLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.EnterOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.login.ui.viewmodels.LoginWithPhoneNumberViewModel
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.AllBundlesViewModel
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.BundleResultViewModel
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CartScreenViewModel
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.AllBundlesViewModel
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.BundleDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.viewmodel.CartViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.CategoryMutualFundViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundSearchResultViewModel
@@ -37,7 +37,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Upl
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyBankAccountViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.VerifyWithDigilockerViewModel
 import org.velvetinvesting.jantanivesh.app.features.search.ui.viewmodels.SearchOverlayViewModel
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
+import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipMandateHandoff
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipPurchaseOtpViewModel
@@ -140,9 +140,11 @@ val viewModelModule = module {
     viewModel { (redemptionId: String) -> RedeemOtpViewModel(redemptionId, get(), get(), get(), get()) }
 
     viewModel { AllBundlesViewModel(get()) }
-    viewModel { (bundleKey: String) -> BundleResultViewModel(bundleKey, get(), get(), get()) }
-    viewModel { CartScreenViewModel(get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { CategoryMutualFundViewModel(get()) }
+    viewModel { (bundleId: String, purchaseMode: PurchaseMode) ->
+        BundleDetailsViewModel(bundleId, purchaseMode, get(), get(), get(), get(), get())
+    }
+    viewModel { CartViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { CategoryMutualFundViewModel(get(), get()) }
     viewModel { (id: String) -> MutualFundDetailsScreenViewModel(id, get(), get(), get(), get(), get(),get()) }
     viewModel { (search: String?, tag: String?, category: String?, amountType: String?) ->
         MutualFundSearchResultViewModel(search, tag, category, amountType, get())

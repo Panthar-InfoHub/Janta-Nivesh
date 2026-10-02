@@ -20,7 +20,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.WebURLConstants
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AmountTypeLabel
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.MandateOption
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
+import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SchemePlan
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SipThreshold
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.CreateMandateUseCase

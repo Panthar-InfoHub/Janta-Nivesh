@@ -12,9 +12,12 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
+import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.bundles.domain.usecases.GetAllBundlesUseCase
 
 class CategoryMutualFundViewModel(
-    private val getCategoryMutualFundsUseCase: GetCategoryMutualFundsUseCase
+    private val getCategoryMutualFundsUseCase: GetCategoryMutualFundsUseCase,
+    private val getAllBundlesUseCase: GetAllBundlesUseCase
 ) : ViewModel() {
 
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Loading)
@@ -24,12 +27,17 @@ class CategoryMutualFundViewModel(
         MutableStateFlow<List<CategoryMutualFundDomain>>(emptyList())
     val mutualFunds = _mutualFunds.asStateFlow()
 
+    /** The recommended bundles shown above the categories; empty hides the section. */
+    private val _bundles = MutableStateFlow<List<BundleSummaryDomain>>(emptyList())
+    val bundles = _bundles.asStateFlow()
+
 
     init {
         loadMutualFunds()
     }
 
     fun loadMutualFunds() {
+        loadBundles()
         viewModelScope.launch {
             _loadingState.value = LoadingState.Loading
             getCategoryMutualFundsUseCase()
@@ -42,6 +50,14 @@ class CategoryMutualFundViewModel(
                     _loadingState.value =
                         LoadingState.Error(error.message)
                 }
+        }
+    }
+
+    /** Loaded on its own: the bundles are extra, so failing to get them never blocks the funds. */
+    private fun loadBundles() {
+        viewModelScope.launch {
+            getAllBundlesUseCase()
+                .onSuccess { _bundles.value = it }
         }
     }
 

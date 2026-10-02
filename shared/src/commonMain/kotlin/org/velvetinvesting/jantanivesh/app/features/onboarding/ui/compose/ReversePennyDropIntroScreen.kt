@@ -50,7 +50,6 @@ import org.velvetinvesting.jantanivesh.app.core.theme.appRed
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
-import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 
 /**
@@ -160,7 +159,7 @@ private fun PennyDropCard() {
                 )
             }
             Text(
-                text = "Penny Drop",
+                text = "Reverse Penny Drop",
                 style = MaterialTheme.typography.titleLarge,
                 color = Black
             )

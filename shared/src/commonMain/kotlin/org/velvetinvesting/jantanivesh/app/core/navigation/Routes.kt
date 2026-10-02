@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.core.navigation
 import kotlinx.serialization.Serializable
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinPurpose
+import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
 
 @Serializable
 sealed interface Route {
@@ -36,7 +37,7 @@ sealed interface Route {
     // Plans flow
     /**
      * Everything shown on the success screen, carried from the confirm response. [mode] is a
-     * [org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode] name, and
+     * [org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode] name, and
      * decides whether the screen reads as a SIP registration or a completed purchase.
      * [installmentDay] is zero when the mode has no debit day.
      */
@@ -147,7 +148,19 @@ sealed interface Route {
     data object MutualFundTypeSelectionScreen : Route
 
     @Serializable
-    data class BundleResultScreen(val bundleKey: String) : Route
+    data class BundleDetails(
+        val bundleId: String,
+        /** A [PurchaseMode] name; read back with [PurchaseMode.fromName]. */
+        val purchaseMode: String = PurchaseMode.MONTHLY.name
+    ) : Route
+
+    /** Picks funds for one category of the [BundleDetails] below it, sharing its view model. */
+    @Serializable
+    data class BundleSelectFund(val categoryId: String) : Route
+
+    /** The full fund list for one category, opened from [BundleSelectFund] to fill its active slot. */
+    @Serializable
+    data class BundleExploreFunds(val categoryId: String) : Route
 
     @Serializable
     data object AllBundleScreen : Route

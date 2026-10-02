@@ -67,7 +67,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.MandateOption
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
+import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SchemePlan
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SipThreshold
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseEvent
@@ -495,51 +495,7 @@ private fun DebitDayCard(
             .padding(Spacing.dp16),
         verticalArrangement = Arrangement.spacedBy(Spacing.dp8)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(Spacing.dp12))
-                .border(
-                    width = Spacing.dp1,
-                    color = Secondary,
-                    shape = RoundedCornerShape(Spacing.dp12)
-                )
-                .clickable(onClick = onClick)
-                .padding(horizontal = Spacing.dp12, vertical = Spacing.dp14),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(Spacing.dp32)
-                    .clip(RoundedCornerShape(Spacing.dp8))
-                    .background(SelectedBoxColor),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.dob_dropdown_icon),
-                    contentDescription = null,
-                    tint = Secondary,
-                    modifier = Modifier.size(Spacing.dp16)
-                )
-            }
-
-            Text(
-                text = day?.let { "Monthly on ${it.withOrdinalSuffix()}" } ?: "Choose a debit day",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.SemiBold
-                ),
-                color = if (day == null) GreyText else Primary,
-                modifier = Modifier.weight(1f)
-            )
-
-            Icon(
-                painter = painterResource(Res.drawable.dropdown_icon),
-                contentDescription = null,
-                tint = Gray444,
-                modifier = Modifier.size(Spacing.dp16)
-            )
-        }
+        DebitDayField(day = day, onClick = onClick)
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp8),
@@ -558,6 +514,63 @@ private fun DebitDayCard(
                 color = GreyText
             )
         }
+    }
+}
+
+/**
+ * The tappable monthly debit-day field on its own, for screens that pick a SIP day without the
+ * fund-level details [DebitDayCard] adds — the bundle investment summary uses it this way.
+ */
+@Composable
+fun DebitDayField(
+    day: Int?,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Spacing.dp12))
+            .border(
+                width = Spacing.dp1,
+                color = Secondary,
+                shape = RoundedCornerShape(Spacing.dp12)
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = Spacing.dp12, vertical = Spacing.dp12),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.dp12),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(Spacing.dp32)
+                .clip(RoundedCornerShape(Spacing.dp8))
+                .background(SelectedBoxColor),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.dob_dropdown_icon),
+                contentDescription = null,
+                tint = Secondary,
+                modifier = Modifier.size(Spacing.dp16)
+            )
+        }
+
+        Text(
+            text = day?.let { "Monthly on ${it.withOrdinalSuffix()}" } ?: "Choose a debit day",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.SemiBold
+            ),
+            color = if (day == null) GreyText else Primary,
+            modifier = Modifier.weight(1f)
+        )
+
+        Icon(
+            painter = painterResource(Res.drawable.dropdown_icon),
+            contentDescription = null,
+            tint = Gray444,
+            modifier = Modifier.size(Spacing.dp14)
+        )
     }
 }
 

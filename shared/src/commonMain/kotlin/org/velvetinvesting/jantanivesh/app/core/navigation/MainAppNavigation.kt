@@ -25,6 +25,20 @@ import org.velvetinvesting.jantanivesh.app.core.utils.WebURLConstants
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewConfig
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewScreen
 import org.velvetinvesting.jantanivesh.app.core.webview.WebViewUrlMatchType
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.compose.AllBundlesScreen
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderScreen
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.compose.BundleDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.compose.ExploreCategoryFundScreenRoot
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.compose.SelectFundScreen
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.AllBundlesEffect
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.AllBundlesViewModel
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.BundleDetailsEffect
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.BundleDetailsEvent
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.BundleDetailsViewModel
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.ExploreFundsEffect
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.exploreUnselectableFundIds
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.fundIdsInOtherSlots
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.SelectFundEffect
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.compose.BiometricSettingsScreen
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.compose.ChangePinScreen
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.compose.EnterPinScreen
@@ -56,9 +70,9 @@ import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.ProjectedIm
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.YourGoalsScreen
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalViewModel
+import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.ProjectedImpactViewModel
-import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.MapSchemeViewModel
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEffect
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsEvent
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.YourGoalsUiData
@@ -68,25 +82,31 @@ import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.HealthI
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.RequestCallbackScreen
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.compose.TermInsuranceScreen
 import org.velvetinvesting.jantanivesh.app.features.insurance.ui.viewmodels.RequestCallbackViewModel
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundItemDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.AllBundlesScreen
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.BundleResultScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.CategoryMutualFundScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.InvestmentMethodScreen
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundDetailsScreenRoot
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.MutualFundSearchScreenRoot
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartScreen
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.compose.CartScreen
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.viewmodel.CartEffect
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.viewmodel.CartEvent
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.viewmodel.CartViewModel
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.SetupAutopayScreen
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEffect
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayEvent
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.SetupAutopayViewModel
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
+import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.toDetailsRoute
+import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.toOrderDomain
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.compose.MyOrdersScreen
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.compose.OrderDetailsScreen
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersEffect
+import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersViewModel
+import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.FundPurchaseScreen
+import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.PurchaseSuccessScreen
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.SipPurchaseOtpScreen
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.SipSetupScreen
-import org.velvetinvesting.jantanivesh.app.features.plans.ui.compose.PurchaseSuccessScreen
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseEffect
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.FundPurchaseViewModel
 import org.velvetinvesting.jantanivesh.app.features.plans.ui.viewmodels.SipMandateHandoff
@@ -108,12 +128,6 @@ import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.Redee
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemOtpEffect
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemOtpViewModel
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.RedeemViewModel
-import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.toDetailsRoute
-import org.velvetinvesting.jantanivesh.app.features.orders.domain.model.toOrderDomain
-import org.velvetinvesting.jantanivesh.app.features.orders.ui.compose.MyOrdersScreen
-import org.velvetinvesting.jantanivesh.app.features.orders.ui.compose.OrderDetailsScreen
-import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersEffect
-import org.velvetinvesting.jantanivesh.app.features.orders.ui.viewmodel.MyOrdersViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ActiveMandatesScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.NotificationScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.PrivacyPolicyScreen
@@ -121,12 +135,12 @@ import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileLa
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.ProfileSettingScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.TermsAndConditionsScreen
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.compose.TransactionHistoryScreen
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ActiveMandatesEffect
+import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ActiveMandatesViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileLanguageViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ProfileSettingViewModel
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ActiveMandatesEffect
-import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.ActiveMandatesViewModel
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryEffect
 import org.velvetinvesting.jantanivesh.app.features.profile.ui.viewmodels.TransactionHistoryViewModel
 
@@ -364,8 +378,10 @@ fun MainAppNavigation(
                         launchSingleTop = true
                     }
                 },
-                onBundledFundClick = { bundleKey: String ->
-                    navController.navigate(Route.BundleResultScreen(bundleKey))
+                onBundledFundClick = { bundleId: String ->
+                    navController.navigate(Route.BundleDetails(bundleId)) {
+                        launchSingleTop = true
+                    }
                 },
                 onBundleClick = {
                     navController.navigate(Route.AllBundleScreen)
@@ -728,67 +744,172 @@ fun MainAppNavigation(
         }
 
         composable<Route.CartScreen> {
+            val vm: CartViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
             val cartWebViewReturned by it.savedStateHandle
                 .getStateFlow(CART_WEBVIEW_RESULT, false)
                 .collectAsStateWithLifecycle()
-            CartScreen(
-                onBack = {
-                    navController.popBackStack()
-                },
-                onLaunchWebView = { url ->
-                    navController.navigate(
-                        Route.WebViewScreen(
-                            url = url,
-                            exitUrlPatterns = emptyList(),
-                            title = "Complete Payment",
-                            completionRouteKey = "cart"
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        CartEffect.NavigateBack -> navController.popBackStack()
+                        is CartEffect.OpenWebView -> navController.navigate(
+                            Route.WebViewScreen(
+                                url = effect.url,
+                                exitUrlPatterns = emptyList(),
+                                title = "Complete Payment",
+                                completionRouteKey = "cart"
+                            )
                         )
-                    )
-                },
-                webViewReturned = cartWebViewReturned,
-                onWebViewConsumed = {
+                    }
+                }
+            }
+
+            LaunchedEffect(Unit) {
+                vm.handleEvent(CartEvent.OnScreenResumed)
+            }
+
+            LaunchedEffect(cartWebViewReturned) {
+                if (cartWebViewReturned) {
+                    vm.handleEvent(CartEvent.OnWebViewReturned)
                     it.savedStateHandle[CART_WEBVIEW_RESULT] = false
                 }
-            )
-        }
+            }
 
-        composable<Route.BundleResultScreen> {
-            val route = it.toRoute<Route.BundleResultScreen>()
-            BundleResultScreenRoot(
-                bundleKey = route.bundleKey,
-                heading = "Bundle Funds",
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onCartClick = {
-                    navController.navigate(Route.CartScreen)
-                },
-                onFundClick = { fund: BundledMutualFundItemDomain ->
-                    navController.openFund(
-                        mfProductId = fund.id,
-                        isin = fund.isin,
-                        fundName = fund.scheme_name,
-                        fundSubtitle = listOf(fund.risk_name, fund.asset_type, fund.scheme_type)
-                            .filter { it.isNotBlank() }
-                            .distinct()
-                            .joinToString(" \u00B7 ")
-                    )
-                }
+            CartScreen(
+                state = state,
+                onEvent = vm::handleEvent
             )
         }
 
         composable<Route.AllBundleScreen> {
-            AllBundlesScreen(
-                onBackClick = { navController.popBackStack() },
-                onBundleClick = { bundleKey: String ->
-                    navController.navigate(Route.BundleResultScreen(bundleKey)) {
-                        launchSingleTop = true
+            val vm: AllBundlesViewModel = koinViewModel()
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        AllBundlesEffect.NavigateBack -> navController.popBackStack()
+                        AllBundlesEffect.NavigateToCart -> navController.navigate(Route.CartScreen) {
+                            launchSingleTop = true
+                        }
+                        is AllBundlesEffect.NavigateToBundle ->
+                            navController.navigate(
+                                Route.BundleDetails(effect.bundleId, effect.purchaseMode.name)
+                            ) {
+                                launchSingleTop = true
+                            }
                     }
-                },
-                onCartClick = {
-                    navController.navigate(Route.CartScreen)
+                }
+            }
+
+            AllBundlesScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.BundleDetails> { entry ->
+            val route = entry.toRoute<Route.BundleDetails>()
+            val vm: BundleDetailsViewModel = koinViewModel(
+                parameters = { parametersOf(route.bundleId, PurchaseMode.fromName(route.purchaseMode)) }
+            )
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(vm.effect) {
+                vm.effect.collect { effect ->
+                    when (effect) {
+                        BundleDetailsEffect.NavigateBack -> navController.popBackStack()
+                        is BundleDetailsEffect.NavigateToSelectFund ->
+                            navController.navigate(Route.BundleSelectFund(effect.categoryId)) {
+                                launchSingleTop = true
+                            }
+                        BundleDetailsEffect.NavigateToCart -> navController.navigate(Route.CartScreen) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+            }
+
+            BundleDetailsScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.BundleSelectFund> { entry ->
+            val route = entry.toRoute<Route.BundleSelectFund>()
+            // The details entry's view model, so saved picks land in the bundle it shows.
+            val detailsEntry = remember(entry) { navController.getBackStackEntry<Route.BundleDetails>() }
+            val detailsRoute = detailsEntry.toRoute<Route.BundleDetails>()
+            val vm: BundleDetailsViewModel = koinViewModel(
+                viewModelStoreOwner = detailsEntry,
+                parameters = {
+                    parametersOf(detailsRoute.bundleId, PurchaseMode.fromName(detailsRoute.purchaseMode))
                 }
             )
+            val state by vm.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(route.categoryId) {
+                vm.handleEvent(BundleDetailsEvent.OnFundSelectionOpened(route.categoryId))
+            }
+
+            LaunchedEffect(vm.selectFundEffect) {
+                vm.selectFundEffect.collect { effect ->
+                    when (effect) {
+                        SelectFundEffect.Close -> navController.popBackStack()
+                        is SelectFundEffect.NavigateToExplore ->
+                            navController.navigate(Route.BundleExploreFunds(effect.categoryId)) {
+                                launchSingleTop = true
+                            }
+                    }
+                }
+            }
+
+            SelectFundScreen(
+                state = state,
+                onEvent = vm::handleEvent
+            )
+        }
+
+        composable<Route.BundleExploreFunds> { entry ->
+            val route = entry.toRoute<Route.BundleExploreFunds>()
+            val detailsEntry = remember(entry) { navController.getBackStackEntry<Route.BundleDetails>() }
+            val detailsRoute = detailsEntry.toRoute<Route.BundleDetails>()
+            val vm: BundleDetailsViewModel = koinViewModel(
+                viewModelStoreOwner = detailsEntry,
+                parameters = {
+                    parametersOf(detailsRoute.bundleId, PurchaseMode.fromName(detailsRoute.purchaseMode))
+                }
+            )
+            val state by vm.uiState.collectAsStateWithLifecycle()
+            val category = state.bundle?.categories?.find { it.id == route.categoryId }
+
+            LaunchedEffect(vm.exploreFundsEffect) {
+                vm.exploreFundsEffect.collect { effect ->
+                    when (effect) {
+                        ExploreFundsEffect.Close -> navController.popBackStack()
+                    }
+                }
+            }
+
+            if (category != null) {
+                ExploreCategoryFundScreenRoot(
+                    categoryName = category.categoryName,
+                    categoryTitle = category.displayName,
+                    purchaseMode = state.purchaseMode,
+                    unavailableFundIds = state.fundIdsInOtherSlots(),
+                    unselectableFundIds = state.exploreUnselectableFundIds(),
+                    selectedFundId = state.exploreSelectedFund?.id,
+                    isLoadingFund = state.isFetchingExploredFund,
+                    onBackClick = { vm.handleEvent(BundleDetailsEvent.OnExploreBackClicked) },
+                    onFundSelected = { vm.handleEvent(BundleDetailsEvent.OnExploredFundSelected(it)) },
+                    onSaveClick = { vm.handleEvent(BundleDetailsEvent.OnSaveExploredFundClicked) }
+                )
+            } else {
+                LoaderScreen()
+            }
         }
 
 

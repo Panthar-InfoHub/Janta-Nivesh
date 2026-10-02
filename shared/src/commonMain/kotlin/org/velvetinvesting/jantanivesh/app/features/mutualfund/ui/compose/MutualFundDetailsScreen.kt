@@ -72,7 +72,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NavLineC
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ShadowCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.CartInfo
+import org.velvetinvesting.jantanivesh.app.features.cart.CartInfo
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CalculatorInputState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.DetailsState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Duration
@@ -84,8 +84,8 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Mut
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundGraphPointsDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.StableMetricUi
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartFab
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartPopup
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.compose.CartFab
+import org.velvetinvesting.jantanivesh.app.features.cart.presentation.compose.CartPopup
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MFBottomSheetType
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MFDetailsSideEffect
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.MutualFundDetailsScreenViewModel

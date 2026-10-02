@@ -11,24 +11,24 @@ import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.GetTopPic
 import org.velvetinvesting.jantanivesh.app.features.fd.domain.usecases.PurchaseFDUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.LoginWithNumberUseCase
 import org.velvetinvesting.jantanivesh.app.features.login.domain.usecases.VerifyOTPUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddBundleToCartLumpsumUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddBundleToCartSipUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartLumpsumUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartSipUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.CheckSipPurchaseStatusUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.ClearCartUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.DeleteCartItemUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetAllBundledFundsUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetBundleFundsUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddBundleToCartLumpsumUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddBundleToCartSipUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddToCartLumpsumUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddToCartSipUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.CheckSipPurchaseStatusUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.ClearCartUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.DeleteCartItemUseCase
+import org.velvetinvesting.jantanivesh.app.features.bundles.domain.usecases.GetAllBundlesUseCase
+import org.velvetinvesting.jantanivesh.app.features.bundles.domain.usecases.GetBundleDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetCategoryMutualFundsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundGraphUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundSearchResultUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundTopPicksUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetUserCartUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.InitiateSipPurchaseUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.PurchaseLumpsumFundUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.PurchaseSipFundUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.GetUserCartUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.InitiateSipPurchaseUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.PurchaseLumpsumFundUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.PurchaseSipFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemFullFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.RedeemPartialFundUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.ConfirmMandateUseCase
@@ -148,8 +148,8 @@ val useCaseModule = module {
     factory { CheckSipPurchaseStatusUseCase(get()) }
     factory { ClearCartUseCase(get()) }
     factory { DeleteCartItemUseCase(get()) }
-    factory { GetAllBundledFundsUseCase(get()) }
-    factory { GetBundleFundsUseCase(get()) }
+    factory { GetAllBundlesUseCase(get()) }
+    factory { GetBundleDetailsUseCase(get()) }
     factory { GetCategoryMutualFundsUseCase(get()) }
     factory { GetMutualFundDetailsUseCase(get()) }
     factory { GetMutualFundGraphUseCase(get()) }

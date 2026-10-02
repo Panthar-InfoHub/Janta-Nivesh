@@ -17,6 +17,9 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddToCartLumpsumUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddToCartSipUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.GetUserCartUseCase
 import org.velvetinvesting.jantanivesh.app.features.core.utils.pruneForGraph
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CalculatorInputState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CartBottomSheetState
@@ -31,19 +34,12 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.Mut
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundScreenState
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.StableMetricUi
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.toSipRequest
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartLumpsumUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.AddToCartSipUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundDetailsUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetMutualFundGraphUseCase
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetUserCartUseCase
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.SelectedFundType
 import org.velvetinvesting.jantanivesh.app.features.portfolio.domain.usecases.InvestMoreLumpsumUseCase
 import org.velvetinvesting.jantanivesh.app.features.portfolio.ui.viewmodel.LumpSumAdd
-import kotlin.collections.copy
-import kotlin.onSuccess
-import kotlin.text.compareTo
-import kotlin.text.toFloat
 
 class MutualFundDetailsScreenViewModel(
     private val id: String,
@@ -270,8 +266,7 @@ class MutualFundDetailsScreenViewModel(
                     startCartSheetLoading()
                     addToCartLumpsumUseCase(
                         id = id,
-                        amount = amount,
-                        folioId= folioId
+                        amount = amount
                     ).onSuccess {
                         stopCartSheetLoading()
                         hideBottomSheet()
@@ -296,7 +291,7 @@ class MutualFundDetailsScreenViewModel(
             }
             SelectedFundType.SIP -> {
                 val state = _cartSheetState.value
-                val request = state.toSipRequest(id, folioId=folioId) ?: return
+                val request = state.toSipRequest(id) ?: return
                 viewModelScope.launch {
                     startCartSheetLoading()
                     addToCartSIPUseCase(

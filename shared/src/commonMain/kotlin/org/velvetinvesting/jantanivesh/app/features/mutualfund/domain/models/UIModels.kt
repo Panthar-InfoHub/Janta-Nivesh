@@ -1,13 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models
 
-import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddsip.AddCartSipRequest
-import kotlin.time.Clock
+import org.velvetinvesting.jantanivesh.app.features.cart.data.remote.model.cartaddsip.AddCartSipRequest
 
 data class CategoryMutualFundDomain(
     val categoryName: String,
@@ -79,68 +72,28 @@ enum class Duration(
 }
 
 
-fun CartBottomSheetState.toSipRequest(
-    productId: String,
-    folioId: String?
-): AddCartSipRequest? {
-
+/**
+ * The `POST /mf/cart` SIP body for the sheet's current input, or null while it is incomplete.
+ * A daily SIP has no installment day; anything else is sent as a monthly SIP on the picked date.
+ */
+fun CartBottomSheetState.toSipRequest(productId: String): AddCartSipRequest? {
     val amount = amount ?: return null
-//    val frequency = selectedFrequency ?: return null
-//    val duration = selectedDuration ?: return null
-    val duration = Duration.PERPETUAL
+    val isDaily = selectedFrequency == InvestmentFrequency.DAILY ||
+            selectedFrequency == InvestmentFrequency.DAILY_Z
+
+    if (isDaily) {
+        return AddCartSipRequest(
+            mf_product_id = productId,
+            amount = amount,
+            frequency = "DAILY"
+        )
+    }
+
     val day = selectedSIPDate?.toIntOrNull() ?: return null
-
-    val today = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault())
-        .date
-
-    val startDate = calculateSipStartDate(today, day)
-    val maxEndDate = startDate
-        .plus(DatePeriod(years = 40))
-        .minus(DatePeriod(days = 1))
-
-    val endDate = if (duration == Duration.PERPETUAL) {
-        maxEndDate
-    } else {
-        val calculated = startDate.plus(
-            DatePeriod(months = duration.months)
-        )
-        if (calculated > maxEndDate) maxEndDate else calculated
-    }
-
     return AddCartSipRequest(
-        amount = amount,
         mf_product_id = productId,
-        sip_st_date = startDate.toString(),
-        sip_en_date = endDate.toString(),
-//        sip_freq = frequency.code,
-        sip_day = day,
-        sip_amt = amount,
-        folio = folioId?:""
+        amount = amount,
+        frequency = "MONTHLY",
+        installment_day = day
     )
-}
-
-private fun calculateSipStartDate(
-
-    today: LocalDate,
-
-    sipDay: Int
-
-): LocalDate {
-
-    val minimumDate = today.plus(DatePeriod(months = 1))
-
-    var startDate = LocalDate(year = minimumDate.year,
-        month = minimumDate.month,
-        day = sipDay
-    )
-
-    if (startDate < minimumDate) {
-        val nextMonth = minimumDate.plus(DatePeriod(months = 1))
-        startDate = LocalDate(year = nextMonth.year,
-            month = nextMonth.month,
-            day = sipDay
-        )
-    }
-    return startDate
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -42,6 +43,9 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.ShadowColor
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.LoadingState
+import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleSummaryDomain
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.compose.BundleCard
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.compose.previewBundleSummary
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppSearchBarButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BarHeader
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
@@ -72,6 +76,7 @@ fun CategoryMutualFundScreenRoot(
     val viewModel: CategoryMutualFundViewModel = koinViewModel()
     val categories by viewModel.mutualFunds.collectAsStateWithLifecycle()
     val uiState by viewModel.loadingState.collectAsStateWithLifecycle()
+    val bundles by viewModel.bundles.collectAsStateWithLifecycle()
 
     // Kept here rather than in the view model: the overlay is a presentation concern, and
     // surviving configuration changes is all the persistence it needs.
@@ -102,6 +107,7 @@ fun CategoryMutualFundScreenRoot(
             CategoryMutualFundScreenRootContent(
                 uiState = uiState,
                 categories = categories,
+                bundles = bundles,
                 onBackClick = onBackClick,
                 onIconClick = onIconClick,
                 onFundClick = onFundClick,
@@ -138,6 +144,7 @@ fun CategoryMutualFundScreenRoot(
 fun CategoryMutualFundScreenRootContent(
     uiState: LoadingState,
     categories: List<CategoryMutualFundDomain>,
+    bundles: List<BundleSummaryDomain>,
     onBackClick: () -> Unit,
     onIconClick: () -> Unit,
     onFundClick: (MutualFundDomain) -> Unit,
@@ -170,6 +177,7 @@ fun CategoryMutualFundScreenRootContent(
                 LoadingState.Success -> {
                     CategoryMutualFundScreen(
                         funds = categories,
+                        bundles = bundles,
                         onCategoryClick = onCategoryClick,
                         onFundClick = {onFundClick(it)},
                         onSearchBarClick = onSearchBarClick,
@@ -188,6 +196,7 @@ fun CategoryMutualFundScreen(
     onFundClick: (MutualFundDomain) -> Unit,
     onSearchBarClick: () -> Unit,
     funds: List<CategoryMutualFundDomain>,
+    bundles: List<BundleSummaryDomain>,
     onBundledFundClick: (String) -> Unit,
     onBundleClick: () -> Unit
 ) {
@@ -204,6 +213,32 @@ fun CategoryMutualFundScreen(
                 placeholder = "Search Mutual funds.",
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+
+        if (bundles.isNotEmpty()) {
+            item {
+                BarHeader(
+                    title = "Janta Recommended Bundles",
+                    showArrow = true,
+                    onArrowClick = onBundleClick,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            item {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.dp12)
+                ) {
+                    items(bundles, key = { it.id }) { bundle ->
+                        BundleCard(
+                            bundle = bundle,
+                            onClick = { onBundledFundClick(bundle.id) },
+                            modifier = Modifier.fillParentMaxWidth(0.85f)
+                        )
+                    }
+                }
+            }
         }
 
         funds.forEach {category->
@@ -385,6 +420,7 @@ private fun CategoryMutualFundScreenRootPreview() {
         CategoryMutualFundScreenRootContent(
             uiState = LoadingState.Success,
             categories = sampleCategories,
+            bundles = listOf(previewBundleSummary, previewBundleSummary.copy(id = "2", name = "Aggressive")),
             onBackClick = {},
             onIconClick = {},
             onFundClick = {},

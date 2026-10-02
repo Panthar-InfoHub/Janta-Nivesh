@@ -41,7 +41,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InvertedAppButton
-import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.PurchaseMode
+import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
 
 /** `start_date` and `scheduled_on` can arrive as full timestamps; only the date part is shown. */
 private const val ISO_DATE_LENGTH = 10
