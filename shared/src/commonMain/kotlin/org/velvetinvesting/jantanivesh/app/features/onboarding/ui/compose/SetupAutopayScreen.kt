@@ -32,6 +32,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.InfoNoteCard
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
@@ -53,10 +54,11 @@ fun SetupAutopayScreen(
             .clearFocusOnTap()
             .imePadding()
     ) {
+        AppBackButton({})
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
-            contentPadding = PaddingValues(top = Spacing.dp24)
+            contentPadding = PaddingValues(top = Spacing.dp8)
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {

@@ -10,15 +10,15 @@ import org.velvetinvesting.jantanivesh.app.core.networking.onError
 import org.velvetinvesting.jantanivesh.app.core.networking.onSuccess
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundleDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.GetAllBundledFundsUseCase
 
 class AllBundlesViewModel(
     private val getAllBundledFundsUseCase: GetAllBundledFundsUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState<List<BundledMutualFundDomain>>>(UiState.Loading)
-    val uiState: StateFlow<UiState<List<BundledMutualFundDomain>>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<UiState<List<BundleDomain>>>(UiState.Loading)
+    val uiState: StateFlow<UiState<List<BundleDomain>>> = _uiState.asStateFlow()
 
     init {
         loadBundles()

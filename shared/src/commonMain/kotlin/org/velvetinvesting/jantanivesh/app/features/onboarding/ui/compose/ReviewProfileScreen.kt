@@ -51,6 +51,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.formatMillisToIsoDate
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AgreementCheckBoxCard
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppDatePicker
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.DropDownSelector
@@ -129,10 +130,13 @@ private fun ReviewProfileContent(
             .clearFocusOnTap()
             .imePadding()
     ) {
+        AppBackButton(
+            onClick = { }
+        )
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp20),
-            contentPadding = PaddingValues(top = Spacing.dp24)
+            contentPadding = PaddingValues(top = Spacing.dp4)
 
         ) {
             item {

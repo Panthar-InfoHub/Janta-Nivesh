@@ -47,6 +47,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.appRed
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
@@ -69,18 +70,16 @@ fun ReversePennyDropIntroScreen(
             .fillMaxSize()
             .background(White)
     ) {
-        BackHeader(
-            title = "",
-            onBack = onBackClick,
-            showBack = true,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp20),
+        AppBackButton(
+            onBackClick,
+            modifier= Modifier.padding(horizontal = Spacing.dp20)
         )
         Column(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = Spacing.dp24)
-                .padding(top = Spacing.dp8, bottom = Spacing.dp16),
+                .padding(horizontal = Spacing.dp20)
+                .padding(top = Spacing.dp8),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp16)
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp8)) {

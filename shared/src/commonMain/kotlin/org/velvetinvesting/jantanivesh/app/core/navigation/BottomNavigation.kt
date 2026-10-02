@@ -224,9 +224,11 @@ fun BottomNavigation(
                             }
                             HomeScreenSideEffect.NavigateToInvestFd -> navigateToFD()
                             HomeScreenSideEffect.NavigateToInvestMf -> navigateToCategoryMutualFundTypeScreen()
-                            is HomeScreenSideEffect.NavigateToKycVerification -> navigateToKYC(
-                                OnboardingStage.PanVerification.id
-                            )
+                            is HomeScreenSideEffect.NavigateToKycVerification -> {
+                                navigateToKYC(
+                                    OnboardingStage.PanVerification.id
+                                )
+                            }
                             HomeScreenSideEffect.NavigateToNotifications -> navigateToNotification()
                             is HomeScreenSideEffect.NavigateToSpecificGoal -> navigateToSpecificGoalProjection(it.goalId)
                             HomeScreenSideEffect.NavigateToTradingVerification -> navigateToTradingAccountSetup()

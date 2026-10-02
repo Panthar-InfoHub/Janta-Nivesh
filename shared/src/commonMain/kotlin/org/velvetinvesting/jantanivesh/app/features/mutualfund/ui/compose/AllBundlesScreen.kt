@@ -4,10 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,7 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.utils.UiState
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundleDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundleMetaDataDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.cart.CartFab
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.viewmodel.AllBundlesViewModel
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
@@ -49,7 +51,7 @@ fun AllBundlesScreen(
 
 @Composable
 fun AllBundlesContent(
-    uiState: UiState<List<BundledMutualFundDomain>>,
+    uiState: UiState<List<BundleDomain>>,
     cartAmount: Int,
     onBackClick: () -> Unit,
     onBundleClick: (String) -> Unit,
@@ -84,10 +86,12 @@ fun AllBundlesContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                items(bundles) { bundle ->
-                    BundleCardExtended(
-                        onClick = { onBundleClick(bundle.key) },
-                        bundleData = bundle
+                itemsIndexed(bundles, key = { _, bundle -> bundle.id }) { index, bundle ->
+                    BundleCard(
+                        bundle = bundle,
+                        style = bundleCardStyleFor(index),
+                        onClick = { onBundleClick(bundle.id) },
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
                 item {
@@ -102,19 +106,29 @@ fun AllBundlesContent(
 @Composable
 private fun AllBundlesScreenPreview() {
     val sampleBundles = listOf(
-        BundledMutualFundDomain(
-            categoryName = "Velvet Preserve",
-            key = "preserve",
-            mutualFunds = emptyList(),
-            minAmount = 10000.0,
-            img_url = ""
+        BundleDomain(
+            id = "1",
+            name = "Janta Balance",
+            description = "Balanced growth for your long-term goals",
+            equityPercentage = 70,
+            commodityPercentage = 25,
+            debtPercentage = 0,
+            hybridPercentage = 5,
+            imgUrl = "",
+            metaData = BundleMetaDataDomain("", "", ""),
+            categories = emptyList()
         ),
-        BundledMutualFundDomain(
-            categoryName = "Velvet Growth",
-            key = "growth",
-            mutualFunds = emptyList(),
-            minAmount = 5000.0,
-            img_url = ""
+        BundleDomain(
+            id = "2",
+            name = "Janta Growth",
+            description = "Equity-led growth over the long run",
+            equityPercentage = 100,
+            commodityPercentage = 0,
+            debtPercentage = 0,
+            hybridPercentage = 0,
+            imgUrl = "",
+            metaData = BundleMetaDataDomain("", "", ""),
+            categories = emptyList()
         )
     )
 

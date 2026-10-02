@@ -61,6 +61,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.theme.tagColor
 import org.velvetinvesting.jantanivesh.app.core.utils.AppBackHandler
+import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppBackButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButton
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.BackHeader
@@ -177,11 +178,9 @@ private fun BankDetailsForm(
             .clearFocusOnTap()
             .imePadding()
     ) {
-        BackHeader(
-            title = "",
-            onBack = onBackClick,
-            showBack = true,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.dp20),
+        AppBackButton(
+            onClick = onBackClick,
+            modifier = Modifier.padding(horizontal = Spacing.dp24),
         )
         LazyColumn(
             modifier = Modifier
@@ -189,7 +188,7 @@ private fun BankDetailsForm(
                 .fillMaxWidth()
                 .padding(horizontal = Spacing.dp24),
             verticalArrangement = Arrangement.spacedBy(Spacing.dp18),
-            contentPadding = PaddingValues(top = Spacing.dp8)
+            contentPadding = PaddingValues(top = Spacing.dp4)
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp12)) {

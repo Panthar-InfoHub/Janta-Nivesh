@@ -390,6 +390,10 @@ fun OnboardingNavigation(
                                     launchSingleTop = true
                                 }
                             }
+
+                            ReviewProfileEffect.NavigateBack -> {
+                                navController.popBackStack()
+                            }
                         }
                     }
                 }

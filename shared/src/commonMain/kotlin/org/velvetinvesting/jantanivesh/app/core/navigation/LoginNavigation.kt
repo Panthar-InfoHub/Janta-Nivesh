@@ -178,7 +178,6 @@ fun LoginNavigation(
                             navController.popBackStack()
                         }
                         is EnterOtpEffect.ShowToast -> {
-
                         }
 
                         EnterOtpEffect.NavigateToMainAppFlow -> {

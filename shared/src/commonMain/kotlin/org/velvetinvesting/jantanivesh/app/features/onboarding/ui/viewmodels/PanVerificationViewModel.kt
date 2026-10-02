@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -16,6 +17,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.G
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.InitiatePANVerificationUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.usecases.SkipPANVerificationUseCase
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.OnboardingInput
+import kotlin.time.Duration.Companion.milliseconds
 
 data class PanVerificationUiState(
     val pan: String = "",
@@ -95,7 +97,10 @@ class PanVerificationViewModel(
                     SnackBarController.showError(initiateResult.error.message)
                 }
 
-                is NetworkResponse.Success -> checkVerificationStatus()
+                is NetworkResponse.Success -> {
+                    delay(2000.milliseconds)
+                    checkVerificationStatus()
+                }
             }
         }
     }

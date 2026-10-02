@@ -7,7 +7,8 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.mapper.*
-import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.allbundles.*
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundles.BundlesDto
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundles.toDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundlecart.AddBundleLumpsumRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundlecart.AddBundleSipRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.bundledfundbyid.BundledFundByIdDto
@@ -29,6 +30,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.usercart.UserCartDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.SIPStatus
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PaginatedData
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundleDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDetailsDomain
@@ -328,8 +330,8 @@ class MutualFundRepo(
     override suspend fun getAllBundledFunds(
         page: Int?,
         limit: Int?
-    ): NetworkResponse<List<BundledMutualFundDomain>, ErrorDomain> {
-        val response = safeRequest<AllBundlesDto> {
+    ): NetworkResponse<List<BundleDomain>, ErrorDomain> {
+        val response = safeRequest<BundlesDto> {
             client.get(getUrl("/bundles")){
                 parameter("page",page?:1)
                 parameter("limit", limit?:20)

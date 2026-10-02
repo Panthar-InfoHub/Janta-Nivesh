@@ -122,6 +122,7 @@ sealed interface ReviewProfileEvent {
      * signed is only knowable from the KYC form status, so the return re-reads it.
      */
     data object OnESignReturned : ReviewProfileEvent
+    data object OnBackClicked : ReviewProfileEvent
 }
 
 sealed interface ReviewProfileEffect {
@@ -129,6 +130,7 @@ sealed interface ReviewProfileEffect {
 
     /** Profile saved and the KYC form has nothing left to sign — onboarding can move on. */
     data object ProfileCompleted : ReviewProfileEffect
+    data object NavigateBack : ReviewProfileEffect
 }
 
 class ReviewProfileViewModel(
@@ -256,6 +258,10 @@ class ReviewProfileViewModel(
             ReviewProfileEvent.OnESignReturned -> onESignReturned()
             is ReviewProfileEvent.OnSpouseNameChange -> {
                 update { it.copy(spouseName = OnboardingInput.sanitizeName(event.value)) }
+            }
+
+            ReviewProfileEvent.OnBackClicked -> {
+                viewModelScope.launch { _effect.send(ReviewProfileEffect.NavigateBack) }
             }
         }
     }

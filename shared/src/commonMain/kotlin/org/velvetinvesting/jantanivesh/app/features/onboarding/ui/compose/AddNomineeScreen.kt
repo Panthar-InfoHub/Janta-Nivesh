@@ -241,12 +241,12 @@ fun AddNomineeScreen(
                             Text("%", style = MaterialTheme.typography.bodyLarge, color = Gray444)
                         }
                     )
-//                    TitledDateField(
-//                        title = "Date of Birth/ " + stringResource(Res.string.date_of_birth),
-//                        value = nominee.dateOfBirth,
-//                        onClick = { datePickerIndex = index },
-//                        modifier = Modifier.fillMaxWidth()
-//                    )
+                    TitledDateField(
+                        title = "Date of Birth/ " + stringResource(Res.string.date_of_birth),
+                        value = nominee.dateOfBirth,
+                        onClick = { datePickerIndex = index },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     DropDownSelector(
                         title = "Identity Type / " +stringResource(Res.string.identity_type),
                         value = nominee.identityType?.let { nomineeDocumentLabel(it) } ?: "",

@@ -9,6 +9,7 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.cartaddsip.AddCartSipRequest
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.FullRedemptionRequestDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.fundredeem.PartialRedemptionRequestDto
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundleDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.BundledMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.CategoryMutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDetailsDomain
@@ -68,7 +69,7 @@ interface MutualFundRepository {
     suspend fun getAllBundledFunds(
         page: Int?,
         limit: Int?
-    ): NetworkResponse<List<BundledMutualFundDomain>, ErrorDomain>
+    ): NetworkResponse<List<BundleDomain>, ErrorDomain>
 
     suspend fun addBundleToCartLumpsum(
         bundleId: String,
