@@ -508,9 +508,11 @@ class OnboardingRepoImpl(
     /**
      * Keeps the locally remembered stage in step with the server's, so a restart resumes on the
      * screen the user actually reached. Always stored as a resume point, so `KYC_VERIFICATION`
-     * — which has no screen of its own — never reaches storage.
+     * — which has no screen of its own — never reaches storage. A missing or unknown stage is
+     * ignored: resolving it would fall back to the first step and restart the flow.
      */
     private fun persistStage(currentStage: String?) {
+        if (currentStage.isNullOrBlank() || OnboardingStage.fromId(currentStage) == null) return
         persistStage(OnboardingStage.resumePoint(currentStage))
     }
 
@@ -519,7 +521,7 @@ class OnboardingRepoImpl(
      * is known client-side and a relaunch should not replay the step that just succeeded.
      */
     private fun persistStage(stage: OnboardingStage) {
-        authPrefs.setOnboardingStage(stage.id)
+        authPrefs.advanceOnboardingStage(stage)
     }
 
     private fun Nominee.toBody() = NomineeBody(

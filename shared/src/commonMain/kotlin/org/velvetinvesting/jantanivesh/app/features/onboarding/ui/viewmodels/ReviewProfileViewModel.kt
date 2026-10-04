@@ -1,5 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
 
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import androidx.lifecycle.ViewModel
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
@@ -144,7 +146,8 @@ class ReviewProfileViewModel(
     private val getKycFormStatus: GetKycFormStatusUseCase,
     private val locationProvider: LocationProvider,
     private val getUserData: GetUserDataUseCase,
-    private val getCityByPincode: GetCityByPincodeUseCase
+    private val getCityByPincode: GetCityByPincodeUseCase,
+    private val authPrefs: AuthPrefs
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ReviewProfileUiState())
     val uiState = _uiState.asStateFlow()
@@ -366,6 +369,15 @@ class ReviewProfileViewModel(
         }
     }
 
+    /**
+     * Recorded here rather than on submit: the eSign can still be owed after the profile saves,
+     * and a relaunch must come back to it rather than skip ahead to the nominees.
+     */
+    private suspend fun completeProfile() {
+        authPrefs.advanceOnboardingStage(OnboardingStage.NomineeAddition)
+        _effect.send(ReviewProfileEffect.ProfileCompleted)
+    }
+
     private fun onESignReturned() {
         if (_uiState.value.isLoading) return
 
@@ -384,7 +396,7 @@ class ReviewProfileViewModel(
         when (val statusResult = getKycFormStatus()) {
             is NetworkResponse.Error -> {
                 if (statusResult.error.type == KYCError.KYC_FORM_NOT_FOUND){
-                    _effect.send(ReviewProfileEffect.ProfileCompleted)
+                    completeProfile()
                 }
                 else{
                     update { it.copy(isLoading = false) }
@@ -401,7 +413,7 @@ class ReviewProfileViewModel(
 
                 when {
                     status.isESignSuccessful || esignUrl.isNullOrBlank() ->
-                        _effect.send(ReviewProfileEffect.ProfileCompleted)
+                        completeProfile()
 
                     isReturningFromWebView -> SnackBarController.showError(
                         "Your eSign is not complete yet. Please finish signing to continue."

@@ -24,7 +24,14 @@ sealed interface Route {
     data object SplashScreen : Route
 
     @Serializable
-    data class OnboardingGraph(val stage: String) : Route
+    data class OnboardingGraph(
+        val stage: String,
+        /**
+         * True only when opened from inside the main app to finish KYC: the home screen behind it
+         * is still showing the old status, so finishing the flow asks it to reload.
+         */
+        val shouldRefresh: Boolean = false
+    ) : Route
 
 
     // KYC Routes

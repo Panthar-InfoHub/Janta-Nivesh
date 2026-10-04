@@ -49,6 +49,7 @@ import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.ChangePin
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinEffect
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinPurpose
 import org.velvetinvesting.jantanivesh.app.features.auth.ui.viewmodels.EnterPinViewModel
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.UiStateContainer
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
@@ -508,6 +509,9 @@ fun MainAppNavigation(
             LaunchedEffect(vm.effect) {
                 vm.effect.collect { effect ->
                     when (effect) {
+                        FundPurchaseEffect.NavigateToKyc ->
+                            navigateToKYC(OnboardingStage.PanVerification.id)
+
                         FundPurchaseEffect.AddMandate -> {
                             navController.navigate(Route.AddMandate) {
                                 launchSingleTop = true
@@ -769,6 +773,10 @@ fun MainAppNavigation(
                         CartEffect.NavigateToCheckoutOtp -> navController.navigate(Route.CartCheckoutOtp) {
                             launchSingleTop = true
                         }
+                        CartEffect.NavigateToKyc -> navigateToKYC(OnboardingStage.PanVerification.id)
+                        CartEffect.NavigateToOrders -> navController.navigate(Route.MyOrders) {
+                            launchSingleTop = true
+                        }
                     }
                 }
             }
@@ -813,6 +821,12 @@ fun MainAppNavigation(
                             )
                         ) {
                             popUpTo<Route.CartCheckoutOtp> { inclusive = true }
+                        }
+
+                        // Replaces the OTP screen, so back from the orders lands on the cart.
+                        CartCheckoutOtpEffect.OpenOrders -> navController.navigate(Route.MyOrders) {
+                            popUpTo<Route.CartCheckoutOtp> { inclusive = true }
+                            launchSingleTop = true
                         }
                     }
                 }

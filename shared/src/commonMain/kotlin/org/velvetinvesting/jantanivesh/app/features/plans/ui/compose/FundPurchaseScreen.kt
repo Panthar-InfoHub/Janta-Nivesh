@@ -19,9 +19,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -66,6 +68,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButto
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.AppButtonDefaults
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.ErrorScreen
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.genericDropShadow
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.KYCPopup
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.MandateOption
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.SchemePlan
@@ -80,6 +83,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * screen asks for — a monthly SIP needs a debit day, the other two do not — while the amount
  * keypad and the confirm button stay put at the bottom, so the primary action never moves.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FundPurchaseScreen(
     state: FundPurchaseUiState,
@@ -112,6 +116,14 @@ fun FundPurchaseScreen(
         PurchaseOtpSheet(
             state = state,
             handleEvent = handleEvent
+        )
+    }
+
+    if (state.showKycPopup) {
+        KYCPopup(
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            onDismiss = { handleEvent(FundPurchaseEvent.OnKycPopupDismiss) },
+            onClick = { handleEvent(FundPurchaseEvent.OnCompleteKycClick) }
         )
     }
 

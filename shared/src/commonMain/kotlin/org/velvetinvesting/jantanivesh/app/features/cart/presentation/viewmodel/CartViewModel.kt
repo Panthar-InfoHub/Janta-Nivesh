@@ -25,6 +25,7 @@ import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.DeleteC
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.GetCartPaymentStatusUseCase
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.GetUserCartUseCase
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.VerifyCartSipCheckoutOtpUseCase
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.core.ui.otp.OtpController
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.FundTypeSelector
@@ -43,6 +44,8 @@ data class CartUiState(
     /** A purchase step is in flight: the mandate, a checkout, or polling the mandate or payment. */
     val isProcessing: Boolean = false,
     val showCutOffPopup: Boolean = false,
+    /** The user tried to pay without a verified KYC; the popup sends them to finish it. */
+    val showKycPopup: Boolean = false,
     /** The SIP or lumpsum checkout whose OTP the confirm screen is waiting on. */
     val checkout: CartCheckoutDomain? = null
 ) {
@@ -85,6 +88,9 @@ sealed interface CartEvent {
     data object OnCutOffPopupDismissed : CartEvent
     data object OnPurchaseConfirmed : CartEvent
 
+    data object OnKycPopupDismissed : CartEvent
+    data object OnCompleteKycClicked : CartEvent
+
     /** The mandate or payment webview closed. */
     data object OnWebViewReturned : CartEvent
 
@@ -108,6 +114,12 @@ sealed interface CartEffect {
 
     /** A checkout is placed and its OTP is out. */
     data object NavigateToCheckoutOtp : CartEffect
+
+    /** KYC is not verified, so the user is sent to the onboarding flow to complete it. */
+    data object NavigateToKyc : CartEffect
+
+    /** The lumpsum payment was confirmed; the orders it placed are shown over the cart. */
+    data object NavigateToOrders : CartEffect
 }
 
 /**
@@ -123,6 +135,12 @@ sealed interface CartCheckoutOtpEffect {
      * closing it lands back on the cart, which then reads the payment back.
      */
     data class OpenPayment(val url: String, val exitUrl: String) : CartCheckoutOtpEffect
+
+    /**
+     * The SIP checkout is confirmed. The orders replace the OTP screen, so back from them lands on
+     * the cart.
+     */
+    data object OpenOrders : CartCheckoutOtpEffect
 }
 
 class CartViewModel(
@@ -136,6 +154,7 @@ class CartViewModel(
     private val checkoutCartLumpsumUseCase: CheckoutCartLumpsumUseCase,
     private val confirmCartLumpsumCheckoutUseCase: ConfirmCartLumpsumCheckoutUseCase,
     private val getCartPaymentStatusUseCase: GetCartPaymentStatusUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -197,6 +216,13 @@ class CartViewModel(
             CartEvent.OnCutOffPopupDismissed -> _uiState.update { it.copy(showCutOffPopup = false) }
 
             CartEvent.OnPurchaseConfirmed -> purchase()
+
+            CartEvent.OnKycPopupDismissed -> _uiState.update { it.copy(showKycPopup = false) }
+
+            CartEvent.OnCompleteKycClicked -> {
+                _uiState.update { it.copy(showKycPopup = false) }
+                sendEffect(CartEffect.NavigateToKyc)
+            }
 
             CartEvent.OnWebViewReturned -> {
                 val action = onWebViewReturn
@@ -297,13 +323,33 @@ class CartViewModel(
         }
     }
 
+    /**
+     * KYC is read fresh on every attempt rather than cached, so a user who finishes it elsewhere is
+     * not held back by a stale answer; an unverified user gets the popup instead of a purchase.
+     */
     private fun purchase() {
         val state = _uiState.value
         if (state.cart == null || state.isProcessing) return
-        _uiState.update { it.copy(showCutOffPopup = false) }
-        when (state.selectedCartType) {
-            CartType.SIP -> startSipMandate()
-            CartType.LUMPSUM -> checkoutLumpsum()
+        _uiState.update { it.copy(showCutOffPopup = false, isProcessing = true) }
+
+        viewModelScope.launch {
+            when (val result = getUserDataUseCase()) {
+                is NetworkResponse.Error -> {
+                    failPurchase(result.error.message)
+                    return@launch
+                }
+
+                is NetworkResponse.Success -> if (!result.data.kycVerified) {
+                    _uiState.update { it.copy(isProcessing = false, showKycPopup = true) }
+                    return@launch
+                }
+            }
+
+            _uiState.update { it.copy(isProcessing = false) }
+            when (state.selectedCartType) {
+                CartType.SIP -> startSipMandate()
+                CartType.LUMPSUM -> checkoutLumpsum()
+            }
         }
     }
 
@@ -416,7 +462,7 @@ class CartViewModel(
                     checkoutMandateId = null
                     otp.clearOtp()
                     _uiState.update { it.copy(checkout = null) }
-                    _checkoutOtpEffect.send(CartCheckoutOtpEffect.Close)
+                    _checkoutOtpEffect.send(CartCheckoutOtpEffect.OpenOrders)
                     SnackBarController.showSuccess("Your SIPs have been placed successfully")
                     reloadCartAndRefreshPortfolio()
                 }
@@ -539,6 +585,7 @@ class CartViewModel(
                             _uiState.update { it.copy(isProcessing = false) }
                             SnackBarController.showSuccess("Your purchase was successful")
                             reloadCartAndRefreshPortfolio()
+                            _effect.send(CartEffect.NavigateToOrders)
                             return@launch
                         }
 

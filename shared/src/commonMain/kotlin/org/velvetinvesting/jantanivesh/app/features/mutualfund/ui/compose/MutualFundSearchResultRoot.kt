@@ -99,7 +99,7 @@ fun MutualFundSearchScreenRoot(
 ) {
 
     val viewModel: MutualFundSearchResultViewModel = koinViewModel {
-        parametersOf(searchText, tag, category, amountType)
+        parametersOf(searchText, tag, category, amountType, null)
     }
     val uiState by viewModel.loadingState.collectAsStateWithLifecycle()
     val selectedYear by viewModel.selectedYear.collectAsStateWithLifecycle()

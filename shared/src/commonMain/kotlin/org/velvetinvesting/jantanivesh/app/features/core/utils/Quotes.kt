@@ -20,5 +20,5 @@ val loadingQuotes = listOf(
 
     "Small steps today.\nMassive financial freedom tomorrow.",
 
-    "Velvet helps you plan.\nYou make it happen."
+    "Janta Nivesh helps you plan.\nYou make it happen."
 )

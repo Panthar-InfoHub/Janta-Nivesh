@@ -1,5 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels
 
+import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -178,7 +180,8 @@ class VerifyBankAccountViewModel(
     private val getPennyDropStatus: GetPennyDropStatusUseCase,
     private val getPrefilledBankDetails: GetPrefilledBankDetailsUseCase,
     private val initiateReversePennyDrop: InitiateReversePennyDropUseCase,
-    private val getReversePennyDropStatus: GetReversePennyDropStatusUseCase
+    private val getReversePennyDropStatus: GetReversePennyDropStatusUseCase,
+    private val authPrefs: AuthPrefs
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(VerifyBankAccountUiState())
     val uiState = _uiState.asStateFlow()
@@ -193,6 +196,10 @@ class VerifyBankAccountViewModel(
     private var prefillAfterPayment = false
 
     init {
+        // Reaching this screen means PAN and DigiLocker are behind the user, and none of those
+        // calls report the bank step — so without this a relaunch mid-step, even after the
+        // reverse penny drop has gone through, would land back on PAN verification.
+        authPrefs.advanceOnboardingStage(OnboardingStage.PennyDropVerification)
         loadPrefill(afterPayment = false)
     }
 

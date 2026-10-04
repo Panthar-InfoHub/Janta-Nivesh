@@ -18,6 +18,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.White
 import org.velvetinvesting.jantanivesh.app.core.utils.isAndroid
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.LogoutUseCase
+import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 
 @Composable
 fun BaseNavigation() {
@@ -96,6 +97,10 @@ fun BaseNavigation() {
                     onCompleted = {
                         prefs.setLoggedIn(true)
                         prefs.setOnboardingCompleted(true)
+                        if (route.shouldRefresh) {
+                            // The held scope, because this destination is popped right below.
+                            scope.launch { AppEventsController.sendHomeRefreshEvent() }
+                        }
                         navController.navigate(Route.MainAppGraph) {
                             launchSingleTop = true
 
@@ -110,7 +115,7 @@ fun BaseNavigation() {
             composable<Route.MainAppGraph> {
                 MainAppNavigation(
                     navigateToKYC = {stage->
-                        navController.navigate(Route.OnboardingGraph(stage=stage )) {
+                        navController.navigate(Route.OnboardingGraph(stage = stage, shouldRefresh = true)) {
                             launchSingleTop = true
                         }
                     }

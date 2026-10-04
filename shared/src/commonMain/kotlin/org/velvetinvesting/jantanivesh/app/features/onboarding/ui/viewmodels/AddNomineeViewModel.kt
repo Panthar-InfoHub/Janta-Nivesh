@@ -34,7 +34,9 @@ data class NomineeDetails(
     val name: String = "",
     val relationship: NomineeRelation? = null,
     val percentageAllocation: String = "",
+    /** `yyyy-MM-dd`, as the API takes it. */
     val dateOfBirth: String = "",
+    /** `12-JUL-2002`, as the field shows it. Set together with [dateOfBirth] from the picker. */
     val displayDob: String = "",
     val identityType: NomineeDocumentType? = null,
     val allocationSource: AllocationSource = AllocationSource.AUTOMATIC,
@@ -47,19 +49,16 @@ data class NomineeDetails(
     val state: String = "",
     val postalCode: String = ""
 ) {
+    /**
+     * A nominee needs only the four fields the screen collects: name, relationship, allocation
+     * and date of birth. The document, contact and address fields are no longer asked for, so
+     * they must not hold the button back.
+     */
     val isComplete: Boolean
         get() = OnboardingInput.isFilled(name) &&
                 relationship != null &&
                 (percentageAllocation.toIntOrNull() ?: 0) > 0 &&
-                identityType != null &&
-                isDocumentNumberValid
-//                OnboardingInput.isValidIsoDate(dateOfBirth) &&
-//                OnboardingInput.isValidEmail(email) &&
-//                OnboardingInput.isValidPhone(phone) &&
-//                OnboardingInput.isFilled(addressLine1) &&
-//                OnboardingInput.isFilled(city) &&
-//                OnboardingInput.isFilled(state) &&
-//                OnboardingInput.isValidPincode(postalCode)
+                OnboardingInput.isValidIsoDate(dateOfBirth)
 
     /** PAN has a checkable format and Aadhaar is exactly its last four digits. */
     val isDocumentNumberValid: Boolean

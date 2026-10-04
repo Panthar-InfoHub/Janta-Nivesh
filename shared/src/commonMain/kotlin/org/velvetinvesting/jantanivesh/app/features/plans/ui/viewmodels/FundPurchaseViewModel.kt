@@ -18,6 +18,7 @@ import org.velvetinvesting.jantanivesh.app.core.networking.NetworkResponse
 import org.velvetinvesting.jantanivesh.app.core.utils.DateTimeUtils
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.WebURLConstants
+import org.velvetinvesting.jantanivesh.app.features.core.domain.usecase.GetUserDataUseCase
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AmountTypeLabel
 import org.velvetinvesting.jantanivesh.app.features.plans.domain.model.MandateOption
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
@@ -44,6 +45,9 @@ const val OTP_LENGTH = 6
  * waits — the review poll alone can run about twenty seconds, and a bare spinner reads as a hang.
  */
 enum class SipSubmissionStage(val message: String) {
+    /** Every purchase starts by confirming the user's KYC, read fresh from the server. */
+    CHECKING_KYC("Checking your KYC\u2026"),
+
     /** A SIP starts by registering the autopay mandate its installments will be debited from. */
     CREATING_MANDATE("Setting up autopay\u2026"),
     CREATING("Setting up your investment\u2026"),
@@ -77,6 +81,10 @@ data class FundPurchaseUiState(
     val submissionStage: SipSubmissionStage? = null,
 
     val showOtpSheet: Boolean = false,
+
+    /** The user tried to buy without a verified KYC; the popup sends them to finish it. */
+    val showKycPopup: Boolean = false,
+
     /** Gateway id of the plan or purchase awaiting confirmation; both OTP calls key on it. */
     val pendingPurchaseId: String? = null,
     val otp: String = "",
@@ -247,6 +255,9 @@ sealed interface FundPurchaseEvent {
     data object OnConfirmOtpClick : FundPurchaseEvent
     data object OnResendOtpClick : FundPurchaseEvent
     data object OnOtpSheetDismiss : FundPurchaseEvent
+
+    data object OnKycPopupDismiss : FundPurchaseEvent
+    data object OnCompleteKycClick : FundPurchaseEvent
 }
 
 /**
@@ -269,6 +280,9 @@ data class SipMandateHandoff(
 sealed interface FundPurchaseEffect {
     /** The user has no approved mandate, so autopay has to be set up before a SIP can run. */
     data object AddMandate : FundPurchaseEffect
+
+    /** KYC is not verified, so the user is sent to the onboarding flow to complete it. */
+    data object NavigateToKyc : FundPurchaseEffect
 
     /**
      * A SIP's mandate has been created and needs the user's approval on the bank's page. The
@@ -323,7 +337,8 @@ class FundPurchaseViewModel(
     private val createMfPurchase: CreateMfPurchaseUseCase,
     private val getMfPurchase: GetMfPurchaseUseCase,
     private val requestMfPurchaseOtp: RequestMfPurchaseOtpUseCase,
-    private val verifyMfPurchaseOtp: VerifyMfPurchaseOtpUseCase
+    private val verifyMfPurchaseOtp: VerifyMfPurchaseOtpUseCase,
+    private val getUserData: GetUserDataUseCase
 ) : ViewModel() {
 
     private val initialAmountType = AmountTypeLabel.getType(fundAmountType)
@@ -423,6 +438,14 @@ class FundPurchaseViewModel(
 
             FundPurchaseEvent.OnOtpSheetDismiss ->
                 _uiState.update { it.copy(showOtpSheet = false, otp = "") }
+
+            FundPurchaseEvent.OnKycPopupDismiss ->
+                _uiState.update { it.copy(showKycPopup = false) }
+
+            FundPurchaseEvent.OnCompleteKycClick -> {
+                _uiState.update { it.copy(showKycPopup = false) }
+                viewModelScope.launch { _effect.send(FundPurchaseEffect.NavigateToKyc) }
+            }
         }
     }
 
@@ -543,12 +566,14 @@ class FundPurchaseViewModel(
         val state = _uiState.value
         if (!state.canSubmit) return
 
-        if (state.mode.isSip) {
-            startSipMandate(state)
-            return
-        }
-
         viewModelScope.launch {
+            if (!isKycVerified()) return@launch
+
+            if (state.mode.isSip) {
+                startSipMandate(state)
+                return@launch
+            }
+
             setStage(SipSubmissionStage.CREATING)
 
             val purchaseId = createLumpsum(state) ?: return@launch
@@ -861,6 +886,30 @@ class FundPurchaseViewModel(
             while (_uiState.value.resendSecondsLeft > 0) {
                 delay(SECOND_MS.milliseconds)
                 _uiState.update { it.copy(resendSecondsLeft = it.resendSecondsLeft - 1) }
+            }
+        }
+    }
+
+    /**
+     * Read fresh on every attempt rather than cached, so a user who finishes KYC elsewhere is not
+     * held back by a stale answer. False ends the submission, with the popup up when KYC is the
+     * reason.
+     */
+    private suspend fun isKycVerified(): Boolean {
+        setStage(SipSubmissionStage.CHECKING_KYC)
+
+        return when (val result = getUserData()) {
+            is NetworkResponse.Error -> {
+                failSubmission(result.error.message)
+                false
+            }
+
+            is NetworkResponse.Success -> {
+                val verified = result.data.kycVerified
+                if (!verified) {
+                    _uiState.update { it.copy(submissionStage = null, showKycPopup = true) }
+                }
+                verified
             }
         }
     }

@@ -31,12 +31,16 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.usecases.G
  * [category] and [amountType] are folded into the initial tray state rather than kept beside it,
  * so a screen opened pre-filtered — the daily/monthly SIP cards on home, a category tile — shows
  * that filter as selected and clearing it behaves like clearing any other.
+ *
+ * [investmentMode] is the exception: it has no chip or tray group, so it is fixed for the screen's
+ * lifetime and survives clearing the tray. Only the bundle explore list sets it.
  */
 class MutualFundSearchResultViewModel(
     private val search: String?,
     tag: String?,
     category: String?,
     amountType: String?,
+    private val investmentMode: String?,
     private val getMutualFundSearchResultUseCase: GetMutualFundSearchResultUseCase
 ) : ViewModel() {
 
@@ -117,6 +121,7 @@ class MutualFundSearchResultViewModel(
                 tag = filters.tag,
                 category = filters.category,
                 amountType = filters.amountType,
+                investmentMode = investmentMode,
                 page = 1,
                 limit = PAGE_SIZE
             )
@@ -156,6 +161,7 @@ class MutualFundSearchResultViewModel(
                 tag = filters.tag,
                 category = filters.category,
                 amountType = filters.amountType,
+                investmentMode = investmentMode,
                 page = nextPage,
                 limit = PAGE_SIZE
             )

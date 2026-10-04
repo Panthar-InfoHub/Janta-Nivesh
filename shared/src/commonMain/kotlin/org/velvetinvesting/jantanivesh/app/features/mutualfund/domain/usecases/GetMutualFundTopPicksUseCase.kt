@@ -19,7 +19,7 @@ class GetMutualFundTopPicksUseCase(
         val response = repository.getFunds(
             tag = MfFilterIds.TAG_POPULAR,
             page = 1,
-            limit = TOP_PICKS_COUNT
+            limit = TOP_PICKS_COUNT,
         )
         return when (response) {
             is NetworkResponse.Success -> {

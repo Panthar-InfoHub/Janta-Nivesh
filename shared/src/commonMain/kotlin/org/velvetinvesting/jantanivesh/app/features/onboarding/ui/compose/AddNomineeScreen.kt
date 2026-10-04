@@ -59,6 +59,7 @@ import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Add
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeDocumentType
 import org.velvetinvesting.jantanivesh.app.features.onboarding.domain.model.NomineeRelation
 import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.Max_Nominee_Count
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.viewmodels.NomineeDetails
 
 /** Shared by every free-text name-like field on this screen. */
 private val wordsKeyboardOptions = KeyboardOptions(
@@ -242,7 +243,7 @@ fun AddNomineeScreen(
                     )
                     TitledDateField(
                         title = "Date of Birth/ " + stringResource(Res.string.date_of_birth),
-                        value = nominee.dateOfBirth,
+                        value = nominee.displayDob,
                         onClick = { datePickerIndex = index },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -513,12 +514,21 @@ private fun NomineeOptOutCard(
     }
 }
 
-@Preview(locale = "hi", heightDp = 1600, showBackground = true)
+@Preview(locale = "hi", heightDp = 1000, showBackground = true)
 @Composable
 private fun AddNomineeScreenPreview() {
     JantaNiveshTheme {
         AddNomineeScreen(
-            state = AddNomineeUiState(addLater = false),
+            state = AddNomineeUiState(addLater = false,
+                nominees = listOf(
+                    NomineeDetails(
+                        name = "Sharad",
+                        relationship = NomineeRelation.FATHER,
+                        percentageAllocation = "100",
+                        dateOfBirth = "2003-07-29",
+                        displayDob = "29-JUL-2003"
+                    )
+                )),
             handleEvent = {},
             onOptOutTermsClick = {}
         )

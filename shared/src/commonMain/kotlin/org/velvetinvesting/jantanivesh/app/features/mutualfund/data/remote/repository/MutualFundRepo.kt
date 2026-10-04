@@ -52,7 +52,8 @@ class MutualFundRepo(
         amountType: String?,
         search: String?,
         page: Int?,
-        limit: Int?
+        limit: Int?,
+        investmentMode: String?
     ): NetworkResponse<PaginatedData<MutualFundDomain>, ErrorDomain> {
         val response = safeRequest<MfFundsDto> {
             client.get(getUrl("/mf/funds")) {
@@ -61,6 +62,7 @@ class MutualFundRepo(
                 tag?.takeIf { it.isNotBlank() }?.let { parameter("tag", it) }
                 category?.takeIf { it.isNotBlank() }?.let { parameter("category", it) }
                 amountType?.takeIf { it.isNotBlank() }?.let { parameter("amount_type", it) }
+                investmentMode?.takeIf { it.isNotBlank() }?.let { parameter("investment_mode", it) }
                 search?.takeIf { it.isNotBlank() }?.let { parameter("search", it) }
                 page?.let { parameter("page", it) }
                 limit?.let { parameter("limit", it) }

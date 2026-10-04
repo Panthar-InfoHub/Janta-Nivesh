@@ -82,10 +82,10 @@ val viewModelModule = module {
     viewModel { EmailIdViewModel(get(), get()) }
     viewModel { (email: String) -> EmailOtpViewModel(email, get(), get(), get()) }
     viewModel { KycSplashViewModel() }
-    viewModel { VerifyBankAccountViewModel(get(), get(), get(), get(), get()) }
+    viewModel { VerifyBankAccountViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { VerifyWithDigilockerViewModel(get(), get()) }
     viewModel { UploadSignatureViewModel(get()) }
-    viewModel { ReviewProfileViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ReviewProfileViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { AddNomineeViewModel(get()) }
     viewModel { SetupAutopayViewModel(get(), get()) }
 
@@ -105,7 +105,8 @@ val viewModelModule = module {
             createMfPurchase = get(),
             getMfPurchase = get(),
             requestMfPurchaseOtp = get(),
-            verifyMfPurchaseOtp = get()
+            verifyMfPurchaseOtp = get(),
+            getUserData = get()
         )
     }
 
@@ -143,11 +144,11 @@ val viewModelModule = module {
     viewModel { (bundleId: String, purchaseMode: PurchaseMode) ->
         BundleDetailsViewModel(bundleId, purchaseMode, get(), get(), get(), get(), get())
     }
-    viewModel { CartViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { CartViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryMutualFundViewModel(get(), get()) }
     viewModel { (id: String) -> MutualFundDetailsScreenViewModel(id, get(), get(), get(), get(), get(),get()) }
-    viewModel { (search: String?, tag: String?, category: String?, amountType: String?) ->
-        MutualFundSearchResultViewModel(search, tag, category, amountType, get())
+    viewModel { (search: String?, tag: String?, category: String?, amountType: String?, investmentMode: String?) ->
+        MutualFundSearchResultViewModel(search, tag, category, amountType, investmentMode, get())
     }
 
     viewModel { HomeScreenViewModel(get(), get()) }

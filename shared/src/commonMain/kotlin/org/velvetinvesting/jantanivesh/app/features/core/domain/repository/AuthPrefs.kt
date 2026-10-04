@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.core.domain.repository
 
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 
 interface AuthPrefs {
 
@@ -26,6 +27,14 @@ interface AuthPrefs {
     fun setOnboardingStage(stage: String)
 
     fun getOnboardingStage(): String?
+
+    /**
+     * Records progress made inside the onboarding flow, but never moves the stored stage back: a
+     * status read can lag behind a step the user has already finished, and storing it would send a
+     * relaunch to that finished screen. Login writes the server's stage with [setOnboardingStage]
+     * instead, so the server still decides where a fresh session starts.
+     */
+    fun advanceOnboardingStage(stage: OnboardingStage)
 
     fun setPhoneNumber(phoneNumber: String)
 

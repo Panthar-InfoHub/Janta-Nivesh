@@ -166,7 +166,7 @@
     <string name="kyc_success_subtitle">Your account is now ready. You can start investing in mutual funds.</string>
 
     <!-- Home Screen -->
-    <string name="home_good_morning">Good Morning,</string>
+    <string name="home_good_morning">Namaste,</string>
     <string name="home_notifications_desc">Janta Nivesh Notifications</string>
     <string name="home_portfolio_value">PORTFOLIO VALUE</string>
     <string name="home_fixed_deposits">Fixed Deposits</string>

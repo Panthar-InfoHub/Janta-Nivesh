@@ -26,7 +26,8 @@ interface MutualFundRepository {
         amountType: String? = null,
         search: String? = null,
         page: Int? = null,
-        limit: Int? = null
+        limit: Int? = null,
+        investmentMode: String? = null
     ): NetworkResponse<PaginatedData<MutualFundDomain>, ErrorDomain>
 
 

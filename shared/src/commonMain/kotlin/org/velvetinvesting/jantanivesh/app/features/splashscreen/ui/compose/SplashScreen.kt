@@ -127,7 +127,7 @@ fun SplashScreen(
                     )
                 }
             }
-            JantaNiveshAndVelvetLogo()
+            SavyEasterEgg { JantaNiveshAndVelvetLogo() }
             AppButton(
                 text = "Get Started/ " + stringResource(Res.string.get_started),
                 onClick = { handleEvent(SplashScreenEvent.OnGetStartedClick) },

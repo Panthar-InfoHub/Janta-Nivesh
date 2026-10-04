@@ -22,6 +22,7 @@ class GetMutualFundSearchResultUseCase(
         tag: String? = null,
         category: String? = null,
         amountType: String? = null,
+        investmentMode: String? = null,
         page: Int? = 1,
         limit: Int? = 20
     ): NetworkResponse<PaginatedData<MutualFundDomain>, ErrorDomain> {
@@ -30,6 +31,7 @@ class GetMutualFundSearchResultUseCase(
             tag = tag,
             category = category,
             amountType = amountType,
+            investmentMode=investmentMode,
             search = search,
             page = page,
             limit = limit

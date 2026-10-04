@@ -49,6 +49,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.LoaderSc
 import org.velvetinvesting.jantanivesh.app.features.core.ui.composables.NextButtonFooter
 import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.clearFocusOnTap
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
+import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.InvestmentModeFilter
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.MfFilterIds
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.MutualFundDomain
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.models.ReturnYearsRateDomain
@@ -76,8 +77,8 @@ private val categoryTags = setOf(
  * tag for is filtered by that tag; one it hasn't — gold, large & mid cap — is searched for by name
  * until the user types a query of their own.
  *
- * A daily SIP applies the fund list's daily ₹10 filter; the other modes load without an amount
- * filter.
+ * The list is narrowed to funds that can be bought as the selected SIP — daily or monthly — with
+ * no minimum-installment filter; a one-time purchase loads it unfiltered.
  */
 @Composable
 fun ExploreCategoryFundScreenRoot(
@@ -100,14 +101,11 @@ fun ExploreCategoryFundScreenRoot(
 
     val tag = categoryName.takeIf { it in categoryTags }
     val search = submittedQuery.ifBlank { if (tag == null) categoryTitle else "" }
-    val amountType = when (purchaseMode) {
-        PurchaseMode.DAILY -> MfFilterIds.AMOUNT_DAILY_10
-        PurchaseMode.MONTHLY, PurchaseMode.ONE_TIME -> null
-    }
+    val investmentMode = InvestmentModeFilter.from(purchaseMode).id
 
     val viewModel: MutualFundSearchResultViewModel = koinViewModel(
         key = "explore:$categoryName:${purchaseMode.name}:$submittedQuery",
-        parameters = { parametersOf(search, tag, null, amountType) }
+        parameters = { parametersOf(search, tag, null, null, investmentMode) }
     )
     val loadingState by viewModel.loadingState.collectAsStateWithLifecycle()
     val funds by viewModel.sortedFunds.collectAsStateWithLifecycle()

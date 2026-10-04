@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.core.data.local.repository
 
+import org.velvetinvesting.jantanivesh.app.core.domain.model.OnboardingStage
 import org.velvetinvesting.jantanivesh.app.core.platform.SharedPreference
 import org.velvetinvesting.jantanivesh.app.features.core.domain.repository.AuthPrefs
 
@@ -76,6 +77,13 @@ class AuthPrefsImpl(
 
     override fun getOnboardingStage(): String? {
         return prefs.getString(KEY_ONBOARDING_STAGE)
+    }
+
+    override fun advanceOnboardingStage(stage: OnboardingStage) {
+        val stages = OnboardingStage.entries
+        val current = getOnboardingStage()?.let { OnboardingStage.fromId(it) }
+        if (current != null && stages.indexOf(stage) < stages.indexOf(current)) return
+        setOnboardingStage(stage.id)
     }
 
     override fun setPhoneNumber(phoneNumber: String) {

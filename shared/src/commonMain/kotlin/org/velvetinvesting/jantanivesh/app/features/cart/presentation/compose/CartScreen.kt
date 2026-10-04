@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,7 +53,9 @@ import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.CartType
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.SipDetails
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.SipItemDomain
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.UserCartDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.ui.compose.KYCPopup
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
     state: CartUiState,
@@ -129,6 +133,14 @@ fun CartScreen(
                 visible = state.showCutOffPopup,
                 onDismiss = { onEvent(CartEvent.OnCutOffPopupDismissed) },
                 onPurchase = { onEvent(CartEvent.OnPurchaseConfirmed) }
+            )
+        }
+
+        if (state.showKycPopup) {
+            KYCPopup(
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                onDismiss = { onEvent(CartEvent.OnKycPopupDismissed) },
+                onClick = { onEvent(CartEvent.OnCompleteKycClicked) }
             )
         }
     }
