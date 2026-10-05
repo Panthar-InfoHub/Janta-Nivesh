@@ -127,7 +127,7 @@ class ProfileViewModel(
                             isLoading = false,
                             userName = userDataDomain.name,
                             email = userDataDomain.email,
-                            kycCompleted = userDataDomain.kycVerified,
+                            kycCompleted = userDataDomain.onboarding.isCompleted,
                         )
                     }
                 }

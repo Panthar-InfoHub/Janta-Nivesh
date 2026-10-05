@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
  * [folio] is the one the row shows; [folios] is every folio rolled into it, which is why a
  * holding can be one row here and several on the folio screen.
  *
- * [is_sip] is not in the payload yet — it is declared now, defaulted to null, so the SIP/Lumpsum
- * tag lights up on its own once the server starts sending it.
+ * Every value is nullable: a holding with no units yet comes back with `null` NAV, XIRR and
+ * return fields. [curr_nav] and [avg_nav] arrive as quoted strings and are read leniently.
  */
 @Serializable
 data class PortfolioMutualFundDto(
@@ -20,14 +20,14 @@ data class PortfolioMutualFundDto(
     val nav_as_on: String? = null,
     val xirr: Double? = null,
     val return_percentage: String? = null,
-    val amount: Double = 0.0,
-    val current_value: Double = 0.0,
-    val `return`: Double = 0.0,
-    val curr_nav: Double = 0.0,
-    val avg_nav: Double = 0.0,
+    val amount: Double? = null,
+    val current_value: Double? = null,
+    val `return`: Double? = null,
+    val curr_nav: Double? = null,
+    val avg_nav: Double? = null,
     val folio: String? = null,
-    val folios: List<String> = emptyList(),
-    val bal_units: Double = 0.0,
+    val folios: List<String>? = null,
+    val bal_units: Double? = null,
     val img_url: String? = null,
     val is_sip: Boolean? = null
 )

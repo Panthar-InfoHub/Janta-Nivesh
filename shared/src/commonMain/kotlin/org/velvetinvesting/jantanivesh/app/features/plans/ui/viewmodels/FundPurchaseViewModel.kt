@@ -281,8 +281,8 @@ sealed interface FundPurchaseEffect {
     /** The user has no approved mandate, so autopay has to be set up before a SIP can run. */
     data object AddMandate : FundPurchaseEffect
 
-    /** KYC is not verified, so the user is sent to the onboarding flow to complete it. */
-    data object NavigateToKyc : FundPurchaseEffect
+    /** Onboarding is not complete, so the user is sent back into it at [stage] (`current_stage`). */
+    data class NavigateToKyc(val stage: String) : FundPurchaseEffect
 
     /**
      * A SIP's mandate has been created and needs the user's approval on the bank's page. The
@@ -444,7 +444,7 @@ class FundPurchaseViewModel(
 
             FundPurchaseEvent.OnCompleteKycClick -> {
                 _uiState.update { it.copy(showKycPopup = false) }
-                viewModelScope.launch { _effect.send(FundPurchaseEffect.NavigateToKyc) }
+                viewModelScope.launch { _effect.send(FundPurchaseEffect.NavigateToKyc(kycStage)) }
             }
         }
     }
@@ -895,6 +895,9 @@ class FundPurchaseViewModel(
      * held back by a stale answer. False ends the submission, with the popup up when KYC is the
      * reason.
      */
+    /** The onboarding `current_stage` from the last failed check, so the popup resumes there. */
+    private var kycStage = ""
+
     private suspend fun isKycVerified(): Boolean {
         setStage(SipSubmissionStage.CHECKING_KYC)
 
@@ -905,8 +908,10 @@ class FundPurchaseViewModel(
             }
 
             is NetworkResponse.Success -> {
-                val verified = result.data.kycVerified
+                // Onboarding's is_completed is what clears a user to invest, not kyc_status alone.
+                val verified = result.data.onboarding.isCompleted
                 if (!verified) {
+                    kycStage = result.data.onboarding.currentStage
                     _uiState.update { it.copy(submissionStage = null, showKycPopup = true) }
                 }
                 verified

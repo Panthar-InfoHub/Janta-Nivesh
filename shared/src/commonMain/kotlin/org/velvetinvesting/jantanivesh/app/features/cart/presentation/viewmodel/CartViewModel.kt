@@ -115,8 +115,8 @@ sealed interface CartEffect {
     /** A checkout is placed and its OTP is out. */
     data object NavigateToCheckoutOtp : CartEffect
 
-    /** KYC is not verified, so the user is sent to the onboarding flow to complete it. */
-    data object NavigateToKyc : CartEffect
+    /** Onboarding is not complete, so the user is sent back into it at [stage] (`current_stage`). */
+    data class NavigateToKyc(val stage: String) : CartEffect
 
     /** The lumpsum payment was confirmed; the orders it placed are shown over the cart. */
     data object NavigateToOrders : CartEffect
@@ -221,7 +221,7 @@ class CartViewModel(
 
             CartEvent.OnCompleteKycClicked -> {
                 _uiState.update { it.copy(showKycPopup = false) }
-                sendEffect(CartEffect.NavigateToKyc)
+                sendEffect(CartEffect.NavigateToKyc(kycStage))
             }
 
             CartEvent.OnWebViewReturned -> {
@@ -327,6 +327,9 @@ class CartViewModel(
      * KYC is read fresh on every attempt rather than cached, so a user who finishes it elsewhere is
      * not held back by a stale answer; an unverified user gets the popup instead of a purchase.
      */
+    /** The onboarding `current_stage` from the last failed check, so the popup resumes there. */
+    private var kycStage = ""
+
     private fun purchase() {
         val state = _uiState.value
         if (state.cart == null || state.isProcessing) return
@@ -339,7 +342,9 @@ class CartViewModel(
                     return@launch
                 }
 
-                is NetworkResponse.Success -> if (!result.data.kycVerified) {
+                // Onboarding's is_completed is what clears a user to invest, not kyc_status alone.
+                is NetworkResponse.Success -> if (!result.data.onboarding.isCompleted) {
+                    kycStage = result.data.onboarding.currentStage
                     _uiState.update { it.copy(isProcessing = false, showKycPopup = true) }
                     return@launch
                 }

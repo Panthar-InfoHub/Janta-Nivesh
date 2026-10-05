@@ -93,9 +93,9 @@ fun PortfolioMutualFundDto.toDomain(): MutualFundPortfolioDomain {
         id = id,
         title = title.orEmpty(),
         category = category.orEmpty(),
-        amount = amount,
-        currentValue = current_value,
-        returnAmount = `return`,
+        amount = amount ?: 0.0,
+        currentValue = current_value ?: 0.0,
+        returnAmount = `return` ?: 0.0,
         returnPercentage = return_percentage.orEmpty(),
         folio = folio,
         // The two folio fields diverged in the old payload; here the same number serves both.
@@ -104,14 +104,14 @@ fun PortfolioMutualFundDto.toDomain(): MutualFundPortfolioDomain {
         minSipAmount = 0L,
         minLumpSumAmount = 0L,
         schemeId = 0,
-        balanceUnits = bal_units,
+        balanceUnits = bal_units ?: 0.0,
         isSip = is_sip == true,
         subCategory = sub_category.orEmpty(),
         xirr = xirr ?: 0.0,
         navAsOn = nav_as_on,
-        folios = folios,
-        currentNav = curr_nav,
-        avgNav = avg_nav
+        folios = folios.orEmpty(),
+        currentNav = curr_nav ?: 0.0,
+        avgNav = avg_nav ?: 0.0
     )
 }
 

@@ -33,8 +33,8 @@ data class HomeScreenUiState(
     val goals: List<GoalsSummaryDomain> = emptyList(),
     val kycVerified: Boolean = false,
     /**
-     * Whether to offer the "complete your KYC" card. Driven by whether onboarding was skipped or
-     * left unfinished, not by the KYC step alone — a user who skipped in has every step pending.
+     * Whether to offer the "complete your KYC" card. Driven by onboarding's `is_completed`, not by
+     * the KYC step alone — a user who skipped in has every step pending.
      */
     val showKycPrompt: Boolean = false,
     /**
@@ -154,8 +154,8 @@ class HomeScreenViewModel(
                             mutualFundsAmount = formatMoneyAfterL(dashboard.mutualFunds.toLong()),
                             pnlTrend = dashboard.returnPercent.trimTo(2),
                             goals = user.goals,
-                            kycVerified = user.kycVerified,
-                            showKycPrompt = !user.kycVerified,
+                            kycVerified = user.onboarding.isCompleted,
+                            showKycPrompt = !user.onboarding.isCompleted,
                             onboardingStage = user.onboarding.currentStage,
                         )
                     }

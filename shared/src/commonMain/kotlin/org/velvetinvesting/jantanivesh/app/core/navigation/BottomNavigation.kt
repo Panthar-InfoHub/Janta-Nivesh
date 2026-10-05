@@ -225,8 +225,9 @@ fun BottomNavigation(
                             HomeScreenSideEffect.NavigateToInvestFd -> navigateToFD()
                             HomeScreenSideEffect.NavigateToInvestMf -> navigateToCategoryMutualFundTypeScreen()
                             is HomeScreenSideEffect.NavigateToKycVerification -> {
+                                // Resume at the server's current_stage; PAN only when none is reported.
                                 navigateToKYC(
-                                    OnboardingStage.PanVerification.id
+                                    it.onboardingStage.ifBlank { OnboardingStage.PanVerification.id }
                                 )
                             }
                             HomeScreenSideEffect.NavigateToNotifications -> navigateToNotification()
@@ -289,7 +290,7 @@ fun BottomNavigation(
                                 browserLauncher.launch(WebUrls.FAQS){}
                             }
                             ProfileEffect.NavigateToKycStatus -> navigateToKYC(
-                                OnboardingStage.PanVerification.id
+                                homeState.onboardingStage.ifBlank { OnboardingStage.PanVerification.id }
                             )
                             ProfileEffect.NavigateToSecondaryLanguage -> navigateToLanguageSettings()
                             ProfileEffect.NavigateToSettings -> navigateToProfileSettigns()

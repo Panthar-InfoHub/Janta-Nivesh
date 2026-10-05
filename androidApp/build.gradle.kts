@@ -25,6 +25,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
 
+    implementation("com.posthog:posthog-android:3.71.4")
 }
 
 android {

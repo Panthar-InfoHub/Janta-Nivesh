@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 /**
  * `GET /user/portfolio` response.
  *
- * Every field is optional with a default so a partial or still-changing payload renders rather
- * than failing to parse.
+ * Every field is nullable: the server sends explicit `null`s, which a non-null field with a
+ * default still fails on. The mapper supplies the fallbacks.
  */
 @Serializable
 data class UserPortfolioResponseDto(
-    val code: Int = 0,
-    val message: String = "",
+    val code: Int? = null,
+    val message: String? = null,
     val `data`: UserPortfolioDataDto? = null
 )
 
@@ -20,15 +20,15 @@ data class UserPortfolioDataDto(
     val total_investments: PortfolioTotalInvestmentsDto? = null,
     val invested_amount_breakdown: PortfolioInvestedBreakdownDto? = null,
     val mf_summary: PortfolioMfSummaryDto? = null,
-    val mutual_funds: List<PortfolioMutualFundDto> = emptyList(),
-    val fixed_deposits: List<PortfolioFixedDepositDto> = emptyList()
+    val mutual_funds: List<PortfolioMutualFundDto>? = null,
+    val fixed_deposits: List<PortfolioFixedDepositDto>? = null
 )
 
 @Serializable
 data class PortfolioTotalInvestmentsDto(
-    val current_value: Double = 0.0,
-    val total_returns: Double = 0.0,
-    val return_percent: Double = 0.0,
+    val current_value: Double? = null,
+    val total_returns: Double? = null,
+    val return_percent: Double? = null,
     val allocation: PortfolioAllocationDto? = null
 )
 
@@ -44,38 +44,38 @@ data class PortfolioAllocationDto(
 
 @Serializable
 data class PortfolioMfAllocationDto(
-    val value: Double = 0.0,
-    val percent: Double = 0.0,
-    val invested_amount: Double = 0.0,
-    val total_returns: Double = 0.0,
-    val return_percent: Double = 0.0,
-    val one_day_return: Double = 0.0,
-    val one_day_return_percent: Double = 0.0,
-    val xirr: Double? = 0.0
+    val value: Double? = null,
+    val percent: Double? = null,
+    val invested_amount: Double? = null,
+    val total_returns: Double? = null,
+    val return_percent: Double? = null,
+    val one_day_return: Double? = null,
+    val one_day_return_percent: Double? = null,
+    val xirr: Double? = null
 )
 
 @Serializable
 data class PortfolioFdAllocationDto(
-    val value: Double = 0.0,
-    val percent: Double = 0.0
+    val value: Double? = null,
+    val percent: Double? = null
 )
 
 @Serializable
 data class PortfolioInvestedBreakdownDto(
-    val invested_amount: Double = 0.0,
-    val invested_items_count: Int = 0,
-    val returns_amount: Double = 0.0,
-    val returns_percent: Double = 0.0
+    val invested_amount: Double? = null,
+    val invested_items_count: Int? = null,
+    val returns_amount: Double? = null,
+    val returns_percent: Double? = null
 )
 
 /** The mutual-fund totals, reported by the server rather than summed from the holdings. */
 @Serializable
 data class PortfolioMfSummaryDto(
-    val current_value: Double = 0.0,
-    val invested_amount: Double = 0.0,
-    val total_returns: Double = 0.0,
-    val return_percent: Double = 0.0,
-    val one_day_return: Double = 0.0,
-    val one_day_return_percent: Double = 0.0,
-    val xirr: Double? = 0.0
+    val current_value: Double? = null,
+    val invested_amount: Double? = null,
+    val total_returns: Double? = null,
+    val return_percent: Double? = null,
+    val one_day_return: Double? = null,
+    val one_day_return_percent: Double? = null,
+    val xirr: Double? = null
 )

@@ -509,8 +509,8 @@ fun MainAppNavigation(
             LaunchedEffect(vm.effect) {
                 vm.effect.collect { effect ->
                     when (effect) {
-                        FundPurchaseEffect.NavigateToKyc ->
-                            navigateToKYC(OnboardingStage.PanVerification.id)
+                        is FundPurchaseEffect.NavigateToKyc ->
+                            navigateToKYC(effect.stage.ifBlank { OnboardingStage.PanVerification.id })
 
                         FundPurchaseEffect.AddMandate -> {
                             navController.navigate(Route.AddMandate) {
@@ -773,7 +773,7 @@ fun MainAppNavigation(
                         CartEffect.NavigateToCheckoutOtp -> navController.navigate(Route.CartCheckoutOtp) {
                             launchSingleTop = true
                         }
-                        CartEffect.NavigateToKyc -> navigateToKYC(OnboardingStage.PanVerification.id)
+                        is CartEffect.NavigateToKyc -> navigateToKYC(effect.stage.ifBlank { OnboardingStage.PanVerification.id })
                         CartEffect.NavigateToOrders -> navController.navigate(Route.MyOrders) {
                             launchSingleTop = true
                         }
