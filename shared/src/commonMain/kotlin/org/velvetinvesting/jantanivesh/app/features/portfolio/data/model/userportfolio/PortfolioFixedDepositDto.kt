@@ -5,9 +5,8 @@ import kotlinx.serialization.Serializable
 /**
  * One fixed-deposit holding.
  *
- * `fixed_deposits` comes back empty today, so this is a copy of the older `FdTransaction` shape
- * rather than a reference to it — that way retiring the old package does not drag this one with
- * it, and the fields can move independently once the server starts populating the list.
+ * `fixed_deposits` comes back empty today, so these fields mirror the previous FD shape and may
+ * change once the server starts populating the list.
  */
 @Serializable
 data class PortfolioFixedDepositDto(

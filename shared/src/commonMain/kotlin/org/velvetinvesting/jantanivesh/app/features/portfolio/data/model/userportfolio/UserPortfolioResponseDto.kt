@@ -3,11 +3,10 @@ package org.velvetinvesting.jantanivesh.app.features.portfolio.data.model.userpo
 import kotlinx.serialization.Serializable
 
 /**
- * `GET /user/portfolio` — **the response the app reads today**.
+ * `GET /user/portfolio` response.
  *
- * This replaces the older shape in `data.model.portfolio`, which is kept only until the screens
- * still referencing it are cleaned up. Every field is optional with a default so a partial or
- * still-changing payload renders rather than failing to parse.
+ * Every field is optional with a default so a partial or still-changing payload renders rather
+ * than failing to parse.
  */
 @Serializable
 data class UserPortfolioResponseDto(

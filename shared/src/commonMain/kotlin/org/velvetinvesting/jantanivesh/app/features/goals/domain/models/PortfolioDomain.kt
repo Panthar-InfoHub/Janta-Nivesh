@@ -63,11 +63,3 @@ data class InvestedAmountBreakdownDomain(
     val returnsAmount: Double,
     val returnsPercent: Double
 )
-
-data class PortfolioDomain(
-    val dashboard: PortfolioDashboardDomain,
-    val totalInvestments: TotalInvestmentsDomain,
-    val investedAmountBreakdown: InvestedAmountBreakdownDomain,
-    val mutualFunds: List<MutualFundPortfolioDomain>,
-    val fixedDeposits: List<FixedDepositPortfolioDomain>
-)

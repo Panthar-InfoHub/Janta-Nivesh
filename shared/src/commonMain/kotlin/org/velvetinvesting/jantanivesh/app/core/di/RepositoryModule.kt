@@ -21,8 +21,6 @@ import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.repos
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.domain.repository.MutualFundRepository
 import org.velvetinvesting.jantanivesh.app.features.goals.data.repository.GoalsRepositoryImpl
 import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.GoalsRepository
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.UserFinance
-import org.velvetinvesting.jantanivesh.app.features.goals.domain.repository.UserFinanceRepo
 import org.velvetinvesting.jantanivesh.app.features.portfolio.data.repository.PortfolioRepoImpl
 import org.velvetinvesting.jantanivesh.app.features.plans.data.repository.PlansRepoImpl
 import org.velvetinvesting.jantanivesh.app.core.database.JantaNiveshDatabase
@@ -48,7 +46,6 @@ val repositoryModule = module {
     single<FixedDepositRepository> { FixedDepositRepo(get()) }
     single<MutualFundRepository> { MutualFundRepo(get()) }
     single<GoalsRepository> { GoalsRepositoryImpl(get()) }
-    single<UserFinance> { UserFinanceRepo(get()) }
     single<PortfolioRepo> { PortfolioRepoImpl(get()) }
     single<KycNewOnboardingRepo> { KycNewOnboardingRepoImpl(get(),get()) }
     single<PlansRepo> { PlansRepoImpl(get()) }
