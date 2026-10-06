@@ -36,6 +36,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.receipt_icon
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
+import jantanivesh.shared.generated.resources.info_icon
+import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.GrayScreenBackGround
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
@@ -150,8 +167,98 @@ private fun MyOrdersHeader(onBack: () -> Unit) {
             fontFamily = InterFontFamily,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = ProfileTitleColor
+            color = ProfileTitleColor,
+            modifier = Modifier.weight(1f)
         )
+        SettlementInfoButton()
+    }
+}
+
+/**
+ * The info icon at the end of the header. A tap opens a bubble under it explaining when orders
+ * settle; it stays until the icon or anywhere else on the screen is tapped.
+ */
+@Composable
+private fun SettlementInfoButton() {
+    var showBubble by remember { mutableStateOf(false) }
+
+    Box {
+        Icon(
+            painter = painterResource(Res.drawable.info_icon),
+            contentDescription = "Settlement info",
+            tint = titleColor,
+            modifier = Modifier
+                .clip(CircleShape)
+                .clickable { showBubble = !showBubble }
+                .padding(Spacing.dp4)
+                .size(InfoIconSize)
+        )
+
+        if (showBubble) {
+            val gapPx = with(LocalDensity.current) { Spacing.dp4.roundToPx() }
+            Popup(
+                popupPositionProvider = remember(gapPx) { BelowAnchorEndAligned(gapPx) },
+                onDismissRequest = { showBubble = false },
+                // Focusable, so a tap outside — the icon included — only closes the bubble rather
+                // than also reaching what is underneath and opening it again.
+                properties = PopupProperties(focusable = true)
+            ) {
+                InfoBubble(text = "Orders will be settled in T+3 days.")
+            }
+        }
+    }
+}
+
+/** A dark bubble with an arrow on its top edge, lined up under the info icon's centre. */
+@Composable
+private fun InfoBubble(text: String) {
+    Column(horizontalAlignment = Alignment.End) {
+        Canvas(
+            modifier = Modifier
+                // The icon's centre sits half its tappable width in from the bubble's right edge.
+                .padding(end = (InfoIconSize + Spacing.dp8) / 2 - BubbleArrowWidth / 2)
+                .size(width = BubbleArrowWidth, height = BubbleArrowHeight)
+        ) {
+            drawPath(
+                path = Path().apply {
+                    moveTo(size.width / 2, 0f)
+                    lineTo(size.width, size.height)
+                    lineTo(0f, size.height)
+                    close()
+                },
+                color = ProfileTitleColor
+            )
+        }
+        Text(
+            text = text,
+            fontFamily = InterFontFamily,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            color = White,
+            modifier = Modifier
+                .widthIn(max = 240.dp)
+                .clip(RoundedCornerShape(Spacing.dp8))
+                .background(ProfileTitleColor)
+                .padding(horizontal = Spacing.dp12, vertical = Spacing.dp8)
+        )
+    }
+}
+
+private val InfoIconSize = 20.dp
+private val BubbleArrowWidth = 12.dp
+private val BubbleArrowHeight = 6.dp
+
+/** Under the anchor with right edges lined up, kept inside the window. */
+private class BelowAnchorEndAligned(private val gapPx: Int) : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize
+    ): IntOffset {
+        val x = (anchorBounds.right - popupContentSize.width)
+            .coerceIn(0, (windowSize.width - popupContentSize.width).coerceAtLeast(0))
+        return IntOffset(x, anchorBounds.bottom + gapPx)
     }
 }
 

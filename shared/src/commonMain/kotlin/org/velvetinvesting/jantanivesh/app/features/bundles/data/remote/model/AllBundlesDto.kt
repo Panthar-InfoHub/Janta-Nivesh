@@ -25,7 +25,10 @@ data class BundleSummaryDto(
     val commodity_percentage: Double = 0.0,
     val debt_percentage: Double = 0.0,
     val hybrid_percentage: Double = 0.0,
+    /** The card's background banner. */
     val img_url: String? = null,
+    /** The card's border colour, as "#RRGGBB" (or "#AARRGGBB"). */
+    val hex: String? = null,
     // NEW: meta_data now also carries daily_start_amount and monthly_start_amount (see BundleMetaDataDto).
     val meta_data: BundleMetaDataDto? = null,
     val categories: List<BundleSummaryCategoryDto> = emptyList()

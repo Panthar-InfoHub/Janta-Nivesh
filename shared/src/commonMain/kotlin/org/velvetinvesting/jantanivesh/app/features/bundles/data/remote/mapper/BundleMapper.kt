@@ -14,7 +14,6 @@ import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.Bundle
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleCategorySummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleMetaDataDomain
-import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleRisk
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.FundDomain
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.FundMetricsDomain
@@ -31,6 +30,7 @@ private fun BundleSummaryDto.toDomain(): BundleSummaryDomain {
         name = bundle_name,
         description = bundle_description.orEmpty(),
         imageUrl = img_url.orEmpty(),
+        borderColor = hex.toArgbOrNull(),
         assetAllocation = AssetAllocationDomain(
             equity = equity_percentage,
             debt = debt_percentage,
@@ -60,26 +60,21 @@ private fun BundleMetaDataDto?.toDomain(): BundleMetaDataDomain {
         startAmount = this?.start_amount?.let { kotlin.math.ceil(it).toLong() },
         // NEW: daily and monthly SIP start amounts, rounded up to the rupee like start_amount.
         dailyStartAmount = this?.daily_start_amount?.let { kotlin.math.ceil(it).toLong() },
-        monthlyStartAmount = this?.monthly_start_amount?.let { kotlin.math.ceil(it).toLong() },
-        risk = this?.risk_level.toBundleRisk()
+        monthlyStartAmount = this?.monthly_start_amount?.let { kotlin.math.ceil(it).toLong() }
     )
 }
 
 /**
- * The API's risk wording (Low, Moderate, High, Very High) to a [BundleRisk]. Case, surrounding
- * spaces, underscores and a trailing "RISK" are ignored, so "VERY_HIGH", "very high risk" and
- * " Very High " read the same. Any wording with "moderate" in it — "Moderate", "Low to Moderate",
- * "Moderately High" — is [BundleRisk.MODERATE]. Anything unmatched is drawn in a neutral style.
+ * "#RRGGBB" or "#AARRGGBB" (the "#" optional) to an ARGB value; six digits are fully opaque.
+ * Anything else is null, so the card falls back to its default border.
  */
-private fun String?.toBundleRisk(): BundleRisk {
-    val risk = this?.trim()?.replace('_', ' ')?.uppercase()?.removeSuffix(" RISK")?.trim()
-        ?: return BundleRisk.UNKNOWN
-    return when {
-        "MODERATE" in risk -> BundleRisk.MODERATE
-        risk == "LOW" -> BundleRisk.LOW
-        risk == "HIGH" -> BundleRisk.HIGH
-        risk == "VERY HIGH" -> BundleRisk.VERY_HIGH
-        else -> BundleRisk.UNKNOWN
+private fun String?.toArgbOrNull(): Long? {
+    val digits = this?.trim()?.removePrefix("#") ?: return null
+    val value = digits.toLongOrNull(16) ?: return null
+    return when (digits.length) {
+        6 -> 0xFF000000 or value
+        8 -> value
+        else -> null
     }
 }
 

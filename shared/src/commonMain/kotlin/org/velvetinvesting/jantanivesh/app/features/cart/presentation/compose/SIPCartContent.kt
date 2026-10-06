@@ -37,8 +37,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +62,7 @@ import org.velvetinvesting.jantanivesh.app.core.utils.withInterRupee
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.CartType
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.SipDetails
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.models.SipItemDomain
+import org.velvetinvesting.jantanivesh.app.features.mutualfund.utils.toTitleCase
 
 
 enum class StepUpType {
@@ -261,7 +264,7 @@ fun SIPCartItem(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = if (item.type == CartType.SIP) "Monthly" else "One-time",
+                text = if (item.type == CartType.SIP) item.sipDetails.frequency.lowercase().replaceFirstChar{ it.uppercase() } else "One-time",
                 style = titlesStyle,
                 color = Color(0xff4A5565)
             )

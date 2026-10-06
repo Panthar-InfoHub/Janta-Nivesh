@@ -24,6 +24,7 @@ class MyApplication : Application() {
             errorTrackingConfig.autoCapture = true
         }
 
+
         config.sessionReplay=true
         config.sessionReplayConfig.maskAllTextInputs = false
         config.sessionReplayConfig.maskAllImages = false

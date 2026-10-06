@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -117,7 +118,7 @@ import org.velvetinvesting.jantanivesh.app.features.core.ui.modifierextensions.g
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.compose.GoalCard
 import kotlin.time.Duration.Companion.milliseconds
 
-@Preview(showBackground = true, heightDp = 1204, widthDp = 800)
+@Preview(showBackground = true, heightDp = 1204, widthDp = 400)
 @Composable
 fun HomeScreenPreview() {
     JantaNiveshTheme {
@@ -125,6 +126,7 @@ fun HomeScreenPreview() {
             HomeScreen(
                 state = HomeScreenUiState(
                     userName = "Sharad",
+                    showKycPrompt = true
                 ),
                 onEvent = {},
                 modifier = Modifier.fillMaxSize()
@@ -696,7 +698,7 @@ private fun KycCard(
             color = Primary,
             modifier = Modifier
                 .height(88.dp)
-                .weight(0.01f)
+                .width(2.dp)
         )
 
         Icon(
@@ -707,12 +709,11 @@ private fun KycCard(
                 .clip(CircleShape)
                 .background(SelectedBoxColor)
                 .padding(Spacing.dp8)
-                .weight(0.1f)
         )
 
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.dp8),
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(1f)
         ) {
             Text(
                 text = title,
@@ -730,7 +731,6 @@ private fun KycCard(
                 contentColor = White
             ),
             modifier = Modifier
-                .weight(0.3f)
                 .padding(end = Spacing.dp20)
         ) {
             Text(

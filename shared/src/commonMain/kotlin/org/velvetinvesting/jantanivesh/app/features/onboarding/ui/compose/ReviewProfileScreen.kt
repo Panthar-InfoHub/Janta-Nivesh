@@ -208,7 +208,7 @@ private fun ReviewProfileContent(
                 TitledAppTextField(
                     title = "Address/ " + stringResource(Res.string.address_label),
                     value = state.address,
-                    onValueChange = { handleEvent(ReviewProfileEvent.OnAddressChange(it.toUpperCase(Locale.current))) },
+                    onValueChange = { handleEvent(ReviewProfileEvent.OnAddressChange(it)) },
                     placeholder = "\n\n\n",
                     mandatory = true,
                     keyboardOptions = KeyboardOptions(

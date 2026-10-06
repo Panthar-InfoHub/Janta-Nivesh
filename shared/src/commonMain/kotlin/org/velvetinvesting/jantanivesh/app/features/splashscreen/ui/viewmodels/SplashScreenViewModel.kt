@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import org.velvetinvesting.jantanivesh.app.core.analytics.ExceptionReporter
 
 
 data class SplashScreenUiState(
@@ -21,15 +22,15 @@ sealed interface SplashScreenEffect {
     data object OnGetStartedClick : SplashScreenEffect
 }
 
-class SplashScreenViewModel : ViewModel() {
+class SplashScreenViewModel() : ViewModel() {
     private val _uiState = MutableStateFlow(SplashScreenUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _effect = Channel<SplashScreenEffect>()
     val effect = _effect.receiveAsFlow()
 
-    fun handleEvent(event: SplashScreenEvent){
-        when(event){
+    fun handleEvent(event: SplashScreenEvent) {
+        when (event) {
             SplashScreenEvent.OnGetStartedClick -> onGetStartedClick()
         }
     }

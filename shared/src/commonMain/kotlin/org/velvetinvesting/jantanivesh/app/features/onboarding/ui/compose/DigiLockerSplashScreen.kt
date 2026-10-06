@@ -113,7 +113,7 @@ fun DigiLockerSplashScreen(
             loading = state.isLoading,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = Spacing.dp24)
+                .padding(top = Spacing.dp24, bottom = Spacing.dp4)
         )
     }
 }

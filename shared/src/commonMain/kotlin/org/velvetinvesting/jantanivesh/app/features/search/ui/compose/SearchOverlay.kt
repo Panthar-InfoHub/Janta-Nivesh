@@ -39,18 +39,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.back_arrow
 import jantanivesh.shared.generated.resources.ic_clock
+import jantanivesh.shared.generated.resources.ic_create_goal
+import jantanivesh.shared.generated.resources.icon_callender
+import jantanivesh.shared.generated.resources.piggybank_icon
 import jantanivesh.shared.generated.resources.profile_bank
 import jantanivesh.shared.generated.resources.search_icon
-import jantanivesh.shared.generated.resources.upward_trend_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyBox
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.IconBackgroundBlue
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.MutualFundIconBg
+import org.velvetinvesting.jantanivesh.app.core.theme.Orange
+import org.velvetinvesting.jantanivesh.app.core.theme.OrangeBg
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
-import org.velvetinvesting.jantanivesh.app.core.theme.PrimaryContainer
 import org.velvetinvesting.jantanivesh.app.core.theme.Secondary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
@@ -75,8 +79,10 @@ fun SearchOverlay(
     state: SearchOverlayUiState,
     handleEvent: (SearchOverlayEvent) -> Unit,
     onDismiss: () -> Unit,
-    onStartSipClick: () -> Unit,
     onBookFdClick: () -> Unit,
+    onDailySipClick: () -> Unit,
+    onMonthlySipClick: () -> Unit,
+    onCreateGoalClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     AppBackHandler(enabled = true, onBack = onDismiss)
@@ -110,8 +116,10 @@ fun SearchOverlay(
             }
 
             QuickActions(
-                onStartSipClick = onStartSipClick,
-                onBookFdClick = onBookFdClick
+                onBookFdClick = onBookFdClick,
+                onDailySipClick = onDailySipClick,
+                onMonthlySipClick = onMonthlySipClick,
+                onCreateGoalClick = onCreateGoalClick
             )
         }
     }
@@ -297,11 +305,16 @@ private fun RecentSearchRow(
     }
 }
 
-/** Two shortcuts for users who came to the search without a term in mind. */
+/**
+ * Shortcuts for users who came to the search without a term in mind. The micro-SIP and goal
+ * cards mirror the home screen's, with the same icons and destinations.
+ */
 @Composable
 private fun QuickActions(
-    onStartSipClick: () -> Unit,
-    onBookFdClick: () -> Unit
+    onBookFdClick: () -> Unit,
+    onDailySipClick: () -> Unit,
+    onMonthlySipClick: () -> Unit,
+    onCreateGoalClick: () -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(Spacing.dp16)) {
         Text(
@@ -317,19 +330,42 @@ private fun QuickActions(
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp16)
         ) {
             QuickActionCard(
-                icon = Res.drawable.upward_trend_icon,
-                iconBackground = PrimaryContainer,
-                title = "Start a SIP",
-                subtitle = "Invest monthly",
-                onClick = onStartSipClick,
+                icon = Res.drawable.piggybank_icon,
+                iconBackground = IconBackgroundBlue,
+                title = "Daily Micro-SIP",
+                subtitle = "Start with just ₹10/day",
+                onClick = onDailySipClick,
                 modifier = Modifier.weight(1f)
             )
+            QuickActionCard(
+                icon = Res.drawable.icon_callender,
+                iconBackground = IconBackgroundBlue,
+                title = "Monthly SIP",
+                subtitle = "Invest ₹100/month",
+                onClick = onMonthlySipClick,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.dp16)
+        ) {
             QuickActionCard(
                 icon = Res.drawable.profile_bank,
                 iconBackground = MutualFundIconBg,
                 title = "Book FD",
                 subtitle = "Secure returns",
                 onClick = onBookFdClick,
+                modifier = Modifier.weight(1f)
+            )
+            QuickActionCard(
+                icon = Res.drawable.ic_create_goal,
+                iconBackground = OrangeBg,
+                iconTint = Orange,
+                title = "Create Goal",
+                subtitle = "Plan for what matters",
+                onClick = onCreateGoalClick,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -343,7 +379,8 @@ private fun QuickActionCard(
     title: String,
     subtitle: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    iconTint: androidx.compose.ui.graphics.Color = Primary
 ) {
     Column(
         modifier = modifier
@@ -364,7 +401,7 @@ private fun QuickActionCard(
             Icon(
                 painter = painterResource(icon),
                 contentDescription = null,
-                tint = Primary,
+                tint = iconTint,
                 modifier = Modifier.size(Spacing.dp20)
             )
         }
@@ -404,8 +441,10 @@ private fun SearchOverlayPreview() {
             ),
             handleEvent = {},
             onDismiss = {},
-            onStartSipClick = {},
-            onBookFdClick = {}
+            onBookFdClick = {},
+            onDailySipClick = {},
+            onMonthlySipClick = {},
+            onCreateGoalClick = {}
         )
     }
 }

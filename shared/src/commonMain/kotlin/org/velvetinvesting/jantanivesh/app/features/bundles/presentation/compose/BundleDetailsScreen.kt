@@ -75,7 +75,6 @@ import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.AssetA
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleCategoryDomain
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleDetailsDomain
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleMetaDataDomain
-import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleRisk
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.PortfolioSlotDomain
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.deriveTransactionRules
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.investmentName
@@ -206,14 +205,13 @@ private fun BundleDetailsHeader(
             horizontalArrangement = Arrangement.spacedBy(Spacing.dp8)
         ) {
             BundleTag(
+                text= bundle.metaData.investmentTime
+            )
+            BundleTag(
                 text = bundle.metaData.investmentGrowth
             )
             BundleTag(
-                text= bundle.metaData.investmentTime
-            )
-            BundleRiskPill(
-                risk = bundle.metaData.riskLevel,
-                style = bundle.metaData.risk.style.toCardStyle()
+                text = bundle.metaData.riskLevel + " Risk"
             )
         }
     }
@@ -667,8 +665,7 @@ private fun BundleDetailsScreenPreview() {
         metaData = BundleMetaDataDomain(
             riskLevel = "AGGRESSIVE",
             investmentTime = "7+ YEARS",
-            investmentGrowth = "LONG-TERM WEALTH",
-            risk = BundleRisk.HIGH
+            investmentGrowth = "LONG-TERM WEALTH"
         ),
         categories = listOf(
             BundleCategoryDomain(

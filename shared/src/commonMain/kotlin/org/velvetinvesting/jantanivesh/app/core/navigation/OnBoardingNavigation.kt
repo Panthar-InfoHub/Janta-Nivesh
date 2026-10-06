@@ -66,6 +66,15 @@ private const val KYC_STEP_RESULT = "onboarding_kyc_step_completed"
 private const val WEBVIEW_COMPLETION_KYC_STEP = "onboarding_kyc_step"
 
 /**
+ * The redirects FP sends the KYC web views to when they finish — the backend's
+ * `proof_details_callback_url` (DigiLocker) and `esign_callback_url` (eSign). Matched from the
+ * start of the URL, as FP appends its result as a query string. Either callback closes the page
+ * whatever its status; the screen behind then reads the real form status from the server.
+ */
+private const val DIGILOCKER_PROOF_CALLBACK = "https://myapp.com/proof_details_callback"
+private const val ESIGN_CALLBACK = "https://myapp.com/esign_callback"
+
+/**
  * Set on the bank step to the UPI app link its payment page led to. The page closes on it without
  * opening it; the bank step opens the app itself and watches for the user's return.
  */
@@ -250,6 +259,10 @@ fun OnboardingNavigation(
                                 navController.navigate(
                                     Route.WebViewScreen(
                                         url = effect.url,
+                                        // FP redirects here once DigiLocker is done, e.g.
+                                        // .../proof_details_callback?identity_document=…&status=…;
+                                        // OnStepReturned then re-reads the real form status.
+                                        exitUrlPatterns = listOf(DIGILOCKER_PROOF_CALLBACK),
                                         title = effect.title,
                                         completionRouteKey = WEBVIEW_COMPLETION_KYC_STEP
                                     )
@@ -379,6 +392,9 @@ fun OnboardingNavigation(
                                 navController.navigate(
                                     Route.WebViewScreen(
                                         url = effect.url,
+                                        // FP redirects here once signing is done; OnESignReturned
+                                        // then re-reads the real form status.
+                                        exitUrlPatterns = listOf(ESIGN_CALLBACK),
                                         title = "eSign Verification",
                                         completionRouteKey = WEBVIEW_COMPLETION_KYC_STEP
                                     )

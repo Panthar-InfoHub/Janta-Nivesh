@@ -130,7 +130,9 @@ fun SplashScreen(
             SavyEasterEgg { JantaNiveshAndVelvetLogo() }
             AppButton(
                 text = "Get Started/ " + stringResource(Res.string.get_started),
-                onClick = { handleEvent(SplashScreenEvent.OnGetStartedClick) },
+                onClick = {
+                    handleEvent(SplashScreenEvent.OnGetStartedClick)
+                },
                 modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.dp8)
             )
         }

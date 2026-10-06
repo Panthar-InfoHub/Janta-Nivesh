@@ -1,6 +1,7 @@
 package org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.mapper
 
 import org.velvetinvesting.jantanivesh.app.core.utils.trimDoubleTo
+import org.velvetinvesting.jantanivesh.app.core.utils.trimTo
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.frontendmfdata.FrontendMfDataDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.frontendmfdata.FundSectionDto
 import org.velvetinvesting.jantanivesh.app.features.mutualfund.data.remote.model.frontendmfdata.SectionFundDto
@@ -29,7 +30,8 @@ fun SectionFundDto.toDomain(): MutualFundDomain {
         name = name.toTitleCase(),
         icon = img_url ?: "",
         returnYearsRate = metrics.toReturnDomain(),
-        latestNav = latest_nav ?: "",
+        // Rounded to 2 decimals like the other fund lists; a value that isn't a number is kept as sent.
+        latestNav = latest_nav?.let { nav -> nav.toDoubleOrNull()?.trimTo(2) ?: nav } ?: "",
         isin = isin,
         latestNavDate = latest_nav_date,
     )

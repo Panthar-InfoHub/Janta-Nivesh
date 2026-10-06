@@ -3,6 +3,7 @@ package org.velvetinvesting.jantanivesh.app.features.core.domain.usecase
 import io.ktor.client.HttpClient
 import org.velvetinvesting.jantanivesh.app.core.networking.clearAuthTokens
 import org.velvetinvesting.jantanivesh.app.core.platform.SharedPreference
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.CartCountController
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
 import org.velvetinvesting.jantanivesh.app.features.search.domain.repository.RecentSearchRepo
 
@@ -30,5 +31,8 @@ class LogoutUseCase(
 
         // A queued log out event would otherwise be replayed to the next session's collector.
         AppEventsController.clear()
+
+        // The cart badge count is held in memory for the whole process.
+        CartCountController.clear()
     }
 }

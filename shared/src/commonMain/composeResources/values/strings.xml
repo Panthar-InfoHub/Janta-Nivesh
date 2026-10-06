@@ -323,13 +323,13 @@
     <string name="pp_section_11_content">We may update this policy. Continued use denotes your acceptance.</string>
 
     <string name="pp_section_12_title">12. Contact Us</string>
-    <string name="pp_contact_name">Janta Nivesh</string>
+    <string name="pp_contact_name">Janta Nivesh (a product under Velvet Investing)</string>
     <string name="pp_contact_email_label">Email</string>
-    <string name="pp_contact_email">contact@jantanivesh.com</string>
+    <string name="pp_contact_email">Contact@velvetinvesting.com</string>
     <string name="pp_contact_phone_label">Phone</string>
-    <string name="pp_contact_phone">+91 999 001 777, +91 999 001 888</string>
+    <string name="pp_contact_phone">+91 9992224817 / +91 7888353502</string>
     <string name="pp_contact_office_label">Office</string>
-    <string name="pp_contact_office">5th Floor, One Horizon Centre, DLF Phase 5, Golf Course Road, Gurugram, India.</string>
+    <string name="pp_contact_office">5th Floor, Two Horizon Centre, DLF Phase 5,\nGolf Course Road, Gurugram, India</string>
     <string name="privacy_policy_title">Privacy Policy</string>
     <string name="privacy_policy_header">Janta Nivesh Privacy Policy</string>
     <string name="privacy_policy_intro">At Janta Nivesh (a product under Velvet Investing) (“Janta Nivesh”, “we”, “our”, “us”), we value your trust and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, share, and safeguard your information when you use our website, mobile application, and related services.</string>

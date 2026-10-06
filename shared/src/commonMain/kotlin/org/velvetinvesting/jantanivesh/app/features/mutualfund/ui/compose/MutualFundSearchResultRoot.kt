@@ -96,6 +96,9 @@ fun MutualFundSearchScreenRoot(
     tag: String?,
     category: String? = null,
     amountType: String? = null,
+    onDailySipClick: () -> Unit,
+    onMonthlySipClick: () -> Unit,
+    onCreateGoalClick: () -> Unit,
 ) {
 
     val viewModel: MutualFundSearchResultViewModel = koinViewModel {
@@ -169,10 +172,23 @@ fun MutualFundSearchScreenRoot(
                     showSearchOverlay = false
                     searchViewModel.resetQuery()
                 },
-                // Both shortcuts land on a fund list, which is this screen — closing the overlay
-                // is all they need to do here.
-                onStartSipClick = { showSearchOverlay = false },
-                onBookFdClick = { showSearchOverlay = false }
+                // Book FD lands on a fund list, which is this screen — closing the overlay is all it
+                // needs to do here.
+                onBookFdClick = { showSearchOverlay = false },
+                // These open a differently filtered list (or leave funds entirely), so they
+                // navigate rather than just closing the overlay.
+                onDailySipClick = {
+                    showSearchOverlay = false
+                    onDailySipClick()
+                },
+                onMonthlySipClick = {
+                    showSearchOverlay = false
+                    onMonthlySipClick()
+                },
+                onCreateGoalClick = {
+                    showSearchOverlay = false
+                    onCreateGoalClick()
+                }
             )
         }
     }

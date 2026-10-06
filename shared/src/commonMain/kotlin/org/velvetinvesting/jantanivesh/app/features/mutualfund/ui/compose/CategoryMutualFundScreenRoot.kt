@@ -69,8 +69,10 @@ fun CategoryMutualFundScreenRoot(
     onCategoryClick: (String) -> Unit,
     onBundleClick:() -> Unit,
     onBundledFundClick: (String) -> Unit,
-    onStartSipClick: () -> Unit,
-    onBookFdClick: () -> Unit
+    onBookFdClick: () -> Unit,
+    onDailySipClick: () -> Unit,
+    onMonthlySipClick: () -> Unit,
+    onCreateGoalClick: () -> Unit
 ){
 
     val viewModel: CategoryMutualFundViewModel = koinViewModel()
@@ -126,13 +128,21 @@ fun CategoryMutualFundScreenRoot(
                         showSearchOverlay = false
                         searchViewModel.resetQuery()
                     },
-                    onStartSipClick = {
-                        showSearchOverlay = false
-                        onStartSipClick()
-                    },
                     onBookFdClick = {
                         showSearchOverlay = false
                         onBookFdClick()
+                    },
+                    onDailySipClick = {
+                        showSearchOverlay = false
+                        onDailySipClick()
+                    },
+                    onMonthlySipClick = {
+                        showSearchOverlay = false
+                        onMonthlySipClick()
+                    },
+                    onCreateGoalClick = {
+                        showSearchOverlay = false
+                        onCreateGoalClick()
                     }
                 )
             }

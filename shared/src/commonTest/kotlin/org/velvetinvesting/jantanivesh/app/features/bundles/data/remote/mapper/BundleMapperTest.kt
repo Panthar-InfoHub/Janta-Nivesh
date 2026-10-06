@@ -3,7 +3,6 @@ package org.velvetinvesting.jantanivesh.app.features.bundles.data.remote.mapper
 import kotlinx.serialization.json.Json
 import org.velvetinvesting.jantanivesh.app.features.bundles.data.remote.model.AllBundlesDto
 import org.velvetinvesting.jantanivesh.app.features.bundles.data.remote.model.BundleDetailsDto
-import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleRisk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -24,7 +23,9 @@ class BundleMapperTest {
         assertEquals("Chhoti bachat, mazboot shuruaat.", bachat.description)
         assertEquals(500L, bachat.metaData.startAmount)
         assertEquals("1-3 Years", bachat.metaData.investmentTime)
-        assertEquals(BundleRisk.LOW, bachat.metaData.risk)
+        assertEquals("Low", bachat.metaData.riskLevel)
+        assertEquals(0xFFFDE68A, bachat.borderColor)
+        assertEquals("https://example.com/bachat.png", bachat.imageUrl)
         assertEquals(2, bachat.fundCount)
         assertEquals("Debt", bachat.assetClassLabel)
 
@@ -33,6 +34,8 @@ class BundleMapperTest {
         assertEquals("Very High", future.metaData.riskLevel)
         assertEquals(2, future.fundCount)
         assertEquals("Equity + Commodity + Hybrid", future.assetClassLabel)
+        // No hex sent: the card falls back to its default border.
+        assertNull(future.borderColor)
     }
 
     @Test
@@ -98,7 +101,8 @@ class BundleMapperTest {
                         "commodity_percentage": 0,
                         "debt_percentage": 100,
                         "hybrid_percentage": 0,
-                        "img_url": null,
+                        "img_url": "https://example.com/bachat.png",
+                        "hex": "#FDE68A",
                         "meta_data": {
                             "risk_level": "Low",
                             "start_amount": 500,

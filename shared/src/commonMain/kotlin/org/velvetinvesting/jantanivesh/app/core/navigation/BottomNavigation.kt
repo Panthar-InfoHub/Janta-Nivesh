@@ -32,6 +32,10 @@ import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmode
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenEvent
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenSideEffect
 import org.velvetinvesting.jantanivesh.app.features.bottomNavigation.ui.viewmodels.HomeScreenViewModel
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.compose.AllBundlesScreen
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.AllBundlesEffect
+import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.AllBundlesViewModel
+import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PurchaseMode
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEvent
 import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.MfFilterIds
 import org.velvetinvesting.jantanivesh.app.features.core.utils.AppEventsController
@@ -75,7 +79,10 @@ fun BottomNavigation(
      * The fund list filtered by minimum installment — the `amount_type` values of
      * `GET /mf/funds`. The destination lives in the outer graph, so it is navigated from there.
      */
-    navigateToFundsByAmountType: (String) -> Unit
+    navigateToFundsByAmountType: (String) -> Unit,
+    /** A bundle picked on the Bundles tab, opened in the chosen way of investing. */
+    navigateToBundleDetails: (bundleId: String, purchaseMode: PurchaseMode) -> Unit,
+    navigateToCart: () -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -278,6 +285,33 @@ fun BottomNavigation(
                     navigateToMyOrders = navigateToMyOrders,
                 )
             }
+            composable<Route.AllBundleScreen> {
+                val allBundlesViewModel: AllBundlesViewModel = koinViewModel()
+                val state by allBundlesViewModel.uiState.collectAsStateWithLifecycle()
+
+                LaunchedEffect(allBundlesViewModel.effect) {
+                    allBundlesViewModel.effect.collect { effect ->
+                        when (effect) {
+                            // A tab has nothing behind it, so back returns to Home.
+                            AllBundlesEffect.NavigateBack -> navController.navigate(Route.Home) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                            AllBundlesEffect.NavigateToCart -> navigateToCart()
+                            is AllBundlesEffect.NavigateToBundle ->
+                                navigateToBundleDetails(effect.bundleId, effect.purchaseMode)
+                        }
+                    }
+                }
+
+                AllBundlesScreen(
+                    state = state,
+                    onEvent = allBundlesViewModel::handleEvent
+                )
+            }
             composable<Route.Profile> {
                 val browserLauncher = rememberBrowserReturnLauncher()
                 LaunchedEffect(profileViewModel.effect){
@@ -328,6 +362,7 @@ private fun getRouteIndex(destination: NavDestination?): Int {
         destination.hasRoute<Route.Home>() -> 0
         destination.hasRoute<Route.FundScreener>() -> 1
         destination.hasRoute<Route.PortFolio>() -> 2
+        destination.hasRoute<Route.AllBundleScreen>() -> 3
         destination.hasRoute<Route.Insurance>() -> 3
         destination.hasRoute<Route.Profile>() -> 4
         else -> -1

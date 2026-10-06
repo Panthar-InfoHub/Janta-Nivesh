@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import org.velvetinvesting.jantanivesh.app.features.core.utils.fundfiltersystem.MfFilterIds
 import org.velvetinvesting.jantanivesh.app.core.constants.WebUrls
 import org.velvetinvesting.jantanivesh.app.core.utils.SnackBarController
 import org.velvetinvesting.jantanivesh.app.core.utils.WebURLConstants
@@ -389,14 +390,27 @@ fun MainAppNavigation(
                 onBundleClick = {
                     navController.navigate(Route.AllBundleScreen)
                 },
-                onStartSipClick = {
-                    // The full fund list, where picking one opens the buy screen.
-                    navController.navigate(Route.MutualFundSearchResult()) {
+                onBookFdClick = {
+                    navController.navigate(Route.FixedDepositSearchResult()) {
                         launchSingleTop = true
                     }
                 },
-                onBookFdClick = {
-                    navController.navigate(Route.FixedDepositSearchResult()) {
+                onDailySipClick = {
+                    navController.navigate(
+                        Route.MutualFundSearchResult(amountType = MfFilterIds.AMOUNT_DAILY_10)
+                    ) {
+                        launchSingleTop = true
+                    }
+                },
+                onMonthlySipClick = {
+                    navController.navigate(
+                        Route.MutualFundSearchResult(amountType = MfFilterIds.AMOUNT_MONTHLY_100)
+                    ) {
+                        launchSingleTop = true
+                    }
+                },
+                onCreateGoalClick = {
+                    navController.navigate(Route.SingleGoalAdd) {
                         launchSingleTop = true
                     }
                 }
@@ -416,7 +430,23 @@ fun MainAppNavigation(
                 onSearchClick = { search: String ->
                     navController.navigate(Route.MutualFundSearchResult(search = search))
                 },
-                heading = "Mutual Funds"
+                heading = "Mutual Funds",
+                // Already on a fund list, so these push a freshly filtered one on top.
+                onDailySipClick = {
+                    navController.navigate(
+                        Route.MutualFundSearchResult(amountType = MfFilterIds.AMOUNT_DAILY_10)
+                    )
+                },
+                onMonthlySipClick = {
+                    navController.navigate(
+                        Route.MutualFundSearchResult(amountType = MfFilterIds.AMOUNT_MONTHLY_100)
+                    )
+                },
+                onCreateGoalClick = {
+                    navController.navigate(Route.SingleGoalAdd) {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 
@@ -993,6 +1023,16 @@ fun MainAppNavigation(
                     navController.navigate(
                         Route.MutualFundSearchResult(amountType = amountType)
                     ) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToBundleDetails = { bundleId: String, purchaseMode: PurchaseMode ->
+                    navController.navigate(Route.BundleDetails(bundleId, purchaseMode.name)) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToCart = {
+                    navController.navigate(Route.CartScreen) {
                         launchSingleTop = true
                     }
                 },

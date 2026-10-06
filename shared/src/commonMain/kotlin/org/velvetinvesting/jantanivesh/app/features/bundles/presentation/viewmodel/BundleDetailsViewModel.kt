@@ -33,6 +33,7 @@ import org.velvetinvesting.jantanivesh.app.features.cart.data.remote.model.bundl
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddBundleToCartLumpsumUseCase
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.AddBundleToCartSipUseCase
 import org.velvetinvesting.jantanivesh.app.features.cart.domain.usecases.GetUserCartUseCase
+import org.velvetinvesting.jantanivesh.app.features.cart.domain.CartCountController
 
 /**
  * The fund picker for one category, held while the select-fund screen is open.
@@ -192,6 +193,7 @@ class BundleDetailsViewModel(
 
     init {
         loadBundleDetails()
+        observeCartCount()
         loadCart()
     }
 
@@ -471,17 +473,27 @@ class BundleDetailsViewModel(
         }
     }
 
-    /** Refreshes the cart badge. A reload replaces one still running, so the newest count wins. */
+    /**
+     * The badge follows [CartCountController], so a change made on the cart screen shows here on
+     * return without this screen reloading the cart.
+     */
+    private fun observeCartCount() {
+        viewModelScope.launch {
+            CartCountController.cartFundCount.collect { count ->
+                _uiState.update { it.copy(cartFundCount = count) }
+            }
+        }
+    }
+
+    /**
+     * Fetches the cart, which updates [CartCountController] and through it the badge. A reload
+     * replaces one still running, so the newest count wins.
+     */
     private fun loadCart() {
         loadCartJob?.cancel()
         loadCartJob = viewModelScope.launch {
-            when (val response = getUserCartUseCase()) {
-                is NetworkResponse.Success -> _uiState.update {
-                    it.copy(cartFundCount = response.data.sipItems.size + response.data.lumpSumItems.size)
-                }
-
-                is NetworkResponse.Error -> SnackBarController.showError(response.error.message)
-            }
+            val response = getUserCartUseCase()
+            if (response is NetworkResponse.Error) SnackBarController.showError(response.error.message)
         }
     }
 

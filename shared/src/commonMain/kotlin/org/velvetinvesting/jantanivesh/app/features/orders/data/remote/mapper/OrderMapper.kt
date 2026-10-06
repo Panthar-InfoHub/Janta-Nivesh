@@ -1,5 +1,6 @@
 package org.velvetinvesting.jantanivesh.app.features.orders.data.remote.mapper
 
+import org.velvetinvesting.jantanivesh.app.core.utils.trimDoubleTo
 import org.velvetinvesting.jantanivesh.app.features.core.domain.models.PaginatedData
 import org.velvetinvesting.jantanivesh.app.features.orders.data.remote.model.OrderTransactionDto
 import org.velvetinvesting.jantanivesh.app.features.orders.data.remote.model.UserOrdersDto
@@ -50,7 +51,7 @@ fun OrderTransactionDto.toDomain(): OrderDomain = OrderDomain(
     allottedNavDate = allotted_nav_date.orEmpty(),
     purchasedAmount = purchased_amount?.toDoubleOrNull(),
     purchasedPrice = purchased_price?.toDoubleOrNull(),
-    latestNav = mf_product?.latest_nav?.toDoubleOrNull(),
+    latestNav = mf_product?.latest_nav?.toDoubleOrNull()?.trimDoubleTo(2),
     paymentMethod = payment_method.orEmpty(),
     paymentSource = payment_source.orEmpty(),
     switchToScheme = switch_to_scheme.orEmpty(),

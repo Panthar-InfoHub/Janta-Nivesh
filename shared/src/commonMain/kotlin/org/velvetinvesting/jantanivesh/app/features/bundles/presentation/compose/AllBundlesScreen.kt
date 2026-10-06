@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import jantanivesh.shared.generated.resources.Res
 import jantanivesh.shared.generated.resources.invest
 import jantanivesh.shared.generated.resources.ic_pointer_right
+import jantanivesh.shared.generated.resources.ic_veritcal_tilted_arrow
+import jantanivesh.shared.generated.resources.up_stock
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.velvetinvesting.jantanivesh.app.core.theme.Black
@@ -48,6 +50,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardSubtitle
 import org.velvetinvesting.jantanivesh.app.core.theme.BundleCardTitle
 import org.velvetinvesting.jantanivesh.app.core.theme.Gray45
 import org.velvetinvesting.jantanivesh.app.core.theme.GreyText
+import org.velvetinvesting.jantanivesh.app.core.theme.IconSize
 import org.velvetinvesting.jantanivesh.app.core.theme.InterFontFamily
 import org.velvetinvesting.jantanivesh.app.core.theme.JantaNiveshTheme
 import org.velvetinvesting.jantanivesh.app.core.theme.LightBlue
@@ -56,6 +59,7 @@ import org.velvetinvesting.jantanivesh.app.core.theme.LocalShapes
 import org.velvetinvesting.jantanivesh.app.core.theme.Primary
 import org.velvetinvesting.jantanivesh.app.core.theme.Spacing
 import org.velvetinvesting.jantanivesh.app.core.theme.White
+import org.velvetinvesting.jantanivesh.app.core.theme.appGreen
 import org.velvetinvesting.jantanivesh.app.core.theme.tinyLabel
 import org.velvetinvesting.jantanivesh.app.features.bundles.domain.models.BundleSummaryDomain
 import org.velvetinvesting.jantanivesh.app.features.bundles.presentation.viewmodel.AllBundlesEvent
@@ -93,33 +97,33 @@ fun AllBundlesScreen(
             )
 
             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-            when {
-                state.isLoading && state.bundles.isEmpty() -> LoaderScreen()
+                when {
+                    state.isLoading && state.bundles.isEmpty() -> LoaderScreen()
 
-                state.error != null && state.bundles.isEmpty() -> ErrorScreen(
-                    errorMessage = state.error,
-                    onRetryClick = { onEvent(AllBundlesEvent.Retry) }
-                )
+                    state.error != null && state.bundles.isEmpty() -> ErrorScreen(
+                        errorMessage = state.error,
+                        onRetryClick = { onEvent(AllBundlesEvent.Retry) }
+                    )
 
-                else -> LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(16.dp)
-                ) {
-                    itemsIndexed(state.bundles, key = { _, bundle -> bundle.id }) { _, bundle ->
-                        BundleCardAll(
-                            bundle = bundle,
-                            // NEW: the card's amount follows the selected way of investing.
-                            purchaseMode = state.purchaseMode,
-                            onClick = { onEvent(AllBundlesEvent.OnBundleClicked(bundle.id)) },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+                    else -> LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(16.dp)
+                    ) {
+                        itemsIndexed(state.bundles, key = { _, bundle -> bundle.id }) { _, bundle ->
+                            BundleCardAll(
+                                bundle = bundle,
+                                // NEW: the card's amount follows the selected way of investing.
+                                purchaseMode = state.purchaseMode,
+                                onClick = { onEvent(AllBundlesEvent.OnBundleClicked(bundle.id)) },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+                        }
                     }
                 }
-            }
             }
         }
     }
@@ -208,84 +212,108 @@ private fun BundleCardAll(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shapes = LocalShapes.current
-    val style = bundle.cardStyle
-
-    Column(
+    BundleCardContainer(
+        bundle = bundle,
+        onClick = onClick,
         modifier = modifier
-            .clip(shapes.roundedDp20)
-            .background(style.background)
-            .border(1.dp, style.outline, shapes.roundedDp20)
-            .clickable(onClick = onClick)
-            .padding(Spacing.dp20),
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
+        Row(
             modifier = Modifier.padding(bottom = Spacing.dp12)
         ) {
-            BundleRiskPill(
-                risk = bundle.metaData.riskLevel,
-                style = style,
-                modifier = Modifier.padding(bottom = Spacing.dp12)
-            )
-            Text(
-                text = bundle.name,
-                style= MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                color = BundleCardTitle
-            )
-            if (bundle.description.isNotBlank()) {
+            Column(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(Spacing.dp4),
+            ) {
                 Text(
-                    text = bundle.description,
-                    style= tinyLabel.copy(fontWeight = FontWeight.Normal),
-                    color = BundleCardSubtitle
+                    text = bundle.name,
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = BundleCardTitle
+                )
+                if (bundle.description.isNotBlank()) {
+                    Text(
+                        text = bundle.description,
+                        style = tinyLabel.copy(fontWeight = FontWeight.Normal),
+                        color = BundleCardSubtitle
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .clip(
+                        LocalShapes.current.circle
+                    )
+                    .background(White)
+                    .border(
+                        width = 1.dp,
+                        color = bundle.cardBorderColor,
+                        shape = LocalShapes.current.circle
+                    )
+                    .padding(
+                        horizontal = Spacing.dp12,
+                        vertical = Spacing.dp4
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacing.dp2)
+            ) {
+                Text(
+                    text = bundle.metaData.investmentGrowth,
+                    style = tinyLabel,
+                    color = appGreen
                 )
             }
         }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = Spacing.dp20)
                 .height(1.dp)
-                .background(BundleCardSubtitle.copy(alpha = 0.1f))
+                .background(White)
         )
 
         BundleInfoRowAll(
-            onClick=onClick,
-            modifier = Modifier.padding(top = Spacing.dp10)
+            onClick = onClick,
+            modifier = Modifier.padding(top = Spacing.dp8)
         ) {
             Column(
-                modifier= Modifier.weight(1f)
-            ){
+                modifier = Modifier.weight(1f)
+            ) {
                 // NEW: label, amount and suffix all follow the selected mode.
                 val startAmount = bundle.metaData.startAmountFor(purchaseMode)
                 Text(
                     text = purchaseMode.minAmountLabel(),
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 8.sp
+                    ),
                     color = BundleCardSubtitle
                 )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(
-                                SpanStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    color = Black
-                                )
-                            ) {
-                                // NEW: a dash when the API didn't send this mode's amount.
-                                append(startAmount?.let { "₹$it" } ?: "—")
-                            }
-                            if (startAmount != null) append(purchaseMode.amountSuffix())
-                        },
-                        style = tinyLabel,
-                        color = BundleCardSubtitle,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = Black
+                            )
+                        ) {
+                            // NEW: a dash when the API didn't send this mode's amount.
+                            append(startAmount?.let { "₹$it" } ?: "—")
+                        }
+                        if (startAmount != null) append(purchaseMode.amountSuffix())
+                    },
+                    style = tinyLabel,
+                    color = BundleCardSubtitle,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
             Column(
-                modifier= Modifier.weight(1f)
-            ){
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = "${bundle.fundCount} Mutual Funds",
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 8.sp
+                    ),
                     color = BundleCardSubtitle
                 )
                 if (bundle.assetClassLabel.isNotBlank()) {
@@ -326,29 +354,33 @@ private fun BundleInfoRowAll(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-    ){
+    ) {
         Row(
-            modifier= Modifier.weight(1f)
+            modifier = Modifier.weight(1f)
         ) { content() }
         Spacer(modifier = Modifier.width(Spacing.dp12))
         Button(
             onClick = onClick,
             shape = LocalShapes.current.roundedDp12,
             colors = ButtonDefaults.buttonColors(containerColor = Primary, contentColor = White),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
         ) {
-            Text(
-                text = "Invest/" + stringResource(Res.string.invest),
-                fontFamily = InterFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp
-            )
-            Icon(
-                painter = painterResource(Res.drawable.ic_pointer_right),
-                contentDescription = null,
-                tint = White,
-                modifier = Modifier.padding(start = 10.dp).size(14.dp)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Invest/" + stringResource(Res.string.invest),
+                    fontFamily = InterFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp
+                )
+                Icon(
+                    painter = painterResource(Res.drawable.ic_pointer_right),
+                    contentDescription = null,
+                    tint = White,
+                    modifier = Modifier.padding(start = 4.dp).size(12.dp)
+                )
+            }
         }
     }
 }
@@ -361,7 +393,11 @@ private fun AllBundlesScreenPreview() {
             state = AllBundlesUiState(
                 bundles = listOf(
                     previewBundleSummary,
-                    previewBundleSummary.copy(id = "2", name = "Aggressive", description = "Velvet Long Term Vision")
+                    previewBundleSummary.copy(
+                        id = "2",
+                        name = "Aggressive",
+                        description = "Velvet Long Term Vision"
+                    )
                 ),
                 cartAmount = 5000
             ),

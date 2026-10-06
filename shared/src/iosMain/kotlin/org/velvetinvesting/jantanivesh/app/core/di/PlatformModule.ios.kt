@@ -2,6 +2,8 @@ package org.velvetinvesting.jantanivesh.app.core.di
 
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import org.velvetinvesting.jantanivesh.app.core.analytics.ExceptionReporter
+import org.velvetinvesting.jantanivesh.app.core.analytics.IosExceptionReporter
 import org.velvetinvesting.jantanivesh.app.core.database.createIosDatabase
 import org.velvetinvesting.jantanivesh.app.core.datastore.createIosDataStore
 import org.velvetinvesting.jantanivesh.app.core.deeplink.ExternalAppLauncher
@@ -29,4 +31,5 @@ actual val platformModule: Module = module {
     single<ExternalAppLauncher> { IosExternalAppLauncher() }
     single<PdfDownloadManager> { PdfDownloaderIos(get()) }
     single<LocationProvider> { IosLocationProvider() }
+    single<ExceptionReporter> { IosExceptionReporter() }
 }

@@ -7,7 +7,10 @@ data class BundleSummaryDomain(
     val id: String,
     val name: String,
     val description: String,
+    /** The card's background banner; blank when the API sends none. */
     val imageUrl: String,
+    /** The card's border colour as an ARGB value, or null when the API's hex is missing or unreadable. */
+    val borderColor: Long? = null,
     val assetAllocation: AssetAllocationDomain,
     val metaData: BundleMetaDataDomain,
     val categories: List<BundleCategorySummaryDomain>
@@ -65,9 +68,7 @@ data class BundleMetaDataDomain(
     // NEW: the smallest daily SIP amount, when the API gives one.
     val dailyStartAmount: Long? = null,
     // NEW: the smallest monthly SIP amount, when the API gives one.
-    val monthlyStartAmount: Long? = null,
-    /** [riskLevel] recognised, or null when the app doesn't know it. */
-    val risk: BundleRisk = BundleRisk.UNKNOWN
+    val monthlyStartAmount: Long? = null
 ) {
     // NEW: the start amount for [mode], or null when the API didn't send that one.
     fun startAmountFor(mode: PurchaseMode): Long? = when (mode) {
