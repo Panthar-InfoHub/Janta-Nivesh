@@ -66,7 +66,7 @@ import org.velvetinvesting.jantanivesh.app.features.goals.domain.models.GoalOpti
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalEvent
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.AddGoalUiState
 import org.velvetinvesting.jantanivesh.app.features.goals.ui.viewmodels.GoalFormState
-import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.rememberDatePickerInteractionSource
+import org.velvetinvesting.jantanivesh.app.features.onboarding.ui.compose.TitledDateField
 import kotlin.math.abs
 import kotlin.math.round
 
@@ -225,13 +225,11 @@ fun GoalFormSection(
 
         Row(horizontalArrangement = Arrangement.spacedBy(Spacing.dp16),
             verticalAlignment = Alignment.Bottom) {
-            TitledAppTextField(
+            // The year is chosen from the wheel picker, never typed.
+            TitledDateField(
                 title = "Target Year/ (" + stringResource(Res.string.goal_target_year) + ")",
                 value = targetYearText,
-                // The year is chosen from the wheel picker, never typed.
-                onValueChange = { },
-                readOnly = true,
-                interactionSource = rememberDatePickerInteractionSource(onTargetYearClicked),
+                onClick = onTargetYearClicked,
                 placeholder = "${currentYear + option.minYears}",
                 trailingIcon = {
                     Icon(

@@ -27,6 +27,8 @@ import platform.UIKit.UIDocumentInteractionController
 import platform.UIKit.UIDocumentInteractionControllerDelegateProtocol
 import platform.UIKit.UIViewController
 import platform.darwin.NSObject
+import platform.darwin.dispatch_async
+import platform.darwin.dispatch_get_main_queue
 
 class PdfDownloaderIos(
     private val client: HttpClient
@@ -160,38 +162,32 @@ class PdfDownloaderIos(
     }
 
 
+    // UIKit holds a document controller's delegate weakly, so both are kept here for as long as
+    // the preview is up; a delegate held nowhere else is freed and the preview never shows.
     private var documentController: UIDocumentInteractionController? = null
+    private var documentControllerDelegate: UIDocumentInteractionControllerDelegateProtocol? = null
 
+    /** Previews the saved file. Callers may be on a background thread; UIKit is driven from main. */
     fun openPdf(filePath: String) {
+        dispatch_async(dispatch_get_main_queue()) {
+            val rootVC = UIApplication.sharedApplication.keyWindow?.rootViewController
+                ?: return@dispatch_async
 
-        val url = NSURL.fileURLWithPath(filePath)
-
-        val controller = UIDocumentInteractionController.interactionControllerWithURL(url)
-
-        val rootVC = UIApplication.sharedApplication.keyWindow?.rootViewController
-
-            ?: return
-
-        val delegate = object : NSObject(), UIDocumentInteractionControllerDelegateProtocol {
-
-            override fun documentInteractionControllerViewControllerForPreview(
-
-                controller: UIDocumentInteractionController
-
-            ): UIViewController {
-
-                return rootVC
-
+            val controller = UIDocumentInteractionController.interactionControllerWithURL(
+                NSURL.fileURLWithPath(filePath)
+            )
+            val delegate = object : NSObject(), UIDocumentInteractionControllerDelegateProtocol {
+                override fun documentInteractionControllerViewControllerForPreview(
+                    controller: UIDocumentInteractionController
+                ): UIViewController = rootVC
             }
 
+            controller.delegate = delegate
+            documentController = controller
+            documentControllerDelegate = delegate
+
+            controller.presentPreviewAnimated(true)
         }
-
-        controller.delegate = delegate
-
-        documentController = controller
-
-        controller.presentPreviewAnimated(true)
-
     }
 }
 

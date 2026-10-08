@@ -82,8 +82,6 @@ kotlin {
             implementation(libs.androidx.room3.runtime)
             implementation(libs.androidx.sqlite.bundled)
 
-            implementation("com.posthog:posthog-kmp:0.7.0")
-
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

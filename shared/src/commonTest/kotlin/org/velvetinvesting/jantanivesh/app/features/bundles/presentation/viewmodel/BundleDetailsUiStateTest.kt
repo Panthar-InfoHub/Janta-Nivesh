@@ -55,15 +55,40 @@ class BundleDetailsUiStateTest {
         assertEquals(setOf("listed-3"), state.copy(purchaseMode = PurchaseMode.MONTHLY).exploreUnselectableFundIds())
     }
 
+    @Test
+    fun beforeAnyFundChange_minimumIsTheServerStartAmount() {
+        val state = stateWith(PurchaseMode.MONTHLY, investmentAmount = 1000L, monthlyStartAmount = 500L)
+
+        assertEquals(500L, state.minAmount)
+        // Once a fund is swapped, the minimum is worked out from the selected funds again.
+        assertEquals(250L, state.copy(hasChangedFunds = true).minAmount)
+    }
+
+    @Test
+    fun noServerStartAmount_minimumIsWorkedOutFromTheFunds() {
+        val state = stateWith(PurchaseMode.MONTHLY, investmentAmount = 1000L, monthlyStartAmount = null)
+
+        assertEquals(250L, state.minAmount)
+    }
+
     private val withDaily = fund("with-daily", "With Daily Fund", daily = 20)
     private val noDaily = fund("no-daily", "No Daily Fund", daily = null)
 
-    private fun stateWith(mode: PurchaseMode, investmentAmount: Long): BundleDetailsUiState {
+    private fun stateWith(
+        mode: PurchaseMode,
+        investmentAmount: Long,
+        monthlyStartAmount: Long? = null
+    ): BundleDetailsUiState {
         val bundle = BundleDetailsDomain(
             name = "Test",
             description = "",
             assetAllocation = AssetAllocationDomain(equity = 100.0, debt = 0.0, hybrid = 0.0, commodity = 0.0),
-            metaData = BundleMetaDataDomain(riskLevel = "", investmentTime = "", investmentGrowth = ""),
+            metaData = BundleMetaDataDomain(
+                riskLevel = "",
+                investmentTime = "",
+                investmentGrowth = "",
+                monthlyStartAmount = monthlyStartAmount
+            ),
             categories = listOf(
                 BundleCategoryDomain(
                     id = "cat",

@@ -2,15 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CADisableMinimumFrameDurationOnPhone</key>
-    <true/>
-    <key>UIFileSharingEnabled</key>
-    <true/>
-
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Allow access to photos so users can upload images inside the app.</string>
-
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Your location is recorded once with your KYC profile, as required by SEBI onboarding regulations.</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>FirebaseMessagingInstallationIdEnabled</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 </dict>
 </plist>

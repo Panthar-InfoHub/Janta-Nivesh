@@ -25,10 +25,10 @@ class MyApplication : Application() {
         }
 
 
-        config.sessionReplay=true
-        config.sessionReplayConfig.maskAllTextInputs = false
-        config.sessionReplayConfig.maskAllImages = false
-        config.sessionReplayConfig.screenshot = true
+//        config.sessionReplay=true
+//        config.sessionReplayConfig.maskAllTextInputs = false
+//        config.sessionReplayConfig.maskAllImages = false
+//        config.sessionReplayConfig.screenshot = true
 
 
         PostHogAndroid.setup(this, config)

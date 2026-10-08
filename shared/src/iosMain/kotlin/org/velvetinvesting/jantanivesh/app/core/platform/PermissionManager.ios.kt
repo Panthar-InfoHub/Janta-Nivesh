@@ -10,7 +10,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSURL
 import platform.Photos.PHAuthorizationStatus
 import platform.Photos.PHAuthorizationStatusAuthorized
-import platform.Photos.PHAuthorizationStatusDenied
+import platform.Photos.PHAuthorizationStatusLimited
 import platform.Photos.PHAuthorizationStatusNotDetermined
 import platform.Photos.PHPhotoLibrary
 import platform.UIKit.UIApplication
@@ -24,6 +24,8 @@ import platform.UserNotifications.UNAuthorizationStatusEphemeral
 import platform.UserNotifications.UNAuthorizationStatusNotDetermined
 import platform.UserNotifications.UNAuthorizationStatusProvisional
 import platform.UserNotifications.UNUserNotificationCenter
+import platform.darwin.dispatch_async
+import platform.darwin.dispatch_get_main_queue
 
 @Composable
 actual fun createPermissionsManager(callback: PermissionCallback): PermissionsManager {
@@ -39,7 +41,7 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
                 askGalleryPermission(status, permission, callback)
             }
             PermissionType.DOCUMENT -> {
-                callback.onPermissionStatus(permission, PermissionStatus.GRANTED)
+                callback.reportOnMain(permission, PermissionStatus.GRANTED)
             }
             PermissionType.NOTIFICATION -> {
                 askNotificationPermission(permission, callback)
@@ -49,12 +51,14 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
 
     private fun askGalleryPermission(status: PHAuthorizationStatus, permission: PermissionType, callback: PermissionCallback) {
         when (status) {
-            PHAuthorizationStatusAuthorized -> callback.onPermissionStatus(permission, PermissionStatus.GRANTED)
             PHAuthorizationStatusNotDetermined -> PHPhotoLibrary.requestAuthorization { newStatus ->
                 askGalleryPermission(newStatus, permission, callback)
             }
-            PHAuthorizationStatusDenied -> callback.onPermissionStatus(permission, PermissionStatus.DENIED)
-            else -> error("Unknown gallery status $status")
+            // Limited ("Selected Photos") still lets the user pick from the photos they allowed.
+            else -> callback.reportOnMain(
+                permission,
+                if (status.isGalleryAccessGranted()) PermissionStatus.GRANTED else PermissionStatus.DENIED
+            )
         }
     }
 
@@ -63,7 +67,7 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
         var isGranted by remember(permission) { mutableStateOf(false) }
 
         return when (permission) {
-            PermissionType.GALLERY -> PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatusAuthorized
+            PermissionType.GALLERY -> PHPhotoLibrary.authorizationStatus().isGalleryAccessGranted()
             PermissionType.DOCUMENT -> true
             PermissionType.NOTIFICATION -> {
 
@@ -71,12 +75,14 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
 
                 LaunchedEffect(permission) {
                     center.getNotificationSettingsWithCompletionHandler { settings ->
-                        isGranted = when (settings?.authorizationStatus) {
+                        val granted = when (settings?.authorizationStatus) {
                             UNAuthorizationStatusAuthorized,
                             UNAuthorizationStatusProvisional,
                             UNAuthorizationStatusEphemeral -> true
                             else -> false
                         }
+                        // The handler runs on a background queue; Compose state is set on main.
+                        dispatch_async(dispatch_get_main_queue()) { isGranted = granted }
                     }
                 }
                 isGranted
@@ -104,7 +110,7 @@ private fun askNotificationPermission(
             UNAuthorizationStatusAuthorized,
             UNAuthorizationStatusProvisional,
             UNAuthorizationStatusEphemeral -> {
-                callback.onPermissionStatus(permission, PermissionStatus.GRANTED)
+                callback.reportOnMain(permission, PermissionStatus.GRANTED)
             }
 
             UNAuthorizationStatusNotDetermined -> {
@@ -113,7 +119,7 @@ private fun askNotificationPermission(
                             UNAuthorizationOptionSound or
                             UNAuthorizationOptionBadge
                 ) { granted, _ ->
-                    callback.onPermissionStatus(
+                    callback.reportOnMain(
                         permission,
                         if (granted) PermissionStatus.GRANTED else PermissionStatus.DENIED
                     )
@@ -121,13 +127,23 @@ private fun askNotificationPermission(
             }
 
             UNAuthorizationStatusDenied -> {
-                callback.onPermissionStatus(permission, PermissionStatus.DENIED)
+                callback.reportOnMain(permission, PermissionStatus.DENIED)
             }
 
             else -> {
-                callback.onPermissionStatus(permission, PermissionStatus.DENIED)
+                callback.reportOnMain(permission, PermissionStatus.DENIED)
             }
         }
     }
 }
 
+private fun PHAuthorizationStatus.isGalleryAccessGranted(): Boolean =
+    this == PHAuthorizationStatusAuthorized || this == PHAuthorizationStatusLimited
+
+/**
+ * Photos and notification permission answers arrive on background queues; callers update UI
+ * state from the callback, so it is always delivered on the main thread.
+ */
+private fun PermissionCallback.reportOnMain(permission: PermissionType, status: PermissionStatus) {
+    dispatch_async(dispatch_get_main_queue()) { onPermissionStatus(permission, status) }
+}

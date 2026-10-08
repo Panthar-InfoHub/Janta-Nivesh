@@ -70,7 +70,12 @@ data class BundleDetailsUiState(
     val exploreLoadingFundId: String? = null,
     val isAddingToCart: Boolean = false,
     /** Funds in the user's cart, SIP and one-time together, for the header badge. */
-    val cartFundCount: Int = 0
+    val cartFundCount: Int = 0,
+    /**
+     * Whether any slot now holds a different fund from the one it loaded with. Until then the
+     * minimum is the server's start amount; from then on it is worked out from the funds selected.
+     */
+    val hasChangedFunds: Boolean = false
 ) {
     /** Selected funds that can't be bought as [purchaseMode]; they block investing until changed. */
     val unsupportedSlots: List<PortfolioSlotDomain>
@@ -85,10 +90,14 @@ data class BundleDetailsUiState(
     /**
      * The bundle minimum for [purchaseMode]. It reads 0 while a selected fund can't be bought that
      * way, rather than a figure worked out from only some of the funds.
+     *
+     * With the funds the bundle loaded with, it is the server's start amount for the mode. Once a
+     * fund is changed — or where the server sent none — it is worked out from the selected funds.
      */
     val minAmount: Long
         get() {
             if (!isPurchaseModeSupported) return 0L
+            if (!hasChangedFunds) bundle?.metaData?.startAmountFor(purchaseMode)?.let { return it }
             return transactionRules?.minAmountFor(purchaseMode)?.toLong() ?: 0L
         }
 
@@ -533,13 +542,20 @@ class BundleDetailsViewModel(
      */
     private fun BundleDetailsUiState.withBundle(bundle: BundleDetailsDomain): BundleDetailsUiState {
         val rules = bundle.deriveTransactionRules()
+        // The first load has no bundle to compare with; later ones count only a real fund swap,
+        // so saving the picker unchanged keeps the server's minimum.
+        val previous = this.bundle
+        val fundsChanged = previous != null && previous.selectedFundIds() != bundle.selectedFundIds()
         return copy(
             bundle = bundle,
             transactionRules = rules,
+            hasChangedFunds = hasChangedFunds || fundsChanged,
             // A swapped fund can narrow the dates every fund accepts.
             selectedSipDay = selectedSipDay?.takeIf { it in rules.sipAllowedDates }
         ).withSeededAmount()
     }
+
+    private fun BundleDetailsDomain.selectedFundIds(): List<String?> = slots.map { it.selectedFund?.id }
 
     /** Starts the amount at the bundle minimum until the user enters one of their own. */
     private fun BundleDetailsUiState.withSeededAmount(): BundleDetailsUiState =
